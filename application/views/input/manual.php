@@ -149,7 +149,7 @@
                             $('#subdistrict_id').html('<option value="">-- Select Subdistrict --</option>');
                             $('#puskesmas_id').html('<option value="">-- Select Puskesmas --</option>');
                             $.each(data, function (key, value) {
-                                $('#city_id').append('<option value="' + value.id + '">' + value.name_en + '</option>');
+                                $('#city_id').append('<option value="' + value.id + '">' + value.name_id + '</option>');
                             });
                         }
                     });

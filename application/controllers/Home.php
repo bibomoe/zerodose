@@ -70,10 +70,20 @@ class Home extends CI_Controller {
     public function restored() {
         // Ambil filter provinsi dari dropdown (default: all)
         $selected_province = $this->input->get('province') ?? 'all';
+        $selected_district = $this->input->get('district') ?? 'all';
 
         // Ambil daftar provinsi untuk dropdown
         $this->data['provinces'] = $this->Immunization_model->get_provinces();
         $this->data['selected_province'] = $selected_province;
+        $this->data['selected_district'] = $selected_district;
+
+        // Ambil daftar distrik saat halaman pertama kali dimuat
+        // Ambil daftar distrik berdasarkan provinsi (untuk dropdown filter)
+        if ($selected_province !== 'all') {
+            $this->data['districts'] = $this->Immunization_model->get_cities_by_province($selected_province);
+        } else {
+            $this->data['districts'] = [];
+        }
 
         // Total imunisasi berdasarkan provinsi
         $this->data['total_dpt_1'] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province);
@@ -97,6 +107,22 @@ class Home extends CI_Controller {
         } else {
             $this->data['geojson_file'] = base_url('assets/geojson/provinces.geojson');
         }
+
+        // Data untuk grafik line Zero-Dose Cases (Berdasarkan Provinsi & Distrik jika ada)
+        // $zero_dose_cases = $this->Immunization_model->get_zero_dose_cases($selected_province, $selected_district);
+        // $this->data['zero_dose_labels'] = array_map(fn($d) => $d['year'] . '-' . str_pad($d['month'], 2, '0', STR_PAD_LEFT), $zero_dose_cases);
+        // $this->data['zero_dose_data'] = array_column($zero_dose_cases, 'zd_cases');
+
+        // **Fix: Pastikan ini ada**
+        $this->data['zero_dose_cases'] = $this->Immunization_model->get_zero_dose_cases($selected_province, $selected_district);
+
+
+        // Data untuk grafik bar Restored Children (berdasarkan kota/kabupaten)
+        $restored_data = $this->Immunization_model->get_restored_children($selected_province);
+        $this->data['restored_data'] = [
+            'kabupaten' => $restored_data['kabupaten_restored'] ?? 0,
+            'kota' => $restored_data['kota_restored'] ?? 0
+        ];
 
         $this->data['title'] = 'Restored ZD Children';
         load_template('restored-zd-children', $this->data);
@@ -248,4 +274,36 @@ class Home extends CI_Controller {
         $this->data['title'] = 'Number of private health facilities in targeted areas​';
         load_template('private-health-facilities', $this->data);
     }
+
+    public function get_districts_by_province() {
+        $province_id = $this->input->get('province_id');
+        $districts = $this->Immunization_model->get_cities_by_province($province_id);
+        echo json_encode($districts);
+    }
+    
+    public function get_zero_dose_trend_ajax() {
+        $province_id = $this->input->post('province');
+        $city_id = $this->input->post('district');
+    
+        // Ambil data tren berdasarkan filter
+        $trend_data = $this->Immunization_model->get_zero_dose_trend($province_id, $city_id);
+    
+        echo json_encode($trend_data);
+    }
+    
+    public function tes_model() {
+        // Ambil filter provinsi dari dropdown (default: all)
+        $selected_province = $this->input->get('province') ?? 'all';
+        $selected_district = $this->input->get('district') ?? 'all';
+
+        // Ambil daftar provinsi untuk dropdown
+        $this->data['provinces'] = $this->Immunization_model->get_provinces();
+        $this->data['selected_province'] = $selected_province;
+        $this->data['selected_district'] = $selected_district;
+        // **Fix: Pastikan ini ada**
+        $this->data['zero_dose_cases'] = $this->Immunization_model->get_zero_dose_cases($selected_province, $selected_district);
+
+        $this->load->view('blank', $this->data);
+    }
+    
 }

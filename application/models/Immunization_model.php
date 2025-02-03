@@ -126,6 +126,100 @@ class Immunization_model extends CI_Model {
         return $result;
     }
     
+    public function get_zero_dose_cases($province_id = 'all', $city_id = 'all') {
+        // Step 1: Ambil total target imunisasi
+        $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target", false);
+        $this->db->from('target_immunization');
+        
+        if ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        }
+        
+        $total_target = $this->db->get()->row()->total_target ?? 0;
+    
+        // Step 2: Ambil data imunisasi per bulan
+        $this->db->select("
+            year, 
+            month, 
+            COALESCE(SUM(dpt_hb_hib_1), 0) AS total_immunized
+        ", false);
+        $this->db->from('immunization_data');
+    
+        if ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        }
+    
+        $this->db->group_by('year, month');
+        $this->db->order_by('year ASC, month ASC');
+    
+        $immunization_data = $this->db->get()->result_array();
+    
+        // Step 3: Pastikan semua bulan dari Januari - Desember (2024 & 2025) ada
+        $all_months = [];
+        for ($y = 2024; $y <= 2025; $y++) {
+            for ($m = 1; $m <= 12; $m++) {
+                $all_months["$y-$m"] = [
+                    'year' => $y,
+                    'month' => $m,
+                    'total_immunized' => 0 // Default 0 jika tidak ada data
+                ];
+            }
+        }
+    
+        // Masukkan data imunisasi yang sudah ada
+        foreach ($immunization_data as $data) {
+            $key = "{$data['year']}-{$data['month']}";
+            $all_months[$key]['total_immunized'] = intval($data['total_immunized']);
+        }
+    
+        // Konversi ke array numerik untuk perhitungan kumulatif
+        $immunization_data = array_values($all_months);
+    
+        // Step 4: Hitung ZD Cases dengan metode kumulatif
+        $zd_cases = [];
+        $cumulative_immunized = 0; // Imunisasi kumulatif
+        foreach ($immunization_data as $data) {
+            $cumulative_immunized += $data['total_immunized']; // Tambahkan imunisasi baru
+            $zd_cases[] = [
+                'year' => $data['year'],
+                'month' => $data['month'],
+                'zd_cases' => max($total_target - $cumulative_immunized, 0) // Pastikan tidak negatif
+            ];
+        }
+        // var_dump($zd_cases);
+    
+        return $zd_cases;
+    }
+    
+    
+    
+    
+    
+    public function get_zero_dose_trend($province_id, $city_id) {
+        return $this->get_zero_dose_cases($province_id, $city_id); // Gunakan fungsi yang sama
+    }
+    
+    
+    public function get_restored_children($province_id = 'all') {
+        $this->db->select("
+            SUM(CASE WHEN cities.status = 0 THEN immunization_data.dpt_hb_hib_1 ELSE 0 END) AS kabupaten_restored,
+            SUM(CASE WHEN cities.status = 1 THEN immunization_data.dpt_hb_hib_1 ELSE 0 END) AS kota_restored
+        ");
+        $this->db->from('immunization_data');
+        $this->db->join('cities', 'cities.id = immunization_data.city_id', 'left');
+    
+        if ($province_id !== 'all') {
+            $this->db->where('immunization_data.province_id', $province_id);
+        }
+    
+        return $this->db->get()->row_array();
+    }
     
     
 }

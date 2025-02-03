@@ -230,53 +230,43 @@
                                             <h4 class="card-title">Zero-Dose Cases</h4>
                                         </div>
                                         <div class="card-body">
-                                        <button class="btn btn-primary floating-button" data-bs-toggle="modal"
-                                                data-bs-target="#chartFilter">
-                                                <i class="bi bi-funnel"></i> Filter
-                                            </button>
-                                            <!-- Filter Modal -->
-                                            <div class="modal fade text-left" id="chartFilter" tabindex="-1" role="dialog"
-                                                aria-labelledby="myModalLabel33" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
-                                                    role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h4 class="modal-title" id="myModalLabel33">Filter Chart </h4>
-                                                            <button type="button" class="close" data-bs-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <i data-feather="x"></i>
-                                                            </button>
-                                                        </div>
-                                                        <form action="#">
-                                                            <div class="modal-body">
-                                                                <label for="districtFilter" class="form-label">District:</label>
-                                                                <div class="form-group">
-                                                                    <select id="districtFilter" class="form-select">
-                                                                        <option selected>All District</option>
-                                                                        <option>Kota Jember</option>
-                                                                        <option>Kab. Malang</option>
-                                                                        <option>Kota Malang</option>
-                                                                        <option>Kab. Kediri</option>
-                                                                    </select>
-                                                                </div>
-                                                                
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <!-- <button type="button" class="btn btn-light-secondary"
-                                                                    data-bs-dismiss="modal">
-                                                                    <i class="bx bx-x d-block d-sm-none"></i>
-                                                                    <span class="d-none d-sm-block">Close</span>
-                                                                </button> -->
-                                                                <button type="button" class="btn btn-primary ms-1"
-                                                                    data-bs-dismiss="modal">
-                                                                    <i class="bx bx-check d-block d-sm-none"></i>
-                                                                    <span class="d-none d-sm-block">Apply</span>
+                                            <?php if ($selected_province !== 'all'): ?>
+                                                <button class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#chartFilter">
+                                                    <i class="bi bi-funnel"></i> Filter District
+                                                </button>
+
+                                                <div class="modal fade text-left" id="chartFilter" tabindex="-1" role="dialog">
+                                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title">Filter Chart by District</h4>
+                                                                <button type="button" class="close" data-bs-dismiss="modal">
+                                                                    <i data-feather="x"></i>
                                                                 </button>
                                                             </div>
-                                                        </form>
+                                                            <!-- <?= form_open('home/restored', ['method' => 'get']); ?> -->
+                                                                <div class="modal-body">
+                                                                    <input type="hidden" name="province" value="<?= $selected_province; ?>">
+
+                                                                    <!-- <?= var_dump($districts) ?> -->
+                                                                    <label for="districtFilter" class="form-label">Select District:</label>
+                                                                    <?= form_dropdown('district', ['all' => 'All Districts'] + array_column($districts, 'name_en', 'id'), $selected_district, [
+                                                                        'class' => 'form-select', 'id' => 'districtFilter'
+                                                                    ]); ?>
+
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-primary" id="applyFilter">Apply</button>
+                                                                </div>
+                                                            <!-- <?= form_close(); ?> -->
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            <?php endif; ?>
+                                            <?php
+                                                // var_dump($zero_dose_cases);
+                                                // var_dump($zero_dose_data);
+                                            ?>
                                             <canvas id="zdChart"></canvas>
                                         </div>
                                     </div>
@@ -333,111 +323,166 @@
     </div>
     
     
+    <!-- <script>
+document.addEventListener("DOMContentLoaded", function () {
+    let provinceFilter = document.getElementById('provinceFilter');
+    let districtFilter = document.getElementById('districtFilter');
+
+    // **AJAX untuk mengambil daftar distrik berdasarkan provinsi yang dipilih**
+    provinceFilter.addEventListener('change', function () {
+        let provinceId = this.value;
+        if (provinceId !== 'all') {
+            fetch("<?= base_url('home/get_districts_by_province'); ?>?province_id=" + provinceId)
+            .then(response => response.json())
+            .then(data => {
+                districtFilter.innerHTML = '<option value="all">All Districts</option>';
+                data.forEach(district => {
+                    let option = new Option(district.name_en, district.id);
+                    districtFilter.add(option);
+                });
+            });
+        } else {
+            districtFilter.innerHTML = '<option value="all">All Districts</option>';
+        }
+    });
+});
+</script> -->
 
     <script>
-            // Chart.js setup for zdChart
-            const zdCtx = document.getElementById('zdChart').getContext('2d');
-            const zdChart = new Chart(zdCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Agustus', 'September', 'Oktober', 'November', 'Desember'],
-                    datasets: [{
-                        label: 'ZD Cases',
-                        data: [3000, 2800, 2500, 2200, 2000],
+        // console.log("Zero Dose Data:", <?= json_encode($zero_dose_cases); ?>);
+
+        const zeroDoseData = <?= json_encode($zero_dose_cases); ?>;
+
+        // Mapping data untuk Chart.js
+        const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        let zdCases2024 = Array(12).fill(null);
+        let zdCases2025 = Array(12).fill(null);
+
+        zeroDoseData.forEach(item => {
+            if (item.year === 2024) {
+                zdCases2024[item.month - 1] = item.zd_cases;
+            } else if (item.year === 2025) {
+                zdCases2025[item.month - 1] = item.zd_cases;
+            }
+        });
+
+        const zdCtx = document.getElementById('zdChart').getContext('2d');
+        const zdChart = new Chart(zdCtx, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'ZD Cases 2024',
+                        data: zdCases2024,
                         backgroundColor: 'rgba(0, 86, 179, 0.2)',
                         borderColor: 'rgba(0, 86, 179, 1)',
                         borderWidth: 2,
                         tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                        },
                     },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Months'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'ZD Cases'
-                            }
-                        }
+                    {
+                        label: 'ZD Cases 2025',
+                        data: zdCases2025,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 2,
+                        tension: 0.4
                     }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true, position: 'top' }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Months' } },
+                    y: { title: { display: true, text: 'ZD Cases' } }
                 }
-            });
+            }
+        });
 
-            // Function to create buttons dynamically for zdChart
+
+            // **Fungsi untuk menambahkan tombol download secara dinamis**
             function addZdDownloadButtons() {
                 const container = zdCtx.canvas.parentNode;
 
-                // Create a wrapper for the buttons
+                // Buat wrapper untuk tombol
                 const buttonWrapper = document.createElement('div');
                 buttonWrapper.className = 'd-flex mb-3 gap-2'; // Bootstrap classes
 
-                // Create CSV download button
+                // Tombol Download CSV
                 const csvButton = document.createElement('button');
                 csvButton.textContent = 'Download CSV';
-                csvButton.className = 'btn btn-primary btn-sm'; // Smaller button
+                csvButton.className = 'btn btn-primary btn-sm'; // Ukuran kecil
                 csvButton.addEventListener('click', () => downloadZdCSV());
 
-                // Create Excel download button
+                // Tombol Download Excel
                 const excelButton = document.createElement('button');
                 excelButton.textContent = 'Download Excel';
-                excelButton.className = 'btn btn-success btn-sm'; // Smaller button
+                excelButton.className = 'btn btn-success btn-sm'; // Ukuran kecil
                 excelButton.addEventListener('click', () => downloadZdExcel());
 
-                // Append buttons to the wrapper
+                // Tambahkan tombol ke dalam wrapper
                 buttonWrapper.appendChild(csvButton);
                 buttonWrapper.appendChild(excelButton);
 
-                // Insert the wrapper above the chart
+                // Sisipkan wrapper di atas grafik
                 container.insertBefore(buttonWrapper, zdCtx.canvas);
             }
 
-            // Function to download CSV for zdChart
+            // **Fungsi untuk download CSV**
             function downloadZdCSV() {
-                const labels = ['Agustus', 'September', 'Oktober', 'November', 'Desember'];
-                const data = [3000, 2800, 2500, 2200, 2000];
+                const labels = [
+                    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                ];
+                const data2024 = zdChart.data.datasets[0].data; // Data 2024
+                const data2025 = zdChart.data.datasets[1].data; // Data 2025
 
                 let csvContent = "data:text/csv;charset=utf-8,";
-                csvContent += "Months,ZD Cases\n"; // Header
+                csvContent += "Bulan,ZD Cases 2024,ZD Cases 2025\n"; // Header
+
                 labels.forEach((label, index) => {
-                    csvContent += `${label},${data[index]}\n`;
+                    csvContent += `${label},${data2024[index] ?? ""},${data2025[index] ?? ""}\n`;
                 });
 
                 const encodedUri = encodeURI(csvContent);
                 const link = document.createElement('a');
                 link.setAttribute('href', encodedUri);
-                link.setAttribute('download', 'zd_chart_data.csv');
+                link.setAttribute('download', 'zero_dose_cases.csv');
+                document.body.appendChild(link);
                 link.click();
             }
 
-            // Function to download Excel for zdChart
+            // **Fungsi untuk download Excel**
             function downloadZdExcel() {
-                const labels = ['Agustus', 'September', 'Oktober', 'November', 'Desember'];
-                const data = [3000, 2800, 2500, 2200, 2000];
+                const labels = [
+                    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                ];
+                const data2024 = zdChart.data.datasets[0].data; // Data 2024
+                const data2025 = zdChart.data.datasets[1].data; // Data 2025
 
-                // Create Excel content using XLSX.js
+                // Buat workbook Excel
                 const workbook = XLSX.utils.book_new();
-                const worksheetData = [['Months', 'ZD Cases'], ...labels.map((label, index) => [label, data[index]])];
+                const worksheetData = [["Bulan", "ZD Cases 2024", "ZD Cases 2025"], 
+                    ...labels.map((label, index) => [label, data2024[index] ?? "", data2025[index] ?? ""])
+                ];
                 const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-                XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Zero Dose Cases");
 
-                // Generate Excel file and download
-                XLSX.writeFile(workbook, 'zd_chart_data.xlsx');
+                // Generate file Excel dan unduh
+                XLSX.writeFile(workbook, "zero_dose_cases.xlsx");
             }
 
-            // Add buttons to the DOM for zdChart
+            // **Tambahkan tombol download ke DOM**
             addZdDownloadButtons();
+
 
             // Chart.js setup for locationChart
             const locationCtx = document.getElementById('locationChart').getContext('2d');
@@ -540,6 +585,38 @@
             addLocationDownloadButtons();
     </script>
 
+<script>
+    $(document).ready(function () {
+    $('#applyFilter').click(function () {
+        var districtId = $('#districtFilter').val();
+        var provinceId = "<?= $selected_province ?>"; 
+
+        $.ajax({
+            url: "<?= base_url('home/get_zero_dose_trend_ajax') ?>",
+            type: "POST",
+            data: { province: provinceId, district: districtId },
+            dataType: "json",
+            success: function (data) {
+                console.log("Filtered Data:", data);
+
+                // Update Chart
+                let labels = data.map(item => item.month + ' ' + item.year);
+                let zdCases = data.map(item => item.zd_cases);
+
+                zdChart.data.labels = labels;
+                zdChart.data.datasets[0].data = zdCases;
+                zdChart.update();
+
+                $('#chartFilter').modal('hide'); // Close modal
+            },
+            error: function () {
+                alert('Failed to load data!');
+            }
+        });
+    });
+});
+
+    </script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
