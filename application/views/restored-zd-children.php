@@ -129,10 +129,10 @@
                                             <div id="chart-profile-visit"></div>
                                         </div> -->
                                         <div class="card-body">
-                                            <button class="btn btn-primary floating-button" data-bs-toggle="modal"
+                                            <!-- <button class="btn btn-primary floating-button" data-bs-toggle="modal"
                                                 data-bs-target="#tableFilter">
                                                 <i class="bi bi-funnel"></i> Filter
-                                            </button>
+                                            </button> -->
                                             <!-- Filter Modal -->
                                             <div class="modal fade text-left" id="tableFilter" tabindex="-1" role="dialog"
                                                 aria-labelledby="myModalLabel33" aria-hidden="true">
@@ -224,10 +224,10 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title">Zero-Dose Cases in Group A</h4>
+                                            <h4 class="card-title">Zero-Dose Cases</h4>
                                         </div>
                                         <div class="card-body">
                                         <button class="btn btn-primary floating-button" data-bs-toggle="modal"
@@ -281,7 +281,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                     <div class="card">
                                         <div class="card-header">
                                             <h4 class="card-title">Number of Restored Children by Gender</h4>
@@ -290,7 +290,7 @@
                                             <canvas id="genderChart"></canvas>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="col-md-6">
                                     <div class="card">
                                         <div class="card-header">
@@ -301,7 +301,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                     <div class="card">
                                         <div class="card-header">
                                             <h4 class="card-title">Number of Restored Children by Group Age</h4>
@@ -310,7 +310,7 @@
                                             <canvas id="ageChart"></canvas>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                                 
                             </div>
                         </div>
@@ -439,108 +439,6 @@
             // Add buttons to the DOM for zdChart
             addZdDownloadButtons();
 
-
-            // Chart.js setup for genderChart
-            const genderCtx = document.getElementById('genderChart').getContext('2d');
-            new Chart(genderCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Male', 'Female'],
-                    datasets: [{
-                        label: 'Number of Children',
-                        data: [1237, 2546],
-                        backgroundColor: ['rgba(0, 86, 179, 0.7)', 'rgba(0, 179, 230, 0.7)']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Gender'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Number of Children'
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Function to create buttons dynamically for genderChart
-            function addGenderDownloadButtons() {
-                const container = genderCtx.canvas.parentNode;
-
-                // Create a wrapper for the buttons
-                const buttonWrapper = document.createElement('div');
-                buttonWrapper.className = 'd-flex mb-3 gap-2'; // Bootstrap classes
-
-                // Create CSV download button
-                const csvButton = document.createElement('button');
-                csvButton.textContent = 'Download CSV';
-                csvButton.className = 'btn btn-primary btn-sm'; // Smaller button
-                csvButton.addEventListener('click', () => downloadGenderCSV());
-
-                // Create Excel download button
-                const excelButton = document.createElement('button');
-                excelButton.textContent = 'Download Excel';
-                excelButton.className = 'btn btn-success btn-sm'; // Smaller button
-                excelButton.addEventListener('click', () => downloadGenderExcel());
-
-                // Append buttons to the wrapper
-                buttonWrapper.appendChild(csvButton);
-                buttonWrapper.appendChild(excelButton);
-
-                // Insert the wrapper above the chart
-                container.insertBefore(buttonWrapper, genderCtx.canvas);
-            }
-
-            // Function to download CSV for genderChart
-            function downloadGenderCSV() {
-                const labels = ['Male', 'Female'];
-                const data = [1237, 2546];
-
-                let csvContent = "data:text/csv;charset=utf-8,";
-                csvContent += "Gender,Number of Children\n"; // Header
-                labels.forEach((label, index) => {
-                    csvContent += `${label},${data[index]}\n`;
-                });
-
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement('a');
-                link.setAttribute('href', encodedUri);
-                link.setAttribute('download', 'gender_chart_data.csv');
-                link.click();
-            }
-
-            // Function to download Excel for genderChart
-            function downloadGenderExcel() {
-                const labels = ['Male', 'Female'];
-                const data = [1237, 2546];
-
-                // Create Excel content using XLSX.js
-                const workbook = XLSX.utils.book_new();
-                const worksheetData = [['Gender', 'Number of Children'], ...labels.map((label, index) => [label, data[index]])];
-                const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-                XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-
-                // Generate Excel file and download
-                XLSX.writeFile(workbook, 'gender_chart_data.xlsx');
-            }
-
-            // Add buttons to the DOM for genderChart
-            addGenderDownloadButtons();
-
-
             // Chart.js setup for locationChart
             const locationCtx = document.getElementById('locationChart').getContext('2d');
             new Chart(locationCtx, {
@@ -640,189 +538,8 @@
 
             // Add buttons to the DOM for locationChart
             addLocationDownloadButtons();
-
-
-            // Chart.js setup for ageChart
-            const ageCtx = document.getElementById('ageChart').getContext('2d');
-            new Chart(ageCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['3-11 Months', '12-23 Months', '24-59 Months'],
-                    datasets: [{
-                        label: 'Number of Children',
-                        data: [2537, 4658, 2846],
-                        backgroundColor: [
-                            'rgba(0, 86, 179, 0.7)',
-                            'rgba(0, 179, 230, 0.7)',
-                            'rgba(179, 0, 230, 0.7)'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Group Age'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Number of Children'
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Function to create buttons dynamically for ageChart
-            function addAgeDownloadButtons() {
-                const container = ageCtx.canvas.parentNode;
-
-                // Create a wrapper for the buttons
-                const buttonWrapper = document.createElement('div');
-                buttonWrapper.className = 'd-flex mb-3 gap-2'; // Bootstrap classes
-
-                // Create CSV download button
-                const csvButton = document.createElement('button');
-                csvButton.textContent = 'Download CSV';
-                csvButton.className = 'btn btn-primary btn-sm'; // Smaller button
-                csvButton.addEventListener('click', () => downloadAgeCSV());
-
-                // Create Excel download button
-                const excelButton = document.createElement('button');
-                excelButton.textContent = 'Download Excel';
-                excelButton.className = 'btn btn-success btn-sm'; // Smaller button
-                excelButton.addEventListener('click', () => downloadAgeExcel());
-
-                // Append buttons to the wrapper
-                buttonWrapper.appendChild(csvButton);
-                buttonWrapper.appendChild(excelButton);
-
-                // Insert the wrapper above the chart
-                container.insertBefore(buttonWrapper, ageCtx.canvas);
-            }
-
-            // Function to download CSV for ageChart
-            function downloadAgeCSV() {
-                const labels = ['3-11 Months', '12-23 Months', '24-59 Months'];
-                const data = [2537, 4658, 2846];
-
-                let csvContent = "data:text/csv;charset=utf-8,";
-                csvContent += "Group Age,Number of Children\n"; // Header
-                labels.forEach((label, index) => {
-                    csvContent += `${label},${data[index]}\n`;
-                });
-
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement('a');
-                link.setAttribute('href', encodedUri);
-                link.setAttribute('download', 'age_chart_data.csv');
-                link.click();
-            }
-
-            // Function to download Excel for ageChart
-            function downloadAgeExcel() {
-                const labels = ['3-11 Months', '12-23 Months', '24-59 Months'];
-                const data = [2537, 4658, 2846];
-
-                // Create Excel content using XLSX.js
-                const workbook = XLSX.utils.book_new();
-                const worksheetData = [['Group Age', 'Number of Children'], ...labels.map((label, index) => [label, data[index]])];
-                const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-                XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-
-                // Generate Excel file and download
-                XLSX.writeFile(workbook, 'age_chart_data.xlsx');
-            }
-
-            // Add buttons to the DOM for ageChart
-            addAgeDownloadButtons();
-            
-
     </script>
 
-<!-- <script>
-    const map = L.map('map').setView([-7.250445, 112.768845], 8);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-
-        const geojsonFile = "<?= $geojson_file; ?>"; // File GeoJSON berdasarkan provinsi yang dipilih
-
-        fetch(geojsonFile)
-            .then(response => response.json())
-            .then(data => {
-                let immunizationData = <?= json_encode($immunization_data); ?>;
-                let selectedProvince = "<?= $selected_province; ?>";
-
-                function getColor(dpt1) {
-                    return dpt1 > 0 ? "#2ECC71" : "#E74C3C"; // Hijau jika ada imunisasi, merah jika 0
-                }
-
-                function style(feature) {
-                    let regionId = selectedProvince !== "all" ? feature.properties.KDPKAB : feature.properties.KDPPUM;
-                    let dpt1 = immunizationData[regionId]?.dpt1 || 0;
-
-                    return {
-                        fillColor: getColor(dpt1),
-                        weight: 1.5,
-                        opacity: 1,
-                        color: '#ffffff',
-                        fillOpacity: 0.8
-                    };
-                }
-
-                L.geoJSON(data, {
-                    style: style,
-                    onEachFeature: function (feature, layer) {
-                        let regionName = feature.properties.NAMOBJ || feature.properties.WADMKK || feature.properties.WADMPR;
-                        let regionId = selectedProvince !== "all" ? feature.properties.KDPKAB : feature.properties.KDPPUM;
-
-                        let dpt1 = immunizationData[regionId]?.dpt1 || 0;
-                        let dpt2 = immunizationData[regionId]?.dpt2 || 0;
-                        let dpt3 = immunizationData[regionId]?.dpt3 || 0;
-                        let mr1  = immunizationData[regionId]?.mr1 || 0;
-
-                        let popupContent = `<b>${regionName}</b><br>`;
-                        popupContent += `<b>${regionId}</b><br>`;
-                        popupContent += `DPT1 Immunized: ${dpt1}<br>`;
-                        popupContent += `DPT1 Immunized: ${dpt1}<br>`;
-                        popupContent += `DPT2 Immunized: ${dpt2}<br>`;
-                        popupContent += `DPT3 Immunized: ${dpt3}<br>`;
-                        popupContent += `MR1 Immunized: ${mr1}`;
-                        
-                        layer.bindPopup(popupContent);
-
-                        // 🔥 Tambahkan Label Nama Kota/Kabupaten
-                        if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
-                            let labelPoint = turf.pointOnFeature(feature); // Cari titik tengah polygon
-                            let latlng = [labelPoint.geometry.coordinates[1], labelPoint.geometry.coordinates[0]];
-
-                            let label = L.divIcon({
-                                className: 'label-class', // Tambahkan CSS untuk ukuran font
-                                html: `<b>${regionName}</b>`, // Isi label
-                                iconSize: [100, 30] // Ukuran teks label
-                            });
-
-                            L.marker(latlng, { icon: label }).addTo(map);
-                        }
-                    }
-                }).addTo(map);
-            });
-
-
-
-</script> -->
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -833,40 +550,35 @@
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    // **Periksa Data Immunization dari PHP**
     let immunizationData = <?= json_encode($immunization_data, JSON_NUMERIC_CHECK); ?>;
-    console.log("Immunization Data:", immunizationData); // Cek data masuk
+    // console.log("Immunization Data:", immunizationData);
 
     function cleanCityCode(code) { 
-        if (!code) return ""; // Cegah null atau undefined
-        return String(code).replace(/\./g, ''); // Hapus titik dari kode
+        if (!code) return ""; 
+        return String(code).replace(/\./g, ''); 
     }
 
-
     function getColor(value) {
-        return value === 0 ? '#D73027' : // Merah jika belum imunisasi
-            value > 0  ? '#1A9850' : // Hijau jika ada imunisasi
-                        '#f0f0f0';  // Default abu-abu
+        return value === 0 ? '#D73027' :  
+               value > 0  ? '#1A9850' :  
+                            '#f0f0f0';  
     }
 
     let isProvinceLevel = "<?= $selected_province ?>" === "all";
-    console.log(isProvinceLevel);
+
     fetch("<?= $geojson_file; ?>")
     .then(response => response.json())
     .then(data => {
-        console.log("GeoJSON Data:", data); // Debug data GeoJSON
+        // console.log("GeoJSON Data:", data);
 
-        L.geoJSON(data, {
+        let geojsonLayer = L.geoJSON(data, {
             style: function (feature) {
                 let rawCode = isProvinceLevel 
-                    ? feature.properties.KDPPUM // Untuk provinsi
-                    : feature.properties.KDPKAB; // Untuk kota
+                    ? feature.properties.KDPPUM  
+                    : feature.properties.KDPKAB; 
 
-                let regionId = isProvinceLevel 
-                    ? cleanCityCode(feature.properties.KDPPUM) // Untuk provinsi
-                    : cleanCityCode(feature.properties.KDPKAB); // Untuk kota
-
-                console.log(`Raw : ${rawCode}, Cleaned: ${regionId}`); // Debugging
+                let regionId = cleanCityCode(rawCode);
+                // console.log(`Raw : ${rawCode}, Cleaned: ${regionId}`);
 
                 let dpt1 = immunizationData[regionId]?.dpt1 ? parseInt(immunizationData[regionId].dpt1) : 0;
 
@@ -880,15 +592,17 @@
             },
             onEachFeature: function (feature, layer) {
                 let regionId = isProvinceLevel 
-                    ? cleanCityCode(feature.properties.KDPPUM) // Untuk provinsi
-                    : cleanCityCode(feature.properties.KDPKAB); // Untuk kota
+                    ? cleanCityCode(feature.properties.KDPPUM)  
+                    : cleanCityCode(feature.properties.KDPKAB);  
+
                 let dpt1 = immunizationData[regionId]?.dpt1 || 0;
                 let dpt2 = immunizationData[regionId]?.dpt2 || 0;
                 let dpt3 = immunizationData[regionId]?.dpt3 || 0;
                 let mr1  = immunizationData[regionId]?.mr1 || 0;
+
                 let name = isProvinceLevel 
-                    ? feature.properties.WADMPR // Untuk provinsi
-                    : feature.properties.NAMOBJ; // Untuk kota
+                    ? feature.properties.WADMPR  
+                    : feature.properties.NAMOBJ;  
 
                 let popupContent = `<b>${name}</b><br>`;
                 popupContent += `DPT1 Immunized: ${dpt1}<br>`;
@@ -913,9 +627,13 @@
                 }
             }
         }).addTo(map);
-        
+
+        // ✅ Set view ke center dari bounding box GeoJSON
+        map.fitBounds(geojsonLayer.getBounds());
+
     })
     .catch(error => console.error("Error loading GeoJSON:", error));
 });
+
 
 </script>
