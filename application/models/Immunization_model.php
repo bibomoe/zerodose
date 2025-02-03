@@ -11,7 +11,7 @@ class Immunization_model extends CI_Model {
     public function get_cities_by_province($province_id) {
         return $this->db->where('province_id', $province_id)->where('active', 1)->get('cities')->result();
     }
-    
+
     public function get_cities_by_province_array($province_id) {
         return $this->db->where('province_id', $province_id)->where('active', 1)->get('cities')->result_array();
     }
@@ -60,19 +60,44 @@ class Immunization_model extends CI_Model {
 
     // Data total DPT-1 per distrik berdasarkan provinsi
     public function get_dpt1_by_district($province_id = 'all') {
-        $this->db->select('cities.name_id AS district, SUM(immunization_data.dpt_hb_hib_1) AS total_dpt1');
+        // Ambil total target nasional atau provinsi
+        if ($province_id === 'all') {
+            $total_target_query = $this->db->select('SUM(dpt_hb_hib_1_target) AS total_target')
+                                           ->from('target_immunization')
+                                           ->get()
+                                           ->row();
+        } else {
+            $total_target_query = $this->db->select('SUM(dpt_hb_hib_1_target) AS total_target')
+                                           ->from('target_immunization')
+                                           ->where('province_id', $province_id)
+                                           ->get()
+                                           ->row();
+        }
+        $total_target = $total_target_query->total_target ?? 0;
+    
+        // Ambil data DPT-1 per distrik
+        $this->db->select("
+            cities.name_id AS district, 
+            SUM(immunization_data.dpt_hb_hib_1) AS total_dpt1,
+            (SUM(immunization_data.dpt_hb_hib_1) / NULLIF($total_target, 0)) * 100 AS percentage_target,
+            (SUM(immunization_data.dpt_hb_hib_1) / 100000) * 100 AS per_100k_targets
+        ", false);
+    
         $this->db->from('immunization_data');
         $this->db->join('cities', 'cities.id = immunization_data.city_id', 'left');
-
+    
         if ($province_id !== 'all') {
             $this->db->where('cities.province_id', $province_id);
         }
-
-        $this->db->group_by('immunization_data.city_id');
+    
+        $this->db->group_by('immunization_data.city_id, cities.name_id');
         $this->db->order_by('total_dpt1', 'DESC');
-
+    
         return $this->db->get()->result_array();
     }
+    
+    
+
 
     // Simpan data target imunisasi
     public function save_target_immunization($data) {

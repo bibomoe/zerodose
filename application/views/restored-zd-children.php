@@ -194,8 +194,8 @@
                                                         <tr>
                                                             <td><?= $district['district'] ?></td>
                                                             <td><?= number_format($district['total_dpt1']) ?></td>
-                                                            <td>--%</td>
-                                                            <td>--</td>
+                                                            <td><?= number_format($district['percentage_target'], 2) ?>%</td>
+                                                            <td><?= number_format($district['per_100k_targets'], 2) ?>%</td>
                                                         </tr>
                                                     <?php endforeach; ?>
                                                 </tbody>
@@ -283,7 +283,7 @@
                                         </div>
                                         <div class="card-body">
                                             <?php
-                                                var_dump($restored_data);
+                                                // var_dump($restored_data);
                                             ?>
                                             <canvas id="locationChart"></canvas>
                                         </div>
