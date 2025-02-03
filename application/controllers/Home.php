@@ -84,6 +84,20 @@ class Home extends CI_Controller {
         // Data imunisasi DPT-1 per distrik
         $this->data['districts'] = $this->Immunization_model->get_dpt1_by_district($selected_province);
 
+        // Ambil data cakupan imunisasi berdasarkan provinsi/kota
+        $this->data['immunization_data'] = $this->Immunization_model->get_immunization_coverage($selected_province);
+
+        // Ambil file GeoJSON berdasarkan provinsi
+        if ($selected_province !== 'all') {
+            $geojson = $this->db->select('geojson_file')
+                                ->where('id', $selected_province)
+                                ->get('provinces')
+                                ->row();
+            $this->data['geojson_file'] = base_url('assets/geojson/' . $geojson->geojson_file);
+        } else {
+            $this->data['geojson_file'] = base_url('assets/geojson/provinces.geojson');
+        }
+
         $this->data['title'] = 'Restored ZD Children';
         load_template('restored-zd-children', $this->data);
     }

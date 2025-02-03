@@ -20,6 +20,11 @@
 
                 </div>
                 <div class="page-content"> 
+                <?php if ($this->session->flashdata('success')): ?>
+                                                                <div class="alert alert-success">
+                                                                    <?= $this->session->flashdata('success'); ?>
+                                                                </div>
+                                                            <?php endif; ?>
                 <section id="basic-horizontal-layouts">
                     <div class="row match-height">
                             <div class="col-md-12 col-12">
@@ -33,11 +38,7 @@
                                                 <!-- <div class="form-body"> -->
                                                     <div class="row">
                                                         <div class="col-md-12">
-                                                            <?php if ($this->session->flashdata('success')): ?>
-                                                                <div class="alert alert-success">
-                                                                    <?= $this->session->flashdata('success'); ?>
-                                                                </div>
-                                                            <?php endif; ?>
+                                                            
                                                             <?= form_open('input/filter_target_budget'); ?>
                                                                 <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;">Select Gavi MICs Partners/implementers </label>
                                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
@@ -353,31 +354,109 @@
                     </section>
 
                     <!-- Basic Horizontal form layout section start -->
-                    <section id="basic-horizontal-layouts">
-                            <!-- <div class="row">
-                                <div class="col-10">
+                    <?php if (in_array($this->session->userdata('user_category'), [2, 9])): ?>
+                        <section id="basic-horizontal-layouts">
+                            <div class="row match-height">
+                                <div class="col-md-6 col-12">
                                     <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Immunization Coverage</h4>
+                                        </div>
+                                        <div class="card-content">
                                             <div class="card-body">
-                                                <label for="partnersInput" class="form-label" style="font-size: 1.2rem; font-weight: bold;">Gavi MICs Partners/implementers </label>
-                                                <div class="d-flex flex-column flex-md-row align-items-center gap-2">
-                                                    <select id="partnersInput" class="form-select" style="width: 100%; max-width: 300px; height: 48px; font-size: 1rem;">
-                                                        <option selected>Ministry of Health Indonesia</option>
-                                                        <option>CHAI</option>
-                                                        <option>WHO</option>
-                                                        <option>UNICEF</option>
-                                                        <option>UNDP</option>
-                                                    </select>
-                                                    <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
-                                                        <i class="bi bi-filter"></i> Submit
-                                                    </button>
-                                                </div>
-                                            </div>
+                                                <?= form_open('input/save_target_immunization', ['class' => 'form form-horizontal']); ?>
+                                                <div class="form-body">
+                                                    <div class="row">
+                                                        <!-- <?php if ($this->session->flashdata('success')): ?>
+                                                            <div class="alert alert-success">
+                                                                <?= $this->session->flashdata('success'); ?>
+                                                            </div>
+                                                        <?php endif; ?> -->
 
+                                                        <div class="col-md-4">
+                                                            <?= form_label('Select Province', 'province_id'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_dropdown('province_id', $province_options, '', 'class="form-select" id="province_id"'); ?>
+                                                        </div>
+
+                                                        <div class="col-md-4">
+                                                            <?= form_label('Select City', 'city_id'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_dropdown('city_id', ['' => '-- Select City --'], '', 'class="form-select" id="city_id"'); ?>
+                                                        </div>
+
+                                                        <div class="col-md-4">
+                                                            <?= form_label('DPT 1 Target', 'dpt_hb_hib_1_target'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_input(['name' => 'dpt_hb_hib_1_target', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'id' => 'dpt_hb_hib_1_target']); ?>
+                                                        </div>
+
+                                                        <div class="col-md-4">
+                                                            <?= form_label('DPT 2 Target', 'dpt_hb_hib_2_target'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_input(['name' => 'dpt_hb_hib_2_target', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'id' => 'dpt_hb_hib_2_target']); ?>
+                                                        </div>
+
+                                                        <div class="col-md-4">
+                                                            <?= form_label('DPT 3 Target', 'dpt_hb_hib_3_target'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_input(['name' => 'dpt_hb_hib_3_target', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'id' => 'dpt_hb_hib_3_target']); ?>
+                                                        </div>
+
+                                                        <div class="col-md-4">
+                                                            <?= form_label('MR 1 Target', 'mr_1_target'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_input(['name' => 'mr_1_target', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'id' => 'mr_1_target']); ?>
+                                                        </div>
+
+                                                        <div class="col-md-4">
+                                                            <?= form_label('DPT 1 Actual Target', 'dpt_hb_hib_1_target_actual'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_input(['name' => 'dpt_hb_hib_1_target_actual', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'id' => 'dpt_hb_hib_1_target_actual']); ?>
+                                                        </div>
+
+                                                        <div class="col-md-4">
+                                                            <?= form_label('DPT 2 Actual Target', 'dpt_hb_hib_2_target_actual'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_input(['name' => 'dpt_hb_hib_2_target_actual', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'id' => 'dpt_hb_hib_2_target_actual']); ?>
+                                                        </div>
+
+                                                        <div class="col-md-4">
+                                                            <?= form_label('DPT 3 Actual Target', 'dpt_hb_hib_3_target_actual'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_input(['name' => 'dpt_hb_hib_3_target_actual', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'id' => 'dpt_hb_hib_3_target_actual']); ?>
+                                                        </div>
+
+                                                        <div class="col-md-4">
+                                                            <?= form_label('MR 1 Actual Target', 'mr_1_target_actual'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_input(['name' => 'mr_1_target_actual', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'id' => 'mr_1_target_actual']); ?>
+                                                        </div>
+
+                                                        <div class="col-sm-12 d-flex justify-content-end">
+                                                            <?= form_submit('submit', 'Submit', 'class="btn btn-primary me-1 mb-1"'); ?>
+                                                            <?= form_reset('reset', 'Reset', 'class="btn btn-light-secondary me-1 mb-1"'); ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <?= form_close(); ?>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div> -->
-                        
-                    </section>
+                            </div>
+                        </section>
+                    <?php endif; ?>
                     <!-- Basic Horizontal form layout section end -->
                     
                 </div>
@@ -416,5 +495,23 @@
 
         // Hitung total saat halaman dimuat
         calculateTotals();
+    });
+
+    $('#province_id').change(function () {
+        var province_id = $(this).val();
+        if (province_id) {
+            $.ajax({
+                url: "<?= base_url('input/get_cities_by_province') ?>",
+                type: "GET",
+                data: { province_id: province_id },
+                dataType: "json",
+                success: function (data) {
+                    $('#city_id').html('<option value="">-- Select City --</option>');
+                    $.each(data, function (key, value) {
+                        $('#city_id').append('<option value="' + value.id + '">' + value.name_en + '</option>');
+                    });
+                }
+            });
+        }
     });
 </script>

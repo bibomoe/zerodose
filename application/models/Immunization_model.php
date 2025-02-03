@@ -5,7 +5,7 @@ class Immunization_model extends CI_Model {
 
     // Ambil semua provinsi
     public function get_provinces() {
-        return $this->db->select('id, name_en')->where('active', 1)->get('provinces')->result();
+        return $this->db->select('id, name_id')->where('active', 1)->get('provinces')->result();
     }
 
     public function get_cities_by_province($province_id) {
@@ -56,7 +56,7 @@ class Immunization_model extends CI_Model {
 
     // Data total DPT-1 per distrik berdasarkan provinsi
     public function get_dpt1_by_district($province_id = 'all') {
-        $this->db->select('cities.name_en AS district, SUM(immunization_data.dpt_hb_hib_1) AS total_dpt1');
+        $this->db->select('cities.name_id AS district, SUM(immunization_data.dpt_hb_hib_1) AS total_dpt1');
         $this->db->from('immunization_data');
         $this->db->join('cities', 'cities.id = immunization_data.city_id', 'left');
 
@@ -96,5 +96,37 @@ class Immunization_model extends CI_Model {
         $query = $this->db->get('target_immunization');
         return $query->row();  // Mengambil data satu baris
     }
+
+    public function get_immunization_coverage($province_id = 'all') {
+        $this->db->select('province_id, city_id, 
+                           SUM(dpt_hb_hib_1) AS dpt1, 
+                           SUM(dpt_hb_hib_2) AS dpt2, 
+                           SUM(dpt_hb_hib_3) AS dpt3, 
+                           SUM(mr_1) AS mr1');
+        $this->db->from('immunization_data');
+    
+        if ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+            $this->db->group_by('city_id'); // Jika provinsi dipilih, kelompokkan berdasarkan kota/kabupaten
+        } else {
+            $this->db->group_by('province_id'); // Jika semua provinsi, kelompokkan berdasarkan provinsi
+        }
+    
+        $query = $this->db->get();
+    
+        $result = [];
+        foreach ($query->result_array() as $row) {
+            if ($province_id !== 'all') {
+                $result[$row['city_id']] = $row; // Simpan berdasarkan city_id jika provinsi dipilih
+            } else {
+                $result[$row['province_id']] = $row; // Simpan berdasarkan province_id jika menampilkan semua provinsi
+            }
+        }
+    
+        return $result;
+    }
+    
+    
+    
 }
 ?>

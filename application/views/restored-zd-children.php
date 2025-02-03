@@ -32,7 +32,7 @@
                                                 <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;">Select Province</label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?= form_dropdown('province', 
-                                                        ['all' => 'All Provinces'] + array_column($provinces, 'name_en', 'id'), 
+                                                        ['all' => 'All Provinces'] + array_column($provinces, 'name_id', 'id'), 
                                                         $selected_province, 
                                                         ['class' => 'form-select', 'id' => 'provinceFilter', 'style' => 'width: 100%; max-width: 300px; height: 48px; font-size: 1rem;']
                                                     ); ?>
@@ -211,8 +211,13 @@
                                             <h4>Restored ZD children mapping</h4>
                                         </div>
                                         <div class="card-body">
-                                            <div class="googlemaps">
+                                            <!-- <div class="googlemaps">
                                                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.6091242787!2d107.57311654129782!3d-6.903273917028756!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e815b2!2sBandung%2C%20Bandung%20City%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1633023222539!5m2!1sen!2sid" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                                            </div> -->
+                                            <?php
+                                                // var_dump($immunization_data);
+                                            ?>
+                                            <div id="map" style="height: 400px; position: relative;  z-index: 1;" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy">
                                             </div>
                                         </div>
                                     </div>
@@ -244,15 +249,6 @@
                                                         </div>
                                                         <form action="#">
                                                             <div class="modal-body">
-                                                                <label for="groupFilter">Group: </label>
-                                                                <div class="form-group">
-                                                                    <select id="groupFilter" class="form-select">
-                                                                        <option selected>All Group</option>
-                                                                        <option>Group A</option>
-                                                                        <option>Group B</option>
-                                                                        <option>Group C</option>
-                                                                    </select>
-                                                                </div>
                                                                 <label for="districtFilter" class="form-label">District:</label>
                                                                 <div class="form-group">
                                                                     <select id="districtFilter" class="form-select">
@@ -749,5 +745,177 @@
 
             // Add buttons to the DOM for ageChart
             addAgeDownloadButtons();
+            
 
     </script>
+
+<!-- <script>
+    const map = L.map('map').setView([-7.250445, 112.768845], 8);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const geojsonFile = "<?= $geojson_file; ?>"; // File GeoJSON berdasarkan provinsi yang dipilih
+
+        fetch(geojsonFile)
+            .then(response => response.json())
+            .then(data => {
+                let immunizationData = <?= json_encode($immunization_data); ?>;
+                let selectedProvince = "<?= $selected_province; ?>";
+
+                function getColor(dpt1) {
+                    return dpt1 > 0 ? "#2ECC71" : "#E74C3C"; // Hijau jika ada imunisasi, merah jika 0
+                }
+
+                function style(feature) {
+                    let regionId = selectedProvince !== "all" ? feature.properties.KDPKAB : feature.properties.KDPPUM;
+                    let dpt1 = immunizationData[regionId]?.dpt1 || 0;
+
+                    return {
+                        fillColor: getColor(dpt1),
+                        weight: 1.5,
+                        opacity: 1,
+                        color: '#ffffff',
+                        fillOpacity: 0.8
+                    };
+                }
+
+                L.geoJSON(data, {
+                    style: style,
+                    onEachFeature: function (feature, layer) {
+                        let regionName = feature.properties.NAMOBJ || feature.properties.WADMKK || feature.properties.WADMPR;
+                        let regionId = selectedProvince !== "all" ? feature.properties.KDPKAB : feature.properties.KDPPUM;
+
+                        let dpt1 = immunizationData[regionId]?.dpt1 || 0;
+                        let dpt2 = immunizationData[regionId]?.dpt2 || 0;
+                        let dpt3 = immunizationData[regionId]?.dpt3 || 0;
+                        let mr1  = immunizationData[regionId]?.mr1 || 0;
+
+                        let popupContent = `<b>${regionName}</b><br>`;
+                        popupContent += `<b>${regionId}</b><br>`;
+                        popupContent += `DPT1 Immunized: ${dpt1}<br>`;
+                        popupContent += `DPT1 Immunized: ${dpt1}<br>`;
+                        popupContent += `DPT2 Immunized: ${dpt2}<br>`;
+                        popupContent += `DPT3 Immunized: ${dpt3}<br>`;
+                        popupContent += `MR1 Immunized: ${mr1}`;
+                        
+                        layer.bindPopup(popupContent);
+
+                        // 🔥 Tambahkan Label Nama Kota/Kabupaten
+                        if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
+                            let labelPoint = turf.pointOnFeature(feature); // Cari titik tengah polygon
+                            let latlng = [labelPoint.geometry.coordinates[1], labelPoint.geometry.coordinates[0]];
+
+                            let label = L.divIcon({
+                                className: 'label-class', // Tambahkan CSS untuk ukuran font
+                                html: `<b>${regionName}</b>`, // Isi label
+                                iconSize: [100, 30] // Ukuran teks label
+                            });
+
+                            L.marker(latlng, { icon: label }).addTo(map);
+                        }
+                    }
+                }).addTo(map);
+            });
+
+
+
+</script> -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const map = L.map('map').setView([-7.250445, 112.768845], 7);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // **Periksa Data Immunization dari PHP**
+    let immunizationData = <?= json_encode($immunization_data, JSON_NUMERIC_CHECK); ?>;
+    console.log("Immunization Data:", immunizationData); // Cek data masuk
+
+    function cleanCityCode(code) { 
+        if (!code) return ""; // Cegah null atau undefined
+        return String(code).replace(/\./g, ''); // Hapus titik dari kode
+    }
+
+
+    function getColor(value) {
+        return value === 0 ? '#D73027' : // Merah jika belum imunisasi
+            value > 0  ? '#1A9850' : // Hijau jika ada imunisasi
+                        '#f0f0f0';  // Default abu-abu
+    }
+
+    let isProvinceLevel = "<?= $selected_province ?>" === "all";
+    console.log(isProvinceLevel);
+    fetch("<?= $geojson_file; ?>")
+    .then(response => response.json())
+    .then(data => {
+        console.log("GeoJSON Data:", data); // Debug data GeoJSON
+
+        L.geoJSON(data, {
+            style: function (feature) {
+                let rawCode = isProvinceLevel 
+                    ? feature.properties.KDPPUM // Untuk provinsi
+                    : feature.properties.KDPKAB; // Untuk kota
+
+                let regionId = isProvinceLevel 
+                    ? cleanCityCode(feature.properties.KDPPUM) // Untuk provinsi
+                    : cleanCityCode(feature.properties.KDPKAB); // Untuk kota
+
+                console.log(`Raw : ${rawCode}, Cleaned: ${regionId}`); // Debugging
+
+                let dpt1 = immunizationData[regionId]?.dpt1 ? parseInt(immunizationData[regionId].dpt1) : 0;
+
+                return {
+                    fillColor: getColor(dpt1),
+                    weight: 1.5,
+                    opacity: 1,
+                    color: '#ffffff',
+                    fillOpacity: 0.8
+                };
+            },
+            onEachFeature: function (feature, layer) {
+                let regionId = isProvinceLevel 
+                    ? cleanCityCode(feature.properties.KDPPUM) // Untuk provinsi
+                    : cleanCityCode(feature.properties.KDPKAB); // Untuk kota
+                let dpt1 = immunizationData[regionId]?.dpt1 || 0;
+                let dpt2 = immunizationData[regionId]?.dpt2 || 0;
+                let dpt3 = immunizationData[regionId]?.dpt3 || 0;
+                let mr1  = immunizationData[regionId]?.mr1 || 0;
+                let name = isProvinceLevel 
+                    ? feature.properties.WADMPR // Untuk provinsi
+                    : feature.properties.NAMOBJ; // Untuk kota
+
+                let popupContent = `<b>${name}</b><br>`;
+                popupContent += `DPT1 Immunized: ${dpt1}<br>`;
+                popupContent += `DPT2 Immunized: ${dpt2}<br>`;
+                popupContent += `DPT3 Immunized: ${dpt3}<br>`;
+                popupContent += `MR1 Immunized: ${mr1}`;
+                layer.bindPopup(popupContent);
+
+                if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
+                    let labelPoint = turf.pointOnFeature(feature);
+                    let latlng = [labelPoint.geometry.coordinates[1], labelPoint.geometry.coordinates[0]];
+
+                    if (feature.properties.NAMOBJ) {
+                        let label = L.divIcon({
+                            className: 'label-class',
+                            html: `<strong>${feature.properties.NAMOBJ}</strong>`,
+                            iconSize: [100, 20]
+                        });
+
+                        L.marker(latlng, { icon: label }).addTo(map);
+                    }
+                }
+            }
+        }).addTo(map);
+        
+    })
+    .catch(error => console.error("Error loading GeoJSON:", error));
+});
+
+</script>

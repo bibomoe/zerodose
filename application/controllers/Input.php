@@ -102,7 +102,7 @@ class Input extends CI_Controller {
         $provinces = $this->Immunization_model->get_provinces();
         $this->data['province_options'] = ['' => '-- Select Province --'];
         foreach ($provinces as $province) {
-            $this->data['province_options'][$province->id] = $province->name_en;
+            $this->data['province_options'][$province->id] = $province->name_id;
         }
     
         // Ambil tahun dan bulan dalam bentuk array
@@ -363,8 +363,12 @@ class Input extends CI_Controller {
         $this->data['activities'] = [];
         $this->data['title'] = 'Set Target';
 
-        // Mengambil daftar provinsi
-        $this->data['province_options'] = $this->Immunization_model->get_provinces();
+        // Ambil data provinsi untuk dropdown
+        $provinces = $this->Immunization_model->get_provinces();
+        $this->data['province_options'] = ['' => '-- Select Province --'];
+        foreach ($provinces as $province) {
+            $this->data['province_options'][$province->id] = $province->name_id;
+        }
 
         // Load view untuk form filter
         load_template('input/target', $this->data);
@@ -423,7 +427,14 @@ class Input extends CI_Controller {
                 'target_budget_2025' => $matched_budget ? $matched_budget->target_budget_2025 : 0,
             ];
         }
-    
+
+        // Ambil data provinsi untuk dropdown
+        $provinces = $this->Immunization_model->get_provinces();
+        $this->data['province_options'] = ['' => '-- Select Province --'];
+        foreach ($provinces as $province) {
+            $this->data['province_options'][$province->id] = $province->name_id;
+        }
+
         // Tambahkan data untuk view
         $this->data['partners'] = $this->Partner_model->get_all_partners();
         $this->data['selected_partner'] = $partner_id;
@@ -491,7 +502,7 @@ class Input extends CI_Controller {
         
         // Set flash message dan redirect
         $this->session->set_flashdata('success', 'Target imunisasi berhasil disimpan!');
-        redirect('input/target_immunization');
+        redirect('input/target');
     }
 
 }
