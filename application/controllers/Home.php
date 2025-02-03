@@ -124,6 +124,8 @@ class Home extends CI_Controller {
             'kota' => $restored_data['kota_restored'] ?? 0
         ];
 
+        $this->data['districts_array'] =  $this->Immunization_model->get_cities_by_province_array($selected_province);
+
         $this->data['title'] = 'Restored ZD Children';
         load_template('restored-zd-children', $this->data);
     }
@@ -282,27 +284,27 @@ class Home extends CI_Controller {
     }
     
     public function get_zero_dose_trend_ajax() {
-        $province_id = $this->input->post('province');
-        $city_id = $this->input->post('district');
-    
-        // Ambil data tren berdasarkan filter
-        $trend_data = $this->Immunization_model->get_zero_dose_trend($province_id, $city_id);
-    
-        echo json_encode($trend_data);
+        $province_id = $this->input->get('province');
+        $city_id = $this->input->get('district'); // Ambil filter district dari request
+        $data = $this->Immunization_model->get_zero_dose_cases($province_id, $city_id);
+        
+        echo json_encode($data);
     }
+    
     
     public function tes_model() {
         // Ambil filter provinsi dari dropdown (default: all)
         $selected_province = $this->input->get('province') ?? 'all';
         $selected_district = $this->input->get('district') ?? 'all';
 
-        // Ambil daftar provinsi untuk dropdown
-        $this->data['provinces'] = $this->Immunization_model->get_provinces();
-        $this->data['selected_province'] = $selected_province;
-        $this->data['selected_district'] = $selected_district;
-        // **Fix: Pastikan ini ada**
-        $this->data['zero_dose_cases'] = $this->Immunization_model->get_zero_dose_cases($selected_province, $selected_district);
-
+        // // Ambil daftar provinsi untuk dropdown
+        // $this->data['provinces'] = $this->Immunization_model->get_provinces();
+        // $this->data['selected_province'] = $selected_province;
+        // $this->data['selected_district'] = $selected_district;
+        // // **Fix: Pastikan ini ada**
+        // $this->data['zero_dose_cases'] = $this->Immunization_model->get_zero_dose_cases($selected_province, $selected_district);
+        $this->data['districts'] = $this->Immunization_model->get_cities_by_province($selected_province);
+        var_dump($this->data['districts']);
         $this->load->view('blank', $this->data);
     }
     

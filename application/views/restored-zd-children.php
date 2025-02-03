@@ -232,37 +232,42 @@
                                         <div class="card-body">
                                             <?php if ($selected_province !== 'all'): ?>
                                                 <button class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#chartFilter">
-                                                    <i class="bi bi-funnel"></i> Filter District
+                                                    <i class="bi bi-funnel"></i> Filter
                                                 </button>
 
                                                 <div class="modal fade text-left" id="chartFilter" tabindex="-1" role="dialog">
                                                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h4 class="modal-title">Filter Chart by District</h4>
+                                                                <h4 class="modal-title">Filter Chart</h4>
                                                                 <button type="button" class="close" data-bs-dismiss="modal">
                                                                     <i data-feather="x"></i>
                                                                 </button>
                                                             </div>
-                                                            <!-- <?= form_open('home/restored', ['method' => 'get']); ?> -->
-                                                                <div class="modal-body">
-                                                                    <input type="hidden" name="province" value="<?= $selected_province; ?>">
+                                                            <div class="modal-body">
+                                                                <input type="hidden" name="province" value="<?= $selected_province; ?>">
 
-                                                                    <!-- <?= var_dump($districts) ?> -->
-                                                                    <label for="districtFilter" class="form-label">Select District:</label>
-                                                                    <?= form_dropdown('district', ['all' => 'All Districts'] + array_column($districts, 'name_en', 'id'), $selected_district, [
-                                                                        'class' => 'form-select', 'id' => 'districtFilter'
-                                                                    ]); ?>
+                                                                <!-- **Filter Distrik** -->
+                                                                <label for="districtFilter" class="form-label">Select District:</label>
+                                                                <?= form_dropdown('district', ['all' => 'All Districts'] + array_column($districts_array, 'name_id', 'id'), $selected_district, [
+                                                                    'class' => 'form-select', 'id' => 'districtFilter'
+                                                                ]); ?>
 
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-primary" id="applyFilter">Apply</button>
-                                                                </div>
-                                                            <!-- <?= form_close(); ?> -->
+                                                                <!-- **Filter Tahun** -->
+                                                                <label for="yearFilter" class="form-label mt-3">Select Year:</label>
+                                                                <select id="yearFilter" class="form-select">
+                                                                    <option value="2025" selected>2025</option>
+                                                                    <option value="2024">2024</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" id="applyFilter">Apply</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             <?php endif; ?>
+
                                             <?php
                                                 // var_dump($zero_dose_cases);
                                                 // var_dump($zero_dose_data);
@@ -271,37 +276,19 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4 class="card-title">Number of Restored Children by Gender</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <canvas id="genderChart"></canvas>
-                                        </div>
-                                    </div>
-                                </div> -->
                                 <div class="col-md-6">
                                     <div class="card">
                                         <div class="card-header">
                                             <h4 class="card-title">Number of Restored Children by Place of Residence</h4>
                                         </div>
                                         <div class="card-body">
+                                            <?php
+                                                var_dump($restored_data);
+                                            ?>
                                             <canvas id="locationChart"></canvas>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4 class="card-title">Number of Restored Children by Group Age</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <canvas id="ageChart"></canvas>
-                                        </div>
-                                    </div>
-                                </div> -->
-                                
                             </div>
                         </div>
                     </section>
@@ -483,16 +470,77 @@ document.addEventListener("DOMContentLoaded", function () {
             // **Tambahkan tombol download ke DOM**
             addZdDownloadButtons();
 
+            $(document).ready(function () {
+                $("#applyFilter").click(function () {
+                    let selectedYear = $("#yearFilter").val(); // Ambil tahun yang dipilih
+                    let selectedDistrict = $("#districtFilter").val(); // Ambil district yang dipilih
+                    let selectedProvince = $("input[name='province']").val(); // Ambil province (hidden input)
+
+                    $.ajax({
+                        url: "<?= base_url('home/get_zero_dose_trend_ajax'); ?>", 
+                        type: "GET",
+                        data: {
+                            province: selectedProvince,
+                            district: selectedDistrict
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            console.log("Filtered Data:", response);
+
+                            // Filter data berdasarkan tahun yang dipilih
+                            let filteredData = response.filter(item => item.year == selectedYear);
+
+                            // Pastikan dataset lama dihapus sebelum menambahkan yang baru
+                            zdChart.data.labels = filteredData.map(item => months[item.month - 1]);
+                            zdChart.data.datasets = [{
+                                label: `ZD Cases ${selectedYear}`,
+                                data: filteredData.map(item => item.zd_cases),
+                                backgroundColor: selectedYear == 2024 ? 'rgba(0, 86, 179, 0.2)' : 'rgba(255, 99, 132, 0.2)',
+                                borderColor: selectedYear == 2024 ? 'rgba(0, 86, 179, 1)' : 'rgba(255, 99, 132, 1)',
+                                borderWidth: 2,
+                                tension: 0.4
+                            }];
+
+                            zdChart.update(); // Update grafik
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error fetching data:", error);
+                        }
+                    });
+
+                    $("#chartFilter").modal("hide"); // Tutup modal filter
+                });
+            });
+
+//             document.getElementById("applyFilter").addEventListener("click", function () {
+//     let selectedYear = document.getElementById("yearFilter").value; // Ambil tahun yang dipilih
+
+//     let filteredData = zeroDoseData.filter(item => item.year == selectedYear); // Filter data berdasarkan tahun
+
+//     zdChart.data.labels = filteredData.map(item => months[item.month - 1]); // Update label bulan
+//     zdChart.data.datasets[0].data = filteredData.map(item => item.zd_cases); // Update data grafik
+
+//     zdChart.update(); // Perbarui grafik
+// });
+
+
+
+            // Fetch data from PHP
+            const restoredData = <?= json_encode($restored_data); ?>;
+
+            // Use clearer labels in English
+            const regency = restoredData.kabupaten ?? 0;
+            const city = restoredData.kota ?? 0;
 
             // Chart.js setup for locationChart
             const locationCtx = document.getElementById('locationChart').getContext('2d');
             new Chart(locationCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Rural', 'Urban'],
+                    labels: ['Regency', 'City'], // Replacing Kabupaten/Kota with English terms
                     datasets: [{
-                        label: 'Number of Children',
-                        data: [6375, 2746],
+                        label: 'Number of Restored Children', // More descriptive label
+                        data: [regency, city], // Data from backend
                         backgroundColor: ['rgba(0, 86, 179, 0.7)', 'rgba(0, 179, 230, 0.7)']
                     }]
                 },
@@ -507,18 +555,20 @@ document.addEventListener("DOMContentLoaded", function () {
                         x: {
                             title: {
                                 display: true,
-                                text: 'Place of Residence'
+                                text: 'Region Type' // Replacing "Place of Residence" with a more accurate term
                             }
                         },
                         y: {
                             title: {
                                 display: true,
-                                text: 'Number of Children'
+                                text: 'Number of Restored Children'
                             }
                         }
                     }
                 }
             });
+
+
 
             // Function to create buttons dynamically for locationChart
             function addLocationDownloadButtons() {
@@ -550,72 +600,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Function to download CSV for locationChart
             function downloadLocationCSV() {
-                const labels = ['Rural', 'Urban'];
-                const data = [6375, 2746];
-
                 let csvContent = "data:text/csv;charset=utf-8,";
-                csvContent += "Place of Residence,Number of Children\n"; // Header
-                labels.forEach((label, index) => {
-                    csvContent += `${label},${data[index]}\n`;
-                });
+                csvContent += "Region Type,Number of Restored Children\n"; // Header
+                csvContent += `Regency,${regency}\n`;
+                csvContent += `City,${city}\n`;
 
                 const encodedUri = encodeURI(csvContent);
                 const link = document.createElement('a');
                 link.setAttribute('href', encodedUri);
-                link.setAttribute('download', 'location_chart_data.csv');
+                link.setAttribute('download', 'restored_children_data.csv');
                 link.click();
             }
 
             // Function to download Excel for locationChart
             function downloadLocationExcel() {
-                const labels = ['Rural', 'Urban'];
-                const data = [6375, 2746];
-
-                // Create Excel content using XLSX.js
                 const workbook = XLSX.utils.book_new();
-                const worksheetData = [['Place of Residence', 'Number of Children'], ...labels.map((label, index) => [label, data[index]])];
+                const worksheetData = [['Region Type', 'Number of Restored Children'], ['Regency', regency], ['City', city]];
                 const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
                 XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
 
-                // Generate Excel file and download
-                XLSX.writeFile(workbook, 'location_chart_data.xlsx');
+                XLSX.writeFile(workbook, 'restored_children_data.xlsx');
             }
 
             // Add buttons to the DOM for locationChart
             addLocationDownloadButtons();
-    </script>
-
-<script>
-    $(document).ready(function () {
-    $('#applyFilter').click(function () {
-        var districtId = $('#districtFilter').val();
-        var provinceId = "<?= $selected_province ?>"; 
-
-        $.ajax({
-            url: "<?= base_url('home/get_zero_dose_trend_ajax') ?>",
-            type: "POST",
-            data: { province: provinceId, district: districtId },
-            dataType: "json",
-            success: function (data) {
-                console.log("Filtered Data:", data);
-
-                // Update Chart
-                let labels = data.map(item => item.month + ' ' + item.year);
-                let zdCases = data.map(item => item.zd_cases);
-
-                zdChart.data.labels = labels;
-                zdChart.data.datasets[0].data = zdCases;
-                zdChart.update();
-
-                $('#chartFilter').modal('hide'); // Close modal
-            },
-            error: function () {
-                alert('Failed to load data!');
-            }
-        });
-    });
-});
-
     </script>
 
 <script>

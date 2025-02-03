@@ -12,6 +12,10 @@ class Immunization_model extends CI_Model {
         return $this->db->where('province_id', $province_id)->where('active', 1)->get('cities')->result();
     }
     
+    public function get_cities_by_province_array($province_id) {
+        return $this->db->where('province_id', $province_id)->where('active', 1)->get('cities')->result_array();
+    }
+    
     public function get_subdistricts_by_city($city_id) {
         return $this->db->where('city_id', $city_id)->where('active', 1)->get('subdistricts')->result();
     }
