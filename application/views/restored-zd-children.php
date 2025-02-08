@@ -174,32 +174,34 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <table class="table table-striped" id="table1">
-                                                <thead>
-                                                    <tr>
-                                                        <th>District</th>
-                                                        <th>Total</th>
-                                                        <th>% of Total Target</th>
-                                                        <th>per 100,000 targets</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <!-- <tr>
-                                                        <td>Kab. Kediri</td>
-                                                        <td>7,000</td>
-                                                        <td>29%</td>
-                                                        <td>7.6</td>
-                                                    </tr> -->
-                                                    <?php foreach ($districts as $district): ?>
+                                            <div class="table-responsive">
+                                                <table class="table table-striped" id="table1">
+                                                    <thead>
                                                         <tr>
-                                                            <td><?= $district['district'] ?></td>
-                                                            <td><?= number_format($district['total_dpt1']) ?></td>
-                                                            <td><?= number_format($district['percentage_target'], 2) ?>%</td>
-                                                            <td><?= number_format($district['per_100k_targets'], 2) ?>%</td>
+                                                            <th>District</th>
+                                                            <th>Total</th>
+                                                            <th>% of Total Target</th>
+                                                            <th>per 100,000 targets</th>
                                                         </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- <tr>
+                                                            <td>Kab. Kediri</td>
+                                                            <td>7,000</td>
+                                                            <td>29%</td>
+                                                            <td>7.6</td>
+                                                        </tr> -->
+                                                        <?php foreach ($districts as $district): ?>
+                                                            <tr>
+                                                                <td><?= $district['district'] ?></td>
+                                                                <td><?= number_format($district['total_dpt1']) ?></td>
+                                                                <td><?= number_format($district['percentage_target'], 2) ?>%</td>
+                                                                <td><?= number_format($district['per_100k_targets'], 2) ?>%</td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

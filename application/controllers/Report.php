@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Report_controller extends CI_Controller {
+class Report extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
@@ -10,10 +10,10 @@ class Report_controller extends CI_Controller {
         $this->load->model('Activity_model');
         $this->load->model('CountryObjective_model');
         $this->load->model('Partner_model');
-        $this->load->library('Tcpdf');
+        // $this->load->library('Tcpdf');
     }
 
-    public function generate_pdf($partner_id = 'all') {
+    public function index($partner_id = 'all') {
         // Ambil daftar bulan
         $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -96,6 +96,8 @@ class Report_controller extends CI_Controller {
         }
 
         // Buat objek PDF
+        // **1. Pastikan TCPDF sudah ada di lokasi yang benar**
+        require_once(APPPATH . 'libraries/tcpdf/tcpdf.php'); 
         $pdf = new TCPDF();
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Your Company');

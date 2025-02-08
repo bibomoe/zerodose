@@ -357,7 +357,7 @@
                     <?php if (in_array($this->session->userdata('user_category'), [2, 9])): ?>
                         <section id="basic-horizontal-layouts">
                             <div class="row match-height">
-                                <div class="col-md-6 col-12">
+                                <div class="col-md-12 col-12">
                                     <div class="card">
                                         <div class="card-header">
                                             <h4 class="card-title">Immunization Coverage</h4>
@@ -381,7 +381,7 @@
                                                         </div>
 
                                                         <div class="col-md-4">
-                                                            <?= form_label('Select City', 'city_id'); ?>
+                                                            <?= form_label('City', 'city_id'); ?>
                                                         </div>
                                                         <div class="col-md-8 form-group">
                                                             <?= form_dropdown('city_id', ['' => '-- Select City --'], '', 'class="form-select" id="city_id"'); ?>

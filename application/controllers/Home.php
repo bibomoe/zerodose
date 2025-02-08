@@ -58,6 +58,9 @@ class Home extends CI_Controller {
         $this->data['completed_activities_2024'] = $this->Dashboard_model->get_completed_activities_percentage_by_year(2024, $selected_partner);
         $this->data['completed_activities_2025'] = $this->Dashboard_model->get_completed_activities_percentage_by_year(2025, $selected_partner);
 
+        // Ambil data long term outcomes
+        $this->data['long_term_outcomes'] = $this->Dashboard_model->get_long_term_outcomes();
+        
         load_template('dashboard', $this->data);
     }
 

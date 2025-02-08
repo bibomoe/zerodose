@@ -12,6 +12,7 @@
 <script src="<?= base_url('assets/static/js/pages/dashboard.js'); ?>"></script> -->
 
 <!-- Need: ChartJS -->
+<!-- <script src="<?= base_url('assets/extensions/chart.js/chart.js'); ?>"></script> -->
 <script src="<?= base_url('assets/extensions/chart.js/chart.umd.js'); ?>"></script>
 <script src="<?= base_url('assets/static/js/pages/ui-chartjs.js'); ?>"></script>
 

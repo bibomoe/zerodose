@@ -168,4 +168,50 @@ class Dashboard_model extends CI_Model {
         $this->db->from('country_objectives');
         return $this->db->get()->result_array();
     }
+
+    public function get_long_term_outcomes() {
+        // Ambil daftar 10 provinsi prioritas
+        $priority_provinces = $this->db->select('id')
+                                       ->where('priority', 1)
+                                       ->get('provinces')
+                                       ->result_array();
+        $province_ids = array_column($priority_provinces, 'id');
+    
+        // Ambil target baseline dari tabel target_baseline
+        $baseline = $this->db->get_where('target_baseline', ['id' => 1])->row_array();
+        $target_dpt1 = $baseline['dpt1'];
+        $target_dpt3 = $baseline['dpt3'];
+        $target_mr1 = $baseline['mr1'];
+    
+        // DPT3 Coverage
+        $this->db->select("
+            (SUM(CASE WHEN year = 2024 THEN dpt_hb_hib_3 ELSE 0 END) / $target_dpt3) * 100 AS actual_y1,
+            (SUM(CASE WHEN year IN (2024, 2025) THEN dpt_hb_hib_3 ELSE 0 END) / $target_dpt3) * 100 AS actual_y2
+        ", FALSE);
+        $this->db->where_in('province_id', $province_ids);
+        $dpt3 = $this->db->get('immunization_data')->row_array();
+    
+        // MR1 Coverage
+        $this->db->select("
+            (SUM(CASE WHEN year = 2024 THEN mr_1 ELSE 0 END) / $target_mr1) * 100 AS actual_y1,
+            (SUM(CASE WHEN year IN (2024, 2025) THEN mr_1 ELSE 0 END) / $target_mr1) * 100 AS actual_y2
+        ", FALSE);
+        $this->db->where_in('province_id', $province_ids);
+        $mr1 = $this->db->get('immunization_data')->row_array();
+    
+        // Reduction in Zero Dose (DPT1)
+        $this->db->select("
+            (SUM(CASE WHEN year = 2024 THEN dpt_hb_hib_1 ELSE 0 END) / $target_dpt1) * 100 AS actual_y1,
+            (SUM(CASE WHEN year IN (2024, 2025) THEN dpt_hb_hib_1 ELSE 0 END) / $target_dpt1) * 100 AS actual_y2
+        ", FALSE);
+        $this->db->where_in('province_id', $province_ids);
+        $reduction_zd = $this->db->get('immunization_data')->row_array();
+    
+        return [
+            'dpt3' => $dpt3,
+            'mr1' => $mr1,
+            'reduction_zd' => $reduction_zd
+        ];
+    }
+    
 }
