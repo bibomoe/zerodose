@@ -199,7 +199,7 @@ class Immunization_model extends CI_Model {
     
         $result = [];
         foreach ($query->result_array() as $row) {
-            if ($province_id !== 'all') {
+            if ($province_id !== 'all' && $province_id !== 'targeted') {
                 $result[$row['city_id']] = $row; // Simpan berdasarkan city_id jika provinsi dipilih
             } else {
                 $result[$row['province_id']] = $row; // Simpan berdasarkan province_id jika menampilkan semua provinsi
