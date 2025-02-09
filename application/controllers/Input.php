@@ -505,4 +505,119 @@ class Input extends CI_Controller {
         redirect('input/target');
     }
 
+    public function get_target_immunization()
+    {
+        $province_id = $this->input->get('province_id');
+        $city_id = $this->input->get('city_id');
+
+        // Jika province_id kosong, return array kosong
+        // if (empty($province_id)) {
+        //     echo json_encode([]);
+        //     return;
+        // }
+
+        $this->db->select('target_immunization.*, provinces.name_id AS province_name, cities.name_id AS city_name');
+        $this->db->from('target_immunization');
+        $this->db->join('provinces', 'provinces.id = target_immunization.province_id', 'left');
+        $this->db->join('cities', 'cities.id = target_immunization.city_id', 'left');
+        
+
+        // Province ID opsional (jika ada, tambahkan filter)
+        if (!empty($province_id)) {
+            $this->db->where('target_immunization.province_id', $province_id);
+        }
+
+        // City ID opsional (jika ada, tambahkan filter)
+        if (!empty($city_id)) {
+            $this->db->where('target_immunization.city_id', $city_id);
+        }
+
+        $query = $this->db->get();
+        echo json_encode($query->result());
+    }
+
+
+    public function delete_target_immunization()
+    {
+        $id = $this->input->post('id');
+
+        if ($this->db->where('id', $id)->delete('target_immunization')) {
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error']);
+        }
+    }
+
+    public function get_immunization_data()
+    {
+        $province_id = $this->input->get('province_id');
+        $city_id = $this->input->get('city_id');
+        $subdistrict_id = $this->input->get('subdistrict_id');
+        $puskesmas_id = $this->input->get('puskesmas_id');
+        $year = $this->input->get('year');
+        $month = $this->input->get('month');
+
+        // Periksa apakah province_id dan city_id diberikan
+        if (empty($province_id) || empty($city_id) || empty($year) || empty($month)) {
+            // Return empty array jika filter yang wajib kosong
+            echo json_encode([]);
+            return;
+        }
+
+        $this->db->select('immunization_data.*, provinces.name_id AS province_name, 
+                            cities.name_id AS city_name, subdistricts.name AS subdistrict_name, 
+                            puskesmas.name AS puskesmas_name');
+        $this->db->from('immunization_data');
+        $this->db->join('provinces', 'provinces.id = immunization_data.province_id', 'left');
+        $this->db->join('cities', 'cities.id = immunization_data.city_id', 'left');
+        $this->db->join('subdistricts', 'subdistricts.id = immunization_data.subdistrict_id', 'left');
+        $this->db->join('puskesmas', 'puskesmas.id = immunization_data.puskesmas_id', 'left');
+
+        if (!empty($province_id)) {
+            $this->db->where('immunization_data.province_id', $province_id);
+        }
+        if (!empty($city_id)) {
+            $this->db->where('immunization_data.city_id', $city_id);
+        }
+        if (!empty($subdistrict_id)) {
+            $this->db->where('immunization_data.subdistrict_id', $subdistrict_id);
+        }
+        if (!empty($puskesmas_id)) {
+            $this->db->where('immunization_data.puskesmas_id', $puskesmas_id);
+        }
+        if (!empty($year)) {
+            $this->db->where('immunization_data.year', $year);
+        }
+        if (!empty($month)) {
+            $this->db->where('immunization_data.month', $month);
+        }
+
+        $query = $this->db->get();
+        echo json_encode($query->result());
+    }
+
+    public function delete_immunization_data($id) {
+        // Verifikasi CSRF
+        // if ($this->security->get_csrf_hash() !== $this->input->post($this->security->get_csrf_token_name())) {
+        //     echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token']);
+        //     return;
+        // }
+        
+        if (!$id) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid ID']);
+            return;
+        }
+    
+        $this->db->where('id', $id);
+        $this->db->delete('immunization_data');
+    
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode(['status' => 'success', 'message' => 'Data deleted successfully']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to delete data']);
+        }
+    }
+    
+
+
 }

@@ -28,11 +28,14 @@
                                     <div class="card">
                                         <div class="card-header"></div>
                                         <div class="card-body">
+                                            <?php
+                                                // var_dump($selected_province);
+                                            ?>
                                             <?= form_open('home/restored', ['method' => 'get']) ?>
                                                 <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;">Select Province</label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?= form_dropdown('province', 
-                                                        ['all' => 'All Provinces'] + array_column($provinces, 'name_id', 'id'), 
+                                                        array_column($provinces, 'name_id', 'id'), 
                                                         $selected_province, 
                                                         ['class' => 'form-select', 'id' => 'provinceFilter', 'style' => 'width: 100%; max-width: 300px; height: 48px; font-size: 1rem;']
                                                     ); ?>
@@ -232,7 +235,8 @@
                                             <h4 class="card-title">Zero-Dose Cases</h4>
                                         </div>
                                         <div class="card-body">
-                                            <?php if ($selected_province !== 'all'): ?>
+                                            <!-- Tombol Filter Grafik (Hanya jika provinsi ≠ "All" atau "Targeted") -->
+                                            <?php if ($show_chart_filter): ?>
                                                 <button class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#chartFilter">
                                                     <i class="bi bi-funnel"></i> Filter
                                                 </button>
@@ -311,32 +315,6 @@
         </div>
     </div>
     
-    
-    <!-- <script>
-document.addEventListener("DOMContentLoaded", function () {
-    let provinceFilter = document.getElementById('provinceFilter');
-    let districtFilter = document.getElementById('districtFilter');
-
-    // **AJAX untuk mengambil daftar distrik berdasarkan provinsi yang dipilih**
-    provinceFilter.addEventListener('change', function () {
-        let provinceId = this.value;
-        if (provinceId !== 'all') {
-            fetch("<?= base_url('home/get_districts_by_province'); ?>?province_id=" + provinceId)
-            .then(response => response.json())
-            .then(data => {
-                districtFilter.innerHTML = '<option value="all">All Districts</option>';
-                data.forEach(district => {
-                    let option = new Option(district.name_en, district.id);
-                    districtFilter.add(option);
-                });
-            });
-        } else {
-            districtFilter.innerHTML = '<option value="all">All Districts</option>';
-        }
-    });
-});
-</script> -->
-
     <script>
         // console.log("Zero Dose Data:", <?= json_encode($zero_dose_cases); ?>);
 
@@ -651,7 +629,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             '#f0f0f0';  
     }
 
-    let isProvinceLevel = "<?= $selected_province ?>" === "all";
+    let isProvinceLevel = ["all", "targeted"].includes("<?= $selected_province ?>");
 
     fetch("<?= $geojson_file; ?>")
     .then(response => response.json())

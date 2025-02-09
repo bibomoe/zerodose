@@ -450,6 +450,59 @@
                                                     </div>
                                                 </div>
                                                 <?= form_close(); ?>
+                                                </br>
+                                                <!-- Garis Pembatas -->
+                                                <hr class="my-4">
+
+                                                <div class="row mb-3">
+                                                    <div class="col-md-4">
+                                                        <label for="filter_province">Filter by Province:</label>
+                                                        <select id="filter_province" class="form-select">
+                                                            <?php foreach ($province_options as $key => $value): ?>
+                                                                <option value="<?= $key; ?>"><?= $value; ?></option>
+                                                            <?php endforeach; ?>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <label for="filter_city">Filter by City:</label>
+                                                        <select id="filter_city" class="form-select">
+                                                            <option value="">-- Select City --</option>
+                                                        </select>
+                                                    </div>
+                                                    <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" 
+                                                        value="<?= $this->security->get_csrf_hash(); ?>">
+
+                                                    <div class="col-md-4 d-flex align-items-end">
+                                                        <button id="filter_btn" class="btn btn-secondary">Apply Filter</button>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Garis Pembatas -->
+                                                <hr class="my-4">
+
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped" id="table1">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Province</th>
+                                                                <th>City/District</th>
+                                                                <th>DPT 1</th>
+                                                                <th>DPT 2</th>
+                                                                <th>DPT 3</th>
+                                                                <th>MR 1</th>
+                                                                <th>DPT 1 Actual</th>
+                                                                <th>DPT 2 Actual</th>
+                                                                <th>DPT 3 Actual</th>
+                                                                <th>MR 1 Actual</th>
+                                                                <th>Action</th> <!-- Kolom untuk tombol hapus -->
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -514,4 +567,100 @@
             });
         }
     });
+</script>
+
+<script>
+$(document).ready(function () {
+    function loadTable(province_id = '', city_id = '') {
+        $.ajax({
+            url: "<?= base_url('input/get_target_immunization'); ?>",
+            type: "GET",
+            data: { province_id: province_id, city_id: city_id },
+            dataType: "json",
+            success: function (response) {
+                let tableBody = $("#table1 tbody");
+                tableBody.empty(); // Kosongkan tabel sebelum diisi ulang
+
+                if (response.length > 0) {
+                    response.forEach(row => {
+                        let newRow = `<tr>
+                            <td>${row.province_name}</td>
+                            <td>${row.city_name}</td>
+                            <td>${row.dpt_hb_hib_1_target}</td>
+                            <td>${row.dpt_hb_hib_2_target}</td>
+                            <td>${row.dpt_hb_hib_3_target}</td>
+                            <td>${row.mr_1_target}</td>
+                            <td>${row.dpt_hb_hib_1_target_actual}</td>
+                            <td>${row.dpt_hb_hib_2_target_actual}</td>
+                            <td>${row.dpt_hb_hib_3_target_actual}</td>
+                            <td>${row.mr_1_target_actual}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm delete-btn" data-id="${row.id}">Delete</button>
+                            </td>
+                        </tr>`;
+                        tableBody.append(newRow);
+                    });
+                } else {
+                    tableBody.append('<tr><td colspan="11" class="text-center">No data found</td></tr>');
+                }
+            }
+        });
+    }
+
+    // Load data pertama kali tanpa filter
+    loadTable();
+
+    // Event Listener untuk tombol filter
+    $("#filter_btn").on("click", function () {
+        let province_id = $("#filter_province").val();
+        let city_id = $("#filter_city").val();
+        loadTable(province_id, city_id);
+    });
+
+    // Hapus data dengan AJAX
+    $(document).on("click", ".delete-btn", function () {
+        let rowId = $(this).data("id");
+        let csrfToken = $("input[name='csrf_test_name']").val(); // Ambil token CSRF dari input hidden
+
+        if (confirm("Are you sure you want to delete this entry?")) {
+            $.ajax({
+                url: "<?= base_url('input/delete_target_immunization'); ?>",
+                type: "POST",
+                data: { id: rowId, csrf_test_name: csrfToken }, // Kirim CSRF Token
+                dataType: "json",
+                success: function (response) {
+                    if (response.status === 'success') {
+                        alert("Data deleted successfully!");
+                        loadTable(); // Reload tabel setelah menghapus data
+                    } else {
+                        alert("Failed to delete data.");
+                    }
+                },
+                error: function () {
+                    alert("Error deleting data.");
+                }
+            });
+        }
+    });
+
+
+    // Load kota berdasarkan provinsi yang dipilih
+    $("#filter_province, #province_id").on("change", function () {
+        let province_id = $(this).val();
+        $.ajax({
+            url: "<?= base_url('input/get_cities_by_province'); ?>",
+            type: "GET",
+            data: { province_id: province_id },
+            dataType: "json",
+            success: function (response) {
+                let cityDropdown = $("#filter_city, #city_id");
+                cityDropdown.empty().append('<option value="">-- Select City --</option>');
+                response.forEach(city => {
+                    cityDropdown.append(`<option value="${city.id}">${city.name_id}</option>`);
+                });
+            }
+        });
+    });
+});
+
 </script>

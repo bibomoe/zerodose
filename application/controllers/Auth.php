@@ -51,6 +51,8 @@ class Auth extends CI_Controller {
                 'user_category' => $user->category,
                 'user_category_name' => $user->user_category_name,
                 'partner_category' => $user->partner_category,
+                'province_id' => $user->province_id,
+                'city_id' => $user->city_id,
                 'logged_in' => TRUE
             ]);
             

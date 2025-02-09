@@ -71,21 +71,47 @@ class Home extends CI_Controller {
     }
 
     public function restored() {
+        $user_category = $this->session->userdata('user_category');
+        $user_province = $this->session->userdata('province_id');
+        $user_city = $this->session->userdata('city_id');
+
         // Ambil filter provinsi dari dropdown (default: all)
         $selected_province = $this->input->get('province') ?? 'all';
         $selected_district = $this->input->get('district') ?? 'all';
 
-        // Ambil daftar provinsi untuk dropdown
-        $this->data['provinces'] = $this->Immunization_model->get_provinces();
+        // Jika user PHO, atur provinsi default sesuai wilayahnya
+        if ($user_category == 7 && empty($this->input->get('province'))) { 
+            $selected_province = $user_province;
+            $this->data['selected_province2'] = $selected_province;
+        }
+
+        // Jika user DHO, atur provinsi & district sesuai wilayahnya
+        if ($user_category == 8 && empty($this->input->get('province'))) {
+            $selected_province = $user_province;
+            $selected_district = $user_city;
+            $this->data['selected_province2'] = $selected_province;
+        }
+
+        // var_dump([
+        //     'user_category' => $user_category,
+        //     'session_province_id' => $user_province,
+        //     'session_city_id' => $user_city,
+        //     'input_province' => $this->input->get('province'),
+        //     'final_selected_province' => $selected_province
+        // ]);
+        // exit;
+        // Ambil daftar provinsi untuk dropdown + targeted provinces
+        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
         $this->data['selected_province'] = $selected_province;
         $this->data['selected_district'] = $selected_district;
 
-        // Ambil daftar distrik saat halaman pertama kali dimuat
-        // Ambil daftar distrik berdasarkan provinsi (untuk dropdown filter)
-        if ($selected_province !== 'all') {
+        // Ambil daftar distrik berdasarkan provinsi
+        if ($selected_province !== 'all' && $selected_province !== 'targeted') {
             $this->data['districts'] = $this->Immunization_model->get_cities_by_province($selected_province);
+            $this->data['districts_array'] = $this->Immunization_model->get_cities_by_province_array($selected_province);
         } else {
             $this->data['districts'] = [];
+            $this->data['districts_array'] = [];
         }
 
         // Total imunisasi berdasarkan provinsi
@@ -101,14 +127,16 @@ class Home extends CI_Controller {
         $this->data['immunization_data'] = $this->Immunization_model->get_immunization_coverage($selected_province);
 
         // Ambil file GeoJSON berdasarkan provinsi
-        if ($selected_province !== 'all') {
+        if ($selected_province !== 'all' && $selected_province !== 'targeted') {
             $geojson = $this->db->select('geojson_file')
                                 ->where('id', $selected_province)
                                 ->get('provinces')
                                 ->row();
             $this->data['geojson_file'] = base_url('assets/geojson/' . $geojson->geojson_file);
-        } else {
+        } else if ($selected_province == 'all'){
             $this->data['geojson_file'] = base_url('assets/geojson/provinces.geojson');
+        } else if ($selected_province == 'targeted'){
+            $this->data['geojson_file'] = base_url('assets/geojson/targeted.geojson');
         }
 
         // Data untuk grafik line Zero-Dose Cases (Berdasarkan Provinsi & Distrik jika ada)
@@ -127,6 +155,8 @@ class Home extends CI_Controller {
             'kota' => $restored_data['kota_restored'] ?? 0
         ];
 
+        // Cek apakah tombol filter grafik harus ditampilkan
+        $this->data['show_chart_filter'] = ($selected_province !== 'all' && $selected_province !== 'targeted');
         $this->data['districts_array'] =  $this->Immunization_model->get_cities_by_province_array($selected_province);
 
         $this->data['title'] = 'Restored ZD Children';

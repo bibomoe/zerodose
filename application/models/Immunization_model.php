@@ -46,34 +46,59 @@ class Immunization_model extends CI_Model {
         }
     }
     
+    public function get_targeted_province_ids() {
+        $query = $this->db->select('id')
+                          ->from('provinces')
+                          ->where('priority', 1)
+                          ->get();
+    
+        return array_column($query->result_array(), 'id'); // Return array ID
+    }
     
     // Total imunisasi berdasarkan jenis vaksin dan filter provinsi
     public function get_total_vaccine($vaccine_column, $province_id = 'all') {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil province_id yang priority = 1
+
         $this->db->select("SUM($vaccine_column) AS total");
         $this->db->from('immunization_data');
-        if ($province_id !== 'all') {
-            $this->db->where('province_id', $province_id);
+    
+        if ($province_id === 'targeted') {
+            
+    
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0; // Kalau tidak ada provinsi yang masuk kategori priority, return 0
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('immunization_data.province_id', $province_id); // Pakai alias tabel
         }
+        
         $query = $this->db->get()->row();
         return $query->total ?? 0;
     }
+    
+    
 
     // Data total DPT-1 per distrik berdasarkan provinsi
     public function get_dpt1_by_district($province_id = 'all') {
-        // Ambil total target nasional atau provinsi
-        if ($province_id === 'all') {
-            $total_target_query = $this->db->select('SUM(dpt_hb_hib_1_target) AS total_target')
-                                           ->from('target_immunization')
-                                           ->get()
-                                           ->row();
-        } else {
-            $total_target_query = $this->db->select('SUM(dpt_hb_hib_1_target) AS total_target')
-                                           ->from('target_immunization')
-                                           ->where('province_id', $province_id)
-                                           ->get()
-                                           ->row();
+        $province_ids = $this->get_targeted_province_ids(); // Ambil province_id yang priority = 1
+
+        // Ambil total target berdasarkan provinsi
+        $this->db->select('SUM(dpt_hb_hib_1_target) AS total_target')
+                ->from('target_immunization');
+
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return []; // Jika tidak ada provinsi priority, return array kosong
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
         }
-        $total_target = $total_target_query->total_target ?? 0;
+
+        $total_target = $this->db->get()->row()->total_target ?? 0;
     
         // Ambil data DPT-1 per distrik
         $this->db->select("
@@ -86,7 +111,9 @@ class Immunization_model extends CI_Model {
         $this->db->from('immunization_data');
         $this->db->join('cities', 'cities.id = immunization_data.city_id', 'left');
     
-        if ($province_id !== 'all') {
+        if ($province_id === 'targeted' && !empty($province_ids)) {
+            $this->db->where_in('cities.province_id', $province_ids);
+        } elseif ($province_id !== 'all') {
             $this->db->where('cities.province_id', $province_id);
         }
     
@@ -96,8 +123,28 @@ class Immunization_model extends CI_Model {
         return $this->db->get()->result_array();
     }
     
+    public function get_provinces_with_targeted() {
+        $provinces = $this->db->select('id, name_id, priority')
+                              ->where('active', 1)
+                              ->get('provinces')
+                              ->result_array();
     
-
+        // Tambahkan opsi "All Provinces" dan "Targeted Provinces" ke dropdown
+        $province_options = [
+            ['id' => 'all', 'name_id' => 'All Provinces'],
+            ['id' => 'targeted', 'name_id' => 'Targeted Provinces']
+        ];
+    
+        // Pisahkan provinsi yang memiliki priority = 1
+        foreach ($provinces as $province) {
+            if ($province['priority'] == 1) {
+                $province_options[] = $province;
+            }
+        }
+    
+        return $province_options;
+    }
+    
 
     // Simpan data target imunisasi
     public function save_target_immunization($data) {
@@ -127,6 +174,8 @@ class Immunization_model extends CI_Model {
     }
 
     public function get_immunization_coverage($province_id = 'all') {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil province_id yang priority = 1
+
         $this->db->select('province_id, city_id, 
                            SUM(dpt_hb_hib_1) AS dpt1, 
                            SUM(dpt_hb_hib_2) AS dpt2, 
@@ -134,12 +183,17 @@ class Immunization_model extends CI_Model {
                            SUM(mr_1) AS mr1');
         $this->db->from('immunization_data');
     
-        if ($province_id !== 'all') {
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
-            $this->db->group_by('city_id'); // Jika provinsi dipilih, kelompokkan berdasarkan kota/kabupaten
-        } else {
-            $this->db->group_by('province_id'); // Jika semua provinsi, kelompokkan berdasarkan provinsi
         }
+    
+        $this->db->group_by($province_id !== 'all' ? 'city_id' : 'province_id');
     
         $query = $this->db->get();
     
@@ -156,13 +210,22 @@ class Immunization_model extends CI_Model {
     }
     
     public function get_zero_dose_cases($province_id = 'all', $city_id = 'all') {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil province_id yang priority = 1
+
         // Step 1: Ambil total target imunisasi
         $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target", false);
         $this->db->from('target_immunization');
         
-        if ($province_id !== 'all') {
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
         }
+
         if ($city_id !== 'all') {
             $this->db->where('city_id', $city_id);
         }
@@ -177,9 +240,12 @@ class Immunization_model extends CI_Model {
         ", false);
         $this->db->from('immunization_data');
     
-        if ($province_id !== 'all') {
+        if ($province_id === 'targeted' && !empty($province_ids)) {
+            $this->db->where_in('province_id', $province_ids);
+        } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
         }
+
         if ($city_id !== 'all') {
             $this->db->where('city_id', $city_id);
         }
@@ -226,16 +292,14 @@ class Immunization_model extends CI_Model {
         return $zd_cases;
     }
     
-    
-    
-    
-    
     public function get_zero_dose_trend($province_id, $city_id) {
         return $this->get_zero_dose_cases($province_id, $city_id); // Gunakan fungsi yang sama
     }
     
     
     public function get_restored_children($province_id = 'all') {
+        $province_ids = $this->get_targeted_province_ids();
+
         $this->db->select("
             SUM(CASE WHEN cities.status = 0 THEN immunization_data.dpt_hb_hib_1 ELSE 0 END) AS kabupaten_restored,
             SUM(CASE WHEN cities.status = 1 THEN immunization_data.dpt_hb_hib_1 ELSE 0 END) AS kota_restored
@@ -243,7 +307,9 @@ class Immunization_model extends CI_Model {
         $this->db->from('immunization_data');
         $this->db->join('cities', 'cities.id = immunization_data.city_id', 'left');
     
-        if ($province_id !== 'all') {
+        if ($province_id === 'targeted' && !empty($province_ids)) {
+            $this->db->where_in('immunization_data.province_id', $province_ids);
+        } elseif ($province_id !== 'all') {
             $this->db->where('immunization_data.province_id', $province_id);
         }
     

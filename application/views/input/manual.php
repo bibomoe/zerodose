@@ -23,7 +23,7 @@
                     <!-- Basic Horizontal form layout section start -->
                     <section id="basic-horizontal-layouts">
                         <div class="row match-height">
-                            <div class="col-md-6 col-12">
+                            <div class="col-md-12 col-12">
                                 <div class="card">
                                     <div class="card-header">
                                         <h4 class="card-title">Immunization Coverage</h4>
@@ -118,6 +118,92 @@
                                                 </div>
                                                 <?= form_close(); ?>
                                             <!-- </div> -->
+                                                </br>
+                                                <!-- Garis Pembatas -->
+                                                <hr class="my-4">
+
+                                                <div class="row">
+                                                <div class="col-md-3">
+                                                    <label for="filter_province">Filter By Province</label>
+                                                    <!-- <select id="filter_province" class="form-select">
+                                                        <option value="">-- Select Province --</option>
+                                                        <?php foreach ($provinces as $province): ?>
+                                                            <option value="<?= $province['id'] ?>"><?= $province['name_id'] ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select> -->
+                                                    <?= form_dropdown('filter_province', $province_options, '', 'class="form-select" id="filter_province"'); ?>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label for="filter_city">Filter By District</label>
+                                                    <select id="filter_city" class="form-select">
+                                                        <option value="">-- Select City --</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label for="filter_subdistrict">Filter By Subdistrict</label>
+                                                    <select id="filter_subdistrict" class="form-select">
+                                                        <option value="">-- Select Subdistrict --</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label for="filter_puskesmas">Filter By Puskesmas</label>
+                                                    <select id="filter_puskesmas" class="form-select">
+                                                        <option value="">-- Select Puskesmas --</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label for="filter_year">Filter By Year</label>
+                                                    <select id="filter_year" class="form-select">
+                                                        <option value="2024">2024</option>
+                                                        <option value="2025">2025</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label for="filter_month">Filter By Month</label>
+                                                    <select id="filter_month" class="form-select">
+                                                        <!-- <option value="">-- Select Month --</option> -->
+                                                        <?php for ($i = 1; $i <= 12; $i++): ?>
+                                                            <option value="<?= $i ?>"><?= date('F', mktime(0, 0, 0, $i, 1)) ?></option>
+                                                        <?php endfor; ?>
+                                                    </select>
+                                                </div>
+                                                <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" 
+                                                        value="<?= $this->security->get_csrf_hash(); ?>">
+
+                                                <div class="col-md-3 d-flex align-items-end">
+                                                    <button id="btn_filter" class="btn btn-secondary">Apply Filter</button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Garis Pembatas -->
+                                            <hr class="my-4">
+
+                                            <div class="table-responsive">
+                                                    <table class="table table-striped" id="table1">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Province</th>
+                                                                <th>District</th>
+                                                                <th>Subdistrict</th>
+                                                                <th>Puskesmas</th>
+                                                                <th>Year</th>
+                                                                <th>Month</th>
+                                                                <th>DPT 1</th>
+                                                                <th>DPT 2</th>
+                                                                <th>DPT 3</th>
+                                                                <th>MR 1</th>
+                                                                <th>Action</th> <!-- Kolom untuk tombol hapus -->
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                         </div>
                                     </div>
                                 </div>
@@ -196,3 +282,179 @@
             });
         });
     </script>
+
+<script>
+// $(document).ready(function () {
+    // Ketika province dipilih, load city
+    $('#filter_province').change(function () {
+        var province_id = $(this).val();
+        if (province_id) {
+            $.ajax({
+                url: "<?= base_url('input/get_cities_by_province') ?>",
+                type: "GET",
+                data: { province_id: province_id },
+                dataType: "json",
+                success: function (data) {
+                    $('#filter_city').html('<option value="">-- Select District --</option>');
+                    $('#filter_subdistrict').html('<option value="">-- Select Subdistrict --</option>');
+                    $('#filter_puskesmas').html('<option value="">-- Select Puskesmas --</option>');
+                    $.each(data, function (key, value) {
+                        $('#filter_city').append('<option value="' + value.id + '">' + value.name_id + '</option>');
+                    });
+                }
+            });
+        }
+    });
+
+    // Ketika district dipilih, load subdistrict
+    $('#filter_city').change(function () {
+        var city_id = $(this).val();
+        if (city_id) {
+            $.ajax({
+                url: "<?= base_url('input/get_subdistricts_by_city') ?>",
+                type: "GET",
+                data: { city_id: city_id },
+                dataType: "json",
+                success: function (data) {
+                    $('#filter_subdistrict').html('<option value="">-- Select Subdistrict --</option>');
+                    $('#filter_puskesmas').html('<option value="">-- Select Puskesmas --</option>');
+                    $.each(data, function (key, value) {
+                        $('#filter_subdistrict').append('<option value="' + value.id + '">' + value.name + '</option>');
+                    });
+                }
+            });
+        }
+    });
+
+    // Ketika subdistrict dipilih, load puskesmas
+    $('#filter_subdistrict').change(function () {
+        var subdistrict_id = $(this).val();
+        if (subdistrict_id) {
+            $.ajax({
+                url: "<?= base_url('input/get_puskesmas_by_subdistrict') ?>",
+                type: "GET",
+                data: { subdistrict_id: subdistrict_id },
+                dataType: "json",
+                success: function (data) {
+                    $('#filter_puskesmas').html('<option value="">-- Select Puskesmas --</option>');
+                    $.each(data, function (key, value) {
+                        $('#filter_puskesmas').append('<option value="' + value.id + '">' + value.name + '</option>');
+                    });
+                }
+            });
+        }
+    });
+
+    // Function to load data based on filters
+    function loadImmunizationData() {
+        let province = $("#filter_province").val();
+        let city = $("#filter_city").val();
+        let subdistrict = $("#filter_subdistrict").val();
+        let puskesmas = $("#filter_puskesmas").val();
+        let year = $("#filter_year").val();
+        let month = $("#filter_month").val();
+
+        $.ajax({
+            url: "<?= base_url('input/get_immunization_data') ?>",  // Replace with correct URL to fetch data
+            type: "GET",
+            data: {
+                province_id: province,
+                city_id: city,
+                subdistrict_id: subdistrict,
+                puskesmas_id: puskesmas,
+                year: year,
+                month: month
+            },
+            success: function(response) {
+                let data = JSON.parse(response);
+                let tableBody = $("#table1 tbody");
+                tableBody.empty();
+
+                if (data.length === 0) {
+                    tableBody.append('<tr><td colspan="11" class="text-center">No Data Found</td></tr>');
+                } else {
+                    data.forEach(row => {
+                        tableBody.append(`
+                            <tr>
+                                <td>${row.province_name}</td>
+                                <td>${row.city_name}</td>
+                                <td>${row.subdistrict_name}</td>
+                                <td>${row.puskesmas_name}</td>
+                                <td>${row.year}</td>
+                                <td>${new Date(row.month).toLocaleString('en-us', { month: 'long' })}</td>
+                                <td>${row.dpt_hb_hib_1}</td>
+                                <td>${row.dpt_hb_hib_2}</td>
+                                <td>${row.dpt_hb_hib_3}</td>
+                                <td>${row.mr_1}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm" data-id="${row.id}" onclick="deleteData(this)">Delete</button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log('Error: ', status, error);  // Log the error for debugging
+            }
+        });
+    }
+    // Trigger for Apply Filter
+    $("#btn_filter").on("click", function() {
+        let province = $("#filter_province").val();
+        let city = $("#filter_city").val();
+
+        // Check if Province and City are selected
+        if (!province) {
+            alert("Please select a Province.");
+            return;  // Stop further code execution
+        }
+
+        if (!city) {
+            alert("Please select a District.");
+            return;  // Stop further code execution
+        }
+
+        // If both Province and City are selected, proceed to load the filtered data
+        loadImmunizationData();  // Load filtered data
+    });
+
+
+    // Event delegation untuk tombol delete
+    $(document).on("click", ".delete-btn", function () {
+        deleteData(this);
+    });
+
+    
+
+    // Optionally, you can also trigger loading data when the page loads
+    loadImmunizationData();  // Load initial data when the page is loaded
+
+// });
+
+function deleteData(button) {
+    let id = $(button).data('id');
+    let csrfToken = $("input[name='csrf_test_name']").val(); // Ambil token CSRF dari input hidden
+    // const csrfHash = '<?= $this->security->get_csrf_hash(); ?>';
+
+            if (confirm("Are you sure you want to delete this data?")) {
+                $.ajax({
+                    url: "<?= base_url('input/delete_immunization_data/') ?>" + id, // Ganti dengan URL yang sesuai
+                    type: "POST",
+                    data: {csrf_test_name: csrfToken }, // Kirim CSRF Token
+                    success: function(response) {
+                        alert("Data deleted successfully.");
+                        loadImmunizationData(); // Refresh table
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Failed to delete data.");
+                        console.log(status, error); // Debugging
+                    }
+                });
+            }
+        }
+</script>
+
+
+
+
