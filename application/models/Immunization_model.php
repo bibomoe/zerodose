@@ -193,7 +193,7 @@ class Immunization_model extends CI_Model {
             $this->db->where('province_id', $province_id);
         }
     
-        $this->db->group_by($province_id !== 'all' ? 'city_id' : 'province_id');
+        $this->db->group_by(($province_id !== 'all' && $province_id !== 'targeted') ? 'city_id' : 'province_id');
     
         $query = $this->db->get();
     
