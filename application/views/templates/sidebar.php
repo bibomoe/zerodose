@@ -52,78 +52,105 @@
                                 <i class="bi bi-exclamation-triangle-fill"></i>
                                 <span>Current ZD Cases</span>
                             </a>
-                        </li>
+                            </li>
 
-                        <li
-                            class="sidebar-item">
-                            <a href="<?= base_url('home/restored'); ?>" class='sidebar-link'>
-                                <i class="bi bi-shield-fill-check"></i>
-                                <span>Restored ZD Children</span>
-                            </a>
-                        </li>
+                            <li
+                                class="sidebar-item">
+                                <a href="<?= base_url('home/restored'); ?>" class='sidebar-link'>
+                                    <i class="bi bi-shield-fill-check"></i>
+                                    <span>Restored ZD Children</span>
+                                </a>
+                            </li>
 
-                        <li
-                            class="sidebar-item">
-                            <a href="<?= base_url('home/lost'); ?>" class='sidebar-link'>
-                                <i class="bi bi-person-dash-fill"></i>
-                                <span>Lost Children</span>
-                            </a>
-                        </li>
+                            <li
+                                class="sidebar-item">
+                                <a href="<?= base_url('home/lost'); ?>" class='sidebar-link'>
+                                    <i class="bi bi-person-dash-fill"></i>
+                                    <span>Lost Children</span>
+                                </a>
+                            </li>
+                            
+                            <li
+                                class="sidebar-item">
+                                <a href="<?= base_url('home/dpt1'); ?>" class='sidebar-link'>
+                                    <i class="bi bi-tree-fill"></i>
+                                    <span>DPT 1 in targeted areas</span>
+                                </a>
+                            </li>
+
+                            <li
+                                class="sidebar-item">
+                                <a href="<?= base_url('home/zd_tracking'); ?>" class='sidebar-link'>
+                                    <i class="bi bi-building-fill"></i>
+                                    <span>Percentage of Primary Health Facility to Conduct Immunization Service as Planned</span>
+                                </a>
+                            </li>
+                            
+                            <li
+                                class="sidebar-item">
+                                <a href="<?= base_url('home/dpt_stock'); ?>" class='sidebar-link'>
+                                    <i class="bi bi-hospital-fill"></i>
+                                    <span>Number of DTP Stock Out at Health Facilities</span>
+                                </a>
+                            </li>
+
+                            <li
+                                class="sidebar-item">
+                                <a href="<?= base_url('home/private_health_facilities'); ?>" class='sidebar-link'>
+                                    <i class="bi bi-house-heart-fill"></i>
+                                    <span>Number of Private Health Facilities in Targeted Areas​</span>
+                                </a>
+                            </li>
+
+                            <li
+                                class="sidebar-item">
+                                <a href="<?= base_url('home/district'); ?>" class='sidebar-link'>
+                                    <i class="bi bi-file-earmark-fill"></i>
+                                    <span>District Program and Policy</span>
+                                </a>
+                            </li>
+
+                            <li
+                                class="sidebar-item">
+                                <a href="<?= base_url('home/grant_implementation'); ?>" class='sidebar-link'>
+                                    <i class="bi bi-currency-dollar"></i>
+                                    <span>Grants Implementation and Budget Disbursement</span>
+                                </a>
+                            </li> -->
+
                         
-                        <li
-                            class="sidebar-item">
-                            <a href="<?= base_url('home/dpt1'); ?>" class='sidebar-link'>
-                                <i class="bi bi-tree-fill"></i>
-                                <span>DPT 1 in targeted areas</span>
-                            </a>
-                        </li>
-
-                        <li
-                            class="sidebar-item">
-                            <a href="<?= base_url('home/zd_tracking'); ?>" class='sidebar-link'>
-                                <i class="bi bi-building-fill"></i>
-                                <span>Percentage of Primary Health Facility to Conduct Immunization Service as Planned</span>
-                            </a>
-                        </li>
-                        
-                        <li
-                            class="sidebar-item">
-                            <a href="<?= base_url('home/dpt_stock'); ?>" class='sidebar-link'>
-                                <i class="bi bi-hospital-fill"></i>
-                                <span>Number of DTP Stock Out at Health Facilities</span>
-                            </a>
-                        </li>
-
-                        <li
-                            class="sidebar-item">
-                            <a href="<?= base_url('home/private_health_facilities'); ?>" class='sidebar-link'>
-                                <i class="bi bi-house-heart-fill"></i>
-                                <span>Number of Private Health Facilities in Targeted Areas​</span>
-                            </a>
-                        </li>
-
-                        <li
-                            class="sidebar-item">
-                            <a href="<?= base_url('home/district'); ?>" class='sidebar-link'>
-                                <i class="bi bi-file-earmark-fill"></i>
-                                <span>District Program and Policy</span>
-                            </a>
-                        </li>
-
-                        <li
-                            class="sidebar-item">
-                            <a href="<?= base_url('home/grant_implementation'); ?>" class='sidebar-link'>
-                                <i class="bi bi-currency-dollar"></i>
-                                <span>Grants Implementation and Budget Disbursement</span>
-                            </a>
-                        </li> -->
-
+                        <?php
+                            $user_category = $this->session->userdata('user_category');
+                            if ($user_category != 7 && $user_category != 8) { 
+                        ?>
                         <li
                             class="sidebar-item">
                             <a href="<?= base_url('home'); ?>" class='sidebar-link'>
                                 <i class="bi bi-house-heart-fill"></i>
                                 <span>Dashboard</span>
                             </a>
+                        </li>
+                        <?php
+                            }
+                        ?>
+
+                        <!-- Long-term Health Outcomes -->
+                        <li
+                            class="sidebar-item  has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-shield-fill-check"></i>
+                                <span>Long-term Health Outcomes</span>
+                            </a>
+                            
+                            <ul class="submenu ">
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('home/restored'); ?>" class='sidebar-link'>
+                                        Restored ZD Children
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            
                         </li>
 
                         <!-- Intermediate Health Outcomes -->
@@ -141,11 +168,11 @@
                                     </a>
                                 </li>
 
-                                <li class="submenu-item  ">
+                                <!-- <li class="submenu-item  ">
                                     <a href="<?= base_url('home/lost'); ?>" class='sidebar-link'>
                                         Lost Children
                                     </a>
-                                </li>
+                                </li> -->
                                 
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('home/dpt1'); ?>" class='sidebar-link'>
@@ -181,27 +208,10 @@
                             
                         </li>
 
-                        <!-- Long-term Health Outcomes -->
-                        <li
-                            class="sidebar-item  has-sub">
-                            <a href="#" class='sidebar-link'>
-                                <i class="bi bi-shield-fill-check"></i>
-                                <span>Long-term Health Outcomes</span>
-                            </a>
-                            
-                            <ul class="submenu ">
-                                <li class="submenu-item  ">
-                                    <a href="<?= base_url('home/restored'); ?>" class='sidebar-link'>
-                                        Restored ZD Children
-                                    </a>
-                                </li>
-                                
-                            </ul>
-                            
-                        </li>
+                        
 
                         <!-- Immunization Policy & Financing Outcomes -->
-                        <li
+                        <!-- <li
                             class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-file-earmark-fill"></i>
@@ -217,8 +227,12 @@
                                 
                             </ul>
                             
-                        </li>
+                        </li> -->
 
+                        <?php
+                            $user_category = $this->session->userdata('user_category');
+                            if ($user_category != 7 && $user_category != 8) { 
+                        ?>
                         <!-- Grants Implementation and Budget Disbursement Menu -->
                         <li
                             class="sidebar-item  has-sub">
@@ -241,6 +255,13 @@
                             </ul>
                             
                         </li>
+                        <?php
+                            }
+                        ?>
+                        <?php
+                            $user_category = $this->session->userdata('user_category');
+                            if ($user_category != 7 && $user_category != 8) { 
+                        ?>
 
                         <!-- Input Form Menu -->
                         <li
@@ -311,6 +332,11 @@
                                     <a href="<?= base_url('input/target'); ?>" class="submenu-link">Target</a>
                                 </li>
 
+                                <?php
+                                    $user_category = $this->session->userdata('user_category');
+                                    if ($user_category == 2 || $user_category == 9) { 
+                                ?>
+
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('input/excel'); ?>" class='sidebar-link'>
                                         Excel
@@ -322,11 +348,17 @@
                                         Manual
                                     </a>
                                 </li>
+                                <?php
+                                    }
+                                ?>
                                 
                             </ul>
                             
 
                         </li>
+                        <?php
+                            }
+                        ?>
                     </ul>
                 </div>
             </div>

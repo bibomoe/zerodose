@@ -40,6 +40,15 @@ class Home extends CI_Controller {
 
     // Fungsi index
     public function index() {
+        $user_category = $this->session->userdata('user_category');
+        // var_dump($user_category);
+        // exit;
+        
+
+        if ($user_category == 7 || $user_category == 8) { 
+            redirect('home/restored');
+        }
+
         $this->data['title'] = 'Accountability Framework';
 
         // Ambil daftar partners untuk filter
@@ -169,9 +178,18 @@ class Home extends CI_Controller {
     }
 
     public function dpt1() {
-        $this->data['title'] = 'DTP1 in targeted areas';
+        // Ambil data dari model
+        $this->load->model('Dpt1_model');
+        
+        $this->data['total_dpt1_coverage'] = $this->Dpt1_model->get_total_dpt1_coverage();
+        $this->data['total_dpt1_target'] = $this->Dpt1_model->get_total_dpt1_target();
+        $this->data['districts_under_5'] = $this->Dpt1_model->get_districts_under_5_percent();
+        $this->data['total_regencies_cities'] = $this->Dpt1_model->get_total_regencies_cities();
+    
+        $this->data['title'] = 'DPT1 in targeted areas';
         load_template('dpt1', $this->data);
     }
+    
 
     public function zd_tracking() {
         $this->data['title'] = 'Primary Health Facility to Conduct Immunization Service as Planned';
@@ -184,7 +202,7 @@ class Home extends CI_Controller {
     }
 
     public function district() {
-        $this->data['title'] = 'District Program';
+        $this->data['title'] = 'District Program, Financing & Policy';
         load_template('district', $this->data);
     }
 
