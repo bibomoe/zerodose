@@ -197,10 +197,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Membuat konten pop-up untuk menampilkan informasi
                 let popupContent = `<b>${name}</b><br>`;
-                popupContent += `Total Cities: ${totalCities.total_cities}<br>`;
-                popupContent += `Total Cities with DPT1 < 5%: ${dpt1Under5}<br>`;
-                popupContent += `Total Cities with DPT2 < 5%: ${dpt2Under5}<br>`;
-                popupContent += `Total Cities with DPT3 < 5%: ${dpt3Under5}<br>`;
+                popupContent += `Total Districts: ${totalCities.total_cities}<br>`;
+                popupContent += `Total Districts with DPT1 < 5%: ${dpt1Under5}<br>`;
+                popupContent += `Total Districts with DPT2 < 5%: ${dpt2Under5}<br>`;
+                popupContent += `Total Districts with DPT3 < 5%: ${dpt3Under5}<br>`;
                 popupContent += `DPT1 Coverage: ${dptCoverage.dpt1_coverage}<br>`;
                 popupContent += `DPT1 Target: ${dptTarget.dpt1_target}`;
 
