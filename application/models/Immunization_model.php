@@ -137,9 +137,9 @@ class Immunization_model extends CI_Model {
     
         // Pisahkan provinsi yang memiliki priority = 1
         foreach ($provinces as $province) {
-            if ($province['priority'] == 1) {
+            // if ($province['priority'] == 1) {
                 $province_options[] = $province;
-            }
+            // }
         }
     
         return $province_options;

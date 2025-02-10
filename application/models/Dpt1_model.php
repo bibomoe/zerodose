@@ -95,4 +95,88 @@ class Dpt1_model extends CI_Model {
         $query = $this->db->get();
         return $query->row()->total_cities ?? 0;
     }
+
+    public function get_dpt_under_5_percent_cities($province_ids) {
+        // Query untuk mendapatkan cakupan DPT1, DPT2, DPT3 dan target masing-masing untuk setiap distrik
+        $this->db->select("
+            cities.province_id,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_2), 0) AS dpt2_coverage,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage,
+            COALESCE(target_immunization.dpt_hb_hib_1_target, 0) AS dpt_hb_hib_1_target,
+            COALESCE(target_immunization.dpt_hb_hib_2_target, 0) AS dpt_hb_hib_2_target,
+            COALESCE(target_immunization.dpt_hb_hib_3_target, 0) AS dpt_hb_hib_3_target
+        ");
+        $this->db->from('cities');
+        $this->db->join('immunization_data', 'immunization_data.city_id = cities.id', 'left');
+        $this->db->join('target_immunization', 'target_immunization.city_id = cities.id', 'left');
+        $this->db->where_in('cities.province_id', $province_ids); // Hanya untuk provinsi dengan priority = 1
+        $this->db->group_by('cities.id'); // Group by city_id untuk perhitungan tiap kota/distrik
+        
+        // Ambil hasil query
+        $query = $this->db->get();
+        $districts = $query->result_array();
+        
+        // Kumulatif data berdasarkan provinsi
+        $under_5_percent_provinces = [];
+        
+        foreach ($districts as $district) {
+            // Pastikan tidak membagi dengan 0 dan hitung persentase cakupan
+            $dpt1_percentage = ($district['dpt_hb_hib_1_target'] > 0) ? ($district['dpt1_coverage'] / $district['dpt_hb_hib_1_target']) * 100 : 0;
+            $dpt2_percentage = ($district['dpt_hb_hib_2_target'] > 0) ? ($district['dpt2_coverage'] / $district['dpt_hb_hib_2_target']) * 100 : 0;
+            $dpt3_percentage = ($district['dpt_hb_hib_3_target'] > 0) ? ($district['dpt3_coverage'] / $district['dpt_hb_hib_3_target']) * 100 : 0;
+            
+            // Memeriksa apakah cakupan DPT1, DPT2, atau DPT3 di bawah 5%
+            if ($dpt1_percentage < 5 || $dpt2_percentage < 5 || $dpt3_percentage < 5) {
+                // Jika provinsi sudah ada dalam array, tambahkan ke kumulatif
+                if (isset($under_5_percent_provinces[$district['province_id']])) {
+                    // Tambahkan kota ke kumulatif berdasarkan DPT yang kurang dari 5%
+                    $under_5_percent_provinces[$district['province_id']]['dpt1_under_5'] += ($dpt1_percentage < 5) ? 1 : 0;
+                    $under_5_percent_provinces[$district['province_id']]['dpt2_under_5'] += ($dpt2_percentage < 5) ? 1 : 0;
+                    $under_5_percent_provinces[$district['province_id']]['dpt3_under_5'] += ($dpt3_percentage < 5) ? 1 : 0;
+                } else {
+                    // Jika provinsi belum ada, tambahkan provinsi dan set nilai awal
+                    $under_5_percent_provinces[$district['province_id']] = [
+                        'province_id' => $district['province_id'],
+                        'dpt1_under_5' => ($dpt1_percentage < 5) ? 1 : 0,
+                        'dpt2_under_5' => ($dpt2_percentage < 5) ? 1 : 0,
+                        'dpt3_under_5' => ($dpt3_percentage < 5) ? 1 : 0,
+                    ];
+                }
+            }
+        }
+    
+        return $under_5_percent_provinces;
+    }
+    
+    // Mengambil total DPT1 coverage untuk tiap provinsi
+    public function get_dpt1_coverage_per_province($province_ids) {
+        $this->db->select('province_id, SUM(dpt_hb_hib_1) AS dpt1_coverage');
+        $this->db->from('immunization_data');
+        $this->db->where_in('province_id', $province_ids);
+        $this->db->group_by('province_id');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    // Mengambil total DPT1 target untuk tiap provinsi
+    public function get_dpt1_target_per_province($province_ids) {
+        $this->db->select('province_id, SUM(dpt_hb_hib_1_target) AS dpt1_target');
+        $this->db->from('target_immunization');
+        $this->db->where_in('province_id', $province_ids);
+        $this->db->group_by('province_id');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    // Mengambil total jumlah cities per provinsi
+    public function get_total_cities_per_province($province_ids) {
+        $this->db->select('province_id, COUNT(id) AS total_cities');
+        $this->db->from('cities');
+        $this->db->where_in('province_id', $province_ids);
+        $this->db->group_by('province_id');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
 }

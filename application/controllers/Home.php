@@ -172,10 +172,10 @@ class Home extends CI_Controller {
         load_template('restored-zd-children', $this->data);
     }
 
-    public function lost() {
-        $this->data['title'] = 'Lost Children';
-        load_template('lost-children', $this->data);
-    }
+    // public function lost() {
+    //     $this->data['title'] = 'Lost Children';
+    //     load_template('lost-children', $this->data);
+    // }
 
     public function dpt1() {
         // Ambil data dari model
@@ -185,6 +185,21 @@ class Home extends CI_Controller {
         $this->data['total_dpt1_target'] = $this->Dpt1_model->get_total_dpt1_target();
         $this->data['districts_under_5'] = $this->Dpt1_model->get_districts_under_5_percent();
         $this->data['total_regencies_cities'] = $this->Dpt1_model->get_total_regencies_cities();
+
+        $province_ids = $this->Immunization_model->get_targeted_province_ids(); // Ambil province_id yang priority = 1
+
+        // Mengambil data cakupan DPT untuk provinsi yang telah dipilih
+        $dpt_under_5_data = $this->Dpt1_model->get_dpt_under_5_percent_cities($province_ids);
+
+        $this->data['total_dpt1_coverage_per_province'] = $this->Dpt1_model->get_dpt1_coverage_per_province($province_ids);
+        $this->data['total_dpt1_target_per_province'] = $this->Dpt1_model->get_dpt1_target_per_province($province_ids);
+        // Mengambil data total cities per provinsi
+        $this->data['total_cities_per_province'] = $this->Dpt1_model->get_total_cities_per_province($province_ids);
+
+        // Kirim data ke view dalam format array
+        $this->data['dpt_under_5_data'] = $dpt_under_5_data;
+        $this->data['geojson_file'] = base_url('assets/geojson/targeted.geojson');  // File GeoJSON untuk targeted provinces
+
     
         $this->data['title'] = 'DPT1 in targeted areas';
         load_template('dpt1', $this->data);

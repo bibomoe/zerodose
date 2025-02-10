@@ -85,7 +85,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">Total Regencies/Cities</h6>
+                                                    <h6 class="text-muted font-semibold">Total Districts</h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_regencies_cities); ?></h6>
                                                 </div>
                                             </div>
@@ -104,6 +104,9 @@
                                             <!-- <div class="googlemaps">
                                                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.6091242787!2d107.57311654129782!3d-6.903273917028756!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e815b2!2sBandung%2C%20Bandung%20City%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1633023222539!5m2!1sen!2sid" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                                             </div> -->
+                                            <?php
+                                                // var_dump($dpt_under_5_data);
+                                            ?>
                                             <div id="map" style="height: 400px; position: relative;  z-index: 1;" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy">
 
                                             </div>
@@ -131,39 +134,85 @@
     </div>
     
     
-
     <script>
-            const map = L.map('map').setView([-7.250445, 112.768845], 8);
+document.addEventListener("DOMContentLoaded", function () {
+    const map = L.map('map').setView([-7.250445, 112.768845], 7);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
-            // Menggunakan AJAX untuk memuat GeoJSON
-            fetch('<?= base_url('assets/geojson/jawa_timur.geojson'); ?>') // Ganti 'data.geojson' dengan nama file GeoJSON Anda
-            .then(response => response.json())
-            .then(data => {
-                L.geoJSON(data, {
-                // style: function (feature) {
-                //     return {
-                //     color: "black",
-                //     fillColor: "red",
-                //     fillOpacity: 0.5,
-                //     weight: 2
-                //     };
-                // },
-                onEachFeature: function (feature, layer) {
+    let dptUnder5Data = <?= json_encode($dpt_under_5_data, JSON_NUMERIC_CHECK); ?>;
+    console.log();
+    let dptCoverageData = <?= json_encode($total_dpt1_coverage_per_province, JSON_NUMERIC_CHECK); ?>;
+    let dptTargetData = <?= json_encode($total_dpt1_target_per_province, JSON_NUMERIC_CHECK); ?>;
+    let totalCitiesData = <?= json_encode($total_cities_per_province, JSON_NUMERIC_CHECK); ?>;
 
-                    // layer.bindPopup("Nama: " + feature.properties.NAMOBJ); // Ganti 'nama' dengan properti yang sesuai di GeoJSON Anda
-                    var popupContent = "";
-                    for (var key in feature.properties) {
-                        popupContent += key + ": " + feature.properties[key] + "<br>";
-                    }
-                    layer.bindPopup(popupContent);
-                    
-                }
-                }).addTo(map);
-            });
+    function getColor(dpt1, dpt2, dpt3) {
+        return (dpt1 > 0 || dpt2 > 0 || dpt3 > 0) ? '#D73027' : '#1A9850' ; // Hijau jika ada lebih dari 0% cakupan, merah jika tidak ada
+    }
 
-    </script>
+    fetch("<?= $geojson_file; ?>")
+    .then(response => response.json())
+    .then(data => {
+        let geojsonLayer = L.geoJSON(data, {
+            style: function (feature) {
+                // Mendapatkan rawCode untuk membandingkan dengan data DPT yang sudah diproses
+                let rawCode = feature.properties.KDPPUM;
+                let regionId = rawCode; // Langsung menggunakan rawCode untuk membandingkan
+
+                // Cek apakah ada data DPT untuk wilayah ini
+                let dptUnder5 = dptUnder5Data[regionId] || {};
+                let dpt1Under5 = dptUnder5.dpt1_under_5 || 0;
+                let dpt2Under5 = dptUnder5.dpt2_under_5 || 0;
+                let dpt3Under5 = dptUnder5.dpt3_under_5 || 0;
+
+                return {
+                    fillColor: getColor(dpt1Under5, dpt2Under5, dpt3Under5),
+                    weight: 1.5,
+                    opacity: 1,
+                    color: '#ffffff',
+                    fillOpacity: 0.8
+                };
+            },
+            onEachFeature: function (feature, layer) {
+                let rawCode = feature.properties.KDPPUM;
+                let regionId = rawCode; // Langsung menggunakan rawCode untuk membandingkan
+
+                // Cek apakah ada data DPT untuk wilayah ini
+                let dptUnder5 = dptUnder5Data[regionId] || {};
+                let dpt1Under5 = dptUnder5.dpt1_under_5 || 0;
+                let dpt2Under5 = dptUnder5.dpt2_under_5 || 0;
+                let dpt3Under5 = dptUnder5.dpt3_under_5 || 0;
+
+                // Ambil total DPT1 Coverage dan DPT1 Target berdasarkan province_id
+                let dptCoverage = dptCoverageData.find(item => item.province_id == regionId) || { dpt1_coverage: 0 };
+                let dptTarget = dptTargetData.find(item => item.province_id == regionId) || { dpt1_target: 0 };
+
+                // Ambil total jumlah cities per provinsi
+                let totalCities = totalCitiesData.find(item => item.province_id == regionId) || { total_cities: 0 };
+
+                let name = feature.properties.WADMPR; // Nama wilayah/provinsi
+
+                // Membuat konten pop-up untuk menampilkan informasi
+                let popupContent = `<b>${name}</b><br>`;
+                popupContent += `Total Cities: ${totalCities.total_cities}<br>`;
+                popupContent += `Total Cities with DPT1 < 5%: ${dpt1Under5}<br>`;
+                popupContent += `Total Cities with DPT2 < 5%: ${dpt2Under5}<br>`;
+                popupContent += `Total Cities with DPT3 < 5%: ${dpt3Under5}<br>`;
+                popupContent += `DPT1 Coverage: ${dptCoverage.dpt1_coverage}<br>`;
+                popupContent += `DPT1 Target: ${dptTarget.dpt1_target}`;
+
+                layer.bindPopup(popupContent);
+            }
+        }).addTo(map);
+
+        // ✅ Set view ke center dari bounding box GeoJSON
+        map.fitBounds(geojsonLayer.getBounds());
+    })
+    .catch(error => console.error("Error loading GeoJSON:", error));
+});
+</script>
+
+
