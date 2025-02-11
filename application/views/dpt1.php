@@ -69,7 +69,7 @@
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
                                                     <h6 class="text-muted font-semibold">Number of districts with coverage (DPT1-DPT3) less than 5%</h6>
-                                                    <h6 class="font-extrabold mb-0"><?= number_format(count($districts_under_5)); ?></h6>
+                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_dropout_rate); ?></h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -144,13 +144,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }).addTo(map);
 
     let dptUnder5Data = <?= json_encode($dpt_under_5_data, JSON_NUMERIC_CHECK); ?>;
-    console.log();
+    console.log(dptUnder5Data);
+    console.log()
+
     let dptCoverageData = <?= json_encode($total_dpt1_coverage_per_province, JSON_NUMERIC_CHECK); ?>;
     let dptTargetData = <?= json_encode($total_dpt1_target_per_province, JSON_NUMERIC_CHECK); ?>;
     let totalCitiesData = <?= json_encode($total_cities_per_province, JSON_NUMERIC_CHECK); ?>;
 
-    function getColor(dpt1, dpt2, dpt3) {
-        return (dpt1 > 0 || dpt2 > 0 || dpt3 > 0) ? '#D73027' : '#1A9850' ; // Hijau jika ada lebih dari 0% cakupan, merah jika tidak ada
+    function getColor(dpt) {
+        return (dpt) ? '#1A9850' : '#D73027' ; // Hijau jika ada lebih dari 0% cakupan, merah jika tidak ada
     }
 
     fetch("<?= $geojson_file; ?>")
@@ -163,13 +165,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 let regionId = rawCode; // Langsung menggunakan rawCode untuk membandingkan
 
                 // Cek apakah ada data DPT untuk wilayah ini
-                let dptUnder5 = dptUnder5Data[regionId] || {};
-                let dpt1Under5 = dptUnder5.dpt1_under_5 || 0;
-                let dpt2Under5 = dptUnder5.dpt2_under_5 || 0;
-                let dpt3Under5 = dptUnder5.dpt3_under_5 || 0;
+                let dptUnder5 = dptUnder5Data[regionId] || 0;
+                // let dpt1Under5 = dptUnder5 || 0;
+                // let dpt2Under5 = dptUnder5.dpt2_under_5 || 0;
+                // let dpt3Under5 = dptUnder5.dpt3_under_5 || 0;
 
                 return {
-                    fillColor: getColor(dpt1Under5, dpt2Under5, dpt3Under5),
+                    fillColor: getColor(dptUnder5),
                     weight: 1.5,
                     opacity: 1,
                     color: '#ffffff',
@@ -181,10 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 let regionId = rawCode; // Langsung menggunakan rawCode untuk membandingkan
 
                 // Cek apakah ada data DPT untuk wilayah ini
-                let dptUnder5 = dptUnder5Data[regionId] || {};
-                let dpt1Under5 = dptUnder5.dpt1_under_5 || 0;
-                let dpt2Under5 = dptUnder5.dpt2_under_5 || 0;
-                let dpt3Under5 = dptUnder5.dpt3_under_5 || 0;
+                let dptUnder5 = dptUnder5Data[regionId] || 0;
 
                 // Ambil total DPT1 Coverage dan DPT1 Target berdasarkan province_id
                 let dptCoverage = dptCoverageData.find(item => item.province_id == regionId) || { dpt1_coverage: 0 };
@@ -198,9 +197,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Membuat konten pop-up untuk menampilkan informasi
                 let popupContent = `<b>${name}</b><br>`;
                 popupContent += `Total Districts: ${totalCities.total_cities}<br>`;
-                popupContent += `Total Districts with DPT1 < 5%: ${dpt1Under5}<br>`;
-                popupContent += `Total Districts with DPT2 < 5%: ${dpt2Under5}<br>`;
-                popupContent += `Total Districts with DPT3 < 5%: ${dpt3Under5}<br>`;
+                popupContent += `Total Districts with DO (DPT1-DPT3) < 5%: ${dptUnder5}<br>`;
+                // popupContent += `Total Districts with DPT2 < 5%: ${dpt2Under5}<br>`;
+                // popupContent += `Total Districts with DPT3 < 5%: ${dpt3Under5}<br>`;
                 popupContent += `DPT1 Coverage: ${dptCoverage.dpt1_coverage}<br>`;
                 popupContent += `DPT1 Target: ${dptTarget.dpt1_target}`;
 

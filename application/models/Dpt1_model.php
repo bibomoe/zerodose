@@ -45,7 +45,7 @@ class Dpt1_model extends CI_Model {
     
         // Query untuk mendapatkan cakupan DPT1, DPT2, DPT3 dan target masing-masing untuk setiap distrik
         $this->db->select("
-            cities.name_id AS district, 
+            cities.province_id,
             COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
             COALESCE(SUM(immunization_data.dpt_hb_hib_2), 0) AS dpt2_coverage,
             COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage,
@@ -57,30 +57,60 @@ class Dpt1_model extends CI_Model {
         $this->db->join('immunization_data', 'immunization_data.city_id = cities.id', 'left');
         $this->db->join('target_immunization', 'target_immunization.city_id = cities.id', 'left');
         $this->db->where_in('cities.province_id', $province_ids); // Hanya untuk provinsi dengan priority = 1
-        $this->db->group_by('cities.name_id');
-        
+        $this->db->group_by('cities.id'); // Group by city_id untuk perhitungan tiap kota/distrik
+    
         // Ambil hasil query
         $query = $this->db->get();
         $districts = $query->result_array();
     
-        // Filter distrik yang memiliki cakupan DPT1, DPT2, DPT3 di bawah 5%
-        $under_5_percent_districts = [];
-
+        // Kumulatif data berdasarkan provinsi
+        $dropout_rates = [];
+    
         foreach ($districts as $district) {
-            // Pastikan tidak membagi dengan 0
-            $dpt1_percentage = $district['dpt_hb_hib_1_target'] != 0 ? ($district['dpt1_coverage'] / $district['dpt_hb_hib_1_target']) * 100 : 0;
-            $dpt2_percentage = $district['dpt_hb_hib_2_target'] != 0 ? ($district['dpt2_coverage'] / $district['dpt_hb_hib_2_target']) * 100 : 0;
-            $dpt3_percentage = $district['dpt_hb_hib_3_target'] != 0 ? ($district['dpt3_coverage'] / $district['dpt_hb_hib_3_target']) * 100 : 0;
-
-            // Memeriksa apakah cakupan DPT1, DPT2, atau DPT3 di bawah 5%
-            if ($dpt1_percentage < 5 || $dpt2_percentage < 5 || $dpt3_percentage < 5) {
-                $under_5_percent_districts[] = $district;
+            // Pastikan tidak membagi dengan 0 dan hitung persentase cakupan DPT-1 dan DPT-3
+            $dpt1_coverage = $district['dpt1_coverage'];
+            $dpt3_coverage = $district['dpt3_coverage'];
+    
+            // Menghitung drop-out rate dari DPT-1 ke DPT-3
+            $dropout_rate_dpt1_to_dpt3 = 0;
+            if ($dpt1_coverage > 0) {
+                // Jumlah yang tidak menerima DPT-3
+                $not_received_dpt3 = $dpt1_coverage - $dpt3_coverage;
+                // Drop-out rate formula: (Jumlah yang tidak menerima DPT-3 / Jumlah yang menerima DPT-1) * 100
+                $dropout_rate_dpt1_to_dpt3 = ($not_received_dpt3 / $dpt1_coverage) * 100;
+                // echo $dropout_rate_dpt1_to_dpt3.'</br>';
+            } else {
+                $dropout_rate_dpt1_to_dpt3 = 100;
+            }
+    
+            // Masukkan hanya dropout rate untuk provinsi yang memiliki drop-out rate DPT-1 ke DPT-3 kurang dari 5%
+            if ($dropout_rate_dpt1_to_dpt3 < 5) {
+                // Jika provinsi sudah ada dalam array, tambahkan ke kumulatif
+                if (isset($dropout_rates[$district['province_id']])) {
+                    // Menambahkan 1 untuk provinsi yang memiliki dropout rate kurang dari 5%
+                    $dropout_rates[$district['province_id']] += 1;
+                } else {
+                    // Jika provinsi belum ada, tambahkan provinsi dan set nilai awal
+                    $dropout_rates[$district['province_id']] = 1;
+                }
+            } else {
+                // Jika provinsi sudah ada dalam array, tambahkan ke kumulatif
+                if (isset($dropout_rates[$district['province_id']])) {
+                    // Menambahkan 1 untuk provinsi yang memiliki dropout rate kurang dari 5%
+                    $dropout_rates[$district['province_id']] += 0;
+                } else {
+                    // Jika provinsi belum ada, tambahkan provinsi dan set nilai awal
+                    $dropout_rates[$district['province_id']] = 0;
+                }
             }
         }
-
     
-        return $under_5_percent_districts;
+        return $dropout_rates; // Kembalikan hanya drop-out rate
     }
+    
+    
+    
+    
     
     
 

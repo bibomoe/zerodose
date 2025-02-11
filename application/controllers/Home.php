@@ -180,16 +180,30 @@ class Home extends CI_Controller {
     public function dpt1() {
         // Ambil data dari model
         $this->load->model('Dpt1_model');
-        
-        $this->data['total_dpt1_coverage'] = $this->Dpt1_model->get_total_dpt1_coverage();
-        $this->data['total_dpt1_target'] = $this->Dpt1_model->get_total_dpt1_target();
-        $this->data['districts_under_5'] = $this->Dpt1_model->get_districts_under_5_percent();
-        $this->data['total_regencies_cities'] = $this->Dpt1_model->get_total_regencies_cities();
 
         $province_ids = $this->Immunization_model->get_targeted_province_ids(); // Ambil province_id yang priority = 1
+        
+        // Mendapatkan dropout rates per provinsi
+        $dropout_rates = $this->Dpt1_model->get_districts_under_5_percent();
+        
+        // Menjumlahkan semua nilai dropout rate per provinsi
+        $total_dropout_rate = array_sum($dropout_rates);
+
+        // Menambahkan total dropout rate ke data view
+        $this->data['total_dropout_rate'] = $total_dropout_rate;
+
+        $this->data['total_dpt1_coverage'] = $this->Dpt1_model->get_total_dpt1_coverage();
+        $this->data['total_dpt1_target'] = $this->Dpt1_model->get_total_dpt1_target();
+        // $this->data['districts_under_5'] = $this->Dpt1_model->get_districts_under_5_percent();
+        $this->data['total_regencies_cities'] = $this->Dpt1_model->get_total_regencies_cities();
+
+        // var_dump($this->data['districts_under_5']);
+        // exit;
+        
 
         // Mengambil data cakupan DPT untuk provinsi yang telah dipilih
-        $dpt_under_5_data = $this->Dpt1_model->get_dpt_under_5_percent_cities($province_ids);
+        // $dpt_under_5_data = $this->Dpt1_model->get_dpt_under_5_percent_cities($province_ids);
+        $dpt_under_5_data = $this->Dpt1_model->get_districts_under_5_percent();
 
         $this->data['total_dpt1_coverage_per_province'] = $this->Dpt1_model->get_dpt1_coverage_per_province($province_ids);
         $this->data['total_dpt1_target_per_province'] = $this->Dpt1_model->get_dpt1_target_per_province($province_ids);
