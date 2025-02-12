@@ -77,6 +77,30 @@ class Immunization_model extends CI_Model {
         $query = $this->db->get()->row();
         return $query->total ?? 0;
     }
+
+    public function get_total_target($vaccine_column, $province_id = 'all') {
+        // Ambil province_id dengan priority = 1
+        $province_ids = $this->get_targeted_province_ids();
+    
+        // Ambil total target berdasarkan provinsi
+        $this->db->select('SUM(' . $vaccine_column . '_target) AS total_target');
+        $this->db->from('target_immunization');
+    
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0; // Jika tidak ada provinsi dengan priority, kembalikan 0
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+    
+        // Mengambil total target dari hasil query
+        $result = $this->db->get()->row();
+        return $result->total_target ?? 0;
+    }
+    
     
     
 

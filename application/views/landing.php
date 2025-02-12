@@ -62,13 +62,15 @@
         } */
         /* Background Gradient */
 .hero-section {
+    margin-top: 0px; /* Adjust this value as needed */
     background: linear-gradient(to right, #F0F2F5,rgb(228, 244, 255));
-    min-height: 100vh;
+    /* min-height: 100vh; */
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
     text-align: left;
-    padding: 60px 0;
+    padding: 150px 0;
 }
 
 /* Typography */
@@ -124,15 +126,17 @@
 }
 
 /* Floating Animation */
-@keyframes float {
+/* @keyframes float {
     0% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
     100% { transform: translateY(0); }
-}
+} */
 
 /* Navigation */
 .navbar {
     background: transparent;
+    /* background: linear-gradient(to right, #F0F2F5,rgb(228, 244, 255)); */
+    /* background: transparent; */
     position: absolute;
     width: 100%;
     z-index: 1000;
@@ -151,9 +155,39 @@
         flex-direction: column;
         text-align: center;
     }
+
     .hero-image {
         width: 80%;
         margin-top: 30px;
+    }
+
+    .navbar .header-top-left {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .navbar .header-top-right {
+        display: flex;
+        justify-content: center;
+    }
+
+    .dropdown-menu {
+        min-width: 150px;
+        text-align: center;
+    }
+
+    .language-toggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-left: 0;
+        justify-content: center;
+    }
+
+    .language-toggle img {
+        width: 25px;
+        height: 15px;
     }
 }
 
@@ -213,6 +247,12 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
+        }
+
+        .header-top-left {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
         }
 
         .header-top-right .btn {
@@ -315,7 +355,16 @@
                 
                 <nav class="navbar">
                         <div class="container d-flex justify-content-between align-items-center">
-                            <a href="#" class="logo"><img src="<?= base_url('assets/logo.png'); ?>" alt="Logo"style="width: 100px; height: auto;"></a>
+                            
+                        <div class="header-top-left">
+                            <a href="#" class="logo">
+                                <img src="<?= base_url('assets/logo.png'); ?>" alt="Logo" style="width: 100px; height: auto; margin-right: 20px;">
+                            </a>
+                            <a href="#" class="logo">
+                                <img src="<?= base_url('assets/kemenkes.png'); ?>" alt="Logo" style="width: 150px; height: auto;">
+                            </a>
+                        </div>
+
                             <div class="header-top-right">
                                 <!-- Language Toggle -->
                                 <div class="dropdown">

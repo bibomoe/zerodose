@@ -123,11 +123,26 @@ class Home extends CI_Controller {
             $this->data['districts_array'] = [];
         }
 
-        // Total imunisasi berdasarkan provinsi
+        // Ambil total target dan cakupan DPT-1, DPT-3, MR-1
         $this->data['total_dpt_1'] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province);
-        $this->data['total_dpt_2'] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_2', $selected_province);
         $this->data['total_dpt_3'] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_3', $selected_province);
         $this->data['total_mr_1'] = $this->Immunization_model->get_total_vaccine('mr_1', $selected_province);
+
+        // Ambil total target DPT-1, DPT-3, MR-1
+        $this->data['total_target_dpt_1'] = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province);
+        $this->data['total_target_dpt_3'] = $this->Immunization_model->get_total_target('dpt_hb_hib_3', $selected_province);
+        $this->data['total_target_mr_1'] = $this->Immunization_model->get_total_target('mr_1', $selected_province);
+
+        // Hitung reduction in zero-dose
+        $this->data['reduction_in_zero_dose'] = max($this->data['total_target_dpt_1'] - $this->data['total_dpt_1'], 0);
+
+        // Menghitung persentase untuk DPT-1, DPT-3, MR-1
+        $this->data['percent_dpt_1'] = ($this->data['total_dpt_1'] / $this->data['total_target_dpt_1']) * 100;
+        $this->data['percent_dpt_3'] = ($this->data['total_dpt_3'] / $this->data['total_target_dpt_3']) * 100;
+        $this->data['percent_mr_1'] = ($this->data['total_mr_1'] / $this->data['total_target_mr_1']) * 100;
+        // Hitung persentase pengurangan zero dose berdasarkan target awal
+        $this->data['percent_reduction_zero_dose'] = ($this->data['reduction_in_zero_dose'] / ($this->data['total_target_dpt_1'] )) * 100;
+
 
         // Data imunisasi DPT-1 per distrik
         $this->data['districts'] = $this->Immunization_model->get_dpt1_by_district($selected_province);

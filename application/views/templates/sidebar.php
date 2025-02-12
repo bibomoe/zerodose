@@ -3,12 +3,15 @@
                 <div class="sidebar-header position-relative">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="logo">
-                            <img src="<?= base_url('assets/compiled/svg/logo-rshs.png'); ?>" alt="Logo" srcset="" style="width: 80px; height: auto;" > 
+                            <img src="<?= base_url('assets/logo.png'); ?>" alt="Logo" srcset="" style="width: 60px; height: auto;" > 
                         </div>
-                        <div class="language-toggle" id="language-toggle">
+                        <div class="logo">
+                            <img src="<?= base_url('assets/kemenkes2.png'); ?>" alt="Logo" srcset="" style="width: 30px; height: auto;" > 
+                        </div>
+                        <!-- <div class="language-toggle" id="language-toggle">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/2560px-Flag_of_Indonesia.svg.png" alt="Indonesian Flag" id="lang-id">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/2560px-Flag_of_the_United_States.svg.png" alt="English Flag" id="lang-en" style="display: none;">
-                        </div>
+                        </div> -->
                         <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
                             <!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
                                 role="img" class="iconify iconify--system-uicons" width="20" height="20"
@@ -40,6 +43,8 @@
                         <div class="sidebar-toggler  x">
                             <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
                         </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
                     </div>
                 </div>
                 <div class="sidebar-menu">
@@ -162,11 +167,11 @@
                             </a>
                             
                             <ul class="submenu ">
-                                <li class="submenu-item  ">
+                                <!-- <li class="submenu-item  ">
                                     <a href="<?= base_url('home/zd_cases'); ?>" class='sidebar-link'>
                                         Current ZD Cases
                                     </a>
-                                </li>
+                                </li> -->
 
                                 <!-- <li class="submenu-item  ">
                                     <a href="<?= base_url('home/lost'); ?>" class='sidebar-link'>
@@ -192,11 +197,11 @@
                                     </a>
                                 </li>
 
-                                <li class="submenu-item  ">
+                                <!-- <li class="submenu-item  ">
                                     <a href="<?= base_url('home/private_health_facilities'); ?>" class='sidebar-link'>
                                         Number of Private Health Facilities in Targeted Areas​
                                     </a>
-                                </li>
+                                </li> -->
 
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('home/district'); ?>" class='sidebar-link'>

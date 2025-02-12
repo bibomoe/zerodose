@@ -64,7 +64,7 @@
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                     <h6 class="text-muted font-semibold">
                                                     DPT 1 Immunized</h6>
-                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_dpt_1) ?></h6>
+                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_dpt_1) ?> <small>(<?= number_format($percent_dpt_1, 1) ?>%)</small></h6>
                                                 </div>
                                             </div> 
                                         </div>
@@ -76,23 +76,6 @@
                                             <div class="row">
                                                 <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
                                                     <div class="stats-icon blue mb-2">
-                                                        <i class="iconly-boldUser1"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                                    <h6 class="text-muted font-semibold">DPT 2 Immunized</h6>
-                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_dpt_2) ?></h6>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-lg-3 col-md-6">
-                                    <div class="card">
-                                        <div class="card-body px-4 py-4-5">
-                                            <div class="row">
-                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                                    <div class="stats-icon green mb-2">
                                                         <i class="iconly-boldUser1"></i>
                                                     </div>
                                                 </div>
@@ -109,13 +92,30 @@
                                         <div class="card-body px-4 py-4-5">
                                             <div class="row">
                                                 <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                                    <div class="stats-icon red mb-2">
-                                                        <i class="iconly-boldProfile"></i>
+                                                    <div class="stats-icon green mb-2">
+                                                        <i class="iconly-boldUser1"></i>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                     <h6 class="text-muted font-semibold">MR 1 Immunized</h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_mr_1) ?></h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-lg-3 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5">
+                                            <div class="row">
+                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
+                                                    <div class="stats-icon red mb-2">
+                                                        <i class="iconly-boldProfile"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                                    <h6 class="text-muted font-semibold">Reduction in Zero-Dose</h6>
+                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_target_dpt_1) ?> <small>(<?= number_format($percent_reduction_zero_dose, 1) ?>%)</small></h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -285,7 +285,7 @@
                                 <div class="col-md-6">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title">Number of Restored Children by Place of Residence</h4>
+                                            <h4 class="card-title">Number of Restored Children by Region Type</h4>
                                         </div>
                                         <div class="card-body">
                                             <?php
