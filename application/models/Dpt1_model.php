@@ -209,4 +209,48 @@ class Dpt1_model extends CI_Model {
         return $query->result_array();
     }
 
+    public function get_district_details($province_ids) {
+        $this->db->select("
+            cities.name_id AS district_name,
+            COALESCE(SUM(target_immunization.dpt_hb_hib_1_target), 0) AS target,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage
+        ");
+        $this->db->from('cities');
+        $this->db->join('immunization_data', 'immunization_data.city_id = cities.id', 'left');
+        $this->db->join('target_immunization', 'target_immunization.city_id = cities.id', 'left');
+        $this->db->where_in('cities.province_id', $province_ids);
+        $this->db->group_by('cities.id'); // Group by agar tidak duplikasi district
+    
+        $query = $this->db->get();
+        $districts = $query->result_array();
+    
+        // Hitung persentase dan dropout rates
+        foreach ($districts as &$district) {
+            $target = $district['target'];
+            $dpt1_coverage = $district['dpt1_coverage'];
+            $dpt3_coverage = $district['dpt3_coverage'];
+
+            // % of DPT1 Coverage
+            $district['percent_dpt1_coverage'] = ($target > 0) ? round(($dpt1_coverage / $target) * 100, 2) : 0;
+
+            // Number of Dropout
+            $district['dropout_number'] = max(0, $dpt1_coverage - $dpt3_coverage);
+
+            // **Perbaikan Drop Out Rate**
+            if ($dpt1_coverage == 0) {
+                // Jika DPT1 Coverage = 0, Drop Out Rate harus 100%
+                $district['dropout_rate'] = 100;
+            } else {
+                // Perhitungan normal jika DPT1 Coverage > 0
+                $district['dropout_rate'] = round(($district['dropout_number'] / $dpt1_coverage) * 100, 2);
+            }
+        }
+
+    
+        return $districts;
+    }
+    
+    
+
 }

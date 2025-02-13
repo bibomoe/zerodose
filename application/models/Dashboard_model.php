@@ -182,6 +182,8 @@ class Dashboard_model extends CI_Model {
         $target_dpt1 = $baseline['dpt1'];
         $target_dpt3 = $baseline['dpt3'];
         $target_mr1 = $baseline['mr1'];
+        // var_dump($target_dpt1);
+        // exit;
     
         // DPT3 Coverage
         $this->db->select("
@@ -201,16 +203,31 @@ class Dashboard_model extends CI_Model {
     
         // Reduction in Zero Dose (DPT1)
         $this->db->select("
-            (SUM(CASE WHEN year = 2024 THEN dpt_hb_hib_1 ELSE 0 END) / $target_dpt1) * 100 AS actual_y1,
-            (SUM(CASE WHEN year IN (2024, 2025) THEN dpt_hb_hib_1 ELSE 0 END) / $target_dpt1) * 100 AS actual_y2
+            SUM(CASE WHEN year = 2024 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y1,
+            SUM(CASE WHEN year IN (2024, 2025) THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y2
         ", FALSE);
         $this->db->where_in('province_id', $province_ids);
         $reduction_zd = $this->db->get('immunization_data')->row_array();
-    
+
+        // Menghitung reduction zero dose berdasarkan rumus
+        $reduction_y1 = $target_dpt1 - $reduction_zd['actual_y1'];
+        $reduction_y2 = $target_dpt1 - $reduction_zd['actual_y2'];
+        
+
+        // Menghitung persentase pengurangan zero dose untuk tahun 2024 (Y1) dan (Y2)
+        $percent_reduction_y1 = ($target_dpt1 - $reduction_y1) / $target_dpt1 * 100;
+        $percent_reduction_y2 = ($target_dpt1 - $reduction_y2) / $target_dpt1 * 100;
+
+        // var_dump($target_dpt1 - $reduction_y1);
+        // exit;
+
         return [
             'dpt3' => $dpt3,
             'mr1' => $mr1,
-            'reduction_zd' => $reduction_zd
+            'reduction_zd' => [
+                'actual_y1' => $percent_reduction_y1,
+                'actual_y2' => $percent_reduction_y2
+            ]
         ];
     }
     

@@ -35,7 +35,7 @@
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
                                                     <h6 class="text-muted font-semibold">Number of DPT1 Coverage</h6>
-                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_dpt1_coverage); ?></h6>
+                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_dpt1_coverage); ?> <small>(<?= number_format($percent_dpt1_coverage, 0) ?>%)</small></h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -68,8 +68,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">Number of districts with coverage (DPT1-DPT3) less than 5%</h6>
-                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_dropout_rate); ?></h6>
+                                                    <h6 class="text-muted font-semibold">Number of districts with DO (DPT1-DPT3) less than 5%</h6>
+                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_dropout_rate); ?> <small>(<?= number_format($percent_districts_under_5, 0) ?>%)</small></h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -114,6 +114,46 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <!-- <h4>Current mapping of ZD children based on GIS analysis</h4> -->
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped" id="table1">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>District</th>
+                                                            <th>Target</th>
+                                                            <th>DPT1 Coverage</th>
+                                                            <th>% of DPT1 Coverage</th>
+                                                            <th>DPT3 Coverage</th>
+                                                            <th>Number of Dropout</th>
+                                                            <th>Drop Out Rates</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($district_details as $district): ?>
+                                                            <tr>
+                                                                <td><?= htmlspecialchars($district['district_name']) ?></td>
+                                                                <td><?= number_format($district['target']) ?></td>
+                                                                <td><?= number_format($district['dpt1_coverage']) ?></td>
+                                                                <td><?= $district['percent_dpt1_coverage'] ?>%</td>
+                                                                <td><?= number_format($district['dpt3_coverage']) ?></td>
+                                                                <td><?= number_format($district['dropout_number']) ?></td>
+                                                                <td><?= $district['dropout_rate'] ?>%</td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </section>
                 </div>
@@ -144,12 +184,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }).addTo(map);
 
     let dptUnder5Data = <?= json_encode($dpt_under_5_data, JSON_NUMERIC_CHECK); ?>;
-    console.log(dptUnder5Data);
-    console.log()
-
     let dptCoverageData = <?= json_encode($total_dpt1_coverage_per_province, JSON_NUMERIC_CHECK); ?>;
     let dptTargetData = <?= json_encode($total_dpt1_target_per_province, JSON_NUMERIC_CHECK); ?>;
     let totalCitiesData = <?= json_encode($total_cities_per_province, JSON_NUMERIC_CHECK); ?>;
+
+    let percentDptCoverageData = <?= json_encode($percent_dpt1_coverage_per_province, JSON_NUMERIC_CHECK); ?>;
+    let percentDptUnder5Data = <?= json_encode($percent_dpt_under_5_per_province, JSON_NUMERIC_CHECK); ?>;
+
+    // console.log(percentDptCoverageData);
+    // console.log(dptCoverageData);
 
     function getColor(dpt) {
         return (dpt) ? '#1A9850' : '#D73027' ; // Hijau jika ada lebih dari 0% cakupan, merah jika tidak ada
@@ -192,18 +235,45 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Ambil total jumlah cities per provinsi
                 let totalCities = totalCitiesData.find(item => item.province_id == regionId) || { total_cities: 0 };
 
+                // Ambil persentase cakupan DPT1 per provinsi
+                let percentDptCoverage = percentDptCoverageData[regionId] || 0;
+
+                // Ambil persentase districts dengan coverage (DPT1-DPT3) < 5% per provinsi
+                let percentDptUnder5 = percentDptUnder5Data[regionId] || 0;
+
                 let name = feature.properties.WADMPR; // Nama wilayah/provinsi
 
                 // Membuat konten pop-up untuk menampilkan informasi
                 let popupContent = `<b>${name}</b><br>`;
                 popupContent += `Total Districts: ${totalCities.total_cities}<br>`;
-                popupContent += `Total Districts with DO (DPT1-DPT3) < 5%: ${dptUnder5}<br>`;
-                // popupContent += `Total Districts with DPT2 < 5%: ${dpt2Under5}<br>`;
-                // popupContent += `Total Districts with DPT3 < 5%: ${dpt3Under5}<br>`;
-                popupContent += `DPT1 Coverage: ${dptCoverage.dpt1_coverage}<br>`;
+                popupContent += `Total Districts with DO (DPT1-DPT3) < 5%: ${dptUnder5} (${percentDptUnder5}%)<br>`;
+                popupContent += `DPT1 Coverage: ${dptCoverage.dpt1_coverage} (${percentDptCoverage}%)<br>`;
                 popupContent += `DPT1 Target: ${dptTarget.dpt1_target}`;
 
                 layer.bindPopup(popupContent);
+
+                if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
+                    let labelPoint = turf.pointOnFeature(feature);
+                    let latlng = [labelPoint.geometry.coordinates[1], labelPoint.geometry.coordinates[0]];
+
+                    // if (feature.properties.NAMOBJ) {
+                    //     let label = L.divIcon({
+                    //         className: 'label-class',
+                    //         html: `<strong style="font-size: 9px;">${feature.properties.NAMOBJ}</strong>`,
+                    //         iconSize: [100, 20]
+                    //     });
+
+                    //     L.marker(latlng, { icon: label }).addTo(map);
+                    // } else if (feature.properties.WADMPR) { 
+                        let label = L.divIcon({
+                            className: 'label-class',
+                            html: `<strong style="font-size: 8px;">${feature.properties.WADMPR}</strong>`,
+                            iconSize: [50, 15] // Ukuran lebih kecil
+                        });
+
+                        L.marker(latlng, { icon: label }).addTo(map);
+                    // }
+                }
             }
         }).addTo(map);
 

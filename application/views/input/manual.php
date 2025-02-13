@@ -184,7 +184,7 @@
                                             <hr class="my-4">
 
                                             <div class="table-responsive">
-                                                    <table class="table table-striped" id="table1">
+                                                    <table class="table table-striped" id="table2">
                                                         <thead>
                                                             <tr>
                                                                 <th>Province</th>
@@ -367,7 +367,7 @@
             },
             success: function(response) {
                 let data = JSON.parse(response);
-                let tableBody = $("#table1 tbody");
+                let tableBody = $("#table2 tbody");
                 tableBody.empty();
 
                 if (data.length === 0) {
@@ -391,6 +391,21 @@
                                 </td>
                             </tr>
                         `);
+                    });
+
+                    // Destroy old DataTable and reinitialize it
+                    if ($.fn.dataTable.isDataTable('#table2')) {
+                        $('#table2').DataTable().clear().destroy();
+                    }
+
+                    // Inisialisasi ulang DataTable setelah data dimuat
+                    $('#table2').DataTable({
+                        destroy: true, // Menghapus DataTable lama
+                        paging: true, // Mengaktifkan pagination
+                        searching: true, // Mengaktifkan pencarian
+                        ordering: true, // Mengaktifkan sorting
+                        info: true, // Menampilkan info tentang jumlah data
+                        responsive: true // Membuat tabel responsif
                     });
                 }
             },

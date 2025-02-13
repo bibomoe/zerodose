@@ -358,6 +358,12 @@ class Input extends CI_Controller {
         // Ambil daftar partner untuk dropdown
         $this->data['partners'] = $this->Partner_model->get_all_partners();
 
+        // Ambil tahun dan bulan dalam bentuk array
+        $this->data['year_options'] = [
+            '2024' => '2024',
+            '2025' => '2025'
+        ];
+
         // Inisialisasi data awal (belum ada filter yang diterapkan)
         $this->data['selected_partner'] = '';
         $this->data['activities'] = [];
@@ -494,7 +500,8 @@ class Input extends CI_Controller {
             'dpt_hb_hib_1_target_actual' => $this->input->post('dpt_hb_hib_1_target_actual'),
             'dpt_hb_hib_2_target_actual' => $this->input->post('dpt_hb_hib_2_target_actual'),
             'dpt_hb_hib_3_target_actual' => $this->input->post('dpt_hb_hib_3_target_actual'),
-            'mr_1_target_actual'     => $this->input->post('mr_1_target_actual')
+            'mr_1_target_actual'     => $this->input->post('mr_1_target_actual'),
+            'year'                   => $this->input->post('year') // Menambahkan kolom year
         );
         
         // Simpan data target imunisasi
@@ -505,10 +512,12 @@ class Input extends CI_Controller {
         redirect('input/target');
     }
 
+
     public function get_target_immunization()
     {
         $province_id = $this->input->get('province_id');
         $city_id = $this->input->get('city_id');
+        $year = $this->input->get('year');
 
         // Jika province_id kosong, return array kosong
         // if (empty($province_id)) {
@@ -531,6 +540,12 @@ class Input extends CI_Controller {
         if (!empty($city_id)) {
             $this->db->where('target_immunization.city_id', $city_id);
         }
+
+        // Year opsional (jika ada, tambahkan filter)
+        // if (!empty($year)) {
+        //     $this->db->where('target_immunization.year', $year);
+        // }
+
 
         $query = $this->db->get();
         echo json_encode($query->result());

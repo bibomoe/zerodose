@@ -13,21 +13,20 @@
     <link rel="stylesheet" href="<?= base_url('assets/extensions/simple-datatables/style.css'); ?>">
     <link rel="stylesheet" href="<?= base_url('assets/compiled/css/table-datatable.css'); ?>">
     <script src="<?= base_url('assets/extensions/jquery/jquery.min.js'); ?>"></script>
-    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> -->
     <link rel="stylesheet" href="<?= base_url('assets/extensions/flatpickr/flatpickr.min.css'); ?>">
 
     <script src="<?= base_url('assets/compiled/js/chart.js'); ?>"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
 
     <link rel="stylesheet" href="<?= base_url('assets/extensions/leaflet/leaflet.css'); ?>">
-    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" /> -->
     <script src="<?= base_url('assets/extensions/leaflet/leaflet.js'); ?>"></script>
-    <!-- <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> -->
     <script src="<?= base_url('assets/extensions/leaflet/turf.min.js'); ?>"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/leaflet-textpath@1.2.0/leaflet.textpath.min.js"></script> -->
 
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> -->
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
 
     <style>
         /*!

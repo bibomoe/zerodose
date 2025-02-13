@@ -24,10 +24,10 @@
                     <section class="row">
                         <div class="col-12 col-lg-12">
                             <div class="row">
-                                <div class="col-12">
-                                    <div class="card">
+                                <div class="col-12" style="margin-bottom: 20px;">
+                                    <!-- <div class="card">
                                         <div class="card-header"></div>
-                                        <div class="card-body">
+                                        <div class="card-body"> -->
                                             <?php
                                                 // var_dump($selected_province);
                                             ?>
@@ -44,13 +44,253 @@
                                                     </button>
                                                 </div>
                                             <?= form_close() ?>
+                                        <!-- </div>
+                                    </div> -->
+                                </div>
+                            </div>
+
+                            <style>
+                                .highlight {
+                                    font-size: 1.5rem;
+                                    /* font-weight: 700; */
+                                    /* color: #0056b3; */
+                                }
+                                .small-text {
+                                    font-size: 1rem;
+                                }
+                                .card-body h6 {
+                                    margin-bottom: 1rem;
+                                }
+                                .card-body .card-number {
+                                    font-size: 1.5rem;
+                                    /* font-weight: 700; */
+                                    /* color: #0056b3; */
+                                }
+                                .card-body .card-subtext {
+                                    font-size: 0.875rem;
+                                    color: #6c757d;
+                                }
+                                .card-body .row {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                }
+                                .card-body .col-md-4 {
+                                    text-align: center;
+                                }
+                            </style>
+                            <div class="row">
+                                <!-- National Baseline (without icon) -->
+                                <div class="col-12 col-lg-12 col-md-12">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5" style="text-align: center;">
+                                            <h6 class="text-muted font-semibold">Children Zero Dose Year 2023 (National Baseline)</h6>
+                                            <h6 class="font-extrabold mb-0 highlight">662,614 children</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Target Year 2024 -->
+                                <div class="col-6 col-lg-4 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5">
+                                            <div class="row">
+                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
+                                                    <div class="stats-icon purple mb-2">
+                                                        <i class="iconly-boldUser1"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
+                                                    <h6 class="text-muted font-semibold">Target Year 2024</h6>
+                                                    <div class="card-number font-extrabold mb-0">5,000,000 </div>
+                                                    <div class="card-subtext">Based on the Population Census Survey (SUPAS)</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- DPT-1 Coverage Year 2024 -->
+                                <div class="col-6 col-lg-4 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5">
+                                            <div class="row">
+                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
+                                                    <div class="stats-icon blue mb-2">
+                                                        <i class="iconly-boldPlus"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
+                                                    <h6 class="text-muted font-semibold">DPT-1 Coverage Year 2024</h6>
+                                                    <div class="card-number font-extrabold mb-0">4,567,000 </div>
+                                                    <div class="card-subtext">91% of the target</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Zero Dose Year 2024 -->
+                                <div class="col-6 col-lg-4 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5">
+                                            <div class="row">
+                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
+                                                    <div class="stats-icon red mb-2">
+                                                        <i class="iconly-boldProfile"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
+                                                    <h6 class="text-muted font-semibold">Zero Dose Year 2024</h6>
+                                                    <div class="card-number font-extrabold mb-0">433,000 </div>
+                                                    <div class="card-subtext">9% reduction from 2023 national baseline for 2024</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Target Year 2025 -->
+                                <div class="col-6 col-lg-4 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5">
+                                            <div class="row">
+                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
+                                                    <div class="stats-icon purple mb-2">
+                                                        <i class="iconly-boldUser1"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
+                                                    <h6 class="text-muted font-semibold">Target Year 2025</h6>
+                                                    <div class="card-number font-extrabold mb-0">5,500,000 </div>
+                                                    <div class="card-subtext">Based on the Population Census Survey (SUPAS)</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- DPT-1 Coverage Year 2025 -->
+                                <div class="col-6 col-lg-4 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5">
+                                            <div class="row">
+                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
+                                                    <div class="stats-icon blue mb-2">
+                                                        <i class="iconly-boldPlus"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
+                                                    <h6 class="text-muted font-semibold">DPT-1 Coverage Year 2025</h6>
+                                                    <div class="card-number font-extrabold mb-0">3,000,000 </div>
+                                                    <div class="card-subtext">55% of the target</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Zero Dose Year 2025 -->
+                                <div class="col-6 col-lg-4 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5">
+                                            <div class="row">
+                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
+                                                    <div class="stats-icon red mb-2">
+                                                        <i class="iconly-boldProfile"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
+                                                    <h6 class="text-muted font-semibold">Zero Dose Year 2025</h6>
+                                                    <div class="card-number font-extrabold mb-0">2,500,000 </div>
+                                                    <div class="card-subtext">45% increase from 2023 national baseline for 2025</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-
                             <div class="row">
+    <!-- DPT-3 Coverage Year 2024 -->
+    <div class="col-12 col-lg-6 col-md-6">
+        <div class="card">
+            <div class="card-body px-4 py-4-5">
+                <h6 class="text-muted font-semibold">DPT-3 Coverage Year 2024</h6>
+                <div class="card-number font-extrabold mb-3">3,000,000</div>
+                <div class="card-subtext mb-1">71% of the baseline</div>
+                <div class="progress" style="height: 20px;">
+                    <div class="progress-bar" role="progressbar" style="width: 71%;" aria-valuenow="71" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="mt-1 text-muted mb-4">1,199,289 children need vaccination</div>
+                
+                <!-- Baseline and Target Coverage -->
+                <div class="mt-1">
+                    <p><strong>Baseline: </strong>4,199,289 children</p>
+                    <p><strong>Target Coverage 90% </strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DPT-3 Coverage Year 2025 -->
+    <div class="col-12 col-lg-6 col-md-6">
+        <div class="card">
+            <div class="card-body px-4 py-4-5">
+                <h6 class="text-muted font-semibold">DPT-3 Coverage Year 2025</h6>
+                <div class="card-number font-extrabold mb-3">4,000,000</div>
+                <div class="card-subtext mb-1">77% of the baseline</div>
+                <div class="progress" style="height: 20px;">
+                    <div class="progress-bar" role="progressbar" style="width: 77%;" aria-valuenow="77" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="mt-1 text-muted mb-4">1,199,289 children need vaccination</div>
+                
+                <!-- Baseline and Target Coverage -->
+                <div class="mt-1">
+                    <p><strong>Baseline: </strong>5,199,289 children</p>
+                    <p><strong>Target Coverage 95% </strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MR-1 Coverage Year 2024 -->
+    <div class="col-12 col-lg-6 col-md-6">
+        <div class="card">
+            <div class="card-body px-4 py-4-5">
+                <h6 class="text-muted font-semibold">MR-1 Coverage Year 2024</h6>
+                <div class="card-number font-extrabold mb-3">3,900,000</div>
+                <div class="card-subtext mb-1">92% of the baseline</div>
+                <div class="progress" style="height: 20px;">
+                    <div class="progress-bar" role="progressbar" style="width: 92%;" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="mt-1 text-muted mb-4">344,731 children need vaccination</div>
+                
+                <!-- Baseline and Target Coverage -->
+                <div class="mt-1">
+                    <p><strong>Baseline: </strong>4,244,731 children</p>
+                    <p><strong>Target Coverage 90% </strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MR-1 Coverage Year 2025 -->
+    <div class="col-12 col-lg-6 col-md-6">
+        <div class="card">
+            <div class="card-body px-4 py-4-5">
+                <h6 class="text-muted font-semibold">MR-1 Coverage Year 2025</h6>
+                <div class="card-number font-extrabold mb-3">4,100,000</div>
+                <div class="card-subtext mb-1">78% of the baseline</div>
+                <div class="progress" style="height: 20px;">
+                    <div class="progress-bar" role="progressbar" style="width: 78%;" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="mt-1 text-muted mb-4">1,144,731 children need vaccination</div>
+                
+                <!-- Baseline and Target Coverage -->
+                <div class="mt-1">
+                    <p><strong>Baseline: </strong>5,244,731 children</p>
+                    <p><strong>Target Coverage 95%: </strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                            <!-- <div class="row">
                                 <h4>Total Immunized Children</h4>
                                 <div class="col-6 col-lg-3 col-md-6">
                                     <div class="card">
@@ -115,13 +355,13 @@
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                     <h6 class="text-muted font-semibold">Reduction in Zero-Dose</h6>
-                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_target_dpt_1) ?> <small>(<?= number_format($percent_reduction_zero_dose, 1) ?>%)</small></h6>
+                                                    <h6 class="font-extrabold mb-0"><?= number_format($reduction_in_zero_dose) ?></br> <small>(<?= number_format($percent_reduction_zero_dose, 0) ?>%)</small></h6>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card">
@@ -683,8 +923,16 @@
                     if (feature.properties.NAMOBJ) {
                         let label = L.divIcon({
                             className: 'label-class',
-                            html: `<strong>${feature.properties.NAMOBJ}</strong>`,
+                            html: `<strong style="font-size: 9px;">${feature.properties.NAMOBJ}</strong>`,
                             iconSize: [100, 20]
+                        });
+
+                        L.marker(latlng, { icon: label }).addTo(map);
+                    } else if (feature.properties.WADMPR) { 
+                        let label = L.divIcon({
+                            className: 'label-class',
+                            html: `<strong style="font-size: 8px;">${feature.properties.WADMPR}</strong>`,
+                            iconSize: [50, 15] // Ukuran lebih kecil
                         });
 
                         L.marker(latlng, { icon: label }).addTo(map);

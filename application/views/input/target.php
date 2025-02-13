@@ -388,6 +388,13 @@
                                                         </div>
 
                                                         <div class="col-md-4">
+                                                            <?= form_label('Select Year', 'year'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_dropdown('year', $year_options, '', 'class="form-select" id="year"'); ?>
+                                                        </div>
+
+                                                        <div class="col-md-4">
                                                             <?= form_label('DPT 1 Target', 'dpt_hb_hib_1_target'); ?>
                                                         </div>
                                                         <div class="col-md-8 form-group">
@@ -455,7 +462,7 @@
                                                 <hr class="my-4">
 
                                                 <div class="row mb-3">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <label for="filter_province">Filter by Province:</label>
                                                         <select id="filter_province" class="form-select">
                                                             <?php foreach ($province_options as $key => $value): ?>
@@ -464,12 +471,22 @@
                                                         </select>
                                                     </div>
 
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <label for="filter_city">Filter by City:</label>
                                                         <select id="filter_city" class="form-select">
                                                             <option value="">-- Select City --</option>
                                                         </select>
                                                     </div>
+
+                                                    <div class="col-md-2">
+                                                    <label for="filter_year">Filter By Year</label>
+                                                        <select id="filter_year" class="form-select">
+                                                            <option value="">- Year -</option>
+                                                            <option value="2024">2024</option>
+                                                            <option value="2025">2025</option>
+                                                        </select>
+                                                    </div>
+
                                                     <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" 
                                                         value="<?= $this->security->get_csrf_hash(); ?>">
 
@@ -482,11 +499,12 @@
                                                 <hr class="my-4">
 
                                                 <div class="table-responsive">
-                                                    <table class="table table-striped" id="table1">
+                                                    <table class="table table-striped" id="table2">
                                                         <thead>
                                                             <tr>
                                                                 <th>Province</th>
                                                                 <th>City/District</th>
+                                                                <th>Year</th>
                                                                 <th>DPT 1</th>
                                                                 <th>DPT 2</th>
                                                                 <th>DPT 3</th>
@@ -571,14 +589,14 @@
 
 <script>
 $(document).ready(function () {
-    function loadTable(province_id = '', city_id = '') {
+    function loadTable(province_id = '', city_id = '', year = null) {
         $.ajax({
             url: "<?= base_url('input/get_target_immunization'); ?>",
             type: "GET",
-            data: { province_id: province_id, city_id: city_id },
+            data: { province_id: province_id, city_id: city_id, year: year },
             dataType: "json",
             success: function (response) {
-                let tableBody = $("#table1 tbody");
+                let tableBody = $("#table2 tbody");
                 tableBody.empty(); // Kosongkan tabel sebelum diisi ulang
 
                 if (response.length > 0) {
@@ -586,6 +604,7 @@ $(document).ready(function () {
                         let newRow = `<tr>
                             <td>${row.province_name}</td>
                             <td>${row.city_name}</td>
+                            <td>${row.year}</td>
                             <td>${row.dpt_hb_hib_1_target}</td>
                             <td>${row.dpt_hb_hib_2_target}</td>
                             <td>${row.dpt_hb_hib_3_target}</td>
@@ -599,6 +618,21 @@ $(document).ready(function () {
                             </td>
                         </tr>`;
                         tableBody.append(newRow);
+                    });
+
+                    // Destroy old DataTable and reinitialize it
+                    if ($.fn.dataTable.isDataTable('#table2')) {
+                        $('#table2').DataTable().clear().destroy();
+                    }
+
+                    // Inisialisasi ulang DataTable setelah data dimuat
+                    $('#table2').DataTable({
+                        destroy: true, // Menghapus DataTable lama
+                        paging: true, // Mengaktifkan pagination
+                        searching: true, // Mengaktifkan pencarian
+                        ordering: true, // Mengaktifkan sorting
+                        info: true, // Menampilkan info tentang jumlah data
+                        responsive: true // Membuat tabel responsif
                     });
                 } else {
                     tableBody.append('<tr><td colspan="11" class="text-center">No data found</td></tr>');

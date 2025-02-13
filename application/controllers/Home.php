@@ -133,15 +133,30 @@ class Home extends CI_Controller {
         $this->data['total_target_dpt_3'] = $this->Immunization_model->get_total_target('dpt_hb_hib_3', $selected_province);
         $this->data['total_target_mr_1'] = $this->Immunization_model->get_total_target('mr_1', $selected_province);
 
-        // Hitung reduction in zero-dose
+        // Hitung reduction in zero-dose / ini sebenarnya zd cases
         $this->data['reduction_in_zero_dose'] = max($this->data['total_target_dpt_1'] - $this->data['total_dpt_1'], 0);
 
+        // var_dump($this->data['total_dpt_1']);
+        // exit;
+
         // Menghitung persentase untuk DPT-1, DPT-3, MR-1
-        $this->data['percent_dpt_1'] = ($this->data['total_dpt_1'] / $this->data['total_target_dpt_1']) * 100;
-        $this->data['percent_dpt_3'] = ($this->data['total_dpt_3'] / $this->data['total_target_dpt_3']) * 100;
-        $this->data['percent_mr_1'] = ($this->data['total_mr_1'] / $this->data['total_target_mr_1']) * 100;
+        $this->data['percent_dpt_1'] = ($this->data['total_target_dpt_1'] != 0) 
+            ? ($this->data['total_dpt_1'] / $this->data['total_target_dpt_1']) * 100 
+            : 0;
+
+        $this->data['percent_dpt_3'] = ($this->data['total_target_dpt_3'] != 0) 
+            ? ($this->data['total_dpt_3'] / $this->data['total_target_dpt_3']) * 100 
+            : 0;
+        
+        $this->data['percent_mr_1'] = ($this->data['total_target_mr_1'] != 0) 
+            ? ($this->data['total_mr_1'] / $this->data['total_target_mr_1']) * 100 
+            : 0;
+
         // Hitung persentase pengurangan zero dose berdasarkan target awal
-        $this->data['percent_reduction_zero_dose'] = ($this->data['reduction_in_zero_dose'] / ($this->data['total_target_dpt_1'] )) * 100;
+        $this->data['percent_reduction_zero_dose'] = ($this->data['total_target_dpt_1'] != 0) 
+            ? (($this->data['total_target_dpt_1'] - $this->data['reduction_in_zero_dose']) / $this->data['total_target_dpt_1']) * 100 
+            : 0;
+        
 
 
         // Data imunisasi DPT-1 per distrik
@@ -212,9 +227,15 @@ class Home extends CI_Controller {
         // $this->data['districts_under_5'] = $this->Dpt1_model->get_districts_under_5_percent();
         $this->data['total_regencies_cities'] = $this->Dpt1_model->get_total_regencies_cities();
 
-        // var_dump($this->data['districts_under_5']);
-        // exit;
-        
+        // Hitung persentase DPT1 Coverage
+        $this->data['percent_dpt1_coverage'] = ($this->data['total_dpt1_target'] > 0) 
+            ? ($this->data['total_dpt1_coverage'] / $this->data['total_dpt1_target']) * 100 
+            : 0;
+
+        // Hitung persentase Districts dengan Coverage < 5%
+        $this->data['percent_districts_under_5'] = ($this->data['total_regencies_cities'] > 0) 
+            ? ($this->data['total_dropout_rate'] / $this->data['total_regencies_cities']) * 100 
+            : 0;
 
         // Mengambil data cakupan DPT untuk provinsi yang telah dipilih
         // $dpt_under_5_data = $this->Dpt1_model->get_dpt_under_5_percent_cities($province_ids);
@@ -227,8 +248,52 @@ class Home extends CI_Controller {
 
         // Kirim data ke view dalam format array
         $this->data['dpt_under_5_data'] = $dpt_under_5_data;
+
+        // **Hitung persentase DPT1 Coverage per provinsi**
+        $this->data['percent_dpt1_coverage_per_province'] = [];
+
+        foreach ($this->data['total_dpt1_coverage_per_province'] as $coverage) {
+            $province_id = $coverage['province_id'];
+            $coverage_value = $coverage['dpt1_coverage'] ?? 0;
+
+            // Cari target berdasarkan province_id
+            $target = 0;
+            foreach ($this->data['total_dpt1_target_per_province'] as $target_data) {
+                if ($target_data['province_id'] == $province_id) {
+                    $target = $target_data['dpt1_target'] ?? 0;
+                    break; // Stop loop setelah menemukan match
+                }
+            }
+
+            // Hitung persentase cakupan DPT1 jika target tidak nol
+            $this->data['percent_dpt1_coverage_per_province'][$province_id] = ($target > 0)
+                ? round(($coverage_value / $target) * 100, 2)
+                : 0;
+        }
+
+        // var_dump($this->data['total_dpt1_coverage_per_province']);
+        // exit;
+        
+        
+
+        // **Hitung persentase districts dengan coverage < 5% per provinsi**
+        $this->data['percent_dpt_under_5_per_province'] = [];
+        foreach ($dpt_under_5_data as $province_id => $district_count) {
+            $total_cities = $this->data['total_cities_per_province'][$province_id]['total_cities'] ?? 0;
+
+            $this->data['percent_dpt_under_5_per_province'][$province_id] = ($total_cities > 0)
+                ? round(($district_count / $total_cities) * 100, 2)
+                : 0;
+        }
+
         $this->data['geojson_file'] = base_url('assets/geojson/targeted.geojson');  // File GeoJSON untuk targeted provinces
 
+        // Ambil data distrik dan cakupan DPT
+        $this->data['district_details'] = $this->Dpt1_model->get_district_details($province_ids);
+
+        // echo "Total districts from model: " . count($this->data['district_details']);
+        // print_r($this->data['district_details']);
+        // exit;
     
         $this->data['title'] = 'DPT1 in targeted areas';
         load_template('dpt1', $this->data);
