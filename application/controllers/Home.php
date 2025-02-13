@@ -123,41 +123,89 @@ class Home extends CI_Controller {
             $this->data['districts_array'] = [];
         }
 
-        // Ambil total target dan cakupan DPT-1, DPT-3, MR-1
-        $this->data['total_dpt_1'] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province);
-        $this->data['total_dpt_3'] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_3', $selected_province);
-        $this->data['total_mr_1'] = $this->Immunization_model->get_total_vaccine('mr_1', $selected_province);
+        // Ambil baseline ZD 2023
+        $this->data['national_baseline_zd'] = $this->Immunization_model->get_baseline_zd(2023);
 
-        // Ambil total target DPT-1, DPT-3, MR-1
-        $this->data['total_target_dpt_1'] = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province);
-        $this->data['total_target_dpt_3'] = $this->Immunization_model->get_total_target('dpt_hb_hib_3', $selected_province);
-        $this->data['total_target_mr_1'] = $this->Immunization_model->get_total_target('mr_1', $selected_province);
+        // Ambil data untuk tahun 2024 & 2025
+        foreach ([2024, 2025] as $year) {
+            if ($selected_province === 'all') {
+                // Ambil target dari target_coverage untuk semua provinsi
+                $this->data["total_target_dpt_1_$year"] = $this->Immunization_model->get_total_target_coverage('DPT-1', $year);
+                $this->data["total_target_dpt_3_$year"] = $this->Immunization_model->get_total_target_coverage('DPT-3', $year);
+                $this->data["total_target_mr_1_$year"] = $this->Immunization_model->get_total_target_coverage('MR-1', $year);
+            } else {
+                // Ambil target dari target_immunization untuk provinsi tertentu atau targeted
+                $this->data["total_target_dpt_1_$year"] = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province, $year);
+                $this->data["total_target_dpt_3_$year"] = $this->Immunization_model->get_total_target('dpt_hb_hib_3', $selected_province, $year);
+                $this->data["total_target_mr_1_$year"] = $this->Immunization_model->get_total_target('mr_1', $selected_province, $year);
+            }
 
-        // Hitung reduction in zero-dose / ini sebenarnya zd cases
-        $this->data['reduction_in_zero_dose'] = max($this->data['total_target_dpt_1'] - $this->data['total_dpt_1'], 0);
+            // Ambil data cakupan imunisasi dari immunization_data
+            $this->data["total_dpt_1_$year"] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province, $year);
+            $this->data["total_dpt_3_$year"] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_3', $selected_province, $year);
+            $this->data["total_mr_1_$year"] = $this->Immunization_model->get_total_vaccine('mr_1', $selected_province, $year);
+
+            // Hitung Zero Dose (ZD)
+            $this->data["zero_dose_$year"] = max($this->data["total_target_dpt_1_$year"] - $this->data["total_dpt_1_$year"], 0);
+
+            // Hitung persentase ZD dari baseline 2023
+            if ($this->data["zero_dose_$year"] <= $this->data['national_baseline_zd']) {
+                $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% reduction from 2023 national baseline for $year";
+            } elseif ($this->data["zero_dose_$year"] > 2 * $this->data['national_baseline_zd']) {
+                $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% increase from 2023 national baseline for $year";
+            } else {
+                $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% change from 2023 national baseline for $year";
+            }
+
+            // Hitung anak yang belum divaksinasi
+            $this->data["missing_dpt_3_$year"] = max($this->data["total_target_dpt_3_$year"] - $this->data["total_dpt_3_$year"], 0);
+            $this->data["missing_mr_1_$year"] = max($this->data["total_target_mr_1_$year"] - $this->data["total_mr_1_$year"], 0);
+
+            // Hitung persentase cakupan terhadap baseline
+            $this->data["percent_dpt_3_$year"] = ($this->data["total_target_dpt_3_$year"] != 0)
+                ? round(($this->data["total_dpt_3_$year"] / $this->data["total_target_dpt_3_$year"]) * 100, 1)
+                : 0;
+            
+            $this->data["percent_mr_1_$year"] = ($this->data["total_target_mr_1_$year"] != 0)
+                ? round(($this->data["total_mr_1_$year"] / $this->data["total_target_mr_1_$year"]) * 100, 1)
+                : 0;
+        }
+
+        // // Ambil total target dan cakupan DPT-1, DPT-3, MR-1
+        // $this->data['total_dpt_1'] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province);
+        // $this->data['total_dpt_3'] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_3', $selected_province);
+        // $this->data['total_mr_1'] = $this->Immunization_model->get_total_vaccine('mr_1', $selected_province);
+
+        // // Ambil total target DPT-1, DPT-3, MR-1
+        // $this->data['total_target_dpt_1'] = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province);
+        // $this->data['total_target_dpt_3'] = $this->Immunization_model->get_total_target('dpt_hb_hib_3', $selected_province);
+        // $this->data['total_target_mr_1'] = $this->Immunization_model->get_total_target('mr_1', $selected_province);
+
+        // // Hitung reduction in zero-dose / ini sebenarnya zd cases
+        // $this->data['reduction_in_zero_dose'] = max($this->data['total_target_dpt_1'] - $this->data['total_dpt_1'], 0);
+
+        // // Menghitung persentase untuk DPT-1, DPT-3, MR-1
+        // $this->data['percent_dpt_1'] = ($this->data['total_target_dpt_1'] != 0) 
+        //     ? ($this->data['total_dpt_1'] / $this->data['total_target_dpt_1']) * 100 
+        //     : 0;
+
+        // $this->data['percent_dpt_3'] = ($this->data['total_target_dpt_3'] != 0) 
+        //     ? ($this->data['total_dpt_3'] / $this->data['total_target_dpt_3']) * 100 
+        //     : 0;
+        
+        // $this->data['percent_mr_1'] = ($this->data['total_target_mr_1'] != 0) 
+        //     ? ($this->data['total_mr_1'] / $this->data['total_target_mr_1']) * 100 
+        //     : 0;
+
+        // // Hitung persentase pengurangan zero dose berdasarkan target awal
+        // $this->data['percent_reduction_zero_dose'] = ($this->data['total_target_dpt_1'] != 0) 
+        //     ? (($this->data['total_target_dpt_1'] - $this->data['reduction_in_zero_dose']) / $this->data['total_target_dpt_1']) * 100 
+        //     : 0;
+        
+
 
         // var_dump($this->data['total_dpt_1']);
         // exit;
-
-        // Menghitung persentase untuk DPT-1, DPT-3, MR-1
-        $this->data['percent_dpt_1'] = ($this->data['total_target_dpt_1'] != 0) 
-            ? ($this->data['total_dpt_1'] / $this->data['total_target_dpt_1']) * 100 
-            : 0;
-
-        $this->data['percent_dpt_3'] = ($this->data['total_target_dpt_3'] != 0) 
-            ? ($this->data['total_dpt_3'] / $this->data['total_target_dpt_3']) * 100 
-            : 0;
-        
-        $this->data['percent_mr_1'] = ($this->data['total_target_mr_1'] != 0) 
-            ? ($this->data['total_mr_1'] / $this->data['total_target_mr_1']) * 100 
-            : 0;
-
-        // Hitung persentase pengurangan zero dose berdasarkan target awal
-        $this->data['percent_reduction_zero_dose'] = ($this->data['total_target_dpt_1'] != 0) 
-            ? (($this->data['total_target_dpt_1'] - $this->data['reduction_in_zero_dose']) / $this->data['total_target_dpt_1']) * 100 
-            : 0;
-        
-
 
         // Data imunisasi DPT-1 per distrik
         $this->data['districts'] = $this->Immunization_model->get_dpt1_by_district($selected_province);

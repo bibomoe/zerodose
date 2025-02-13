@@ -39,6 +39,12 @@
                                                         $selected_province, 
                                                         ['class' => 'form-select', 'id' => 'provinceFilter', 'style' => 'width: 100%; max-width: 300px; height: 48px; font-size: 1rem;']
                                                     ); ?>
+                                                    <?= form_dropdown(
+                                                            'year', 
+                                                            [2025 => '2025', 2024 => '2024'], 
+                                                            set_value('year', $selected_year ?? 2025), 
+                                                            'class="form-select" style="width: 100%; max-width: 150px; height: 48px; font-size: 1rem;" required'
+                                                        ); ?>
                                                     <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
                                                         <i class="bi bi-filter"></i> Submit
                                                     </button>
@@ -79,216 +85,144 @@
                                     text-align: center;
                                 }
                             </style>
+
+                            <!-- DPT1 dan ZD -->
                             <div class="row">
-                                <!-- National Baseline (without icon) -->
+                                <!-- National Baseline -->
                                 <div class="col-12 col-lg-12 col-md-12">
                                     <div class="card">
-                                        <div class="card-body px-4 py-4-5" style="text-align: center;">
+                                        <div class="card-body px-4 py-4-5 text-center">
                                             <h6 class="text-muted font-semibold">Children Zero Dose Year 2023 (National Baseline)</h6>
-                                            <h6 class="font-extrabold mb-0 highlight">662,614 children</h6>
+                                            <h6 class="font-extrabold mb-0 highlight"><?= number_format($national_baseline_zd) ?> children</h6>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Target Year 2024 -->
-                                <div class="col-6 col-lg-4 col-md-6">
-                                    <div class="card">
-                                        <div class="card-body px-4 py-4-5">
-                                            <div class="row">
-                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
-                                                    <div class="stats-icon purple mb-2">
-                                                        <i class="iconly-boldUser1"></i>
+
+                                <?php foreach ([2024, 2025] as $year): ?>
+                                    <!-- Target Year -->
+                                    <div class="col-6 col-lg-4 col-md-6">
+                                        <div class="card">
+                                            <div class="card-body px-4 py-4-5">
+                                                <div class="row">
+                                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start">
+                                                        <div class="stats-icon purple mb-2">
+                                                            <i class="iconly-boldUser1"></i>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">Target Year 2024</h6>
-                                                    <div class="card-number font-extrabold mb-0">5,000,000 </div>
-                                                    <div class="card-subtext">Based on the Population Census Survey (SUPAS)</div>
+                                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
+                                                        <h6 class="text-muted font-semibold">Target Year <?= $year; ?></h6>
+                                                        <div class="card-number font-extrabold mb-0"><?= number_format(${"total_target_dpt_1_$year"}); ?></div>
+                                                        <div class="card-subtext">Based on the Population Census Survey (SUPAS)</div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- DPT-1 Coverage Year 2024 -->
-                                <div class="col-6 col-lg-4 col-md-6">
-                                    <div class="card">
-                                        <div class="card-body px-4 py-4-5">
-                                            <div class="row">
-                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
-                                                    <div class="stats-icon blue mb-2">
-                                                        <i class="iconly-boldPlus"></i>
+
+                                    <!-- DPT-1 Coverage -->
+                                    <div class="col-6 col-lg-4 col-md-6">
+                                        <div class="card">
+                                            <div class="card-body px-4 py-4-5">
+                                                <div class="row">
+                                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start">
+                                                        <div class="stats-icon blue mb-2">
+                                                            <i class="iconly-boldPlus"></i>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">DPT-1 Coverage Year 2024</h6>
-                                                    <div class="card-number font-extrabold mb-0">4,567,000 </div>
-                                                    <div class="card-subtext">91% of the target</div>
+                                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
+                                                        <h6 class="text-muted font-semibold">DPT-1 Coverage Year <?= $year; ?></h6>
+                                                        <div class="card-number font-extrabold mb-0"><?= number_format(${"total_dpt_1_$year"}); ?></div>
+                                                        <div class="card-subtext">
+                                                            <?= ${"total_target_dpt_1_$year"} > 0 
+                                                                ? round((${"total_dpt_1_$year"} / ${"total_target_dpt_1_$year"}) * 100, 1) . '% of the target' 
+                                                                : '0% of the target'; 
+                                                            ?>
+
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- Zero Dose Year 2024 -->
-                                <div class="col-6 col-lg-4 col-md-6">
-                                    <div class="card">
-                                        <div class="card-body px-4 py-4-5">
-                                            <div class="row">
-                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
-                                                    <div class="stats-icon red mb-2">
-                                                        <i class="iconly-boldProfile"></i>
+
+                                    <!-- Zero Dose -->
+                                    <div class="col-6 col-lg-4 col-md-6">
+                                        <div class="card">
+                                            <div class="card-body px-4 py-4-5">
+                                                <div class="row">
+                                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start">
+                                                        <div class="stats-icon red mb-2">
+                                                            <i class="iconly-boldProfile"></i>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">Zero Dose Year 2024</h6>
-                                                    <div class="card-number font-extrabold mb-0">433,000 </div>
-                                                    <div class="card-subtext">9% reduction from 2023 national baseline for 2024</div>
+                                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
+                                                        <h6 class="text-muted font-semibold">Zero Dose Year <?= $year; ?></h6>
+                                                        <div class="card-number font-extrabold mb-0"><?= number_format(${"zero_dose_$year"}); ?></div>
+                                                        <div class="card-subtext"><?= ${"zd_narrative_$year"}; ?></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- Target Year 2025 -->
-                                <div class="col-6 col-lg-4 col-md-6">
-                                    <div class="card">
-                                        <div class="card-body px-4 py-4-5">
-                                            <div class="row">
-                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
-                                                    <div class="stats-icon purple mb-2">
-                                                        <i class="iconly-boldUser1"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">Target Year 2025</h6>
-                                                    <div class="card-number font-extrabold mb-0">5,500,000 </div>
-                                                    <div class="card-subtext">Based on the Population Census Survey (SUPAS)</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- DPT-1 Coverage Year 2025 -->
-                                <div class="col-6 col-lg-4 col-md-6">
-                                    <div class="card">
-                                        <div class="card-body px-4 py-4-5">
-                                            <div class="row">
-                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
-                                                    <div class="stats-icon blue mb-2">
-                                                        <i class="iconly-boldPlus"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">DPT-1 Coverage Year 2025</h6>
-                                                    <div class="card-number font-extrabold mb-0">3,000,000 </div>
-                                                    <div class="card-subtext">55% of the target</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Zero Dose Year 2025 -->
-                                <div class="col-6 col-lg-4 col-md-6">
-                                    <div class="card">
-                                        <div class="card-body px-4 py-4-5">
-                                            <div class="row">
-                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start ">
-                                                    <div class="stats-icon red mb-2">
-                                                        <i class="iconly-boldProfile"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">Zero Dose Year 2025</h6>
-                                                    <div class="card-number font-extrabold mb-0">2,500,000 </div>
-                                                    <div class="card-subtext">45% increase from 2023 national baseline for 2025</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <?php endforeach; ?>
                             </div>
-                            <div class="row">
-    <!-- DPT-3 Coverage Year 2024 -->
-    <div class="col-12 col-lg-6 col-md-6">
-        <div class="card">
-            <div class="card-body px-4 py-4-5">
-                <h6 class="text-muted font-semibold">DPT-3 Coverage Year 2024</h6>
-                <div class="card-number font-extrabold mb-3">3,000,000</div>
-                <div class="card-subtext mb-1">71% of the baseline</div>
-                <div class="progress" style="height: 20px;">
-                    <div class="progress-bar" role="progressbar" style="width: 71%;" aria-valuenow="71" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <div class="mt-1 text-muted mb-4">1,199,289 children need vaccination</div>
-                
-                <!-- Baseline and Target Coverage -->
-                <div class="mt-1">
-                    <p><strong>Baseline: </strong>4,199,289 children</p>
-                    <p><strong>Target Coverage 90% </strong></p>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- DPT-3 Coverage Year 2025 -->
-    <div class="col-12 col-lg-6 col-md-6">
-        <div class="card">
-            <div class="card-body px-4 py-4-5">
-                <h6 class="text-muted font-semibold">DPT-3 Coverage Year 2025</h6>
-                <div class="card-number font-extrabold mb-3">4,000,000</div>
-                <div class="card-subtext mb-1">77% of the baseline</div>
-                <div class="progress" style="height: 20px;">
-                    <div class="progress-bar" role="progressbar" style="width: 77%;" aria-valuenow="77" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <div class="mt-1 text-muted mb-4">1,199,289 children need vaccination</div>
-                
-                <!-- Baseline and Target Coverage -->
-                <div class="mt-1">
-                    <p><strong>Baseline: </strong>5,199,289 children</p>
-                    <p><strong>Target Coverage 95% </strong></p>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- MR-1 Coverage Year 2024 -->
-    <div class="col-12 col-lg-6 col-md-6">
-        <div class="card">
-            <div class="card-body px-4 py-4-5">
-                <h6 class="text-muted font-semibold">MR-1 Coverage Year 2024</h6>
-                <div class="card-number font-extrabold mb-3">3,900,000</div>
-                <div class="card-subtext mb-1">92% of the baseline</div>
-                <div class="progress" style="height: 20px;">
-                    <div class="progress-bar" role="progressbar" style="width: 92%;" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <div class="mt-1 text-muted mb-4">344,731 children need vaccination</div>
-                
-                <!-- Baseline and Target Coverage -->
-                <div class="mt-1">
-                    <p><strong>Baseline: </strong>4,244,731 children</p>
-                    <p><strong>Target Coverage 90% </strong></p>
-                </div>
-            </div>
-        </div>
-    </div>
+                            <!-- DPT 3 dan MR1 -->
+<div class="row">
+    <?php foreach ([2024, 2025] as $year): ?>
+        <!-- DPT-3 Coverage -->
+        <div class="col-12 col-lg-6 col-md-6">
+            <div class="card">
+                <div class="card-body px-4 py-4-5">
+                    <h6 class="text-muted font-semibold">DPT-3 Coverage Year <?= $year; ?></h6>
+                    <div class="card-number font-extrabold mb-3"><?= number_format(${"total_dpt_3_$year"}); ?></div>
+                    <div class="card-subtext mb-1"><?= ${"percent_dpt_3_$year"}; ?>% of the baseline</div>
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar" role="progressbar" 
+                            style="width: <?= ${"percent_dpt_3_$year"}; ?>%;" 
+                            aria-valuenow="<?= ${"percent_dpt_3_$year"}; ?>" 
+                            aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                    <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_dpt_3_$year"}); ?> children need vaccination</div>
 
-    <!-- MR-1 Coverage Year 2025 -->
-    <div class="col-12 col-lg-6 col-md-6">
-        <div class="card">
-            <div class="card-body px-4 py-4-5">
-                <h6 class="text-muted font-semibold">MR-1 Coverage Year 2025</h6>
-                <div class="card-number font-extrabold mb-3">4,100,000</div>
-                <div class="card-subtext mb-1">78% of the baseline</div>
-                <div class="progress" style="height: 20px;">
-                    <div class="progress-bar" role="progressbar" style="width: 78%;" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <div class="mt-1 text-muted mb-4">1,144,731 children need vaccination</div>
-                
-                <!-- Baseline and Target Coverage -->
-                <div class="mt-1">
-                    <p><strong>Baseline: </strong>5,244,731 children</p>
-                    <p><strong>Target Coverage 95%: </strong></p>
+                    <!-- Baseline and Target Coverage -->
+                    <div class="mt-1">
+                        <p><strong>Baseline: </strong><?= number_format(${"total_target_dpt_3_$year"}); ?> children</p>
+                        <p><strong>Target Coverage <?= ($year == 2024) ? '90%' : '95%'; ?> </strong></p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- MR-1 Coverage -->
+        <div class="col-12 col-lg-6 col-md-6">
+            <div class="card">
+                <div class="card-body px-4 py-4-5">
+                    <h6 class="text-muted font-semibold">MR-1 Coverage Year <?= $year; ?></h6>
+                    <div class="card-number font-extrabold mb-3"><?= number_format(${"total_mr_1_$year"}); ?></div>
+                    <div class="card-subtext mb-1"><?= ${"percent_mr_1_$year"}; ?>% of the baseline</div>
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar" role="progressbar" 
+                            style="width: <?= ${"percent_mr_1_$year"}; ?>%;" 
+                            aria-valuenow="<?= ${"percent_mr_1_$year"}; ?>" 
+                            aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                    <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_mr_1_$year"}); ?> children need vaccination</div>
+
+                    <!-- Baseline and Target Coverage -->
+                    <div class="mt-1">
+                        <p><strong>Baseline: </strong><?= number_format(${"total_target_mr_1_$year"}); ?> children</p>
+                        <p><strong>Target Coverage <?= ($year == 2024) ? '90%' : '95%'; ?> </strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
 </div>
+
 
                             <!-- <div class="row">
                                 <h4>Total Immunized Children</h4>

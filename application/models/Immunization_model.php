@@ -3,6 +3,51 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Immunization_model extends CI_Model {
 
+    //Tambahan baru Restored
+    // Ambil Zero Dose Baseline dari target_baseline berdasarkan tahun
+    public function get_baseline_zd($year) {
+        $query = $this->db->select('zd')
+                        ->where('year', $year)
+                        ->get('target_baseline');
+
+        return $query->row()->zd ?? 0;
+    }
+
+    // Ambil total target dari target_coverage (All Provinces) dengan filter tahun
+    public function get_total_target_coverage($vaccine_type, $year) {
+        $query = $this->db->select('SUM(target_population) AS total_target')
+                        ->where('vaccine_type', $vaccine_type)
+                        ->where('year', $year)
+                        ->get('target_coverage');
+
+        return $query->row()->total_target ?? 0;
+    }
+
+    // Ambil total target dari target_immunization (Targeted/Specific Province) dengan filter tahun
+    public function get_total_target($vaccine_column, $province_id, $year) {
+        $province_ids = $this->get_targeted_province_ids();
+    
+        $this->db->select("SUM({$vaccine_column}_target) AS total_target"); // ✅ Corrected
+        $this->db->from('target_immunization');
+        $this->db->where('year', $year);
+    
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+    
+        $result = $this->db->get()->row();
+        return $result->total_target ?? 0;
+    }
+    
+
+    
+
     // Ambil semua provinsi
     public function get_provinces() {
         return $this->db->select('id, name_id')->where('active', 1)->get('provinces')->result();
@@ -78,28 +123,28 @@ class Immunization_model extends CI_Model {
         return $query->total ?? 0;
     }
 
-    public function get_total_target($vaccine_column, $province_id = 'all') {
-        // Ambil province_id dengan priority = 1
-        $province_ids = $this->get_targeted_province_ids();
+    // public function get_total_target($vaccine_column, $province_id = 'all') {
+    //     // Ambil province_id dengan priority = 1
+    //     $province_ids = $this->get_targeted_province_ids();
     
-        // Ambil total target berdasarkan provinsi
-        $this->db->select('SUM(' . $vaccine_column . '_target) AS total_target');
-        $this->db->from('target_immunization');
+    //     // Ambil total target berdasarkan provinsi
+    //     $this->db->select('SUM(' . $vaccine_column . '_target) AS total_target');
+    //     $this->db->from('target_immunization');
     
-        if ($province_id === 'targeted') {
-            if (!empty($province_ids)) {
-                $this->db->where_in('province_id', $province_ids);
-            } else {
-                return 0; // Jika tidak ada provinsi dengan priority, kembalikan 0
-            }
-        } elseif ($province_id !== 'all') {
-            $this->db->where('province_id', $province_id);
-        }
+    //     if ($province_id === 'targeted') {
+    //         if (!empty($province_ids)) {
+    //             $this->db->where_in('province_id', $province_ids);
+    //         } else {
+    //             return 0; // Jika tidak ada provinsi dengan priority, kembalikan 0
+    //         }
+    //     } elseif ($province_id !== 'all') {
+    //         $this->db->where('province_id', $province_id);
+    //     }
     
-        // Mengambil total target dari hasil query
-        $result = $this->db->get()->row();
-        return $result->total_target ?? 0;
-    }
+    //     // Mengambil total target dari hasil query
+    //     $result = $this->db->get()->row();
+    //     return $result->total_target ?? 0;
+    // }
     
     
     
