@@ -66,6 +66,232 @@ class Immunization_model extends CI_Model {
         return $query->total ?? 0;
     }
 
+    // Data total DPT-1 per distrik berdasarkan provinsi
+    public function get_dpt1_by_district($province_id = 'all', $year = 2025) {
+        $province_ids = $this->get_targeted_province_ids();
+    
+        // Ambil total target berdasarkan provinsi & tahun
+        $this->db->select('SUM(dpt_hb_hib_1_target) AS total_target');
+        $this->db->from('target_immunization');
+        $this->db->where('year', $year);
+    
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+    
+        $total_target = $this->db->get()->row()->total_target ?? 0;
+    
+        // Ambil data DPT-1 per distrik berdasarkan tahun
+        $this->db->select("
+            cities.name_id AS district, 
+            SUM(immunization_data.dpt_hb_hib_1) AS total_dpt1,
+            SUM(target_immunization.dpt_hb_hib_1_target) AS target_district,
+            (SUM(immunization_data.dpt_hb_hib_1) / NULLIF(SUM(target_immunization.dpt_hb_hib_1_target), 0)) * 100 AS percentage_target,
+            (SUM(target_immunization.dpt_hb_hib_1_target) - SUM(immunization_data.dpt_hb_hib_1)) AS zero_dose_children,
+            ((SUM(target_immunization.dpt_hb_hib_1_target) - SUM(immunization_data.dpt_hb_hib_1)) / NULLIF(SUM(target_immunization.dpt_hb_hib_1_target), 0)) * 100 AS percent_zero_dose
+        ", false);
+    
+        $this->db->from('immunization_data');
+        $this->db->join('cities', 'cities.id = immunization_data.city_id', 'left');
+        $this->db->join('target_immunization', 'target_immunization.city_id = immunization_data.city_id AND target_immunization.year = immunization_data.year', 'left');
+        $this->db->where('immunization_data.year', $year);
+    
+        if ($province_id === 'targeted' && !empty($province_ids)) {
+            $this->db->where_in('cities.province_id', $province_ids);
+        } elseif ($province_id !== 'all') {
+            $this->db->where('cities.province_id', $province_id);
+        }
+    
+        $this->db->group_by('immunization_data.city_id, cities.name_id');
+        $this->db->order_by('total_dpt1', 'DESC');
+    
+        return $this->db->get()->result_array();
+    }
+
+    // Ambil cakupan imunisasi berdasarkan provinsi atau kota dan tahun
+    public function get_immunization_coverage($province_id = 'all', $year = 2025) {
+        $province_ids = $this->get_targeted_province_ids();
+    
+        $this->db->select('
+            i.province_id AS province_id,
+            i.city_id AS city_id,
+            SUM(i.dpt_hb_hib_1) AS dpt1, 
+            SUM(i.dpt_hb_hib_2) AS dpt2, 
+            SUM(i.dpt_hb_hib_3) AS dpt3, 
+            SUM(i.mr_1) AS mr1,
+            SUM(t.dpt_hb_hib_1_target) AS target_dpt1,
+            SUM(t.dpt_hb_hib_3_target) AS target_dpt3,
+            SUM(t.mr_1_target) AS target_mr1
+        ', false);
+        
+        $this->db->from('immunization_data i');
+        $this->db->join('target_immunization t', 't.city_id = i.city_id AND t.year = i.year', 'left');
+        
+        // Filter berdasarkan tahun
+        $this->db->where('i.year', $year);
+    
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('i.province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('i.province_id', $province_id);
+        }
+    
+        // Pastikan alias digunakan di GROUP BY
+        $this->db->group_by(($province_id !== 'all' && $province_id !== 'targeted') ? 'i.city_id' : 'i.province_id');
+    
+        $query = $this->db->get();
+        $result = [];
+    
+        foreach ($query->result_array() as $row) {
+            $zero_dose_children = max($row['target_dpt1'] - $row['dpt1'], 0);
+            
+            $percentage_target_dpt1 = ($row['target_dpt1'] != 0) ? ($row['dpt1'] / $row['target_dpt1']) * 100 : 0;
+            $percentage_target_dpt3 = ($row['target_dpt3'] != 0) ? ($row['dpt3'] / $row['target_dpt3']) * 100 : 0;
+            $percentage_target_mr1 = ($row['target_mr1'] != 0) ? ($row['mr1'] / $row['target_mr1']) * 100 : 0;
+            $percent_zero_dose = ($row['target_dpt1'] != 0) ? ($zero_dose_children / $row['target_dpt1']) * 100 : 0;
+    
+            $result_key = ($province_id !== 'all' && $province_id !== 'targeted') ? $row['city_id'] : $row['province_id'];
+    
+            $result[$result_key] = array_merge($row, [
+                'zero_dose_children' => $zero_dose_children,
+                'percentage_target_dpt1' => $percentage_target_dpt1,
+                'percentage_target_dpt3' => $percentage_target_dpt3,
+                'percentage_target_mr1' => $percentage_target_mr1,
+                'percent_zero_dose' => $percent_zero_dose
+            ]);
+        }
+    
+        return $result;
+    }
+
+    public function get_zero_dose_cases($province_id = 'all', $city_id = 'all') {
+        // Ambil provinsi yang memiliki priority = 1 (targeted)
+        $province_ids = $this->get_targeted_province_ids();
+    
+        // Step 1: Ambil total target imunisasi berdasarkan tahun (2024 dan 2025)
+        // Total target untuk tahun 2024
+        $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target_2024", false);
+        $this->db->from('target_immunization');
+        $this->db->where('year', 2024);
+        
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+    
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        }
+    
+        $total_target_2024 = $this->db->get()->row()->total_target_2024 ?? 0;
+    
+        // Total target untuk tahun 2025
+        $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target_2025", false);
+        $this->db->from('target_immunization');
+        $this->db->where('year', 2025);
+        
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+    
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        }
+    
+        $total_target_2025 = $this->db->get()->row()->total_target_2025 ?? 0;
+    
+        // Step 2: Ambil data imunisasi per bulan
+        $this->db->select("
+            year, 
+            month, 
+            COALESCE(SUM(dpt_hb_hib_1), 0) AS total_immunized
+        ", false);
+        $this->db->from('immunization_data');
+    
+        if ($province_id === 'targeted' && !empty($province_ids)) {
+            $this->db->where_in('province_id', $province_ids);
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+    
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        }
+    
+        $this->db->group_by('year, month');
+        $this->db->order_by('year ASC, month ASC');
+    
+        $immunization_data = $this->db->get()->result_array();
+    
+        // Step 3: Pastikan semua bulan dari Januari - Desember (2024 & 2025) ada
+        $all_months = [];
+        for ($y = 2024; $y <= 2025; $y++) {
+            for ($m = 1; $m <= 12; $m++) {
+                $all_months["$y-$m"] = [
+                    'year' => $y,
+                    'month' => $m,
+                    'total_immunized' => 0 // Default 0 jika tidak ada data
+                ];
+            }
+        }
+    
+        // Masukkan data imunisasi yang sudah ada
+        foreach ($immunization_data as $data) {
+            $key = "{$data['year']}-{$data['month']}";
+            $all_months[$key]['total_immunized'] = intval($data['total_immunized']);
+        }
+    
+        // Konversi ke array numerik untuk perhitungan kumulatif
+        $immunization_data = array_values($all_months);
+    
+        // Step 4: Hitung ZD Cases dengan metode kumulatif
+        $zd_cases = [];
+        $cumulative_immunized_2024 = 0; // Imunisasi kumulatif untuk tahun 2024
+        $cumulative_immunized_2025 = 0; // Imunisasi kumulatif untuk tahun 2025
+    
+        foreach ($immunization_data as $data) {
+            if ($data['year'] == 2024) {
+                $cumulative_immunized_2024 += $data['total_immunized']; // Tambahkan imunisasi tahun 2024
+                $zd_cases[] = [
+                    'year' => $data['year'],
+                    'month' => $data['month'],
+                    'zd_cases' => max($total_target_2024 - $cumulative_immunized_2024, 0) // Pastikan tidak negatif
+                ];
+            } elseif ($data['year'] == 2025) {
+                $cumulative_immunized_2025 += $data['total_immunized']; // Tambahkan imunisasi tahun 2025
+                $zd_cases[] = [
+                    'year' => $data['year'],
+                    'month' => $data['month'],
+                    'zd_cases' => max($total_target_2025 - $cumulative_immunized_2025, 0) // Pastikan tidak negatif
+                ];
+            }
+        }
+    
+        return $zd_cases;
+    }
+    
+    
     
 
     // Ambil semua provinsi
@@ -121,77 +347,6 @@ class Immunization_model extends CI_Model {
     }
     
     
-    
-
-    // public function get_total_target($vaccine_column, $province_id = 'all') {
-    //     // Ambil province_id dengan priority = 1
-    //     $province_ids = $this->get_targeted_province_ids();
-    
-    //     // Ambil total target berdasarkan provinsi
-    //     $this->db->select('SUM(' . $vaccine_column . '_target) AS total_target');
-    //     $this->db->from('target_immunization');
-    
-    //     if ($province_id === 'targeted') {
-    //         if (!empty($province_ids)) {
-    //             $this->db->where_in('province_id', $province_ids);
-    //         } else {
-    //             return 0; // Jika tidak ada provinsi dengan priority, kembalikan 0
-    //         }
-    //     } elseif ($province_id !== 'all') {
-    //         $this->db->where('province_id', $province_id);
-    //     }
-    
-    //     // Mengambil total target dari hasil query
-    //     $result = $this->db->get()->row();
-    //     return $result->total_target ?? 0;
-    // }
-    
-    
-    
-
-    // Data total DPT-1 per distrik berdasarkan provinsi
-    public function get_dpt1_by_district($province_id = 'all') {
-        $province_ids = $this->get_targeted_province_ids(); // Ambil province_id yang priority = 1
-
-        // Ambil total target berdasarkan provinsi
-        $this->db->select('SUM(dpt_hb_hib_1_target) AS total_target')
-                ->from('target_immunization');
-
-        if ($province_id === 'targeted') {
-            if (!empty($province_ids)) {
-                $this->db->where_in('province_id', $province_ids);
-            } else {
-                return []; // Jika tidak ada provinsi priority, return array kosong
-            }
-        } elseif ($province_id !== 'all') {
-            $this->db->where('province_id', $province_id);
-        }
-
-        $total_target = $this->db->get()->row()->total_target ?? 0;
-    
-        // Ambil data DPT-1 per distrik
-        $this->db->select("
-            cities.name_id AS district, 
-            SUM(immunization_data.dpt_hb_hib_1) AS total_dpt1,
-            (SUM(immunization_data.dpt_hb_hib_1) / NULLIF($total_target, 0)) * 100 AS percentage_target,
-            (SUM(immunization_data.dpt_hb_hib_1) / 100000) * 100 AS per_100k_targets
-        ", false);
-    
-        $this->db->from('immunization_data');
-        $this->db->join('cities', 'cities.id = immunization_data.city_id', 'left');
-    
-        if ($province_id === 'targeted' && !empty($province_ids)) {
-            $this->db->where_in('cities.province_id', $province_ids);
-        } elseif ($province_id !== 'all') {
-            $this->db->where('cities.province_id', $province_id);
-        }
-    
-        $this->db->group_by('immunization_data.city_id, cities.name_id');
-        $this->db->order_by('total_dpt1', 'DESC');
-    
-        return $this->db->get()->result_array();
-    }
-    
     public function get_provinces_with_targeted() {
         $provinces = $this->db->select('id, name_id, priority')
                               ->where('active', 1)
@@ -242,139 +397,142 @@ class Immunization_model extends CI_Model {
         return $query->row();  // Mengambil data satu baris
     }
 
-    public function get_immunization_coverage($province_id = 'all') {
-        $province_ids = $this->get_targeted_province_ids(); // Ambil province_id yang priority = 1
+    // public function get_immunization_coverage($province_id = 'all') {
+    //     $province_ids = $this->get_targeted_province_ids(); // Ambil province_id yang priority = 1
 
-        $this->db->select('province_id, city_id, 
-                           SUM(dpt_hb_hib_1) AS dpt1, 
-                           SUM(dpt_hb_hib_2) AS dpt2, 
-                           SUM(dpt_hb_hib_3) AS dpt3, 
-                           SUM(mr_1) AS mr1');
-        $this->db->from('immunization_data');
+    //     $this->db->select('province_id, city_id, 
+    //                        SUM(dpt_hb_hib_1) AS dpt1, 
+    //                        SUM(dpt_hb_hib_2) AS dpt2, 
+    //                        SUM(dpt_hb_hib_3) AS dpt3, 
+    //                        SUM(mr_1) AS mr1');
+    //     $this->db->from('immunization_data');
     
-        if ($province_id === 'targeted') {
-            if (!empty($province_ids)) {
-                $this->db->where_in('province_id', $province_ids);
-            } else {
-                return [];
-            }
-        } elseif ($province_id !== 'all') {
-            $this->db->where('province_id', $province_id);
-        }
+    //     if ($province_id === 'targeted') {
+    //         if (!empty($province_ids)) {
+    //             $this->db->where_in('province_id', $province_ids);
+    //         } else {
+    //             return [];
+    //         }
+    //     } elseif ($province_id !== 'all') {
+    //         $this->db->where('province_id', $province_id);
+    //     }
     
-        $this->db->group_by(($province_id !== 'all' && $province_id !== 'targeted') ? 'city_id' : 'province_id');
+    //     $this->db->group_by(($province_id !== 'all' && $province_id !== 'targeted') ? 'city_id' : 'province_id');
     
-        $query = $this->db->get();
+    //     $query = $this->db->get();
     
-        $result = [];
-        foreach ($query->result_array() as $row) {
-            if ($province_id !== 'all' && $province_id !== 'targeted') {
-                $result[$row['city_id']] = $row; // Simpan berdasarkan city_id jika provinsi dipilih
-            } else {
-                $result[$row['province_id']] = $row; // Simpan berdasarkan province_id jika menampilkan semua provinsi
-            }
-        }
+    //     $result = [];
+    //     foreach ($query->result_array() as $row) {
+    //         if ($province_id !== 'all' && $province_id !== 'targeted') {
+    //             $result[$row['city_id']] = $row; // Simpan berdasarkan city_id jika provinsi dipilih
+    //         } else {
+    //             $result[$row['province_id']] = $row; // Simpan berdasarkan province_id jika menampilkan semua provinsi
+    //         }
+    //     }
     
-        return $result;
-    }
+    //     return $result;
+    // }
     
-    public function get_zero_dose_cases($province_id = 'all', $city_id = 'all') {
-        $province_ids = $this->get_targeted_province_ids(); // Ambil province_id yang priority = 1
+    // public function get_zero_dose_cases($province_id = 'all', $city_id = 'all') {
+    //     $province_ids = $this->get_targeted_province_ids(); // Ambil province_id yang priority = 1
 
-        // Step 1: Ambil total target imunisasi
-        $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target", false);
-        $this->db->from('target_immunization');
+    //     // Step 1: Ambil total target imunisasi
+    //     $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target", false);
+    //     $this->db->from('target_immunization');
         
-        if ($province_id === 'targeted') {
-            if (!empty($province_ids)) {
-                $this->db->where_in('province_id', $province_ids);
-            } else {
-                return [];
-            }
-        } elseif ($province_id !== 'all') {
-            $this->db->where('province_id', $province_id);
-        }
+    //     if ($province_id === 'targeted') {
+    //         if (!empty($province_ids)) {
+    //             $this->db->where_in('province_id', $province_ids);
+    //         } else {
+    //             return [];
+    //         }
+    //     } elseif ($province_id !== 'all') {
+    //         $this->db->where('province_id', $province_id);
+    //     }
 
-        if ($city_id !== 'all') {
-            $this->db->where('city_id', $city_id);
-        }
+    //     if ($city_id !== 'all') {
+    //         $this->db->where('city_id', $city_id);
+    //     }
         
-        $total_target = $this->db->get()->row()->total_target ?? 0;
+    //     $total_target = $this->db->get()->row()->total_target ?? 0;
     
-        // Step 2: Ambil data imunisasi per bulan
-        $this->db->select("
-            year, 
-            month, 
-            COALESCE(SUM(dpt_hb_hib_1), 0) AS total_immunized
-        ", false);
-        $this->db->from('immunization_data');
+    //     // Step 2: Ambil data imunisasi per bulan
+    //     $this->db->select("
+    //         year, 
+    //         month, 
+    //         COALESCE(SUM(dpt_hb_hib_1), 0) AS total_immunized
+    //     ", false);
+    //     $this->db->from('immunization_data');
     
-        if ($province_id === 'targeted' && !empty($province_ids)) {
-            $this->db->where_in('province_id', $province_ids);
-        } elseif ($province_id !== 'all') {
-            $this->db->where('province_id', $province_id);
-        }
+    //     if ($province_id === 'targeted' && !empty($province_ids)) {
+    //         $this->db->where_in('province_id', $province_ids);
+    //     } elseif ($province_id !== 'all') {
+    //         $this->db->where('province_id', $province_id);
+    //     }
 
-        if ($city_id !== 'all') {
-            $this->db->where('city_id', $city_id);
-        }
+    //     if ($city_id !== 'all') {
+    //         $this->db->where('city_id', $city_id);
+    //     }
     
-        $this->db->group_by('year, month');
-        $this->db->order_by('year ASC, month ASC');
+    //     $this->db->group_by('year, month');
+    //     $this->db->order_by('year ASC, month ASC');
     
-        $immunization_data = $this->db->get()->result_array();
+    //     $immunization_data = $this->db->get()->result_array();
     
-        // Step 3: Pastikan semua bulan dari Januari - Desember (2024 & 2025) ada
-        $all_months = [];
-        for ($y = 2024; $y <= 2025; $y++) {
-            for ($m = 1; $m <= 12; $m++) {
-                $all_months["$y-$m"] = [
-                    'year' => $y,
-                    'month' => $m,
-                    'total_immunized' => 0 // Default 0 jika tidak ada data
-                ];
-            }
-        }
+    //     // Step 3: Pastikan semua bulan dari Januari - Desember (2024 & 2025) ada
+    //     $all_months = [];
+    //     for ($y = 2024; $y <= 2025; $y++) {
+    //         for ($m = 1; $m <= 12; $m++) {
+    //             $all_months["$y-$m"] = [
+    //                 'year' => $y,
+    //                 'month' => $m,
+    //                 'total_immunized' => 0 // Default 0 jika tidak ada data
+    //             ];
+    //         }
+    //     }
     
-        // Masukkan data imunisasi yang sudah ada
-        foreach ($immunization_data as $data) {
-            $key = "{$data['year']}-{$data['month']}";
-            $all_months[$key]['total_immunized'] = intval($data['total_immunized']);
-        }
+    //     // Masukkan data imunisasi yang sudah ada
+    //     foreach ($immunization_data as $data) {
+    //         $key = "{$data['year']}-{$data['month']}";
+    //         $all_months[$key]['total_immunized'] = intval($data['total_immunized']);
+    //     }
     
-        // Konversi ke array numerik untuk perhitungan kumulatif
-        $immunization_data = array_values($all_months);
+    //     // Konversi ke array numerik untuk perhitungan kumulatif
+    //     $immunization_data = array_values($all_months);
     
-        // Step 4: Hitung ZD Cases dengan metode kumulatif
-        $zd_cases = [];
-        $cumulative_immunized = 0; // Imunisasi kumulatif
-        foreach ($immunization_data as $data) {
-            $cumulative_immunized += $data['total_immunized']; // Tambahkan imunisasi baru
-            $zd_cases[] = [
-                'year' => $data['year'],
-                'month' => $data['month'],
-                'zd_cases' => max($total_target - $cumulative_immunized, 0) // Pastikan tidak negatif
-            ];
-        }
-        // var_dump($zd_cases);
+    //     // Step 4: Hitung ZD Cases dengan metode kumulatif
+    //     $zd_cases = [];
+    //     $cumulative_immunized = 0; // Imunisasi kumulatif
+    //     foreach ($immunization_data as $data) {
+    //         $cumulative_immunized += $data['total_immunized']; // Tambahkan imunisasi baru
+    //         $zd_cases[] = [
+    //             'year' => $data['year'],
+    //             'month' => $data['month'],
+    //             'zd_cases' => max($total_target - $cumulative_immunized, 0) // Pastikan tidak negatif
+    //         ];
+    //     }
+    //     // var_dump($zd_cases);
     
-        return $zd_cases;
-    }
+    //     return $zd_cases;
+    // }
     
     public function get_zero_dose_trend($province_id, $city_id) {
         return $this->get_zero_dose_cases($province_id, $city_id); // Gunakan fungsi yang sama
     }
     
     
-    public function get_restored_children($province_id = 'all') {
+    public function get_restored_children($province_id = 'all', $year = 2025) {
         $province_ids = $this->get_targeted_province_ids();
-
+    
         $this->db->select("
             SUM(CASE WHEN cities.status = 0 THEN immunization_data.dpt_hb_hib_1 ELSE 0 END) AS kabupaten_restored,
             SUM(CASE WHEN cities.status = 1 THEN immunization_data.dpt_hb_hib_1 ELSE 0 END) AS kota_restored
         ");
         $this->db->from('immunization_data');
         $this->db->join('cities', 'cities.id = immunization_data.city_id', 'left');
+        
+        // Filter berdasarkan tahun
+        $this->db->where('immunization_data.year', $year);
     
         if ($province_id === 'targeted' && !empty($province_ids)) {
             $this->db->where_in('immunization_data.province_id', $province_ids);
@@ -383,7 +541,7 @@ class Immunization_model extends CI_Model {
         }
     
         return $this->db->get()->row_array();
-    }
+    }    
     
     
 }

@@ -138,23 +138,23 @@
                         <?php
                             }
                         ?>
+                        
 
                         <!-- Long-term Health Outcomes -->
                         <li
-                            class="sidebar-item  has-sub">
-                            <a href="#" class='sidebar-link'>
+                            class="sidebar-item  ">
+                            <a href="<?= base_url('home/restored'); ?>" class='sidebar-link'>
                                 <i class="bi bi-shield-fill-check"></i>
                                 <span>Long-term Health Outcomes</span>
                             </a>
                             
-                            <ul class="submenu ">
+                            <!-- <ul class="submenu ">
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('home/restored'); ?>" class='sidebar-link'>
                                         Restored ZD Children
                                     </a>
                                 </li>
-                                
-                            </ul>
+                            </ul> -->
                             
                         </li>
 

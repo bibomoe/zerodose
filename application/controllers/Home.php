@@ -87,6 +87,7 @@ class Home extends CI_Controller {
         // Ambil filter provinsi dari dropdown (default: all)
         $selected_province = $this->input->get('province') ?? 'all';
         $selected_district = $this->input->get('district') ?? 'all';
+        $selected_year = $this->input->get('year') ?? 2025; // Default tahun 2025
 
         // Jika user PHO, atur provinsi default sesuai wilayahnya
         if ($user_category == 7 && empty($this->input->get('province'))) { 
@@ -101,18 +102,12 @@ class Home extends CI_Controller {
             $this->data['selected_province2'] = $selected_province;
         }
 
-        // var_dump([
-        //     'user_category' => $user_category,
-        //     'session_province_id' => $user_province,
-        //     'session_city_id' => $user_city,
-        //     'input_province' => $this->input->get('province'),
-        //     'final_selected_province' => $selected_province
-        // ]);
-        // exit;
-        // Ambil daftar provinsi untuk dropdown + targeted provinces
-        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
         $this->data['selected_province'] = $selected_province;
         $this->data['selected_district'] = $selected_district;
+        $this->data['selected_year'] = $selected_year;
+
+        // Ambil daftar provinsi untuk dropdown + targeted provinces
+        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
 
         // Ambil daftar distrik berdasarkan provinsi
         if ($selected_province !== 'all' && $selected_province !== 'targeted') {
@@ -172,49 +167,12 @@ class Home extends CI_Controller {
                 ? round(($this->data["total_mr_1_$year"] / $this->data["total_target_mr_1_$year"]) * 100, 1)
                 : 0;
         }
-        // exit;
-
-        // // Ambil total target dan cakupan DPT-1, DPT-3, MR-1
-        // $this->data['total_dpt_1'] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province);
-        // $this->data['total_dpt_3'] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_3', $selected_province);
-        // $this->data['total_mr_1'] = $this->Immunization_model->get_total_vaccine('mr_1', $selected_province);
-
-        // // Ambil total target DPT-1, DPT-3, MR-1
-        // $this->data['total_target_dpt_1'] = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province);
-        // $this->data['total_target_dpt_3'] = $this->Immunization_model->get_total_target('dpt_hb_hib_3', $selected_province);
-        // $this->data['total_target_mr_1'] = $this->Immunization_model->get_total_target('mr_1', $selected_province);
-
-        // // Hitung reduction in zero-dose / ini sebenarnya zd cases
-        // $this->data['reduction_in_zero_dose'] = max($this->data['total_target_dpt_1'] - $this->data['total_dpt_1'], 0);
-
-        // // Menghitung persentase untuk DPT-1, DPT-3, MR-1
-        // $this->data['percent_dpt_1'] = ($this->data['total_target_dpt_1'] != 0) 
-        //     ? ($this->data['total_dpt_1'] / $this->data['total_target_dpt_1']) * 100 
-        //     : 0;
-
-        // $this->data['percent_dpt_3'] = ($this->data['total_target_dpt_3'] != 0) 
-        //     ? ($this->data['total_dpt_3'] / $this->data['total_target_dpt_3']) * 100 
-        //     : 0;
-        
-        // $this->data['percent_mr_1'] = ($this->data['total_target_mr_1'] != 0) 
-        //     ? ($this->data['total_mr_1'] / $this->data['total_target_mr_1']) * 100 
-        //     : 0;
-
-        // // Hitung persentase pengurangan zero dose berdasarkan target awal
-        // $this->data['percent_reduction_zero_dose'] = ($this->data['total_target_dpt_1'] != 0) 
-        //     ? (($this->data['total_target_dpt_1'] - $this->data['reduction_in_zero_dose']) / $this->data['total_target_dpt_1']) * 100 
-        //     : 0;
-        
-
-
-        // var_dump($this->data['total_dpt_1']);
-        // exit;
 
         // Data imunisasi DPT-1 per distrik
-        $this->data['districts'] = $this->Immunization_model->get_dpt1_by_district($selected_province);
+        $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year);
 
         // Ambil data cakupan imunisasi berdasarkan provinsi/kota
-        $this->data['immunization_data'] = $this->Immunization_model->get_immunization_coverage($selected_province);
+        $this->data['immunization_data'] = $this->Immunization_model->get_immunization_coverage($selected_province, $selected_year);
 
         // Ambil file GeoJSON berdasarkan provinsi
         if ($selected_province !== 'all' && $selected_province !== 'targeted') {
@@ -239,7 +197,7 @@ class Home extends CI_Controller {
 
 
         // Data untuk grafik bar Restored Children (berdasarkan kota/kabupaten)
-        $restored_data = $this->Immunization_model->get_restored_children($selected_province);
+        $restored_data = $this->Immunization_model->get_restored_children($selected_province, $selected_year);
         $this->data['restored_data'] = [
             'kabupaten' => $restored_data['kabupaten_restored'] ?? 0,
             'kota' => $restored_data['kota_restored'] ?? 0
@@ -496,10 +454,13 @@ class Home extends CI_Controller {
     
     public function get_zero_dose_trend_ajax() {
         $province_id = $this->input->get('province');
-        $city_id = $this->input->get('district'); // Ambil filter district dari request
-        $data = $this->Immunization_model->get_zero_dose_cases($province_id, $city_id);
-        
-        echo json_encode($data);
+        $district_id = $this->input->get('district');
+
+        // Panggil model untuk mengambil data yang sesuai
+        $zero_dose_data = $this->Immunization_model->get_zero_dose_cases($province_id, $district_id);
+
+        // Kirim data sebagai JSON
+        echo json_encode($zero_dose_data);
     }
     
     

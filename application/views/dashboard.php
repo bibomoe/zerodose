@@ -58,8 +58,8 @@
                                                                     <th rowspan="2">Long Term Outcome</th>
                                                                     <th rowspan="2">Indicator</th>
                                                                     <th colspan="3">Indicator Value</th>
-                                                                    <th rowspan="2">Data Source</th>
-                                                                    <th rowspan="2">Frequency of Reporting</th>
+                                                                    <!-- <th rowspan="2">Data Source</th>
+                                                                    <th rowspan="2">Frequency of Reporting</th> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Baseline</th>
@@ -74,8 +74,8 @@
                                                                     <td rowspan="2">4,199,289</td>
                                                                     <td class="table-success">90%</td>
                                                                     <td class="table-success">95%</td>
-                                                                    <td rowspan="2">Administrative Reports</td>
-                                                                    <td rowspan="2">Quarterly</td>
+                                                                    <!-- <td rowspan="2">Administrative Reports</td>
+                                                                    <td rowspan="2">Quarterly</td> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning"><?= number_format($long_term_outcomes['dpt3']['actual_y1'], 2) ?>%</td>
@@ -86,8 +86,8 @@
                                                                     <td rowspan="2">4,244,731</td>
                                                                     <td class="table-success">90%</td>
                                                                     <td class="table-success">95%</td>
-                                                                    <td rowspan="2">Administrative Reports</td>
-                                                                    <td rowspan="2">Quarterly</td>
+                                                                    <!-- <td rowspan="2">Administrative Reports</td>
+                                                                    <td rowspan="2">Quarterly</td> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning"><?= number_format($long_term_outcomes['mr1']['actual_y1'], 2) ?>%</td>
@@ -98,8 +98,8 @@
                                                                     <td rowspan="2">25% of 569,414 (per Dec 2022)</td>
                                                                     <td class="table-success">Target reduction by end of year 1 (15%)</td>
                                                                     <td class="table-success">Target reduction by end of year 2 (25%)</td>
-                                                                    <td rowspan="2">Administrative Reports</td>
-                                                                    <td rowspan="2">Quarterly</td>
+                                                                    <!-- <td rowspan="2">Administrative Reports</td>
+                                                                    <td rowspan="2">Quarterly</td> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning"><?= number_format($long_term_outcomes['reduction_zd']['actual_y1'], 2) ?>%</td>
@@ -110,8 +110,8 @@
                                                                     <td>10% of 569,414 (per Dec 2022)</td>
                                                                     <td >Target reduction by end of year 1 (5%)</td>
                                                                     <td >Target reduction by end of year 2 (10%)</td>
-                                                                    <td>Administrative Reports</td>
-                                                                    <td>Quarterly</td>
+                                                                    <!-- <td>Administrative Reports</td>
+                                                                    <td>Quarterly</td> -->
                                                                 </tr>
                                                             </tbody>
                                                         </table>

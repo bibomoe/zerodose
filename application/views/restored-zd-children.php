@@ -4,14 +4,14 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>Restored ZD Children</h3>
-                                <p class="text-subtitle text-muted">Vaccine coverage in targeted areas​​</p>
+                                <h3>Mitigate</h3>
+                                <p class="text-subtitle text-muted">Coverage rates restored, including by reaching zero-dose children​</p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                                     <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="<?= base_url('home'); ?>">Dashboard</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">Restored ZD Children</li>
+                                        <li class="breadcrumb-item active" aria-current="page">Long Term Health Outcomes</li>
                                     </ol>
                                 </nav>
                             </div>
@@ -169,63 +169,63 @@
 
 
                             <!-- DPT 3 dan MR1 -->
-<div class="row">
-<?php
-        //  var_dump(number_format($total_dpt_3_2025));
-         ?>
-    <?php foreach ([2024, 2025] as $year): ?>
-        <!-- DPT-3 Coverage -->
-         
-        <div class="col-12 col-lg-6 col-md-6">
-            <div class="card">
-                <div class="card-body px-4 py-4-5">
-                    <h6 class="text-muted font-semibold">DPT-3 Coverage Year <?= $year; ?></h6>
-                    <div class="card-number font-extrabold mb-3"><?= number_format(${"total_dpt_3_$year"}); ?></div>
-                    <div class="card-subtext mb-1"><?= ${"percent_dpt_3_$year"}; ?>% of the baseline</div>
-                    <div class="progress" style="height: 20px;">
-                        <div class="progress-bar" role="progressbar" 
-                            style="width: <?= ${"percent_dpt_3_$year"}; ?>%;" 
-                            aria-valuenow="<?= ${"percent_dpt_3_$year"}; ?>" 
-                            aria-valuemin="0" aria-valuemax="100">
-                        </div>
-                    </div>
-                    <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_dpt_3_$year"}); ?> children need vaccination</div>
+                            <div class="row">
+                                <?php
+                                    //  var_dump(number_format($total_dpt_3_2025));
+                                    ?>
+                                <?php foreach ([2024, 2025] as $year): ?>
+                                    <!-- DPT-3 Coverage -->
+                                    
+                                    <div class="col-12 col-lg-6 col-md-6">
+                                        <div class="card">
+                                            <div class="card-body px-4 py-4-5">
+                                                <h6 class="text-muted font-semibold">DPT-3 Coverage Year <?= $year; ?></h6>
+                                                <div class="card-number font-extrabold mb-3"><?= number_format(${"total_dpt_3_$year"}); ?></div>
+                                                <div class="card-subtext mb-1"><?= ${"percent_dpt_3_$year"}; ?>% of the baseline</div>
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar" role="progressbar" 
+                                                        style="width: <?= ${"percent_dpt_3_$year"}; ?>%;" 
+                                                        aria-valuenow="<?= ${"percent_dpt_3_$year"}; ?>" 
+                                                        aria-valuemin="0" aria-valuemax="100">
+                                                    </div>
+                                                </div>
+                                                <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_dpt_3_$year"}); ?> children need vaccination</div>
 
-                    <!-- Baseline and Target Coverage -->
-                    <div class="mt-1">
-                        <p><strong>Baseline: </strong><?= number_format(${"total_target_dpt_3_$year"}); ?> children</p>
-                        <p><strong>Target Coverage <?= ($year == 2024) ? '90%' : '95%'; ?> </strong></p>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                                <!-- Baseline and Target Coverage -->
+                                                <div class="mt-1">
+                                                    <p><strong>Baseline: </strong><?= number_format(${"total_target_dpt_3_$year"}); ?> children</p>
+                                                    <p><strong>Target Coverage <?= ($year == 2024) ? '90%' : '95%'; ?> </strong></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-        <!-- MR-1 Coverage -->
-        <div class="col-12 col-lg-6 col-md-6">
-            <div class="card">
-                <div class="card-body px-4 py-4-5">
-                    <h6 class="text-muted font-semibold">MR-1 Coverage Year <?= $year; ?></h6>
-                    <div class="card-number font-extrabold mb-3"><?= number_format(${"total_mr_1_$year"}); ?></div>
-                    <div class="card-subtext mb-1"><?= ${"percent_mr_1_$year"}; ?>% of the baseline</div>
-                    <div class="progress" style="height: 20px;">
-                        <div class="progress-bar" role="progressbar" 
-                            style="width: <?= ${"percent_mr_1_$year"}; ?>%;" 
-                            aria-valuenow="<?= ${"percent_mr_1_$year"}; ?>" 
-                            aria-valuemin="0" aria-valuemax="100">
-                        </div>
-                    </div>
-                    <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_mr_1_$year"}); ?> children need vaccination</div>
+                                    <!-- MR-1 Coverage -->
+                                    <div class="col-12 col-lg-6 col-md-6">
+                                        <div class="card">
+                                            <div class="card-body px-4 py-4-5">
+                                                <h6 class="text-muted font-semibold">MR-1 Coverage Year <?= $year; ?></h6>
+                                                <div class="card-number font-extrabold mb-3"><?= number_format(${"total_mr_1_$year"}); ?></div>
+                                                <div class="card-subtext mb-1"><?= ${"percent_mr_1_$year"}; ?>% of the baseline</div>
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar" role="progressbar" 
+                                                        style="width: <?= ${"percent_mr_1_$year"}; ?>%;" 
+                                                        aria-valuenow="<?= ${"percent_mr_1_$year"}; ?>" 
+                                                        aria-valuemin="0" aria-valuemax="100">
+                                                    </div>
+                                                </div>
+                                                <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_mr_1_$year"}); ?> children need vaccination</div>
 
-                    <!-- Baseline and Target Coverage -->
-                    <div class="mt-1">
-                        <p><strong>Baseline: </strong><?= number_format(${"total_target_mr_1_$year"}); ?> children</p>
-                        <p><strong>Target Coverage <?= ($year == 2024) ? '90%' : '95%'; ?> </strong></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php endforeach; ?>
-</div>
+                                                <!-- Baseline and Target Coverage -->
+                                                <div class="mt-1">
+                                                    <p><strong>Baseline: </strong><?= number_format(${"total_target_mr_1_$year"}); ?> children</p>
+                                                    <p><strong>Target Coverage <?= ($year == 2024) ? '90%' : '95%'; ?> </strong></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
 
 
                             <!-- <div class="row">
@@ -300,6 +300,7 @@
                                     </div>
                                 </div>
                             </div> -->
+                            <!-- table -->
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card">
@@ -360,24 +361,22 @@
                                                     <thead>
                                                         <tr>
                                                             <th>District</th>
-                                                            <th>Total</th>
+                                                            <th>Target District</th>
+                                                            <th>Total Coverage DPT1</th>
                                                             <th>% of Total Target</th>
-                                                            <th>per 100,000 targets</th>
+                                                            <th>Number of ZD Children</th>
+                                                            <th>% of Zero Dose</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <!-- <tr>
-                                                            <td>Kab. Kediri</td>
-                                                            <td>7,000</td>
-                                                            <td>29%</td>
-                                                            <td>7.6</td>
-                                                        </tr> -->
-                                                        <?php foreach ($districts as $district): ?>
+                                                        <?php foreach ($district_data as $district): ?>
                                                             <tr>
                                                                 <td><?= $district['district'] ?></td>
+                                                                <td><?= number_format($district['target_district']) ?></td>
                                                                 <td><?= number_format($district['total_dpt1']) ?></td>
                                                                 <td><?= number_format($district['percentage_target'], 2) ?>%</td>
-                                                                <td><?= number_format($district['per_100k_targets'], 2) ?>%</td>
+                                                                <td><?= number_format($district['zero_dose_children']) ?></td>
+                                                                <td><?= number_format($district['percent_zero_dose'], 2) ?>%</td>
                                                             </tr>
                                                         <?php endforeach; ?>
                                                     </tbody>
@@ -387,6 +386,8 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- PETA -->
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card">
@@ -406,6 +407,8 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Grafik -->
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="card">
@@ -515,29 +518,22 @@
             }
         });
 
+        year = <?= $selected_year ?>;
+
+        let zdChart; // Mendeklarasikan variable untuk chart
         const zdCtx = document.getElementById('zdChart').getContext('2d');
-        const zdChart = new Chart(zdCtx, {
+        zdChart = new Chart(zdCtx, {
             type: 'line',
             data: {
                 labels: months,
-                datasets: [
-                    {
-                        label: 'ZD Cases 2024',
-                        data: zdCases2024,
-                        backgroundColor: 'rgba(0, 86, 179, 0.2)',
-                        borderColor: 'rgba(0, 86, 179, 1)',
-                        borderWidth: 2,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'ZD Cases 2025',
-                        data: zdCases2025,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 2,
-                        tension: 0.4
-                    }
-                ]
+                datasets: [{
+                    label: `ZD Cases ${year}`,
+                    data: year === 2024 ? zdCases2024 : zdCases2025,
+                    backgroundColor: 'rgba(0, 86, 179, 0.2)',
+                    borderColor: 'rgba(0, 86, 179, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }]
             },
             options: {
                 responsive: true,
@@ -549,6 +545,51 @@
                     y: { title: { display: true, text: 'ZD Cases' } }
                 }
             }
+        });
+
+
+        // Fungsi untuk menangani perubahan filter tahun dan distrik
+        $(document).ready(function () {
+            $("#applyFilter").click(function () {
+                let selectedYear = $("#yearFilter").val(); // Ambil tahun yang dipilih
+                let selectedDistrict = $("#districtFilter").val(); // Ambil district yang dipilih
+                let selectedProvince = $("input[name='province']").val(); // Ambil province (hidden input)
+
+                // Lakukan ajax untuk mengambil data berdasarkan filter yang dipilih
+                $.ajax({
+                    url: "<?= base_url('home/get_zero_dose_trend_ajax'); ?>", 
+                    type: "GET",
+                    data: {
+                        province: selectedProvince,
+                        district: selectedDistrict
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                                    // console.log("Filtered Data:", response);
+
+                                    // Filter data berdasarkan tahun yang dipilih
+                                    let filteredData = response.filter(item => item.year == selectedYear);
+
+                                    // Pastikan dataset lama dihapus sebelum menambahkan yang baru
+                                    zdChart.data.labels = filteredData.map(item => months[item.month - 1]);
+                                    zdChart.data.datasets = [{
+                                        label: `ZD Cases ${selectedYear}`,
+                                        data: filteredData.map(item => item.zd_cases),
+                                        backgroundColor: selectedYear == 2024 ? 'rgba(0, 86, 179, 0.2)' : 'rgba(255, 99, 132, 0.2)',
+                                        borderColor: selectedYear == 2024 ? 'rgba(0, 86, 179, 1)' : 'rgba(255, 99, 132, 1)',
+                                        borderWidth: 2,
+                                        tension: 0.4
+                                    }];
+
+                                    zdChart.update(); // Update grafik
+                                },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching data:", error);
+                    }
+                });
+
+                $("#chartFilter").modal("hide"); // Tutup modal filter
+            });
         });
 
 
@@ -628,60 +669,8 @@
             // **Tambahkan tombol download ke DOM**
             addZdDownloadButtons();
 
-            $(document).ready(function () {
-                $("#applyFilter").click(function () {
-                    let selectedYear = $("#yearFilter").val(); // Ambil tahun yang dipilih
-                    let selectedDistrict = $("#districtFilter").val(); // Ambil district yang dipilih
-                    let selectedProvince = $("input[name='province']").val(); // Ambil province (hidden input)
-
-                    $.ajax({
-                        url: "<?= base_url('home/get_zero_dose_trend_ajax'); ?>", 
-                        type: "GET",
-                        data: {
-                            province: selectedProvince,
-                            district: selectedDistrict
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            console.log("Filtered Data:", response);
-
-                            // Filter data berdasarkan tahun yang dipilih
-                            let filteredData = response.filter(item => item.year == selectedYear);
-
-                            // Pastikan dataset lama dihapus sebelum menambahkan yang baru
-                            zdChart.data.labels = filteredData.map(item => months[item.month - 1]);
-                            zdChart.data.datasets = [{
-                                label: `ZD Cases ${selectedYear}`,
-                                data: filteredData.map(item => item.zd_cases),
-                                backgroundColor: selectedYear == 2024 ? 'rgba(0, 86, 179, 0.2)' : 'rgba(255, 99, 132, 0.2)',
-                                borderColor: selectedYear == 2024 ? 'rgba(0, 86, 179, 1)' : 'rgba(255, 99, 132, 1)',
-                                borderWidth: 2,
-                                tension: 0.4
-                            }];
-
-                            zdChart.update(); // Update grafik
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error fetching data:", error);
-                        }
-                    });
-
-                    $("#chartFilter").modal("hide"); // Tutup modal filter
-                });
-            });
-
-//             document.getElementById("applyFilter").addEventListener("click", function () {
-//     let selectedYear = document.getElementById("yearFilter").value; // Ambil tahun yang dipilih
-
-//     let filteredData = zeroDoseData.filter(item => item.year == selectedYear); // Filter data berdasarkan tahun
-
-//     zdChart.data.labels = filteredData.map(item => months[item.month - 1]); // Update label bulan
-//     zdChart.data.datasets[0].data = filteredData.map(item => item.zd_cases); // Update data grafik
-
-//     zdChart.update(); // Perbarui grafik
-// });
-
-
+</script>
+<script>
 
             // Fetch data from PHP
             const restoredData = <?= json_encode($restored_data); ?>;
@@ -784,7 +773,7 @@
             addLocationDownloadButtons();
     </script>
 
-<script>
+<!-- <script>
     document.addEventListener("DOMContentLoaded", function () {
     const map = L.map('map').setView([-7.250445, 112.768845], 7);
 
@@ -882,9 +871,128 @@
         // ✅ Set view ke center dari bounding box GeoJSON
         map.fitBounds(geojsonLayer.getBounds());
 
+            })
+            .catch(error => console.error("Error loading GeoJSON:", error));
+        });
+
+</script> -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const map = L.map('map').setView([-7.250445, 112.768845], 7);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    let immunizationData = <?= json_encode($immunization_data, JSON_NUMERIC_CHECK); ?>;
+    
+    function cleanCityCode(code) { 
+        if (!code) return ""; 
+        return String(code).replace(/\./g, ''); 
+    }
+
+    function formatValue(value, isPercentage = false) {
+        if (isNaN(value) || value === null || value === undefined) {
+            return isPercentage ? "0%" : "0";
+        }
+        return isPercentage ? value.toFixed(1) + "%" : value;
+    }
+
+    function getColor(dpt1, isProvince) {
+        let threshold = isProvince ? 10000 : 1000;
+        return dpt1 > threshold ? '#1A9850' : '#D73027';
+    }
+
+    let isProvinceLevel = ["all", "targeted"].includes("<?= $selected_province ?>");
+
+    fetch("<?= $geojson_file; ?>")
+    .then(response => response.json())
+    .then(data => {
+        let geojsonLayer = L.geoJSON(data, {
+            style: function (feature) {
+                let rawCode = isProvinceLevel 
+                    ? feature.properties.KDPPUM  
+                    : feature.properties.KDPKAB; 
+
+                let regionId = cleanCityCode(rawCode);
+                let regionData = immunizationData[regionId] || {}; 
+
+                let dpt1 = formatValue(regionData.dpt1);
+
+                return {
+                    fillColor: getColor(dpt1, isProvinceLevel),
+                    weight: 1.5,
+                    opacity: 1,
+                    color: '#ffffff',
+                    fillOpacity: 0.8
+                };
+            },
+            onEachFeature: function (feature, layer) {
+                let rawCode = isProvinceLevel 
+                    ? feature.properties.KDPPUM  
+                    : feature.properties.KDPKAB;  
+
+                let regionId = cleanCityCode(rawCode);
+                let regionData = immunizationData[regionId] || {}; 
+
+                let dpt1 = formatValue(regionData.dpt1);
+                let dpt2 = formatValue(regionData.dpt2);
+                let dpt3 = formatValue(regionData.dpt3);
+                let mr1  = formatValue(regionData.mr1);
+                let zeroDoseChildren = formatValue(regionData.zero_dose_children);
+                let percentZD = formatValue(regionData.percent_zero_dose, true);
+
+                let dpt3Coverage = formatValue(regionData.percent_dpt3, true);
+                let mr1Coverage  = formatValue(regionData.percent_mr1, true);
+
+                let name = isProvinceLevel 
+                    ? feature.properties.WADMPR  
+                    : feature.properties.NAMOBJ;  
+
+                let popupContent = `<b>${name}</b><br>
+                                    DPT1 Coverage: ${dpt1}<br>
+                                    DPT2 Coverage: ${dpt2}<br>
+                                    DPT3 Coverage: ${dpt3} (Coverage: ${dpt3Coverage})<br>
+                                    MR1 Coverage: ${mr1} (Coverage: ${mr1Coverage})<br>
+                                    Zero Dose Children: ${zeroDoseChildren}<br>
+                                    % Zero Dose: ${percentZD}`;
+
+                layer.bindPopup(popupContent);
+
+                if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
+                    try {
+                        let labelPoint = turf.pointOnFeature(feature);
+                        let latlng = [labelPoint.geometry.coordinates[1], labelPoint.geometry.coordinates[0]];
+
+                        if (feature.properties.NAMOBJ) {
+                            let label = L.divIcon({
+                                className: 'label-class',
+                                html: `<strong style="font-size: 9px;">${feature.properties.NAMOBJ}</strong>`,
+                                iconSize: [100, 20]
+                            });
+                            L.marker(latlng, { icon: label }).addTo(map);
+                        } else if (feature.properties.WADMPR) { 
+                            let label = L.divIcon({
+                                className: 'label-class',
+                                html: `<strong style="font-size: 8px;">${feature.properties.WADMPR}</strong>`,
+                                iconSize: [50, 15]
+                            });
+                            L.marker(latlng, { icon: label }).addTo(map);
+                        }
+                    } catch (error) {
+                        console.warn("Turf.js error while generating label:", error, feature);
+                    }
+                }
+            }
+        }).addTo(map);
+
+        map.fitBounds(geojsonLayer.getBounds());
     })
     .catch(error => console.error("Error loading GeoJSON:", error));
 });
+
 
 
 </script>
