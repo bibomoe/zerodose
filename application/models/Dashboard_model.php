@@ -169,6 +169,68 @@ class Dashboard_model extends CI_Model {
         return $this->db->get()->result_array();
     }
 
+    // public function get_long_term_outcomes() {
+    //     // Ambil daftar 10 provinsi prioritas
+    //     $priority_provinces = $this->db->select('id')
+    //                                    ->where('priority', 1)
+    //                                    ->get('provinces')
+    //                                    ->result_array();
+    //     $province_ids = array_column($priority_provinces, 'id');
+    
+    //     // Ambil target baseline dari tabel target_baseline
+    //     $baseline = $this->db->get_where('target_baseline', ['id' => 1])->row_array();
+    //     $target_dpt1 = $baseline['dpt1'];
+    //     $target_dpt3 = $baseline['dpt3'];
+    //     $target_mr1 = $baseline['mr1'];
+    //     // var_dump($target_dpt1);
+    //     // exit;
+    
+    //     // DPT3 Coverage
+    //     $this->db->select("
+    //         (SUM(CASE WHEN year = 2024 THEN dpt_hb_hib_3 ELSE 0 END) / $target_dpt3) * 100 AS actual_y1,
+    //         (SUM(CASE WHEN year IN (2024, 2025) THEN dpt_hb_hib_3 ELSE 0 END) / $target_dpt3) * 100 AS actual_y2
+    //     ", FALSE);
+    //     $this->db->where_in('province_id', $province_ids);
+    //     $dpt3 = $this->db->get('immunization_data')->row_array();
+    
+    //     // MR1 Coverage
+    //     $this->db->select("
+    //         (SUM(CASE WHEN year = 2024 THEN mr_1 ELSE 0 END) / $target_mr1) * 100 AS actual_y1,
+    //         (SUM(CASE WHEN year IN (2024, 2025) THEN mr_1 ELSE 0 END) / $target_mr1) * 100 AS actual_y2
+    //     ", FALSE);
+    //     $this->db->where_in('province_id', $province_ids);
+    //     $mr1 = $this->db->get('immunization_data')->row_array();
+    
+    //     // Reduction in Zero Dose (DPT1)
+    //     $this->db->select("
+    //         SUM(CASE WHEN year = 2024 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y1,
+    //         SUM(CASE WHEN year IN (2024, 2025) THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y2
+    //     ", FALSE);
+    //     $this->db->where_in('province_id', $province_ids);
+    //     $reduction_zd = $this->db->get('immunization_data')->row_array();
+
+    //     // Menghitung reduction zero dose berdasarkan rumus
+    //     $reduction_y1 = $target_dpt1 - $reduction_zd['actual_y1'];
+    //     $reduction_y2 = $target_dpt1 - $reduction_zd['actual_y2'];
+        
+
+    //     // Menghitung persentase pengurangan zero dose untuk tahun 2024 (Y1) dan (Y2)
+    //     $percent_reduction_y1 = ($target_dpt1 - $reduction_y1) / $target_dpt1 * 100;
+    //     $percent_reduction_y2 = ($target_dpt1 - $reduction_y2) / $target_dpt1 * 100;
+
+    //     // var_dump($target_dpt1 - $reduction_y1);
+    //     // exit;
+
+    //     return [
+    //         'dpt3' => $dpt3,
+    //         'mr1' => $mr1,
+    //         'reduction_zd' => [
+    //             'actual_y1' => $percent_reduction_y1,
+    //             'actual_y2' => $percent_reduction_y2
+    //         ]
+    //     ];
+    // }
+
     public function get_long_term_outcomes() {
         // Ambil daftar 10 provinsi prioritas
         $priority_provinces = $this->db->select('id')
@@ -177,58 +239,105 @@ class Dashboard_model extends CI_Model {
                                        ->result_array();
         $province_ids = array_column($priority_provinces, 'id');
     
-        // Ambil target baseline dari tabel target_baseline
+        // Ambil baseline dari tabel target_baseline (Baseline ZD 2023)
         $baseline = $this->db->get_where('target_baseline', ['id' => 1])->row_array();
-        $target_dpt1 = $baseline['dpt1'];
-        $target_dpt3 = $baseline['dpt3'];
-        $target_mr1 = $baseline['mr1'];
-        // var_dump($target_dpt1);
-        // exit;
+        $baseline_zd_2023 = $baseline['zd'];
+    
+        // Ambil target dari tabel target_coverage untuk DPT3 & MR1 per tahun
+        $this->db->select("
+            SUM(CASE WHEN year = 2024 AND vaccine_type = 'DPT-3' THEN target_population ELSE 0 END) AS baseline_dpt3_y1,
+            SUM(CASE WHEN year = 2025 AND vaccine_type = 'DPT-3' THEN target_population ELSE 0 END) AS baseline_dpt3_y2,
+            SUM(CASE WHEN year = 2024 AND vaccine_type = 'MR-1' THEN target_population ELSE 0 END) AS baseline_mr1_y1,
+            SUM(CASE WHEN year = 2025 AND vaccine_type = 'MR-1' THEN target_population ELSE 0 END) AS baseline_mr1_y2
+        ", FALSE);
+        $coverage = $this->db->get('target_coverage')->row_array();
     
         // DPT3 Coverage
         $this->db->select("
-            (SUM(CASE WHEN year = 2024 THEN dpt_hb_hib_3 ELSE 0 END) / $target_dpt3) * 100 AS actual_y1,
-            (SUM(CASE WHEN year IN (2024, 2025) THEN dpt_hb_hib_3 ELSE 0 END) / $target_dpt3) * 100 AS actual_y2
+            (SUM(CASE WHEN year = 2024 THEN dpt_hb_hib_3 ELSE 0 END) / NULLIF({$coverage['baseline_dpt3_y1']}, 0)) * 100 AS actual_y1,
+            (SUM(CASE WHEN year = 2025 THEN dpt_hb_hib_3 ELSE 0 END) / NULLIF({$coverage['baseline_dpt3_y2']}, 0)) * 100 AS actual_y2
         ", FALSE);
-        $this->db->where_in('province_id', $province_ids);
+        // $this->db->where_in('province_id', $province_ids);
         $dpt3 = $this->db->get('immunization_data')->row_array();
     
         // MR1 Coverage
         $this->db->select("
-            (SUM(CASE WHEN year = 2024 THEN mr_1 ELSE 0 END) / $target_mr1) * 100 AS actual_y1,
-            (SUM(CASE WHEN year IN (2024, 2025) THEN mr_1 ELSE 0 END) / $target_mr1) * 100 AS actual_y2
+            (SUM(CASE WHEN year = 2024 THEN mr_1 ELSE 0 END) / NULLIF({$coverage['baseline_mr1_y1']}, 0)) * 100 AS actual_y1,
+            (SUM(CASE WHEN year = 2025 THEN mr_1 ELSE 0 END) / NULLIF({$coverage['baseline_mr1_y2']}, 0)) * 100 AS actual_y2
         ", FALSE);
-        $this->db->where_in('province_id', $province_ids);
+        // $this->db->where_in('province_id', $province_ids);
         $mr1 = $this->db->get('immunization_data')->row_array();
     
-        // Reduction in Zero Dose (DPT1)
+        // // Reduction in Zero Dose (ZD) berdasarkan target baseline 2023
+        // $target_reduction_y1 = 0.25 * $baseline_zd_2023; // 25% dari baseline ZD 2023
+        // $target_reduction_y2 = 0.10 * $baseline_zd_2023; // 10% dari baseline ZD 2023
+    
+        // // Hitung realisasi reduction ZD
+        // $this->db->select("
+        //     SUM(CASE WHEN year = 2024 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y1,
+        //     SUM(CASE WHEN year = 2025 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y2
+        // ", FALSE);
+        // // $this->db->where_in('province_id', $province_ids);
+        // $reduction_zd = $this->db->get('immunization_data')->row_array();
+    
+        // // Menghitung persentase realisasi reduction ZD
+        // $percent_reduction_y1 = ($baseline_zd_2023 - $reduction_zd['actual_y1']) / $baseline_zd_2023 * 100;
+        // $percent_reduction_y2 = ($baseline_zd_2023 - $reduction_zd['actual_y2']) / $baseline_zd_2023 * 100;
+        
+        // Reduction in Zero Dose (DPT1) berdasarkan target_coverage
         $this->db->select("
-            SUM(CASE WHEN year = 2024 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y1,
-            SUM(CASE WHEN year IN (2024, 2025) THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y2
+        SUM(CASE WHEN year = 2024 AND vaccine_type = 'DPT-1' THEN target_population ELSE 0 END) AS target_dpt1_y1,
+        SUM(CASE WHEN year = 2025 AND vaccine_type = 'DPT-1' THEN target_population ELSE 0 END) AS target_dpt1_y2
+        ", FALSE);
+        $target_dpt1 = $this->db->get('target_coverage')->row_array();
+
+        // Ambil realisasi imunisasi DPT-1 dari immunization_data
+        $this->db->select("
+        SUM(CASE WHEN year = 2024 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y1,
+        SUM(CASE WHEN year = 2025 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y2
         ", FALSE);
         $this->db->where_in('province_id', $province_ids);
         $reduction_zd = $this->db->get('immunization_data')->row_array();
 
-        // Menghitung reduction zero dose berdasarkan rumus
-        $reduction_y1 = $target_dpt1 - $reduction_zd['actual_y1'];
-        $reduction_y2 = $target_dpt1 - $reduction_zd['actual_y2'];
-        
+        // Hitung jumlah anak yang belum menerima DPT-1 (Zero Dose)
+        $zd_remaining_y1 = max($target_dpt1['target_dpt1_y1'] - $reduction_zd['actual_y1'], 0);
+        $zd_remaining_y2 = max($target_dpt1['target_dpt1_y2'] - $reduction_zd['actual_y2'], 0);
 
-        // Menghitung persentase pengurangan zero dose untuk tahun 2024 (Y1) dan (Y2)
-        $percent_reduction_y1 = ($target_dpt1 - $reduction_y1) / $target_dpt1 * 100;
-        $percent_reduction_y2 = ($target_dpt1 - $reduction_y2) / $target_dpt1 * 100;
+        // Menghitung persentase pengurangan zero dose
+        $percent_reduction_y1 = ($baseline_zd_2023 - $zd_remaining_y1) / $baseline_zd_2023 * 100;
+        $percent_reduction_y2 = ($baseline_zd_2023 - $zd_remaining_y2) / $baseline_zd_2023 * 100;
 
-        // var_dump($target_dpt1 - $reduction_y1);
-        // exit;
+        // Menghitung persentase pengurangan zero dose, jika negatif maka set ke 0
+        // $percent_reduction_y1 = max(($baseline_zd_2023 - $zd_remaining_y1) / $baseline_zd_2023 * 100, 0);
+        // $percent_reduction_y2 = max(($baseline_zd_2023 - $zd_remaining_y2) / $baseline_zd_2023 * 100, 0);
 
         return [
-            'dpt3' => $dpt3,
-            'mr1' => $mr1,
+            'dpt3' => [
+                'baseline' => 4_199_289, // Sesuai dengan nilai tetap yang ada di view
+                'baseline_y1' => $coverage['baseline_dpt3_y1'],
+                'baseline_y2' => $coverage['baseline_dpt3_y2'],
+                'actual_y1' => $dpt3['actual_y1'],
+                'actual_y2' => $dpt3['actual_y2']
+            ],
+            'mr1' => [
+                'baseline' => 4_244_731, // Sesuai dengan nilai tetap yang ada di view
+                'baseline_y1' => $coverage['baseline_mr1_y1'],
+                'baseline_y2' => $coverage['baseline_mr1_y2'],
+                'actual_y1' => $mr1['actual_y1'],
+                'actual_y2' => $mr1['actual_y2']
+            ],
             'reduction_zd' => [
+                // 'baseline' => "25% of {$baseline_zd_2023} (per Dec 2022)",
+                'baseline' => "25% of {$baseline_zd_2023}",
+                // 'target_y1' => $target_reduction_y1,
+                // 'target_y2' => $target_reduction_y2,
                 'actual_y1' => $percent_reduction_y1,
                 'actual_y2' => $percent_reduction_y2
             ]
         ];
     }
+    
+    
+    
     
 }
