@@ -144,6 +144,8 @@ class Home extends CI_Controller {
             $this->data["total_dpt_1_$year"] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province, $year);
             $this->data["total_dpt_3_$year"] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_3', $selected_province, $year);
             $this->data["total_mr_1_$year"] = $this->Immunization_model->get_total_vaccine('mr_1', $selected_province, $year);
+            // echo "Year: $year, DPT1: {$this->data["total_dpt_1_$year"]}, DPT3: {$this->data["total_dpt_3_$year"]}, MR1: {$this->data["total_mr_1_$year"]}"; 
+
 
             // Hitung Zero Dose (ZD)
             $this->data["zero_dose_$year"] = max($this->data["total_target_dpt_1_$year"] - $this->data["total_dpt_1_$year"], 0);
@@ -170,6 +172,7 @@ class Home extends CI_Controller {
                 ? round(($this->data["total_mr_1_$year"] / $this->data["total_target_mr_1_$year"]) * 100, 1)
                 : 0;
         }
+        // exit;
 
         // // Ambil total target dan cakupan DPT-1, DPT-3, MR-1
         // $this->data['total_dpt_1'] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province);

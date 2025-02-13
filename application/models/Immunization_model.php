@@ -45,6 +45,26 @@ class Immunization_model extends CI_Model {
         return $result->total_target ?? 0;
     }
     
+    // Total imunisasi berdasarkan jenis vaksin dan filter provinsi
+    public function get_total_vaccine($vaccine_column, $province_id, $year) {
+        $province_ids = $this->get_targeted_province_ids();
+        $this->db->select("SUM($vaccine_column) AS total");
+        $this->db->from('immunization_data');
+        $this->db->where('year', $year); // <-- Pastikan ini ada!
+    
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+    
+        $query = $this->db->get()->row();
+        return $query->total ?? 0;
+    }
 
     
 
@@ -100,28 +120,8 @@ class Immunization_model extends CI_Model {
         return array_column($query->result_array(), 'id'); // Return array ID
     }
     
-    // Total imunisasi berdasarkan jenis vaksin dan filter provinsi
-    public function get_total_vaccine($vaccine_column, $province_id = 'all') {
-        $province_ids = $this->get_targeted_province_ids(); // Ambil province_id yang priority = 1
-
-        $this->db->select("SUM($vaccine_column) AS total");
-        $this->db->from('immunization_data');
     
-        if ($province_id === 'targeted') {
-            
     
-            if (!empty($province_ids)) {
-                $this->db->where_in('province_id', $province_ids);
-            } else {
-                return 0; // Kalau tidak ada provinsi yang masuk kategori priority, return 0
-            }
-        } elseif ($province_id !== 'all') {
-            $this->db->where('immunization_data.province_id', $province_id); // Pakai alias tabel
-        }
-        
-        $query = $this->db->get()->row();
-        return $query->total ?? 0;
-    }
 
     // public function get_total_target($vaccine_column, $province_id = 'all') {
     //     // Ambil province_id dengan priority = 1

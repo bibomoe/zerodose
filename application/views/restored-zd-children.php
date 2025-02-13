@@ -170,8 +170,12 @@
 
                             <!-- DPT 3 dan MR1 -->
 <div class="row">
+<?php
+        //  var_dump(number_format($total_dpt_3_2025));
+         ?>
     <?php foreach ([2024, 2025] as $year): ?>
         <!-- DPT-3 Coverage -->
+         
         <div class="col-12 col-lg-6 col-md-6">
             <div class="card">
                 <div class="card-body px-4 py-4-5">
