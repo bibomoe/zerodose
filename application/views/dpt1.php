@@ -297,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 let dropoutRate = dropout_rate_per_provinces[regionId] || 0;
 
                 // Safely access average and handle undefined values
-                let averageDropoutRate = dropoutRate.average ? dropoutRate.average.toFixed(2) : '100';  // Default to '100' if undefined
+                let averageDropoutRate = dropoutRate.average ? dropoutRate.average.toFixed(2) : '0';  // Default to '100' if undefined
 
                 // Ambil persentase districts dengan coverage (DPT1-DPT3) < 5% per provinsi
                 let percentDptUnder5 = percentDptUnder5Data[regionId] || 0;
