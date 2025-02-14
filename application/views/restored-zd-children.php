@@ -975,21 +975,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     try {
                         let labelPoint = turf.pointOnFeature(feature);
                         let latlng = [labelPoint.geometry.coordinates[1], labelPoint.geometry.coordinates[0]];
-
-                        let labelSize = adjustLabelSize(map.getZoom()); // Adjust size based on current zoom level
+                        
+                        // let labelSize = adjustLabelSize(map.getZoom()); // Adjust size based on current zoom level
 
                         if (feature.properties.NAMOBJ) {
                             let label = L.divIcon({
                                 className: 'label-class',
-                                html: `<strong ">${feature.properties.NAMOBJ}</strong>`,
+                                html: `<strong style="font-size: 9px;">${feature.properties.NAMOBJ}</strong>`,
                                 iconSize: [100, 20]
                             });
                             L.marker(latlng, { icon: label }).addTo(map);
                         } else if (feature.properties.WADMPR) { 
                             let label = L.divIcon({
                                 className: 'label-class',
-                                html: `<strong ">${feature.properties.WADMPR}</strong>`,
-                                iconSize: [100, 20]
+                                html: `<strong style="font-size: 8px;">${feature.properties.WADMPR}</strong>`,
+                                iconSize: [50, 15]
                             });
                             L.marker(latlng, { icon: label }).addTo(map);
                         }
