@@ -23,6 +23,34 @@
                 <div class="page-content"> 
                     <section class="row">
                         <div class="col-12 col-lg-12">
+                        <div class="row">
+                                <div class="col-12" style="margin-bottom: 20px;">
+                                    <!-- <div class="card">
+                                        <div class="card-header"></div>
+                                        <div class="card-body"> -->
+                                            <?php
+                                                // var_dump($selected_province);
+                                            ?>
+                                            <?= form_open('home/dpt1', ['method' => 'get']) ?>
+                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;">Select Year</label>
+                                                <div class="d-flex flex-column flex-md-row align-items-center gap-2">
+                                                    <?= form_dropdown(
+                                                            'year', 
+                                                            [2025 => '2025', 2024 => '2024'], 
+                                                            set_value('year', $selected_year ?? 2025), 
+                                                            'class="form-select" style="width: 100%; max-width: 200px; height: 48px; font-size: 1rem;" required'
+                                                        ); ?>
+                                                    <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
+                                                        <i class="bi bi-filter"></i> Submit
+                                                    </button>
+                                                </div>
+                                            <?= form_close() ?>
+                                        <!-- </div>
+                                    </div> -->
+                                </div>
+                            </div>
+
+                            <!-- 4 Card -->
                             <div class="row">
                                 <div class="col-6 col-lg-3 col-md-6">
                                     <div class="card">
@@ -111,6 +139,7 @@
                                 </div>
                             </div>
 
+                            <!-- Peta -->
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card">
@@ -131,6 +160,8 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Tabel -->
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card">
@@ -179,7 +210,7 @@
             <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
-                        <p>2023 &copy; Mazer</p>
+                        <p>2025 &copy; CHAI</p>
                     </div>
                     <!-- <div class="float-end">
                         <p>Crafted with <span class="text-danger"><i class="bi bi-heart-fill icon-mid"></i></span>
@@ -201,6 +232,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }).addTo(map);
 
     let dptUnder5Data = <?= json_encode($dpt_under_5_data, JSON_NUMERIC_CHECK); ?>;
+
     let dptCoverageData = <?= json_encode($total_dpt1_coverage_per_province, JSON_NUMERIC_CHECK); ?>;
     let dptTargetData = <?= json_encode($total_dpt1_target_per_province, JSON_NUMERIC_CHECK); ?>;
     let totalCitiesData = <?= json_encode($total_cities_per_province, JSON_NUMERIC_CHECK); ?>;
@@ -209,8 +241,13 @@ document.addEventListener("DOMContentLoaded", function () {
     let dropout_rate_per_provinces = <?= json_encode($dropout_rate_per_provinces, JSON_NUMERIC_CHECK); ?>;
     let percentDptUnder5Data = <?= json_encode($percent_dpt_under_5_per_province, JSON_NUMERIC_CHECK); ?>;
 
-    // console.log(percentDptCoverageData);
+    console.log(dptUnder5Data);
+    console.log(dptCoverageData);
+    console.log(dptTargetData);
+    console.log(totalCitiesData);
+    console.log(percentDptCoverageData);
     console.log(dropout_rate_per_provinces);
+    console.log(percentDptUnder5Data);
 
     function getColor(dpt) {
         return (dpt) ? '#1A9850' : '#D73027' ; // Hijau jika ada lebih dari 0% cakupan, merah jika tidak ada
@@ -259,6 +296,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Ambil Dropout Rate per provinsi
                 let dropoutRate = dropout_rate_per_provinces[regionId] || 0;
 
+                // Safely access average and handle undefined values
+                let averageDropoutRate = dropoutRate.average ? dropoutRate.average.toFixed(2) : '100';  // Default to '100' if undefined
+
                 // Ambil persentase districts dengan coverage (DPT1-DPT3) < 5% per provinsi
                 let percentDptUnder5 = percentDptUnder5Data[regionId] || 0;
 
@@ -267,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Membuat konten pop-up untuk menampilkan informasi
                 let popupContent = `<b>${name}</b><br>`;
                 popupContent += `Total Districts: ${totalCities.total_cities}<br>`;
-                popupContent += `Dropout Rate: ${dropoutRate.average.toFixed(2)}%<br>`;
+                popupContent += `Dropout Rate: ${averageDropoutRate}%<br>`;
                 popupContent += `Total Districts with DO (DPT1-DPT3) < 5%: ${dptUnder5} (${percentDptUnder5}%)<br>`;
                 popupContent += `DPT1 Coverage: ${dptCoverage.dpt1_coverage} (${percentDptCoverage}%)<br>`;
                 popupContent += `DPT1 Target: ${dptTarget.dpt1_target}`;

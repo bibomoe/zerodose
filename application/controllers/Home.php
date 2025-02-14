@@ -220,10 +220,13 @@ class Home extends CI_Controller {
         // Ambil data dari model
         $this->load->model('Dpt1_model');
 
+        $selected_year = $this->input->get('year') ?? 2025; // Default tahun 2025
+        $this->data['selected_year'] = $selected_year;
+
         $province_ids = $this->Immunization_model->get_targeted_province_ids(); // Ambil province_id yang priority = 1
         
         // Mendapatkan dropout rates per provinsi
-        $dropout_rates = $this->Dpt1_model->get_districts_under_5_percent();
+        $dropout_rates = $this->Dpt1_model->get_districts_under_5_percent($selected_year);
         
         // Menjumlahkan semua nilai dropout rate per provinsi
         $total_dropout_rate = array_sum($dropout_rates);
@@ -232,11 +235,14 @@ class Home extends CI_Controller {
         $this->data['total_dropout_rate'] = $total_dropout_rate;
 
         // Ambil dropout rates per provinsi
-        $dropout_rates_per_province = $this->Dpt1_model->get_dropout_rates_per_province();
+        $dropout_rates_per_province = $this->Dpt1_model->get_dropout_rates_per_province($selected_year);
+
+        // Jumlah provinsi target yang diinginkan, misalnya 10
+        $total_provinces = 10;
 
         // Hitung total dan jumlah provinsi untuk perhitungan rata-rata
         $total_dropout_rate = 0;
-        $total_provinces = count($dropout_rates_per_province);
+        // $total_provinces = count($dropout_rates_per_province);
 
         // var_dump($dropout_rates_per_province);
         // exit;
@@ -245,15 +251,21 @@ class Home extends CI_Controller {
             $total_dropout_rate += $data['average']; // Menjumlahkan rata-rata dropout rate per provinsi
         }
 
+        // Provinsi yang tidak memiliki data dianggap memiliki dropout rate 100%
+        $missing_provinces = $total_provinces - count($dropout_rates_per_province);
+
+        // Menambahkan 100% untuk setiap provinsi yang tidak memiliki data
+        $total_dropout_rate += $missing_provinces * 100;
+
         // Hitung rata-rata dropout rate dari semua provinsi
-        $average_dropout_rate_all_provinces = ($total_provinces > 0) ? $total_dropout_rate / $total_provinces : 0;
+        $average_dropout_rate_all_provinces = ($total_provinces > 0) ? $total_dropout_rate / $total_provinces : 100;
 
         // Menambahkan rata-rata dropout rate ke data view
         $this->data['dropout_rate_all_provinces'] = round($average_dropout_rate_all_provinces, 2);
 
 
-        $this->data['total_dpt1_coverage'] = $this->Dpt1_model->get_total_dpt1_coverage();
-        $this->data['total_dpt1_target'] = $this->Dpt1_model->get_total_dpt1_target();
+        $this->data['total_dpt1_coverage'] = $this->Dpt1_model->get_total_dpt1_coverage($selected_year);
+        $this->data['total_dpt1_target'] = $this->Dpt1_model->get_total_dpt1_target($selected_year);
         // $this->data['districts_under_5'] = $this->Dpt1_model->get_districts_under_5_percent();
         $this->data['total_regencies_cities'] = $this->Dpt1_model->get_total_regencies_cities();
 
@@ -269,10 +281,10 @@ class Home extends CI_Controller {
 
         // Mengambil data cakupan DPT untuk provinsi yang telah dipilih
         // $dpt_under_5_data = $this->Dpt1_model->get_dpt_under_5_percent_cities($province_ids);
-        $dpt_under_5_data = $this->Dpt1_model->get_districts_under_5_percent();
+        $dpt_under_5_data = $this->Dpt1_model->get_districts_under_5_percent($selected_year);
 
-        $this->data['total_dpt1_coverage_per_province'] = $this->Dpt1_model->get_dpt1_coverage_per_province($province_ids);
-        $this->data['total_dpt1_target_per_province'] = $this->Dpt1_model->get_dpt1_target_per_province($province_ids);
+        $this->data['total_dpt1_coverage_per_province'] = $this->Dpt1_model->get_dpt1_coverage_per_province($province_ids, $selected_year);
+        $this->data['total_dpt1_target_per_province'] = $this->Dpt1_model->get_dpt1_target_per_province($province_ids, $selected_year);
         // Mengambil data total cities per provinsi
         $this->data['total_cities_per_province'] = $this->Dpt1_model->get_total_cities_per_province($province_ids);
 
@@ -322,7 +334,7 @@ class Home extends CI_Controller {
         $this->data['geojson_file'] = base_url('assets/geojson/targeted.geojson');  // File GeoJSON untuk targeted provinces
 
         // Ambil data distrik dan cakupan DPT
-        $this->data['district_details'] = $this->Dpt1_model->get_district_details($province_ids);
+        $this->data['district_details'] = $this->Dpt1_model->get_district_details($province_ids, $selected_year);
 
         // echo "Total districts from model: " . count($this->data['district_details']);
         // print_r($this->data['district_details']);
