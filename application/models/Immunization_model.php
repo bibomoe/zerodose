@@ -179,47 +179,59 @@ class Immunization_model extends CI_Model {
         $province_ids = $this->get_targeted_province_ids();
     
         // Step 1: Ambil total target imunisasi berdasarkan tahun (2024 dan 2025)
-        // Total target untuk tahun 2024
-        $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target_2024", false);
-        $this->db->from('target_immunization');
-        $this->db->where('year', 2024);
-        
-        if ($province_id === 'targeted') {
-            if (!empty($province_ids)) {
-                $this->db->where_in('province_id', $province_ids);
-            } else {
-                return [];
+        if ($province_id === 'all') {
+            // Ambil total target DPT-1 untuk tahun 2024 dan 2025 dari tabel target_coverage
+            $this->db->select("
+                SUM(CASE WHEN year = 2024 AND vaccine_type = 'DPT-1' THEN target_population ELSE 0 END) AS total_target_2024,
+                SUM(CASE WHEN year = 2025 AND vaccine_type = 'DPT-1' THEN target_population ELSE 0 END) AS total_target_2025
+            ", false);
+            $this->db->from('target_coverage');
+            $total_target = $this->db->get()->row_array();
+            $total_target_2024 = $total_target['total_target_2024'] ?? 0;
+            $total_target_2025 = $total_target['total_target_2025'] ?? 0;
+        } else {
+            // Total target untuk tahun 2024
+            $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target_2024", false);
+            $this->db->from('target_immunization');
+            $this->db->where('year', 2024);
+    
+            if ($province_id === 'targeted') {
+                if (!empty($province_ids)) {
+                    $this->db->where_in('province_id', $province_ids);
+                } else {
+                    return [];
+                }
+            } elseif ($province_id !== 'all') {
+                $this->db->where('province_id', $province_id);
             }
-        } elseif ($province_id !== 'all') {
-            $this->db->where('province_id', $province_id);
-        }
     
-        if ($city_id !== 'all') {
-            $this->db->where('city_id', $city_id);
-        }
-    
-        $total_target_2024 = $this->db->get()->row()->total_target_2024 ?? 0;
-    
-        // Total target untuk tahun 2025
-        $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target_2025", false);
-        $this->db->from('target_immunization');
-        $this->db->where('year', 2025);
-        
-        if ($province_id === 'targeted') {
-            if (!empty($province_ids)) {
-                $this->db->where_in('province_id', $province_ids);
-            } else {
-                return [];
+            if ($city_id !== 'all') {
+                $this->db->where('city_id', $city_id);
             }
-        } elseif ($province_id !== 'all') {
-            $this->db->where('province_id', $province_id);
-        }
     
-        if ($city_id !== 'all') {
-            $this->db->where('city_id', $city_id);
-        }
+            $total_target_2024 = $this->db->get()->row()->total_target_2024 ?? 0;
     
-        $total_target_2025 = $this->db->get()->row()->total_target_2025 ?? 0;
+            // Total target untuk tahun 2025
+            $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target_2025", false);
+            $this->db->from('target_immunization');
+            $this->db->where('year', 2025);
+    
+            if ($province_id === 'targeted') {
+                if (!empty($province_ids)) {
+                    $this->db->where_in('province_id', $province_ids);
+                } else {
+                    return [];
+                }
+            } elseif ($province_id !== 'all') {
+                $this->db->where('province_id', $province_id);
+            }
+    
+            if ($city_id !== 'all') {
+                $this->db->where('city_id', $city_id);
+            }
+    
+            $total_target_2025 = $this->db->get()->row()->total_target_2025 ?? 0;
+        }
     
         // Step 2: Ambil data imunisasi per bulan
         $this->db->select("
