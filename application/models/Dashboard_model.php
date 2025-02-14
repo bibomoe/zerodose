@@ -336,6 +336,27 @@ class Dashboard_model extends CI_Model {
             ]
         ];
     }
+
+    public function get_dpt1_coverage_percentage($year) {
+        $this->load->model('Dpt1_model'); // Pastikan model Dpt1_model diload
+    
+        $total_coverage = $this->Dpt1_model->get_total_dpt1_coverage($year);
+        $total_target = $this->Dpt1_model->get_total_dpt1_target($year);
+    
+        // Hitung persentase cakupan DPT1
+        return ($total_target > 0) ? round(($total_coverage / $total_target) * 100, 2) : 0;
+    }
+    
+    public function get_districts_under_5_percentage($year) {
+        $this->load->model('Dpt1_model'); // Pastikan model Dpt1_model diload
+    
+        $total_dropout_rate = array_sum($this->Dpt1_model->get_districts_under_5_percent($year));
+        $total_regencies = $this->Dpt1_model->get_total_regencies_cities();
+    
+        // Hitung persentase distrik dengan DO < 5%
+        return ($total_regencies > 0) ? round(($total_dropout_rate / $total_regencies) * 100, 2) : 0;
+    }
+    
     
     
     

@@ -250,8 +250,8 @@
                                                                     <td rowspan="2">Quarterly</td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning">Actual</td>
-                                                                    <td class="table-warning">Actual</td>
+                                                                    <td class="table-warning"><?= number_format($percent_dpt1_coverage_2024, 2) ?>%</td>
+                                                                    <td class="table-warning"><?= number_format($percent_dpt1_coverage_2025, 2) ?>%</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td rowspan="2">Community demand for & confidence in vaccines and immunization services, including among missed communities</td>
@@ -263,8 +263,8 @@
                                                                     <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning">Actual</td>
-                                                                    <td class="table-warning">Actual</td>
+                                                                    <td class="table-warning"><?= number_format($percent_districts_under_5_2024, 0) ?>%</td>
+                                                                    <td class="table-warning"><?= number_format($percent_districts_under_5_2025, 0) ?>%</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td rowspan="6">Institutional capacities to plan and deliver sustained, equitable immunization programmes, as a platform for broader PHC delivery</td>

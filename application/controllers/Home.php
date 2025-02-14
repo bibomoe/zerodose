@@ -69,6 +69,14 @@ class Home extends CI_Controller {
 
         // Ambil data long term outcomes
         $this->data['long_term_outcomes'] = $this->Dashboard_model->get_long_term_outcomes();
+
+        // ✅ Ambil nilai DPT1 Coverage dan Dropout Rate untuk 2024 & 2025
+        $this->data['percent_dpt1_coverage_2024'] = $this->Dashboard_model->get_dpt1_coverage_percentage(2024);
+        $this->data['percent_dpt1_coverage_2025'] = $this->Dashboard_model->get_dpt1_coverage_percentage(2025);
+
+        $this->data['percent_districts_under_5_2024'] = $this->Dashboard_model->get_districts_under_5_percentage(2024);
+        $this->data['percent_districts_under_5_2025'] = $this->Dashboard_model->get_districts_under_5_percentage(2025);
+
         
         load_template('dashboard', $this->data);
     }

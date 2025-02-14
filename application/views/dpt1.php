@@ -242,16 +242,18 @@ document.addEventListener("DOMContentLoaded", function () {
     let percentDptUnder5Data = <?= json_encode($percent_dpt_under_5_per_province, JSON_NUMERIC_CHECK); ?>;
 
     console.log(dptUnder5Data);
-    console.log(dptCoverageData);
-    console.log(dptTargetData);
-    console.log(totalCitiesData);
-    console.log(percentDptCoverageData);
-    console.log(dropout_rate_per_provinces);
-    console.log(percentDptUnder5Data);
+    // console.log(dptCoverageData);
+    // console.log(dptTargetData);
+    // console.log(totalCitiesData);
+    // console.log(percentDptCoverageData);
+    // console.log(dropout_rate_per_provinces);
+    // console.log(percentDptUnder5Data);
 
-    function getColor(dpt) {
-        return (dpt) ? '#1A9850' : '#D73027' ; // Hijau jika ada lebih dari 0% cakupan, merah jika tidak ada
+    function getColor(dpt, doRate) {
+        return (doRate < 5 && dpt != 0) ? '#1A9850' : '#D73027'; // Hijau jika do < 5 dan dpt != 0, merah jika tidak
     }
+
+
 
     fetch("<?= $geojson_file; ?>")
     .then(response => response.json())
@@ -264,12 +266,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Cek apakah ada data DPT untuk wilayah ini
                 let dptUnder5 = dptUnder5Data[regionId] || 0;
-                // let dpt1Under5 = dptUnder5 || 0;
-                // let dpt2Under5 = dptUnder5.dpt2_under_5 || 0;
-                // let dpt3Under5 = dptUnder5.dpt3_under_5 || 0;
+
+                // Ambil Dropout Rate per provinsi
+                let dropoutRate = dropout_rate_per_provinces[regionId] || 0;
+
+                // Safely access average and handle undefined values
+                let averageDropoutRate = dropoutRate.average ? dropoutRate.average.toFixed(2) : '0';  // Default to '100' if undefined
+
 
                 return {
-                    fillColor: getColor(dptUnder5),
+                    fillColor: getColor(dptUnder5, averageDropoutRate),
                     weight: 1.5,
                     opacity: 1,
                     color: '#ffffff',
