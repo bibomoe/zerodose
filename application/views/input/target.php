@@ -589,6 +589,15 @@
 
 <script>
 $(document).ready(function () {
+    // Inisialisasi DataTable hanya sekali
+    let table2 = $('#table2').DataTable({
+        paging: true,
+        searching: true,
+        ordering: true,
+        info: true,
+        responsive: true
+    });
+    
     function loadTable(province_id = '', city_id = '', year = null) {
         $.ajax({
             url: "<?= base_url('input/get_target_immunization'); ?>",
@@ -600,40 +609,49 @@ $(document).ready(function () {
                 tableBody.empty(); // Kosongkan tabel sebelum diisi ulang
 
                 if (response.length > 0) {
+                    let rows = [];
                     response.forEach(row => {
-                        let newRow = `<tr>
-                            <td>${row.province_name}</td>
-                            <td>${row.city_name}</td>
-                            <td>${row.year}</td>
-                            <td>${row.dpt_hb_hib_1_target}</td>
-                            <td>${row.dpt_hb_hib_2_target}</td>
-                            <td>${row.dpt_hb_hib_3_target}</td>
-                            <td>${row.mr_1_target}</td>
-                            <td>${row.dpt_hb_hib_1_target_actual}</td>
-                            <td>${row.dpt_hb_hib_2_target_actual}</td>
-                            <td>${row.dpt_hb_hib_3_target_actual}</td>
-                            <td>${row.mr_1_target_actual}</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm delete-btn" data-id="${row.id}">Delete</button>
-                            </td>
-                        </tr>`;
-                        tableBody.append(newRow);
+                        // let newRow = `<tr>
+                        //     <td>${row.province_name}</td>
+                        //     <td>${row.city_name}</td>
+                        //     <td>${row.year}</td>
+                        //     <td>${row.dpt_hb_hib_1_target}</td>
+                        //     <td>${row.dpt_hb_hib_2_target}</td>
+                        //     <td>${row.dpt_hb_hib_3_target}</td>
+                        //     <td>${row.mr_1_target}</td>
+                        //     <td>${row.dpt_hb_hib_1_target_actual}</td>
+                        //     <td>${row.dpt_hb_hib_2_target_actual}</td>
+                        //     <td>${row.dpt_hb_hib_3_target_actual}</td>
+                        //     <td>${row.mr_1_target_actual}</td>
+                        //     <td>
+                        //         <button class="btn btn-danger btn-sm delete-btn" data-id="${row.id}">Delete</button>
+                        //     </td>
+                        // </tr>`;
+                        // tableBody.append(newRow);
+                        let newRow = [
+                            row.province_name,  // Province Name
+                            row.city_name,      // City Name
+                            row.year,           // Year
+                            row.dpt_hb_hib_1_target,    // DPT 1 Target
+                            row.dpt_hb_hib_2_target,    // DPT 2 Target
+                            row.dpt_hb_hib_3_target,    // DPT 3 Target
+                            row.mr_1_target,    // MR 1 Target
+                            row.dpt_hb_hib_1_target_actual,  // Actual DPT 1 Target
+                            row.dpt_hb_hib_2_target_actual,  // Actual DPT 2 Target
+                            row.dpt_hb_hib_3_target_actual,  // Actual DPT 3 Target
+                            row.mr_1_target_actual,  // Actual MR 1 Target
+                            `<button class="btn btn-danger btn-sm delete-btn" data-id="${row.id}" onclick="deleteData(this)">Delete</button>`  // Delete Button
+                        ];
+
+                        // Push the newRow into the rows array
+                        rows.push(newRow);
                     });
 
-                    // Destroy old DataTable and reinitialize it
-                    if ($.fn.dataTable.isDataTable('#table2')) {
-                        $('#table2').DataTable().clear().destroy();
-                    }
+                    // Refresh tabel dengan data baru
+                    table2.clear().rows.add(rows).draw();
 
-                    // Inisialisasi ulang DataTable setelah data dimuat
-                    $('#table2').DataTable({
-                        destroy: true, // Menghapus DataTable lama
-                        paging: true, // Mengaktifkan pagination
-                        searching: true, // Mengaktifkan pencarian
-                        ordering: true, // Mengaktifkan sorting
-                        info: true, // Menampilkan info tentang jumlah data
-                        responsive: true // Membuat tabel responsif
-                    });
+                    // Pastikan fitur pencarian dan pengurutan masih berfungsi
+                    table2.search('').draw();  // Kosongkan pencarian dan gambar ulang DataTable
                 } else {
                     tableBody.append('<tr><td colspan="11" class="text-center">No data found</td></tr>');
                 }

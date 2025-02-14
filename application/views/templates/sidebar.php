@@ -186,16 +186,17 @@
                                 </li>
 
                                 <li class="submenu-item  ">
+                                    <a href="<?= base_url('home/dpt_stock'); ?>" class='sidebar-link'>
+                                        Number of DTP Stock Out at Health Facilities
+                                    </a>
+                                </li>
+
+                                <li class="submenu-item  ">
                                     <a href="<?= base_url('home/zd_tracking'); ?>" class='sidebar-link'>
                                         Percentage of Primary Health Facility to Conduct Immunization Service as Planned
                                     </a>
                                 </li>
                                 
-                                <li class="submenu-item  ">
-                                    <a href="<?= base_url('home/dpt_stock'); ?>" class='sidebar-link'>
-                                        Number of DTP Stock Out at Health Facilities
-                                    </a>
-                                </li>
 
                                 <!-- <li class="submenu-item  ">
                                     <a href="<?= base_url('home/private_health_facilities'); ?>" class='sidebar-link'>
@@ -206,6 +207,12 @@
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('home/district'); ?>" class='sidebar-link'>
                                         District Program
+                                    </a>
+                                </li>
+
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('home/policy'); ?>" class='sidebar-link'>
+                                        District Policy and Financing
                                     </a>
                                 </li>
                                 

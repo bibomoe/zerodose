@@ -624,52 +624,61 @@
             // **Fungsi untuk download CSV**
             function downloadZdCSV() {
                 const labels = [
-                    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-                    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
                 ];
-                const data2024 = zdChart.data.datasets[0].data; // Data 2024
-                const data2025 = zdChart.data.datasets[1].data; // Data 2025
+                
+                // Ambil dataset yang sedang digunakan di chart
+                let dataset = zdChart.data.datasets[0]; // Ambil dataset aktif
+                let year = dataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label dataset
 
                 let csvContent = "data:text/csv;charset=utf-8,";
-                csvContent += "Bulan,ZD Cases 2024,ZD Cases 2025\n"; // Header
+                csvContent += `Month,ZD Cases ${year}\n`; // Header CSV
 
                 labels.forEach((label, index) => {
-                    csvContent += `${label},${data2024[index] ?? ""},${data2025[index] ?? ""}\n`;
+                    let value = dataset.data[index] ?? ""; // Ambil data bulan tertentu, jika tidak ada kosongkan
+                    csvContent += `${label},${value}\n`;
                 });
 
                 const encodedUri = encodeURI(csvContent);
-                const link = document.createElement('a');
-                link.setAttribute('href', encodedUri);
-                link.setAttribute('download', 'zero_dose_cases.csv');
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `zero_dose_cases_${year}.csv`);
                 document.body.appendChild(link);
                 link.click();
             }
 
+
             // **Fungsi untuk download Excel**
             function downloadZdExcel() {
                 const labels = [
-                    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-                    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
                 ];
-                const data2024 = zdChart.data.datasets[0].data; // Data 2024
-                const data2025 = zdChart.data.datasets[1].data; // Data 2025
+
+                // Ambil dataset yang sedang digunakan
+                let dataset = zdChart.data.datasets[0];
+                let year = dataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label dataset
 
                 // Buat workbook Excel
                 const workbook = XLSX.utils.book_new();
-                const worksheetData = [["Bulan", "ZD Cases 2024", "ZD Cases 2025"], 
-                    ...labels.map((label, index) => [label, data2024[index] ?? "", data2025[index] ?? ""])
+                const worksheetData = [["Month", `ZD Cases ${year}`], 
+                    ...labels.map((label, index) => [label, dataset.data[index] ?? ""])
                 ];
                 const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
                 XLSX.utils.book_append_sheet(workbook, worksheet, "Zero Dose Cases");
 
                 // Generate file Excel dan unduh
-                XLSX.writeFile(workbook, "zero_dose_cases.xlsx");
+                XLSX.writeFile(workbook, `zero_dose_cases_${year}.xlsx`);
             }
+
 
             // **Tambahkan tombol download ke DOM**
             addZdDownloadButtons();
 
 </script>
+
+
 <script>
 
             // Fetch data from PHP
@@ -771,7 +780,7 @@
 
             // Add buttons to the DOM for locationChart
             addLocationDownloadButtons();
-    </script>
+</script>
 
 <!-- <script>
     document.addEventListener("DOMContentLoaded", function () {

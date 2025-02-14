@@ -173,6 +173,7 @@
                                                 <table class="table table-striped" id="table1">
                                                     <thead>
                                                         <tr>
+                                                            <th>Province</th>
                                                             <th>District</th>
                                                             <th>Target</th>
                                                             <th>DPT1 Coverage</th>
@@ -185,6 +186,7 @@
                                                     <tbody>
                                                         <?php foreach ($district_details as $district): ?>
                                                             <tr>
+                                                                <td><?= htmlspecialchars($district['province_name']); ?></td>
                                                                 <td><?= htmlspecialchars($district['district_name']) ?></td>
                                                                 <td><?= number_format($district['target']) ?></td>
                                                                 <td><?= number_format($district['dpt1_coverage']) ?></td>

@@ -21,6 +21,11 @@
     <script src="<?= base_url('assets/extensions/leaflet/leaflet.js'); ?>"></script>
     <script src="<?= base_url('assets/extensions/leaflet/turf.min.js'); ?>"></script>
 
+    <script src="<?= base_url('assets/extensions/xlsx/xlsx.full.min.js'); ?>"></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> -->
+
+
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
 

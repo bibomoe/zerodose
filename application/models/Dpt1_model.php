@@ -279,11 +279,13 @@ class Dpt1_model extends CI_Model {
     public function get_district_details($province_ids, $year) {
         $this->db->select("
             cities.name_id AS district_name,
+            provinces.name_id AS province_name,
             COALESCE(SUM(target_immunization.dpt_hb_hib_1_target), 0) AS target,
             COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
             COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage
         ");
         $this->db->from('cities');
+        $this->db->join('provinces', 'provinces.id = cities.province_id', 'left'); // Join ke tabel provinsi
         $this->db->join('immunization_data', 'immunization_data.city_id = cities.id', 'left');
         $this->db->join('target_immunization', 'target_immunization.city_id = cities.id', 'left');
         $this->db->where_in('cities.province_id', $province_ids);

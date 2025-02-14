@@ -239,7 +239,7 @@
     
     
 
-    <script>
+<script>
         var selectedYear = <?= $selected_year ?>;
         
 
@@ -407,32 +407,46 @@
 
         // Fungsi download CSV
         function downloadBudgetAbsorptionCSV() {
-            const csvContent = "data:text/csv;charset=utf-8," +
-                "Month,2024 Budget Absorption (IDR),2025 Budget Absorption (IDR)\n" +
-                months.map((month, index) => `${month},${budget2024[index]},${budget2025[index]}`).join("\n");
+            const selectedDataset = budgetAbsorptionChart.data.datasets[0]; // Ambil dataset aktif
+            const selectedYear = selectedDataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label
+            const selectedBudget = selectedYear == 2024 ? budget2024 : budget2025; // Ambil data sesuai tahun
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += `Month,${selectedYear} Budget Absorption (IDR)\n`; // Header
+
+            months.forEach((month, index) => {
+                csvContent += `${month},${selectedBudget[index]}\n`;
+            });
 
             const encodedUri = encodeURI(csvContent);
-            const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
-            link.setAttribute('download', 'budget_absorption_chart_data.csv');
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `budget_absorption_${selectedYear}.csv`);
+            document.body.appendChild(link);
             link.click();
         }
 
+
         // Fungsi download Excel
         function downloadBudgetAbsorptionExcel() {
+            const selectedDataset = budgetAbsorptionChart.data.datasets[0]; // Ambil dataset aktif
+            const selectedYear = selectedDataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label
+            const selectedBudget = selectedYear == 2024 ? budget2024 : budget2025; // Ambil data sesuai tahun
+
+            // Buat worksheet
             const worksheetData = [
-                ['Month', '2024 Budget Absorption (IDR)', '2025 Budget Absorption (IDR)'], // Header
-                ...months.map((month, index) => [month, budget2024[index], budget2025[index]]) // Data
+                ["Month", `${selectedYear} Budget Absorption (IDR)`], // Header
+                ...months.map((month, index) => [month, selectedBudget[index]]) // Data
             ];
 
-            // Menggunakan XLSX.js untuk membuat Excel
             const workbook = XLSX.utils.book_new();
             const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Budget Absorption');
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Budget Absorption");
 
-            // Generate dan download file Excel
-            XLSX.writeFile(workbook, 'budget_absorption_chart_data.xlsx');
+            // Generate file Excel dan unduh
+            XLSX.writeFile(workbook, `budget_absorption_${selectedYear}.xlsx`);
         }
+
 
         // Tambahkan tombol download saat halaman dimuat
         document.addEventListener('DOMContentLoaded', addBudgetAbsorptionDownloadButtons);
@@ -519,6 +533,8 @@
         //         }
         //     }
         // });
+</script>
+<script>
 
         // Inisialisasi grafik bar Chart.js 
         const ctxActivities = document.getElementById('activitiesChart').getContext('2d');
@@ -569,33 +585,46 @@
 
         // Fungsi untuk download CSV
         function downloadActivitiesCSV() {
-            const csvContent = "data:text/csv;charset=utf-8," +
-                "Objective,Total Activities,Completed Activities (2024),Completed Activities (2025)\n" +
-                objectivesLabels.map((label, index) =>
-                    `${label},${totalActivities[index]},${completedActivities2024[index]},${completedActivities2025[index]}`
-                ).join("\n");
+            const selectedDataset = activitiesChart.data.datasets[1]; // Ambil dataset aktif
+            const selectedYear = selectedDataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label
+            const selectedCompletedActivities = selectedYear == 2024 ? completedActivities2024 : completedActivities2025;
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += `Objective,Total Activities,Completed Activities (${selectedYear})\n`; // Header
+
+            objectivesLabels.forEach((label, index) => {
+                csvContent += `${label},${totalActivities[index]},${selectedCompletedActivities[index]}\n`;
+            });
 
             const encodedUri = encodeURI(csvContent);
-            const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
-            link.setAttribute('download', 'activities_chart_data.csv');
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `activities_chart_${selectedYear}.csv`);
+            document.body.appendChild(link);
             link.click();
         }
 
+
         // Fungsi untuk download Excel
         function downloadActivitiesExcel() {
+            const selectedDataset = activitiesChart.data.datasets[1]; // Ambil dataset aktif
+            const selectedYear = selectedDataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label
+            const selectedCompletedActivities = selectedYear == 2024 ? completedActivities2024 : completedActivities2025;
+
+            // Buat worksheet
             const worksheetData = [
-                ['Objective', 'Total Activities', 'Completed Activities (2024)', 'Completed Activities (2025)'], // Header
+                ["Objective", "Total Activities", `Completed Activities (${selectedYear})`], // Header
                 ...objectivesLabels.map((label, index) => [
-                    label, totalActivities[index], completedActivities2024[index], completedActivities2025[index]
+                    label, totalActivities[index], selectedCompletedActivities[index]
                 ])
             ];
 
             const workbook = XLSX.utils.book_new();
             const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Activities Data');
-            XLSX.writeFile(workbook, 'activities_chart_data.xlsx');
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Activities Data");
+            XLSX.writeFile(workbook, `activities_chart_${selectedYear}.xlsx`);
         }
+
 
         // Tambahkan tombol download di bawah grafik
         function addActivitiesDownloadButtons() {
@@ -633,5 +662,4 @@
         // document.getElementById("year").addEventListener("change", function() {
         //     document.getElementById("filter-form").submit();
         // });
-    
-    </script>
+</script>

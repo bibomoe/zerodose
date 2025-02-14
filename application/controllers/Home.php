@@ -82,10 +82,10 @@ class Home extends CI_Controller {
     }
 
     // Fungsi lainnya
-    public function zd_cases() {
-        $this->data['title'] = 'Current ZD Cases';
-        load_template('zd-cases', $this->data);
-    }
+    // public function zd_cases() {
+    //     $this->data['title'] = 'Current ZD Cases';
+    //     load_template('zd-cases', $this->data);
+    // }
 
     public function restored() {
         $user_category = $this->session->userdata('user_category');
@@ -356,12 +356,30 @@ class Home extends CI_Controller {
     }
 
     public function dpt_stock() {
+        $this->load->model('StockOut_model'); // Pastikan model dipanggil
+
+        $selected_province = $this->input->get('province') ?? 'all';
+        $selected_year = $this->input->get('year') ?? 2025;
+
+        // Ambil daftar provinsi untuk dropdown + targeted provinces
+        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
+
+        // Ambil data stock out hanya untuk vaksin DPT
+        $stock_out_data = $this->StockOut_model->get_dpt_stock_out($selected_province, $selected_year);
+
+        // Kirim data ke view
+        $this->data['selected_province'] = $selected_province;
+        $this->data['selected_year'] = $selected_year;
+        // $this->data['stock_out_data'] = json_encode($stock_out_data); // Kirim dalam bentuk JSON
+        $this->data['stock_out_data'] = $stock_out_data; // Kirim dalam bentuk JSON
+
+
         $this->data['title'] = 'Number of DTP Stock Out at Health Facilities';
         load_template('dpt-stock', $this->data);
     }
 
     public function district() {
-        $this->data['title'] = 'District Program, Financing & Policy';
+        $this->data['title'] = 'District Program';
         load_template('district', $this->data);
     }
 
@@ -482,10 +500,10 @@ class Home extends CI_Controller {
         load_template('activity-tracker', $this->data);
     }
 
-    public function private_health_facilities() {
-        $this->data['title'] = 'Number of private health facilities in targeted areas​';
-        load_template('private-health-facilities', $this->data);
-    }
+    // public function private_health_facilities() {
+    //     $this->data['title'] = 'Number of private health facilities in targeted areas​';
+    //     load_template('private-health-facilities', $this->data);
+    // }
 
     public function get_districts_by_province() {
         $province_id = $this->input->get('province_id');

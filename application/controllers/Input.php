@@ -37,6 +37,8 @@ class Input extends CI_Controller {
         $this->load->model('Transaction_model');
         $this->load->model('Immunization_model');
         $this->load->helper('form');
+
+        $this->load->model('StockOut_model');
     }
 
     public function index() {
@@ -551,7 +553,6 @@ class Input extends CI_Controller {
         echo json_encode($query->result());
     }
 
-
     public function delete_target_immunization()
     {
         $id = $this->input->post('id');
@@ -626,6 +627,52 @@ class Input extends CI_Controller {
         $this->db->where('id', $id);
         $this->db->delete('immunization_data');
     
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode(['status' => 'success', 'message' => 'Data deleted successfully']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to delete data']);
+        }
+    }
+
+    // Simpan data stock out
+    public function save_stock_out() {
+        $data = [
+            'province_id' => $this->input->post('province_id'),
+            'city_id'     => $this->input->post('city_id'),
+            'year'        => $this->input->post('year'),
+            'month'       => $this->input->post('month'),
+            'vaccine_type'=> $this->input->post('vaccine_type'),
+            'stock_out_1_month' => $this->input->post('stock_out_1_month'),
+            'stock_out_2_months'=> $this->input->post('stock_out_2_months'),
+            'stock_out_3_months'=> $this->input->post('stock_out_3_months'),
+            'stock_out_more_than_3_months' => $this->input->post('stock_out_more_than_3_months')
+        ];
+
+        $this->StockOut_model->save_stock_out($data);
+        $this->session->set_flashdata('success', 'Stock out data saved successfully!');
+        redirect('input/manual');
+    }
+
+    // Ambil data stock out berdasarkan filter
+    public function get_stock_out_data() {
+        $province_id = $this->input->get('province_id');
+        $city_id     = $this->input->get('city_id');
+        $year        = $this->input->get('year');
+        $month       = $this->input->get('month');
+
+        $data = $this->StockOut_model->get_stock_out_data($province_id, $city_id, $year, $month);
+        echo json_encode($data);
+    }
+
+    // Hapus data stock out
+    public function delete_stock_out_data($id) {
+        if (!$id) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid ID']);
+            return;
+        }
+
+        $this->StockOut_model->delete_stock_out($id);
+
         if ($this->db->affected_rows() > 0) {
             echo json_encode(['status' => 'success', 'message' => 'Data deleted successfully']);
         } else {
