@@ -107,6 +107,74 @@ class Dpt1_model extends CI_Model {
     
         return $dropout_rates; // Kembalikan hanya drop-out rate
     }
+
+    // Menghitung dropout rate untuk tiap provinsi
+    public function get_dropout_rates_per_province() {
+        // Ambil 10 provinsi dengan priority = 1
+        $provinces = $this->get_targeted_provinces();
+        $province_ids = array_column($provinces, 'id'); // Ambil array ID provinsi
+
+        // Query untuk mendapatkan cakupan DPT1 dan DPT3 untuk setiap distrik
+        $this->db->select("
+            cities.province_id,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage
+        ");
+        $this->db->from('cities');
+        $this->db->join('immunization_data', 'immunization_data.city_id = cities.id', 'left');
+        $this->db->where_in('cities.province_id', $province_ids); // Hanya untuk provinsi dengan priority = 1
+        $this->db->group_by('cities.id'); // Group by city_id untuk perhitungan tiap kota/distrik
+
+        // Ambil hasil query
+        $query = $this->db->get();
+        $districts = $query->result_array();
+
+        // Kumulatif data berdasarkan provinsi
+        $dropout_rates_per_province = [];
+
+        foreach ($districts as $district) {
+            // Pastikan tidak membagi dengan 0 dan hitung persentase cakupan DPT-1 dan DPT-3
+            $dpt1_coverage = $district['dpt1_coverage'];
+            $dpt3_coverage = $district['dpt3_coverage'];
+
+            // Menghitung drop-out rate dari DPT-1 ke DPT-3
+            $dropout_rate_dpt1_to_dpt3 = 0;
+            if ($dpt1_coverage > 0) {
+                // Jumlah yang tidak menerima DPT-3
+                $not_received_dpt3 = $dpt1_coverage - $dpt3_coverage;
+                // Drop-out rate formula: (Jumlah yang tidak menerima DPT-3 / Jumlah yang menerima DPT-1) * 100
+                $dropout_rate_dpt1_to_dpt3 = ($not_received_dpt3 / $dpt1_coverage) * 100;
+            } else {
+                $dropout_rate_dpt1_to_dpt3 = 100;
+            }
+
+            // Menambahkan dropout rate untuk provinsi
+            if (isset($dropout_rates_per_province[$district['province_id']])) {
+                // Menambahkan dropout rate untuk provinsi yang ada
+                $dropout_rates_per_province[$district['province_id']]['total'] += $dropout_rate_dpt1_to_dpt3; // Jumlahkan dropout rate
+                $dropout_rates_per_province[$district['province_id']]['count'] += 1; // Hitung jumlah distrik
+            } else {
+                // Jika provinsi belum ada, tambahkan provinsi dan set nilai awal
+                $dropout_rates_per_province[$district['province_id']] = [
+                    'total' => $dropout_rate_dpt1_to_dpt3,
+                    'count' => 1
+                ];
+            }
+        }
+
+        // Menghitung rata-rata dropout rate untuk setiap provinsi
+        foreach ($dropout_rates_per_province as $province_id => $data) {
+            // Rata-rata dropout rate per provinsi
+            $dropout_rates_per_province[$province_id]['average'] = $data['total'] / $data['count']; 
+        }
+
+        // var_dump($dropout_rates_per_province);
+        // exit;
+
+        // Kembalikan array dropout rates per provinsi
+        return $dropout_rates_per_province;
+    }
+
     
     
     

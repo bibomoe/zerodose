@@ -227,9 +227,30 @@ class Home extends CI_Controller {
         
         // Menjumlahkan semua nilai dropout rate per provinsi
         $total_dropout_rate = array_sum($dropout_rates);
-
+        
         // Menambahkan total dropout rate ke data view
         $this->data['total_dropout_rate'] = $total_dropout_rate;
+
+        // Ambil dropout rates per provinsi
+        $dropout_rates_per_province = $this->Dpt1_model->get_dropout_rates_per_province();
+
+        // Hitung total dan jumlah provinsi untuk perhitungan rata-rata
+        $total_dropout_rate = 0;
+        $total_provinces = count($dropout_rates_per_province);
+
+        // var_dump($dropout_rates_per_province);
+        // exit;
+        
+        foreach ($dropout_rates_per_province as $province_id => $data) {
+            $total_dropout_rate += $data['average']; // Menjumlahkan rata-rata dropout rate per provinsi
+        }
+
+        // Hitung rata-rata dropout rate dari semua provinsi
+        $average_dropout_rate_all_provinces = ($total_provinces > 0) ? $total_dropout_rate / $total_provinces : 0;
+
+        // Menambahkan rata-rata dropout rate ke data view
+        $this->data['dropout_rate_all_provinces'] = round($average_dropout_rate_all_provinces, 2);
+
 
         $this->data['total_dpt1_coverage'] = $this->Dpt1_model->get_total_dpt1_coverage();
         $this->data['total_dpt1_target'] = $this->Dpt1_model->get_total_dpt1_target();
@@ -294,6 +315,9 @@ class Home extends CI_Controller {
                 ? round(($district_count / $total_cities) * 100, 2)
                 : 0;
         }
+
+        //DO per Provinces untuk peta
+        $this->data['dropout_rate_per_provinces'] = $dropout_rates_per_province;
 
         $this->data['geojson_file'] = base_url('assets/geojson/targeted.geojson');  // File GeoJSON untuk targeted provinces
 

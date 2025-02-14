@@ -217,8 +217,8 @@
                                                                     <th rowspan="2">Indicator</th>
                                                                     
                                                                     <th colspan="3">Indicator Value</th>
-                                                                    <th rowspan="2">Data Source</th>
-                                                                    <th rowspan="2">Frequency of Reporting</th>
+                                                                    <!-- <th rowspan="2">Data Source</th>
+                                                                    <th rowspan="2">Frequency of Reporting</th> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Baseline</th>
@@ -233,8 +233,8 @@
                                                                     <td rowspan="2">No Baseline Data (See cell comment)</td>
                                                                     <td class="table-success">No Y1 target</td>
                                                                     <td class="table-success">80%</td>
-                                                                    <td rowspan="2">Indonesian Sehat Application (ASIK) digital-based</td>
-                                                                    <td rowspan="2">Annually</td>
+                                                                    <!-- <td rowspan="2">Indonesian Sehat Application (ASIK) digital-based</td>
+                                                                    <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning">Actual</td>
@@ -246,8 +246,8 @@
                                                                     <td rowspan="2">82.6% (10 provinces 2021)</td>
                                                                     <td class="table-success">90%</td>
                                                                     <td class="table-success">93%</td>
-                                                                    <td rowspan="2">Administrative Reports</td>
-                                                                    <td rowspan="2">Quarterly</td>
+                                                                    <!-- <td rowspan="2">Administrative Reports</td>
+                                                                    <td rowspan="2">Quarterly</td> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning">Actual</td>
@@ -259,8 +259,8 @@
                                                                     <td rowspan="2">62% (2021)</td>
                                                                     <td class="table-success">75%</td>
                                                                     <td class="table-success">85%</td>
-                                                                    <td rowspan="2">Activity reports by EPI/health promotion unit/partners which include meeting minutes and trainee attendance</td>
-                                                                    <td rowspan="2">Annually</td>
+                                                                    <!-- <td rowspan="2">Activity reports by EPI/health promotion unit/partners which include meeting minutes and trainee attendance</td>
+                                                                    <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning">Actual</td>
@@ -272,8 +272,8 @@
                                                                     <td rowspan="2">No baseline available</td>
                                                                     <td class="table-success">30%</td>
                                                                     <td class="table-success">50%</td>
-                                                                    <td rowspan="2">Supportive Supervision Report (Dashboard)</td>
-                                                                    <td rowspan="2">Annually</td>
+                                                                    <!-- <td rowspan="2">Supportive Supervision Report (Dashboard)</td>
+                                                                    <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning">Actual</td>
@@ -284,8 +284,8 @@
                                                                     <td rowspan="2">No DPT vaccine stock out in 2022</td>
                                                                     <td class="table-success">N/A</td>
                                                                     <td class="table-success">Zero stock outs</td>
-                                                                    <td rowspan="2">SMILE</td>
-                                                                    <td rowspan="2"></td>
+                                                                    <!-- <td rowspan="2">SMILE</td>
+                                                                    <td rowspan="2"></td> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning">Actual</td>
@@ -296,8 +296,8 @@
                                                                     <td rowspan="2">248 (DKI Jakarta, East Java and Central Java) - HSS report</td>
                                                                     <td class="table-success">350</td>
                                                                     <td class="table-success">235</td>
-                                                                    <td rowspan="2">Training results</td>
-                                                                    <td rowspan="2"></td>
+                                                                    <!-- <td rowspan="2">Training results</td>
+                                                                    <td rowspan="2"></td> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning">Actual</td>
@@ -309,8 +309,8 @@
                                                                     <td rowspan="2">No baseline available</td>
                                                                     <td class="table-success">50%</td>
                                                                     <td class="table-success">90%</td>
-                                                                    <td rowspan="2">Assessment/reviews/survey/admins data</td>
-                                                                    <td rowspan="2">Annually</td>
+                                                                    <!-- <td rowspan="2">Assessment/reviews/survey/admins data</td>
+                                                                    <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning">Actual</td>
@@ -322,8 +322,8 @@
                                                                     <td rowspan="2">No baseline available</td>
                                                                     <td class="table-success">50%</td>
                                                                     <td class="table-success">90%</td>
-                                                                    <td rowspan="2">Assessment/reviews/survey</td>
-                                                                    <td rowspan="2">Annually</td>
+                                                                    <!-- <td rowspan="2">Assessment/reviews/survey</td>
+                                                                    <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning">Actual</td>

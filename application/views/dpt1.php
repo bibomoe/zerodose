@@ -23,7 +23,7 @@
                 <div class="page-content"> 
                     <section class="row">
                         <div class="col-12 col-lg-12">
-                        <div class="row">
+                            <div class="row">
                                 <div class="col-6 col-lg-3 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
@@ -41,7 +41,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-6 col-lg-3 col-md-6">
+                                <!-- <div class="col-6 col-lg-3 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
                                             <div class="row">
@@ -53,6 +53,23 @@
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
                                                     <h6 class="text-muted font-semibold">Number of DPT1 Target</h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_dpt1_target); ?></h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <div class="col-6 col-lg-3 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5">
+                                            <div class="row">
+                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-4 d-flex justify-content-start">
+                                                    <div class="stats-icon blue mb-2">
+                                                        <i class="iconly-boldArrow---Right-Circle"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
+                                                    <h6 class="text-muted font-semibold">Dropout Rate</h6>
+                                                    <h6 class="font-extrabold mb-0"><?= number_format($dropout_rate_all_provinces,2); ?>%</h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -69,7 +86,7 @@
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
                                                     <h6 class="text-muted font-semibold">Number of districts with DO (DPT1-DPT3) less than 5%</h6>
-                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_dropout_rate); ?> <small>(<?= number_format($percent_districts_under_5, 0) ?>%)</small></h6>
+                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_dropout_rate); ?> <small>(<?= number_format($percent_districts_under_5, 2) ?>%)</small></h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -189,10 +206,11 @@ document.addEventListener("DOMContentLoaded", function () {
     let totalCitiesData = <?= json_encode($total_cities_per_province, JSON_NUMERIC_CHECK); ?>;
 
     let percentDptCoverageData = <?= json_encode($percent_dpt1_coverage_per_province, JSON_NUMERIC_CHECK); ?>;
+    let dropout_rate_per_provinces = <?= json_encode($dropout_rate_per_provinces, JSON_NUMERIC_CHECK); ?>;
     let percentDptUnder5Data = <?= json_encode($percent_dpt_under_5_per_province, JSON_NUMERIC_CHECK); ?>;
 
     // console.log(percentDptCoverageData);
-    // console.log(dptCoverageData);
+    console.log(dropout_rate_per_provinces);
 
     function getColor(dpt) {
         return (dpt) ? '#1A9850' : '#D73027' ; // Hijau jika ada lebih dari 0% cakupan, merah jika tidak ada
@@ -238,6 +256,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Ambil persentase cakupan DPT1 per provinsi
                 let percentDptCoverage = percentDptCoverageData[regionId] || 0;
 
+                // Ambil Dropout Rate per provinsi
+                let dropoutRate = dropout_rate_per_provinces[regionId] || 0;
+
                 // Ambil persentase districts dengan coverage (DPT1-DPT3) < 5% per provinsi
                 let percentDptUnder5 = percentDptUnder5Data[regionId] || 0;
 
@@ -246,6 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Membuat konten pop-up untuk menampilkan informasi
                 let popupContent = `<b>${name}</b><br>`;
                 popupContent += `Total Districts: ${totalCities.total_cities}<br>`;
+                popupContent += `Dropout Rate: ${dropoutRate.average.toFixed(2)}%<br>`;
                 popupContent += `Total Districts with DO (DPT1-DPT3) < 5%: ${dptUnder5} (${percentDptUnder5}%)<br>`;
                 popupContent += `DPT1 Coverage: ${dptCoverage.dpt1_coverage} (${percentDptCoverage}%)<br>`;
                 popupContent += `DPT1 Target: ${dptTarget.dpt1_target}`;
