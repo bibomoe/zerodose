@@ -410,7 +410,7 @@
 
                             <!-- Grafik -->
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
                                             <h4 class="card-title">Zero-Dose Cases</h4>
@@ -463,7 +463,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
                                             <h4 class="card-title">Number of Restored Children by Region Type</h4>
@@ -958,6 +958,16 @@ document.addEventListener("DOMContentLoaded", function () {
                                     MR1 Coverage: ${mr1} (Coverage: ${mr1Coverage})<br>
                                     Zero Dose Children: ${zeroDoseChildren}<br>
                                     % Zero Dose: ${percentZD}`;
+                
+                // Jika ini level provinsi, tambahkan tombol
+                if (isProvinceLevel) {
+                    let selectedYear = "<?= $selected_year ?>"; // Ambil dari PHP
+
+                    popupContent += `<br><br>
+                        <a href="<?= base_url('home/restored'); ?>?year=${selectedYear}&province=${regionId}&get_detail=1" target="">
+                            <button class="btn btn-primary btn-sm">View Details</button>
+                        </a>`;
+                }
 
                 layer.bindPopup(popupContent);
 
@@ -994,5 +1004,24 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Periksa jika parameter get_detail ada di URL dan bernilai 1
+        const urlParams = new URLSearchParams(window.location.search);
+        const getDetail = urlParams.get('get_detail');
+
+        // Jika parameter get_detail == 1, scroll ke bagian peta
+        if (getDetail == '1') {
+            let mapSection = document.getElementById("map");
+            if (mapSection) {
+                mapSection.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }
+
+        // Lanjutkan kode untuk peta...
+    });
 
 </script>

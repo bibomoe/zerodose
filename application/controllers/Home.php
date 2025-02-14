@@ -97,6 +97,12 @@ class Home extends CI_Controller {
         $selected_district = $this->input->get('district') ?? 'all';
         $selected_year = $this->input->get('year') ?? 2025; // Default tahun 2025
 
+        // Ambil parameter dari URL
+        $get_detail = $this->input->get('get_detail') ?? 0; // Default 0 jika tidak ada parameter
+
+        // Kirim data ke view
+        $this->data['get_detail'] = $get_detail;
+
         // Jika user PHO, atur provinsi default sesuai wilayahnya
         if ($user_category == 7 && empty($this->input->get('province'))) { 
             $selected_province = $user_province;
