@@ -117,13 +117,6 @@ class Dpt1_model extends CI_Model {
         $provinces = $this->get_targeted_provinces();
         $province_ids = array_column($provinces, 'id'); // Ambil array ID provinsi
 
-        // Ambil total cities per provinsi
-        $total_cities_per_province = $this->get_total_cities_per_province($province_ids);
-        $total_cities = [];
-        foreach ($total_cities_per_province as $city_data) {
-            $total_cities[$city_data['province_id']] = $city_data['total_cities'];
-        }
-
         // Query untuk mendapatkan cakupan DPT1 dan DPT3 untuk setiap distrik
         $this->db->select("
             cities.province_id,
@@ -163,16 +156,14 @@ class Dpt1_model extends CI_Model {
             if (isset($dropout_rates_per_province[$district['province_id']])) {
                 // Menambahkan dropout rate untuk provinsi yang ada
                 $dropout_rates_per_province[$district['province_id']]['total'] += $dropout_rate_dpt1_to_dpt3; // Jumlahkan dropout rate
-                // $dropout_rates_per_province[$district['province_id']]['count'] += 1; // Hitung jumlah distrik
+                $dropout_rates_per_province[$district['province_id']]['count'] += 1; // Hitung jumlah distrik
             } else {
                 // Jika provinsi belum ada, tambahkan provinsi dan set nilai awal
                 $dropout_rates_per_province[$district['province_id']] = [
                     'total' => $dropout_rate_dpt1_to_dpt3,
-                    'count' => 0
+                    'count' => 1
                 ];
             }
-            // Setiap provinsi harus dihitung jumlah distrik (total cities) yang ada
-            $dropout_rates_per_province[$district['province_id']]['count'] = $total_cities[$district['province_id']];
         }
 
         // Menghitung rata-rata dropout rate untuk setiap provinsi

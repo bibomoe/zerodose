@@ -237,12 +237,9 @@ class Home extends CI_Controller {
         // Ambil dropout rates per provinsi
         $dropout_rates_per_province = $this->Dpt1_model->get_dropout_rates_per_province($selected_year);
 
-        // Jumlah provinsi target yang diinginkan, misalnya 10
-        $total_provinces = 10;
-
         // Hitung total dan jumlah provinsi untuk perhitungan rata-rata
         $total_dropout_rate = 0;
-        // $total_provinces = count($dropout_rates_per_province);
+        $total_provinces = count($dropout_rates_per_province);
 
         // var_dump($dropout_rates_per_province);
         // exit;
@@ -251,14 +248,8 @@ class Home extends CI_Controller {
             $total_dropout_rate += $data['average']; // Menjumlahkan rata-rata dropout rate per provinsi
         }
 
-        // Provinsi yang tidak memiliki data dianggap memiliki dropout rate 100%
-        $missing_provinces = $total_provinces - count($dropout_rates_per_province);
-
-        // Menambahkan 100% untuk setiap provinsi yang tidak memiliki data
-        $total_dropout_rate += $missing_provinces * 100;
-
         // Hitung rata-rata dropout rate dari semua provinsi
-        $average_dropout_rate_all_provinces = ($total_provinces > 0) ? $total_dropout_rate / $total_provinces : 100;
+        $average_dropout_rate_all_provinces = ($total_provinces > 0) ? $total_dropout_rate / $total_provinces : 0;
 
         // Menambahkan rata-rata dropout rate ke data view
         $this->data['dropout_rate_all_provinces'] = round($average_dropout_rate_all_provinces, 2);
