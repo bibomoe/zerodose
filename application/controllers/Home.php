@@ -81,6 +81,10 @@ class Home extends CI_Controller {
         $this->data['percent_puskesmas_immunized_2024'] = $this->Dashboard_model->get_puskesmas_immunization_percentage(2024);
         $this->data['percent_puskesmas_immunized_2025'] = $this->Dashboard_model->get_puskesmas_immunization_percentage(2025);
 
+        $this->data['total_dpt_stockout_2024'] = $this->Dashboard_model->get_total_dpt_stock_out(2024);
+        $this->data['total_dpt_stockout_2025'] = $this->Dashboard_model->get_total_dpt_stock_out(2025);
+
+
         
         load_template('dashboard', $this->data);
     }

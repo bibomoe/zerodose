@@ -366,6 +366,21 @@ class Dashboard_model extends CI_Model {
         $query = $this->db->get();
         return $query->row()->percentage ?? 0;
     }
+
+    public function get_total_dpt_stock_out($year) {
+        $this->db->select('
+            SUM(stock_out_1_month) + 
+            SUM(stock_out_2_months) + 
+            SUM(stock_out_3_months) + 
+            SUM(stock_out_more_than_3_months) AS total_stock_out', false);
+        $this->db->from('stock_out_data');
+        $this->db->where('vaccine_type', 'DPT'); // Hanya untuk DPT
+        $this->db->where('year', $year);
+    
+        $query = $this->db->get();
+        return $query->row()->total_stock_out ?? 0;
+    }
+    
     
     
 }

@@ -288,8 +288,8 @@
                                                                     <td rowspan="2"></td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning">Actual</td>
-                                                                    <td class="table-warning">Actual</td>
+                                                                    <td class="table-warning"><?= number_format($total_dpt_stockout_2024); ?></td>
+                                                                    <td class="table-warning"><?= number_format($total_dpt_stockout_2025); ?></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td rowspan="2">Number of private facilities trained on Immunization Program Management for Private Sectors SOP</td>
