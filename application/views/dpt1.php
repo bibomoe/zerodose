@@ -23,7 +23,7 @@
                 <div class="page-content"> 
                     <section class="row">
                         <div class="col-12 col-lg-12">
-                        <div class="row">
+                            <div class="row">
                                 <div class="col-12" style="margin-bottom: 20px;">
                                     <!-- <div class="card">
                                         <div class="card-header"></div>

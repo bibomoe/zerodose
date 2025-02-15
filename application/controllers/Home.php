@@ -77,6 +77,10 @@ class Home extends CI_Controller {
         $this->data['percent_districts_under_5_2024'] = $this->Dashboard_model->get_districts_under_5_percentage(2024);
         $this->data['percent_districts_under_5_2025'] = $this->Dashboard_model->get_districts_under_5_percentage(2025);
 
+        // ✅ Ambil persentase Puskesmas yang telah melakukan imunisasi
+        $this->data['percent_puskesmas_immunized_2024'] = $this->Dashboard_model->get_puskesmas_immunization_percentage(2024);
+        $this->data['percent_puskesmas_immunized_2025'] = $this->Dashboard_model->get_puskesmas_immunization_percentage(2025);
+
         
         load_template('dashboard', $this->data);
     }
@@ -351,9 +355,71 @@ class Home extends CI_Controller {
     
 
     public function zd_tracking() {
-        $this->data['title'] = 'Primary Health Facility to Conduct Immunization Service as Planned';
+        $this->load->model('Puskesmas_model'); // Load model baru
+    
+        $user_category = $this->session->userdata('user_category');
+        $user_province = $this->session->userdata('province_id');
+        $user_city = $this->session->userdata('city_id');
+    
+        // Ambil filter dari dropdown
+        $selected_province = $this->input->get('province') ?? 'all';
+        $selected_district = $this->input->get('district') ?? 'all';
+        $selected_year = $this->input->get('year') ?? 2025;
+
+        // Ambil parameter dari URL
+        $get_detail = $this->input->get('get_detail') ?? 0; // Default 0 jika tidak ada parameter
+
+        // Kirim data ke view
+        $this->data['get_detail'] = $get_detail;
+    
+        // Jika user PHO atau DHO, sesuaikan wilayah default
+        if ($user_category == 7 && empty($this->input->get('province'))) { 
+            $selected_province = $user_province;
+        }
+        if ($user_category == 8 && empty($this->input->get('province'))) {
+            $selected_province = $user_province;
+            $selected_district = $user_city;
+        }
+    
+        // Ambil data jumlah puskesmas & imunisasi dari model baru
+        $puskesmas_data = $this->Puskesmas_model->get_puskesmas_data($selected_province, $selected_district, $selected_year);
+
+        // Ambil daftar provinsi untuk dropdown + targeted provinces
+        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
+
+        $this->data['selected_province'] = $selected_province;
+        $this->data['selected_district'] = $selected_district;
+        $this->data['selected_year'] = $selected_year;
+        $this->data['total_puskesmas'] = $puskesmas_data['total_puskesmas'];
+        $this->data['total_immunized_puskesmas'] = $puskesmas_data['total_immunized_puskesmas'];
+        $this->data['percentage_puskesmas'] = $puskesmas_data['percentage'];
+
+        $puskesmas_data = $this->Puskesmas_model->get_puskesmas_coverage($selected_province, $selected_year);
+
+        // Ambil file GeoJSON berdasarkan provinsi
+        if ($selected_province !== 'all' && $selected_province !== 'targeted') {
+            $geojson = $this->db->select('geojson_file')
+                                ->where('id', $selected_province)
+                                ->get('provinces')
+                                ->row();
+            $this->data['geojson_file'] = base_url('assets/geojson/' . $geojson->geojson_file);
+        } else if ($selected_province == 'all'){
+            $this->data['geojson_file'] = base_url('assets/geojson/provinces.geojson');
+        } else if ($selected_province == 'targeted'){
+            $this->data['geojson_file'] = base_url('assets/geojson/targeted.geojson');
+        }
+
+        $this->data['puskesmas_data'] = json_encode($puskesmas_data, JSON_NUMERIC_CHECK);
+
+        // var_dump($puskesmas_data);
+        // exit;
+
+        $this->data['title'] = 'Percentage of Primary Health Facility to Conduct Immunization Service as Planned​';
+
+        // Load template
         load_template('zd-tracking', $this->data);
     }
+    
 
     public function dpt_stock() {
         $this->load->model('StockOut_model'); // Pastikan model dipanggil

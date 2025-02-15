@@ -23,8 +23,42 @@
                 <div class="page-content"> 
                     <section class="row">
                         <div class="col-12 col-lg-12">
+                        <div class="row">
+                                <div class="col-12" style="margin-bottom: 20px;">
+                                    <!-- <div class="card">
+                                        <div class="card-header"></div>
+                                        <div class="card-body"> -->
+                                            <?php
+                                                // var_dump($selected_province);
+                                            ?>
+                                            <?= form_open('home/zd_tracking', ['method' => 'get']) ?>
+                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;">Select Year</label>
+
+                                                <div class="d-flex flex-column flex-md-row align-items-center gap-2">
+                                                    <?= form_dropdown('province', 
+                                                        array_column($provinces, 'name_id', 'id'), 
+                                                        $selected_province, 
+                                                        ['class' => 'form-select', 'id' => 'provinceFilter', 'style' => 'width: 100%; max-width: 300px; height: 48px; font-size: 1rem;']
+                                                    ); ?>
+                                                    <?= form_dropdown(
+                                                            'year', 
+                                                            [2025 => '2025', 2024 => '2024'], 
+                                                            set_value('year', $selected_year ?? 2025), 
+                                                            'class="form-select" style="width: 100%; max-width: 200px; height: 48px; font-size: 1rem;" required'
+                                                        ); ?>
+                                                    <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
+                                                        <i class="bi bi-filter"></i> Submit
+                                                    </button>
+                                                </div>
+                                            <?= form_close() ?>
+                                        <!-- </div>
+                                    </div> -->
+                                </div>
+                            </div>
+
+                            <!-- card -->
                             <div class="row">
-                                <div class="col-6 col-lg-3 col-md-6">
+                                <!-- <div class="col-6 col-lg-3 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
                                             <div class="row">
@@ -40,7 +74,7 @@
                                             </div> 
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="col-6 col-lg-3 col-md-6">
                                     <div class="card"> 
                                         <div class="card-body px-4 py-4-5">
@@ -51,8 +85,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-9">
-                                                    <h6 class="text-muted font-semibold">Number of Posyandu That Have Provided Immunization Services</h6>
-                                                    <h6 class="font-extrabold mb-0">30 %</h6>
+                                                    <h6 class="text-muted font-semibold">Total number of Puskesmas</h6>
+                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_puskesmas) ?></h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -68,8 +102,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-9">
-                                                    <h6 class="text-muted font-semibold">Number of Posyandu That Have Reported Reaching ZD</h6>
-                                                    <h6 class="font-extrabold mb-0">65 %</h6>
+                                                    <h6 class="text-muted font-semibold">Total Puskesmas that have conducted immunization</h6>
+                                                    <h6 class="font-extrabold mb-0"><?= number_format($total_immunized_puskesmas) ?></h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -85,8 +119,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-9">
-                                                    <h6 class="text-muted font-semibold">Total Posyandu</h6>
-                                                    <h6 class="font-extrabold mb-0">5666</h6>
+                                                    <h6 class="text-muted font-semibold">Percentage of Puskesmas that have conducted immunization</h6>
+                                                    <h6 class="font-extrabold mb-0"><?= number_format($percentage_puskesmas, 2) ?>%</h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -131,7 +165,7 @@
     
     
 
-    <script>
+    <!-- <script>
             const map = L.map('map').setView([-7.250445, 112.768845], 8);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -197,4 +231,136 @@
 
 
 
-    </script>
+    </script> -->
+
+    
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const map = L.map('map').setView([-2.5489, 118.0149], 5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    let puskesmasData = <?= $puskesmas_data ?>;
+    
+    function cleanRegionCode(code) { 
+        return code ? String(code).replace(/\./g, '') : ""; 
+    }
+
+    function formatValue(value, isPercentage = false) {
+        return isNaN(value) || value === null || value === undefined
+            ? (isPercentage ? "0%" : "0")
+            : (isPercentage ? value.toFixed(2) + "%" : value);
+    }
+
+    function getColor(percentage) {
+        return percentage > 50 ? '#1A9850' :
+               percentage > 20 ? '#91CF60' :
+               percentage > 10 ? '#FEE08B' :
+               '#D73027';
+    }
+
+    let isProvinceLevel = ["all", "targeted"].includes("<?= $selected_province ?>");
+
+    fetch("<?= $geojson_file; ?>")
+    .then(response => response.json())
+    .then(data => {
+        let geojsonLayer = L.geoJSON(data, {
+            style: function (feature) {
+                let rawCode = isProvinceLevel ? feature.properties.KDPPUM : feature.properties.KDPKAB;
+                let regionId = cleanRegionCode(rawCode);
+                let regionData = puskesmasData[regionId] || {}; 
+
+                let percentageImmunization = formatValue(regionData.percentage_immunization, true);
+
+                return {
+                    fillColor: getColor(regionData.percentage_immunization),
+                    weight: 1.5,
+                    opacity: 1,
+                    color: '#ffffff',
+                    fillOpacity: 0.8
+                };
+            },
+            onEachFeature: function (feature, layer) {
+                let rawCode = isProvinceLevel ? feature.properties.KDPPUM : feature.properties.KDPKAB;
+                let regionId = cleanRegionCode(rawCode);
+                let regionData = puskesmasData[regionId] || {}; 
+
+                let totalPuskesmas = formatValue(regionData.total_puskesmas);
+                let conductedPuskesmas = formatValue(regionData.conducted_puskesmas);
+                let percentageImmunization = formatValue(regionData.percentage_immunization, true);
+
+                let name = isProvinceLevel ? feature.properties.WADMPR : feature.properties.NAMOBJ;
+
+                let popupContent = `<b>${name}</b><br>
+                                    Total Puskesmas: ${totalPuskesmas}<br>
+                                    Conducted Immunization: ${conductedPuskesmas}<br>
+                                    % Immunization: ${percentageImmunization}`;
+
+                if (isProvinceLevel) {
+                    let selectedYear = "<?= $selected_year ?>"; 
+                    popupContent += `<br><br>
+                        <a href="<?= base_url('home/zd_tracking'); ?>?year=${selectedYear}&province=${regionId}&get_detail=1">
+                            <button class="btn btn-primary btn-sm">View Details</button>
+                        </a>`;
+                }
+
+                layer.bindPopup(popupContent);
+                
+                if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
+                    try {
+                        let labelPoint = turf.pointOnFeature(feature);
+                        let latlng = [labelPoint.geometry.coordinates[1], labelPoint.geometry.coordinates[0]];
+                        
+                        // let labelSize = adjustLabelSize(map.getZoom()); // Adjust size based on current zoom level
+
+                        if (feature.properties.NAMOBJ) {
+                            let label = L.divIcon({
+                                className: 'label-class',
+                                html: `<strong style="font-size: 9px;">${feature.properties.NAMOBJ}</strong>`,
+                                iconSize: [100, 20]
+                            });
+                            L.marker(latlng, { icon: label }).addTo(map);
+                        } else if (feature.properties.WADMPR) { 
+                            let label = L.divIcon({
+                                className: 'label-class',
+                                html: `<strong style="font-size: 8px;">${feature.properties.WADMPR}</strong>`,
+                                iconSize: [50, 15]
+                            });
+                            L.marker(latlng, { icon: label }).addTo(map);
+                        }
+                    } catch (error) {
+                        console.warn("Turf.js error while generating label:", error, feature);
+                    }
+                }
+            }
+        }).addTo(map);
+
+        map.fitBounds(geojsonLayer.getBounds());
+    })
+    .catch(error => console.error("Error loading GeoJSON:", error));
+});
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Periksa jika parameter get_detail ada di URL dan bernilai 1
+        const urlParams = new URLSearchParams(window.location.search);
+        const getDetail = urlParams.get('get_detail');
+
+        // Jika parameter get_detail == 1, scroll ke bagian peta
+        if (getDetail == '1') {
+            let mapSection = document.getElementById("map");
+            if (mapSection) {
+                mapSection.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }
+
+        // Lanjutkan kode untuk peta...
+    });
+
+</script>
+

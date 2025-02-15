@@ -356,9 +356,16 @@ class Dashboard_model extends CI_Model {
         // Hitung persentase distrik dengan DO < 5%
         return ($total_regencies > 0) ? round(($total_dropout_rate / $total_regencies) * 100, 2) : 0;
     }
+
+    public function get_puskesmas_immunization_percentage($year) {
+        $this->db->select("
+            (COUNT(DISTINCT i.puskesmas_id) / COUNT(DISTINCT p.id)) * 100 AS percentage", false);
+        $this->db->from('puskesmas p');
+        $this->db->join('immunization_data i', 'i.puskesmas_id = p.id AND i.year = ' . $this->db->escape($year), 'left');
     
-    
-    
+        $query = $this->db->get();
+        return $query->row()->percentage ?? 0;
+    }
     
     
 }
