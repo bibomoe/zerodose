@@ -380,6 +380,58 @@ class Dashboard_model extends CI_Model {
         $query = $this->db->get();
         return $query->row()->total_stock_out ?? 0;
     }
+
+    // ✅ Ambil ID dari 10 targeted provinces
+    public function get_targeted_province_ids() {
+        $query = $this->db->select('id')
+                          ->from('provinces')
+                          ->where('priority', 1) // ✅ Hanya provinces dengan priority = 1
+                          ->limit(10) // ✅ Batasi ke 10 provinces
+                          ->get();
+
+        return array_column($query->result_array(), 'id'); // Return array ID targeted provinces
+    }
+
+    public function get_health_facilities_percentage($year) {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil 10 targeted provinces
+    
+        // Ambil total puskesmas di 10 provinsi terpilih
+        $this->db->select('COUNT(id) AS total_puskesmas');
+        $this->db->from('puskesmas');
+        if (!empty($province_ids)) {
+            $this->db->where_in('province_id', $province_ids);
+        }
+        $total_puskesmas = $this->db->get()->row()->total_puskesmas ?? 0;
+    
+        // Ambil total puskesmas yang masuk kategori "Good" dalam supervisi
+        $this->db->select('SUM(good_category_puskesmas) AS total_good_puskesmas', false);
+        $this->db->from('supportive_supervision');
+        $this->db->where('year', $year);
+        if (!empty($province_ids)) {
+            $this->db->where_in('province_id', $province_ids);
+        }
+        $total_good_puskesmas = $this->db->get()->row()->total_good_puskesmas ?? 0;
+    
+        // Hitung persentase
+        $percentage = ($total_puskesmas > 0) 
+            ? round(($total_good_puskesmas / $total_puskesmas) * 100, 2) 
+            : 0;
+    
+        return $percentage;
+    }
+    
+    public function get_private_facility_trained_specific($year) {
+        $province_ids = [31, 33, 35]; // DKI Jakarta (31), Jawa Tengah (33), Jawa Timur (35)
+    
+        $this->db->select("SUM(trained_private_facilities) AS total_trained", false);
+        $this->db->from('private_facility_training');
+        $this->db->where('year', $year);
+        $this->db->where_in('province_id', $province_ids); // Hanya untuk provinsi tertentu
+    
+        $query = $this->db->get();
+        return $query->row()->total_trained ?? 0; // Jika null, return 0
+    }
+    
     
     
     

@@ -276,9 +276,14 @@
                                                                     <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning">Actual</td>
-                                                                    <td class="table-warning">Actual</td>
+                                                                    <td class="table-warning">
+                                                                        <?= number_format($percent_health_facilities_2024, 2) . '%'; ?>
+                                                                    </td>
+                                                                    <td class="table-warning">
+                                                                        <?= number_format($percent_health_facilities_2025, 2) . '%'; ?>
+                                                                    </td>
                                                                 </tr>
+
                                                                 <tr>
                                                                     <td rowspan="2">Number of DTP stock out at health facilities</td>
                                                                     <td rowspan="2">No DPT vaccine stock out in 2022</td>
@@ -300,8 +305,12 @@
                                                                     <td rowspan="2"></td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning">Actual</td>
-                                                                    <td class="table-warning">Actual</td>
+                                                                    <td class="table-warning">
+                                                                        <?= number_format($private_facility_trained_2024) ?>
+                                                                    </td>
+                                                                    <td class="table-warning">
+                                                                        <?= number_format($private_facility_trained_2025) ?>
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td rowspan="2">Sufficient, sustained, and reliable domestic resources for immunization programmes</td>
@@ -404,8 +413,8 @@
                                                                 <tr>
                                                                     <th rowspan="2">Indicator</th>
                                                                     <th colspan="2">Indicator Value</th>
-                                                                    <th rowspan="2">Data Source</th>
-                                                                    <th rowspan="2">Frequency of Reporting</th>
+                                                                    <!-- <th rowspan="2">Data Source</th>
+                                                                    <th rowspan="2">Frequency of Reporting</th> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <th>2024</th>
@@ -417,8 +426,8 @@
                                                                     <td rowspan="2">Budget execution (use) rate for a given reporting period, Gavi</td>
                                                                     <td class="table-success">90%</td>
                                                                     <td class="table-success">90%</td>
-                                                                    <td rowspan="2">Costed Workplan</td>
-                                                                    <td rowspan="2">Annually</td>
+                                                                    <!-- <td rowspan="2">Costed Workplan</td>
+                                                                    <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning"><?= $budget_absorption_2024; ?>%</td>
@@ -503,8 +512,8 @@
                                                                     <th rowspan="2">Objective</th>
                                                                     <th rowspan="2">Indicator</th>
                                                                     <th colspan="2">Indicator Value</th>
-                                                                    <th rowspan="2">Data Source</th>
-                                                                    <th rowspan="2">Frequency of Reporting</th>
+                                                                    <!-- <th rowspan="2">Data Source</th>
+                                                                    <th rowspan="2">Frequency of Reporting</th> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <th>2024</th>
@@ -518,8 +527,8 @@
                                                                         <td rowspan="2">Percent of workplan activities executed</td>
                                                                         <td class="table-success">90%</td>
                                                                         <td class="table-success">100%</td>
-                                                                        <td rowspan="2">Costed Workplan</td>
-                                                                        <td rowspan="2">Annually</td>
+                                                                        <!-- <td rowspan="2">Costed Workplan</td>
+                                                                        <td rowspan="2">Annually</td> -->
                                                                     </tr>
                                                                     <tr>
                                                                         <td class="table-warning"><?= $completed_activities_2024[$objective['id']] ?? '100'; ?>%</td>

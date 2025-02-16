@@ -84,8 +84,15 @@ class Home extends CI_Controller {
         $this->data['total_dpt_stockout_2024'] = $this->Dashboard_model->get_total_dpt_stock_out(2024);
         $this->data['total_dpt_stockout_2025'] = $this->Dashboard_model->get_total_dpt_stock_out(2025);
 
+        // ✅ Ambil persentase fasilitas kesehatan yang menjalankan program imunisasi (10 targeted provinces)
+        $this->data['percent_health_facilities_2024'] = $this->Dashboard_model->get_health_facilities_percentage(2024);
+        $this->data['percent_health_facilities_2025'] = $this->Dashboard_model->get_health_facilities_percentage(2025);
 
-        
+        // ✅ Ambil total fasilitas kesehatan swasta yang telah dilatih (hanya untuk provinsi ID 31, 33, 35)
+        $this->data['private_facility_trained_2024'] = $this->Dashboard_model->get_private_facility_trained_specific(2024);
+        $this->data['private_facility_trained_2025'] = $this->Dashboard_model->get_private_facility_trained_specific(2025);
+
+
         load_template('dashboard', $this->data);
     }
 
@@ -450,8 +457,36 @@ class Home extends CI_Controller {
 
     public function district() {
         $this->data['title'] = 'District Program';
+        $this->load->model('District_model'); // Load model
+    
+        // Ambil tahun dari filter (default: 2025)
+        $selected_year = $this->input->get('year') ?? 2025;
+        $this->data['selected_year'] = $selected_year;
+    
+        // ✅ Data untuk tabel (per district)
+        $this->data['supportive_supervision_table'] = $this->District_model->get_supportive_supervision_targeted_table($selected_year);
+
+        // var_dump($this->data['supportive_supervision_table']);
+        // exit;
+    
+        // ✅ Data untuk card (summary seluruh 10 targeted provinces)
+        $this->data['supportive_supervision_2024'] = $this->District_model->get_supportive_supervision_targeted_summary(2024);
+        $this->data['supportive_supervision_2025'] = $this->District_model->get_supportive_supervision_targeted_summary(2025);
+
+
+        // ✅ Data untuk tabel Private Facility Training
+        $this->data['private_facility_training'] = $this->District_model->get_private_facility_training($selected_year);
+
+         // ✅ Data untuk Card (Summary Total)
+        $this->data['private_facility_training_2024'] = $this->District_model->get_private_facility_training_summary(2024);
+        $this->data['private_facility_training_2025'] = $this->District_model->get_private_facility_training_summary(2025);
+
+
+    
         load_template('district', $this->data);
     }
+    
+    
 
     public function policy() {
         $this->data['title'] = 'District Policy and Financing';
