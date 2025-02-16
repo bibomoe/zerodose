@@ -667,10 +667,10 @@ class Input extends CI_Controller {
     // Hapus data stock out
     public function delete_stock_out_data($id) {
         //Verifikasi CSRF
-        if ($this->security->get_csrf_hash() !== $this->input->post($this->security->get_csrf_token_name())) {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token']);
-            return;
-        }
+        // if ($this->security->get_csrf_hash() !== $this->input->post($this->security->get_csrf_token_name())) {
+        //     echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token']);
+        //     return;
+        // }
 
         if (!$id) {
             echo json_encode(['status' => 'error', 'message' => 'Invalid ID']);
