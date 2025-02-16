@@ -4,14 +4,14 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>DPT1 in targeted areas</h3>
+                                <h3>DPT-1 coverage and drop out rates</h3>
                                 <p class="text-subtitle text-muted">Percentage children -under 5 years with DPT 1 coverage and number of district with DO (DPT1-DPT3) less than 5%​</p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                                     <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="<?= base_url('home'); ?>">Dashboard</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">DPT1 in targeted areas</li>
+                                        <li class="breadcrumb-item active" aria-current="page">DPT-1 coverage and drop out rates</li>
                                     </ol>
                                 </nav>
                             </div>
@@ -62,7 +62,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">Number of DPT1 Coverage</h6>
+                                                    <h6 class="text-muted font-semibold">DPT-1 Coverage</h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_dpt1_coverage); ?> <small>(<?= number_format($percent_dpt1_coverage, 0) ?>%)</small></h6>
                                                 </div>
                                             </div>
@@ -97,6 +97,7 @@
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
                                                     <h6 class="text-muted font-semibold">Dropout Rate</h6>
+                                                    <h6 class="text-muted font-semibold">(DPT-3 - DPT-1)</h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($dropout_rate_all_provinces,2); ?>%</h6>
                                                 </div>
                                             </div>

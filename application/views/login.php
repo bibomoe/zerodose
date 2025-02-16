@@ -17,8 +17,10 @@
                 <div class="col-lg-5 col-12">
                     <div id="auth-left">
                         <div class="auth-logo">
-                            <img src="<?= base_url('assets/logo.png'); ?>" alt="Logo" style="width: 100px; height: auto;">
                             <img src="<?= base_url('assets/kemenkes.png'); ?>" alt="Logo" style="width: 150px; height: auto;"> 
+                            <img src="<?= base_url('assets/gavi_full_logo.png'); ?>" alt="Logo" style="width: 150px; height: auto;"> 
+                            <img src="<?= base_url('assets/logo.png'); ?>" alt="Logo" style="width: 100px; height: auto;">
+                            
                         </div>
                         <h1 class="auth-title">Log in.</h1>
                         <p class="auth-subtitle mb-5">Login with the data provided.</p>

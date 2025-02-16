@@ -4,14 +4,14 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>District Program</h3>
+                                <h3>Trained Private Facilities</h3>
                                 <!-- <p class="text-subtitle text-muted">Number of ZD children in targeted areas​</p> -->
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                                     <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="<?= base_url('home'); ?>">Dashboard</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">District Program</li>
+                                        <li class="breadcrumb-item active" aria-current="page">Trained Private Facilities</li>
                                     </ol>
                                 </nav>
                             </div>
@@ -80,8 +80,7 @@
                                 }
                             </style>
                             <!-- SS Card-->
-                            <div class="row">
-                                <!-- Card 2024 -->
+                            <!-- <div class="row">
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
@@ -103,7 +102,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Card 2025 -->
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
@@ -124,7 +122,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <!-- Private Facility Trained Card-->
                             <div class="row">
@@ -154,15 +152,12 @@
                             </div>
 
                             <!-- SS Tabel -->
-                            <div class="row">
+                            <!-- <div class="row">
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
                                             <h4>Number of Health Facilities manage immunization program as per national guidance in 10 targeted provinces</h4>
                                         </div>
-                                        <!-- <div class="card-body">
-                                            <div id="chart-profile-visit"></div>
-                                        </div> -->
                                         <div class="card-body">
                                             <table class="table table-striped" id="table1">
                                                 <thead>
@@ -195,7 +190,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <!-- Private Facilities Trained -->
                             <div class="row">

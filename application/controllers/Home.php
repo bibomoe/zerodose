@@ -208,8 +208,17 @@ class Home extends CI_Controller {
         // Data imunisasi DPT-1 per distrik
         $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year);
 
+        // Urutkan array berdasarkan 'zero_dose_children' secara menurun
+        usort($this->data['district_data'], function($a, $b) {
+            // Pastikan nilai 'zero_dose_children' tidak null
+            return $b['zero_dose_children'] <=> $a['zero_dose_children'];
+        });
+
         // Ambil data cakupan imunisasi berdasarkan provinsi/kota
         $this->data['immunization_data'] = $this->Immunization_model->get_immunization_coverage($selected_province, $selected_year);
+
+        // var_dump($this->data['immunization_data']);
+        // exit;
 
         // Ambil file GeoJSON berdasarkan provinsi
         if ($selected_province !== 'all' && $selected_province !== 'targeted') {
@@ -375,6 +384,7 @@ class Home extends CI_Controller {
 
     public function zd_tracking() {
         $this->load->model('Puskesmas_model'); // Load model baru
+        $this->load->model('District_model'); // Load model
     
         $user_category = $this->session->userdata('user_category');
         $user_province = $this->session->userdata('province_id');
@@ -430,6 +440,13 @@ class Home extends CI_Controller {
 
         $this->data['puskesmas_data'] = json_encode($puskesmas_data, JSON_NUMERIC_CHECK);
 
+        // ✅ Data untuk tabel (per district)
+        $this->data['supportive_supervision_table'] = $this->District_model->get_supportive_supervision_targeted_table($selected_year);
+    
+        // ✅ Data untuk card (summary seluruh 10 targeted provinces)
+        $this->data['supportive_supervision_2024'] = $this->District_model->get_supportive_supervision_targeted_summary(2024);
+        $this->data['supportive_supervision_2025'] = $this->District_model->get_supportive_supervision_targeted_summary(2025);
+
         // var_dump($puskesmas_data);
         // exit;
 
@@ -471,15 +488,12 @@ class Home extends CI_Controller {
         $selected_year = $this->input->get('year') ?? 2025;
         $this->data['selected_year'] = $selected_year;
     
-        // ✅ Data untuk tabel (per district)
-        $this->data['supportive_supervision_table'] = $this->District_model->get_supportive_supervision_targeted_table($selected_year);
-
-        // var_dump($this->data['supportive_supervision_table']);
-        // exit;
+        // // ✅ Data untuk tabel (per district)
+        // $this->data['supportive_supervision_table'] = $this->District_model->get_supportive_supervision_targeted_table($selected_year);
     
-        // ✅ Data untuk card (summary seluruh 10 targeted provinces)
-        $this->data['supportive_supervision_2024'] = $this->District_model->get_supportive_supervision_targeted_summary(2024);
-        $this->data['supportive_supervision_2025'] = $this->District_model->get_supportive_supervision_targeted_summary(2025);
+        // // ✅ Data untuk card (summary seluruh 10 targeted provinces)
+        // $this->data['supportive_supervision_2024'] = $this->District_model->get_supportive_supervision_targeted_summary(2024);
+        // $this->data['supportive_supervision_2025'] = $this->District_model->get_supportive_supervision_targeted_summary(2025);
 
 
         // ✅ Data untuk tabel Private Facility Training

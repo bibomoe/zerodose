@@ -3,11 +3,15 @@
                 <div class="sidebar-header position-relative">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="logo">
-                            <img src="<?= base_url('assets/logo.png'); ?>" alt="Logo" srcset="" style="width: 60px; height: auto;" > 
-                        </div>
-                        <div class="logo">
                             <img src="<?= base_url('assets/kemenkes2.png'); ?>" alt="Logo" srcset="" style="width: 30px; height: auto;" > 
                         </div>
+                        <div class="logo">
+                            <img src="<?= base_url('assets/gavi_logo.png'); ?>" alt="Logo" srcset="" style="width: 30px; height: auto;" > 
+                        </div>
+                        <div class="logo">
+                            <img src="<?= base_url('assets/logo.png'); ?>" alt="Logo" srcset="" style="width: 60px; height: auto;" > 
+                        </div>
+                        
                         <!-- <div class="language-toggle" id="language-toggle">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/2560px-Flag_of_Indonesia.svg.png" alt="Indonesian Flag" id="lang-id">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/2560px-Flag_of_the_United_States.svg.png" alt="English Flag" id="lang-en" style="display: none;">
@@ -181,19 +185,22 @@
                                 
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('home/dpt1'); ?>" class='sidebar-link'>
-                                        DPT 1 in targeted areas
+                                        <!-- DPT 1 in targeted areas -->
+                                        DPT-1 Coverage
                                     </a>
                                 </li>
 
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('home/dpt_stock'); ?>" class='sidebar-link'>
-                                        Number of DTP Stock Out at Health Facilities
+                                        <!-- Number of DTP Stock Out at Health Facilities -->
+                                        DPT Stock Out in Health Facilities
                                     </a>
                                 </li>
 
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('home/zd_tracking'); ?>" class='sidebar-link'>
-                                        Percentage of Primary Health Facility to Conduct Immunization Service as Planned
+                                        <!-- Percentage of Primary Health Facility to Conduct Immunization Service as Planned -->
+                                        PHC Immunization Performance
                                     </a>
                                 </li>
                                 
@@ -206,7 +213,8 @@
 
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('home/district'); ?>" class='sidebar-link'>
-                                        District Program
+                                        <!-- District Program -->
+                                        Trained Private Facilities
                                     </a>
                                 </li>
 

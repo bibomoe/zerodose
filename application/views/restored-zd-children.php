@@ -305,7 +305,7 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4>District with the highest number of restored children</h4>
+                                            <h4>District with the highest number of zero dose children</h4>
                                         </div>
                                         <!-- <div class="card-body">
                                             <div id="chart-profile-visit"></div>
@@ -392,7 +392,7 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4>Restored ZD children mapping</h4>
+                                            <h4>Zero Dose Children Mapping</h4>
                                         </div>
                                         <div class="card-body">
                                             <!-- <div class="googlemaps">
@@ -413,7 +413,7 @@
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title">Zero-Dose Cases</h4>
+                                            <h4 class="card-title">Zero-Dose Children Trend by Month</h4>
                                         </div>
                                         <div class="card-body">
                                             <!-- Tombol Filter Grafik (Hanya jika provinsi ≠ "All" atau "Targeted") -->
@@ -466,7 +466,7 @@
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title">Number of Restored Children by Region Type</h4>
+                                            <h4 class="card-title">Zero Dose Children by Region Type</h4>
                                         </div>
                                         <div class="card-body">
                                             <?php
@@ -896,6 +896,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }).addTo(map);
 
     let immunizationData = <?= json_encode($immunization_data, JSON_NUMERIC_CHECK); ?>;
+    // console.log(immunizationData);
     
     function cleanCityCode(code) { 
         if (!code) return ""; 
@@ -945,6 +946,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 let regionId = cleanCityCode(rawCode);
                 let regionData = immunizationData[regionId] || {}; 
+                // console.log(regionData);
 
                 let dpt1 = formatValue(regionData.dpt1);
                 let dpt2 = formatValue(regionData.dpt2);
@@ -953,16 +955,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 let zeroDoseChildren = formatValue(regionData.zero_dose_children);
                 let percentZD = formatValue(regionData.percent_zero_dose, true);
 
-                let dpt3Coverage = formatValue(regionData.percent_dpt3, true);
-                let mr1Coverage  = formatValue(regionData.percent_mr1, true);
+                let dpt1Coverage = formatValue(regionData.percentage_target_dpt1, true);
+                let dpt3Coverage = formatValue(regionData.percentage_target_dpt3, true);
+                let mr1Coverage  = formatValue(regionData.percentage_target_mr1, true);
 
                 let name = isProvinceLevel 
                     ? feature.properties.WADMPR  
                     : feature.properties.NAMOBJ;  
 
+                // let popupContent = `<b>${name}</b><br>
+                //                     DPT1 Coverage: ${dpt1}<br>
+                //                     DPT2 Coverage: ${dpt2}<br>
+                //                     DPT3 Coverage: ${dpt3} (Coverage: ${dpt3Coverage})<br>
+                //                     MR1 Coverage: ${mr1} (Coverage: ${mr1Coverage})<br>
+                //                     Zero Dose Children: ${zeroDoseChildren}<br>
+                //                     % Zero Dose: ${percentZD}`;
+
                 let popupContent = `<b>${name}</b><br>
-                                    DPT1 Coverage: ${dpt1}<br>
-                                    DPT2 Coverage: ${dpt2}<br>
+                                    DPT1 Coverage: ${dpt1} (Coverage: ${dpt1Coverage})<br>
                                     DPT3 Coverage: ${dpt3} (Coverage: ${dpt3Coverage})<br>
                                     MR1 Coverage: ${mr1} (Coverage: ${mr1Coverage})<br>
                                     Zero Dose Children: ${zeroDoseChildren}<br>

@@ -358,11 +358,15 @@
                             
                         <div class="header-top-left">
                             <a href="#" class="logo">
-                                <img src="<?= base_url('assets/logo.png'); ?>" alt="Logo" style="width: 100px; height: auto; margin-right: 20px;">
-                            </a>
-                            <a href="#" class="logo">
                                 <img src="<?= base_url('assets/kemenkes.png'); ?>" alt="Logo" style="width: 150px; height: auto;">
                             </a>
+                            <a href="#" class="logo">
+                                <img src="<?= base_url('assets/gavi_full_logo.png'); ?>" alt="Logo" style="width: 150px; height: auto;">
+                            </a>
+                            <a href="#" class="logo">
+                                <img src="<?= base_url('assets/logo.png'); ?>" alt="Logo" style="width: 100px; height: auto; margin-right: 20px;">
+                            </a>
+                            
                         </div>
 
                             <div class="header-top-right">
