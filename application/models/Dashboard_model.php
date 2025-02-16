@@ -431,6 +431,68 @@ class Dashboard_model extends CI_Model {
         $query = $this->db->get();
         return $query->row()->total_trained ?? 0; // Jika null, return 0
     }
+
+    public function get_district_funding_percentage($year) {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil 10 targeted provinces
+    
+        // ✅ Hitung total distrik di 10 targeted provinces
+        $this->db->select('COUNT(id) AS total_districts');
+        $this->db->from('cities'); 
+        if (!empty($province_ids)) {
+            $this->db->where_in('province_id', $province_ids);
+        }
+    
+        $total_districts = $this->db->get()->row()->total_districts ?? 0;
+    
+        // ✅ Hitung total distrik yang sudah melakukan pendanaan
+        $this->db->select('SUM(funded_districts) AS total_funded_districts', false);
+        $this->db->from('district_funding');
+        $this->db->where('year', $year);
+        if (!empty($province_ids)) {
+            $this->db->where_in('province_id', $province_ids);
+        }
+    
+        $total_funded_districts = $this->db->get()->row()->total_funded_districts ?? 0;
+    
+        // ✅ Hitung persentase
+        $percentage_funded = ($total_districts > 0) 
+            ? round(($total_funded_districts / $total_districts) * 100, 2) 
+            : 0;
+    
+        return $percentage_funded;
+    }
+
+    public function get_district_policy_percentage($year) {
+        $targeted_provinces = $this->get_targeted_province_ids(); // Ambil 10 targeted provinces
+    
+        if (empty($targeted_provinces)) {
+            return '0%';
+        }
+    
+        // 🔹 Ambil total distrik yang memiliki kebijakan
+        $this->db->select('SUM(dp.policy_districts) AS total_policy_districts', false);
+        $this->db->from('district_policy dp');
+        $this->db->where_in('dp.province_id', $targeted_provinces);
+        $this->db->where('dp.year', $year);
+    
+        $total_policy_districts = $this->db->get()->row()->total_policy_districts ?? 0;
+    
+        // 🔹 Ambil total distrik di targeted provinces
+        $this->db->select('COUNT(id) AS total_districts');
+        $this->db->from('cities');
+        $this->db->where_in('province_id', $targeted_provinces);
+    
+        $total_districts = $this->db->get()->row()->total_districts ?? 0;
+    
+        // 🔹 Hitung persentase distrik yang memiliki kebijakan
+        $percentage_policy = ($total_districts > 0) 
+            ? round(($total_policy_districts / $total_districts) * 100, 2) . '%' 
+            : '0%';
+    
+        return $percentage_policy;
+    }
+    
+    
     
     
     

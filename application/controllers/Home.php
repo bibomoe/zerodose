@@ -92,6 +92,14 @@ class Home extends CI_Controller {
         $this->data['private_facility_trained_2024'] = $this->Dashboard_model->get_private_facility_trained_specific(2024);
         $this->data['private_facility_trained_2025'] = $this->Dashboard_model->get_private_facility_trained_specific(2025);
 
+        // ✅ Ambil persentase distrik yang mengalokasikan pendanaan domestik (10 targeted provinces)
+        $this->data['percent_district_funding_2024'] = $this->Dashboard_model->get_district_funding_percentage(2024);
+        $this->data['percent_district_funding_2025'] = $this->Dashboard_model->get_district_funding_percentage(2025);
+
+        // ✅ Ambil persentase distrik yang memiliki kebijakan imunisasi
+        $this->data['percent_district_policy_2024'] = $this->Dashboard_model->get_district_policy_percentage(2024);
+        $this->data['percent_district_policy_2025'] = $this->Dashboard_model->get_district_policy_percentage(2025);
+
 
         load_template('dashboard', $this->data);
     }
@@ -490,8 +498,29 @@ class Home extends CI_Controller {
 
     public function policy() {
         $this->data['title'] = 'District Policy and Financing';
+        $this->load->model('Policy_model'); // Load model
+        
+        // Ambil tahun dari filter (default: 2025)
+        $selected_year = $this->input->get('year') ?? 2025;
+        $this->data['selected_year'] = $selected_year;
+    
+        // ✅ Ambil data pendanaan distrik
+        $this->data['district_funding'] = $this->Policy_model->get_district_funding($selected_year);
+
+        // ✅ Data untuk card (summary seluruh 10 targeted provinces)
+        $this->data['district_funding_2024'] = $this->Policy_model->get_district_funding_summary(2024);
+        $this->data['district_funding_2025'] = $this->Policy_model->get_district_funding_summary(2025);
+
+        // ✅ Ambil data kebijakan distrik dari model
+        $this->data['district_policies'] = $this->Policy_model->get_district_policies($selected_year);
+
+        // ✅ Data untuk card (summary seluruh 10 targeted provinces)
+        $this->data['district_policy_2024'] = $this->Policy_model->get_policy_summary(2024);
+        $this->data['district_policy_2025'] = $this->Policy_model->get_policy_summary(2025);
+
         load_template('policy', $this->data);
     }
+    
 
     public function grant_implementation() {
         // Definisikan daftar bulan

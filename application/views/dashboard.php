@@ -322,8 +322,8 @@
                                                                     <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning">Actual</td>
-                                                                    <td class="table-warning">Actual</td>
+                                                                    <td class="table-warning"><?= $percent_district_funding_2024; ?>%</td>
+                                                                    <td class="table-warning"><?= $percent_district_funding_2025; ?>%</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td rowspan="2">Political commitment to & accountability for equitable immunization (including zero-dose agenda) at national & subnational levels</td>
@@ -335,8 +335,8 @@
                                                                     <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning">Actual</td>
-                                                                    <td class="table-warning">Actual</td>
+                                                                    <td class="table-warning"><?= $percent_district_policy_2024; ?></td>
+                                                                    <td class="table-warning"><?= $percent_district_policy_2025; ?></td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>
