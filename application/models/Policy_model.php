@@ -164,4 +164,102 @@ class Policy_model extends CI_Model {
             'percentage_policy' => $percentage_policy
         ];
     }
+
+    // Input
+
+    public function save_district_funding($data) {
+        // Cek apakah data dengan province_id, year, month sudah ada
+        $this->db->where('province_id', $data['province_id']);
+        $this->db->where('year', $data['year']);
+        $this->db->where('month', $data['month']);
+        
+        $query = $this->db->get('district_funding');
+    
+        if ($query->num_rows() > 0) {
+            // Jika sudah ada, lakukan update
+            $this->db->where('province_id', $data['province_id']);
+            $this->db->where('year', $data['year']);
+            $this->db->where('month', $data['month']);
+            $this->db->update('district_funding', $data);
+            return $this->db->affected_rows(); // Mengembalikan jumlah baris yang diperbarui
+        } else {
+            // Jika belum ada, lakukan insert
+            $this->db->insert('district_funding', $data);
+            return $this->db->insert_id(); // Mengembalikan ID data yang baru disimpan
+        }
+    }
+
+    public function get_district_funding_data($province_id, $year, $month) {
+        $this->db->select('df.*, p.name_id AS province_name');
+        $this->db->from('district_funding df');
+        $this->db->join('provinces p', 'p.id = df.province_id', 'left');
+    
+        if (!empty($province_id)) {
+            $this->db->where('df.province_id', $province_id);
+        }
+        if (!empty($year)) {
+            $this->db->where('df.year', $year);
+        }
+        if (!empty($month)) {
+            $this->db->where('df.month', $month);
+        }
+    
+        return $this->db->get()->result();
+    }
+    
+    public function delete_district_funding($id) {
+        $this->db->where('id', $id)->delete('district_funding');
+    }
+
+    // Simpan data district policy ke database
+    public function save_district_policy($data) {
+        // Cek apakah data untuk province_id, year, month sudah ada
+        $this->db->where('province_id', $data['province_id']);
+        $this->db->where('year', $data['year']);
+        $this->db->where('month', $data['month']);
+        
+        $query = $this->db->get('district_policy');
+    
+        if ($query->num_rows() > 0) {
+            // Data sudah ada, lakukan update
+            $this->db->where('province_id', $data['province_id']);
+            $this->db->where('year', $data['year']);
+            $this->db->where('month', $data['month']);
+    
+            $this->db->update('district_policy', $data);
+            return $this->db->affected_rows(); // Mengembalikan jumlah baris yang diperbarui
+        } else {
+            // Data belum ada, lakukan insert
+            $this->db->insert('district_policy', $data);
+            return $this->db->insert_id(); // Mengembalikan ID dari data yang baru disimpan
+        }
+    }
+    
+    // Ambil data district policy berdasarkan filter
+    public function get_district_policy_data($province_id, $year, $month) {
+        $this->db->select('district_policy.*, 
+                          provinces.name_id AS province_name');
+        $this->db->from('district_policy');
+        $this->db->join('provinces', 'provinces.id = district_policy.province_id', 'left');
+
+        if (!empty($province_id)) {
+            $this->db->where('district_policy.province_id', $province_id);
+        }
+        if (!empty($year)) {
+            $this->db->where('district_policy.year', $year);
+        }
+        if (!empty($month)) {
+            $this->db->where('district_policy.month', $month);
+        }
+
+        return $this->db->get()->result();
+    }
+
+    // Hapus data district policy
+    public function delete_district_policy($id) {
+        $this->db->where('id', $id)->delete('district_policy');
+    }
+    
+    
+    // Input
 }

@@ -39,47 +39,49 @@ class Input extends CI_Controller {
         $this->load->helper('form');
 
         $this->load->model('StockOut_model');
+        $this->load->model('District_model');
+        $this->load->model('Policy_model');
     }
 
-    public function index() {
-        $this->data['title'] = 'Input Data Current ZD Cases';
-        load_template('input/zd-cases', $this->data);
-    }
+    // public function index() {
+    //     $this->data['title'] = 'Input Data Current ZD Cases';
+    //     load_template('input/zd-cases', $this->data);
+    // }
 
-    public function restored() {
-        $this->data['title'] = 'Input Data Restored ZD Children';
-        load_template('input/restored-zd-children', $this->data);
-    }
+    // public function restored() {
+    //     $this->data['title'] = 'Input Data Restored ZD Children';
+    //     load_template('input/restored-zd-children', $this->data);
+    // }
 
-    public function lost() {
-        $this->data['title'] = 'Input Data Lost Children';
-        load_template('input/lost-children', $this->data);
-    }
+    // public function lost() {
+    //     $this->data['title'] = 'Input Data Lost Children';
+    //     load_template('input/lost-children', $this->data);
+    // }
 
-    public function dpt1() {
-        $this->data['title'] = 'Input Data DTP1 in targeted areas';
-        load_template('input/dpt1', $this->data);
-    }
+    // public function dpt1() {
+    //     $this->data['title'] = 'Input Data DTP1 in targeted areas';
+    //     load_template('input/dpt1', $this->data);
+    // }
 
-    public function zd_tracking() {
-        $this->data['title'] = 'Input Data Primary Health Facility to Conduct Immunization Service as Planned';
-        load_template('input/zd-tracking', $this->data);
-    }
+    // public function zd_tracking() {
+    //     $this->data['title'] = 'Input Data Primary Health Facility to Conduct Immunization Service as Planned';
+    //     load_template('input/zd-tracking', $this->data);
+    // }
 
-    public function dpt_stock() {
-        $this->data['title'] = 'Input Data Number of DTP Stock Out at Health Facilities';
-        load_template('input/dpt-stock', $this->data);
-    }
+    // public function dpt_stock() {
+    //     $this->data['title'] = 'Input Data Number of DTP Stock Out at Health Facilities';
+    //     load_template('input/dpt-stock', $this->data);
+    // }
 
-    public function district() {
-        $this->data['title'] = 'Input Data District Program';
-        load_template('input/district', $this->data);
-    }
+    // public function district() {
+    //     $this->data['title'] = 'Input Data District Program';
+    //     load_template('input/district', $this->data);
+    // }
 
-    public function policy() {
-        $this->data['title'] = 'Input Data District Policy and Financing';
-        load_template('input/policy', $this->data);
-    }
+    // public function policy() {
+    //     $this->data['title'] = 'Input Data District Policy and Financing';
+    //     load_template('input/policy', $this->data);
+    // }
 
     public function grant_implementation() {
         $this->data['title'] = 'Input Data Grants Implementation and Budget Disbursement';
@@ -151,8 +153,6 @@ class Input extends CI_Controller {
         $this->session->set_flashdata('success', 'Data berhasil disimpan atau diperbarui!');
         redirect('input/manual');
     }
-    
-    
     
     public function get_cities_by_province() {
         $province_id = $this->input->get('province_id');
@@ -666,12 +666,198 @@ class Input extends CI_Controller {
 
     // Hapus data stock out
     public function delete_stock_out_data($id) {
+        //Verifikasi CSRF
+        if ($this->security->get_csrf_hash() !== $this->input->post($this->security->get_csrf_token_name())) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token']);
+            return;
+        }
+
         if (!$id) {
             echo json_encode(['status' => 'error', 'message' => 'Invalid ID']);
             return;
         }
 
         $this->StockOut_model->delete_stock_out($id);
+
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode(['status' => 'success', 'message' => 'Data deleted successfully']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to delete data']);
+        }
+    }
+    
+    // ✅ Simpan data Supportive Supervision
+    public function save_supportive_supervision() {
+        $data = [
+            'province_id' => $this->input->post('province_id'),
+            'city_id'     => $this->input->post('city_id'),
+            'year'        => $this->input->post('year'),
+            'month'       => $this->input->post('month'),
+            'good_category_puskesmas' => $this->input->post('good_category_puskesmas')
+        ];
+
+        $this->District_model->save_supportive_supervision($data);
+        $this->session->set_flashdata('success', 'Supportive Supervision data saved successfully!');
+        redirect('input/manual');
+    }
+
+    // ✅ Ambil data Supportive Supervision berdasarkan filter
+    public function get_supportive_supervision_data() {
+        $province_id = $this->input->get('province_id');
+        $city_id     = $this->input->get('city_id');
+        $year        = $this->input->get('year');
+        $month       = $this->input->get('month');
+
+        $data = $this->District_model->get_supportive_supervision_data($province_id, $city_id, $year, $month);
+        echo json_encode($data);
+    }
+
+    // ✅ Hapus data Supportive Supervision
+    public function delete_supportive_supervision_data($id) {
+        // //Verifikasi CSRF
+        // if ($this->security->get_csrf_hash() !== $this->input->post($this->security->get_csrf_token_name())) {
+        //     echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token']);
+        //     return;
+        // }
+
+        if (!$id) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid ID']);
+            return;
+        }
+
+        $this->District_model->delete_supportive_supervision($id);
+
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode(['status' => 'success', 'message' => 'Data deleted successfully']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to delete data']);
+        }
+    }
+
+    // Fungsi untuk menyimpan data private facility training
+    public function save_private_facility_training() {
+        $data = [
+            'province_id' => $this->input->post('province_id'),
+            'year'        => $this->input->post('year'),
+            'month'       => $this->input->post('month'),
+            'total_private_facilities' => $this->input->post('total_private_facilities'),
+            'trained_private_facilities' => $this->input->post('trained_private_facilities')
+        ];
+
+        $this->District_model->save_private_facility_training($data);
+        $this->session->set_flashdata('success', 'Private facility training data saved successfully!');
+        redirect('input/manual');
+    }
+
+    // Fungsi untuk mengambil data private facility training berdasarkan filter
+    public function get_private_facility_training_data() {
+        $province_id = $this->input->get('province_id');
+        $year = $this->input->get('year');
+        $month = $this->input->get('month');
+
+        $data = $this->District_model->get_private_facility_training_data($province_id, $year, $month);
+        echo json_encode($data);
+    }
+
+    // Fungsi untuk menghapus data private facility training
+    public function delete_private_facility_training_data($id) {
+        if (!$id) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid ID']);
+            return;
+        }
+
+        $this->District_model->delete_private_facility_training($id);
+
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode(['status' => 'success', 'message' => 'Data deleted successfully']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to delete data']);
+        }
+    }
+
+    public function save_district_funding() {
+        $data = [
+            'province_id'              => $this->input->post('province_id'),
+            'year'                     => $this->input->post('year'),
+            'month'                    => $this->input->post('month'),
+            'funded_districts'         => $this->input->post('funded_districts'),
+        ];
+    
+        
+        $result = $this->Policy_model->save_district_funding($data);
+    
+        if ($result) {
+            $this->session->set_flashdata('success', 'District funding data saved successfully!');
+        } else {
+            $this->session->set_flashdata('error', 'Failed to save district funding data.');
+        }
+    
+        redirect('input/manual');
+    }
+    
+    public function get_district_funding_data() {
+        $province_id = $this->input->get('province_id');
+        $year        = $this->input->get('year');
+        $month       = $this->input->get('month');
+    
+        
+        $data = $this->Policy_model->get_district_funding_data($province_id, $year, $month);
+    
+        echo json_encode($data);
+    }
+
+    public function delete_district_funding_data($id) {
+        if (!$id) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid ID']);
+            return;
+        }
+    
+        
+        $this->Policy_model->delete_district_funding($id);
+    
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode(['status' => 'success', 'message' => 'Data deleted successfully']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to delete data']);
+        }
+    }
+
+    // Fungsi untuk menyimpan data district policy
+    public function save_district_policy() {
+        $data = [
+            'province_id'       => $this->input->post('province_id'),
+            'year'              => $this->input->post('year'),
+            'month'             => $this->input->post('month'),
+            'policy_districts'  => $this->input->post('policy_districts')
+        ];
+
+        // Simpan data ke database
+        $this->Policy_model->save_district_policy($data);
+        
+        // Set flashdata dan redirect
+        $this->session->set_flashdata('success', 'District policy data saved successfully!');
+        redirect('input/manual'); // Redirect kembali ke halaman manual
+    }
+
+    // Fungsi untuk mengambil data district policy berdasarkan filter
+    public function get_district_policy_data() {
+        $province_id = $this->input->get('province_id');
+        $year        = $this->input->get('year');
+        $month       = $this->input->get('month');
+
+        $data = $this->Policy_model->get_district_policy_data($province_id, $year, $month);
+        echo json_encode($data);
+    }
+
+    // Fungsi untuk menghapus data district policy
+    public function delete_district_policy_data($id) {
+        if (!$id) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid ID']);
+            return;
+        }
+
+        // Hapus data
+        $this->Policy_model->delete_district_policy($id);
 
         if ($this->db->affected_rows() > 0) {
             echo json_encode(['status' => 'success', 'message' => 'Data deleted successfully']);
