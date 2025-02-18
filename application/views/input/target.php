@@ -158,8 +158,8 @@
                                                                         <thead>
                                                                             <tr>
                                                                                 <th rowspan="2" style="width: 5%;">Activity Code</th>
-                                                                                <th rowspan="2" style="width: 60%;">Description</th>
-                                                                                <th colspan="2" style="width: 35%;">Target (IDR)</th>
+                                                                                <th rowspan="2" style="width: 30%;">Description</th>
+                                                                                <th colspan="2" style="width: 65%;">Target (IDR)</th>
                                                                             </tr>
                                                                             <tr>
                                                                                 <th>Y1 (2024) </th>
