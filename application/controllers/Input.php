@@ -398,7 +398,7 @@ class Input extends CI_Controller {
             '2024' => '2024',
             '2025' => '2025'
         ];
-        
+
         // Ambil target budgets dari tabel partners_activities
         $target_budgets = $this->PartnersActivities_model->get_target_budget_by_partner($partner_id);
     
@@ -549,10 +549,10 @@ class Input extends CI_Controller {
             $this->db->where('target_immunization.city_id', $city_id);
         }
 
-        // Year opsional (jika ada, tambahkan filter)
-        // if (!empty($year)) {
-        //     $this->db->where('target_immunization.year', $year);
-        // }
+        //Year opsional (jika ada, tambahkan filter)
+        if (!empty($year)) {
+            $this->db->where('target_immunization.year', $year);
+        }
 
 
         $query = $this->db->get();

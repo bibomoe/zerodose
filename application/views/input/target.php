@@ -666,7 +666,11 @@ $(document).ready(function () {
     $("#filter_btn").on("click", function () {
         let province_id = $("#filter_province").val();
         let city_id = $("#filter_city").val();
-        loadTable(province_id, city_id);
+        let year = $("#filter_year").val();
+
+        // alert(year);
+        // console.log(year);
+        loadTable(province_id, city_id,year);
     });
 
     // Hapus data dengan AJAX
