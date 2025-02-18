@@ -392,7 +392,13 @@ class Input extends CI_Controller {
     
         // Ambil daftar activities untuk partner
         $activities = $this->Activity_model->get_activities_by_partner($partner_id);
-    
+
+        // Ambil tahun dan bulan dalam bentuk array
+        $this->data['year_options'] = [
+            '2024' => '2024',
+            '2025' => '2025'
+        ];
+        
         // Ambil target budgets dari tabel partners_activities
         $target_budgets = $this->PartnersActivities_model->get_target_budget_by_partner($partner_id);
     
