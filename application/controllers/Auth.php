@@ -42,6 +42,9 @@ class Auth extends CI_Controller {
         if ($user) {
             // Regenerasi session ID untuk proteksi session fixation
             $this->session->sess_regenerate();
+
+            // Ambil bahasa yang dipilih dari localStorage (dikirim melalui form atau AJAX)
+            $selected_language = $this->input->post('language') ?? 'en'; // Default 'en' jika tidak ada data
             
             // Set data session
             $this->session->set_userdata([
@@ -53,6 +56,7 @@ class Auth extends CI_Controller {
                 'partner_category' => $user->partner_category,
                 'province_id' => $user->province_id,
                 'city_id' => $user->city_id,
+                'language' => $selected_language, // Menyimpan bahasa ke session
                 'logged_in' => TRUE
             ]);
             

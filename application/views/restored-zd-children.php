@@ -4,8 +4,8 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>Mitigate</h3>
-                                <p class="text-subtitle text-muted">Coverage rates restored, including by reaching zero-dose children​</p>
+                                <h3><?= $translations['page_title'] ?></h3>
+                                <p class="text-subtitle text-muted"><?= $translations['page_subtitle'] ?>​</p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -23,6 +23,8 @@
                 <div class="page-content"> 
                     <section class="row">
                         <div class="col-12 col-lg-12">
+
+                            <!-- Filter -->
                             <div class="row">
                                 <div class="col-12" style="margin-bottom: 20px;">
                                     <!-- <div class="card">
@@ -32,7 +34,7 @@
                                                 // var_dump($selected_province);
                                             ?>
                                             <?= form_open('home/restored', ['method' => 'get']) ?>
-                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;">Select Province</label>
+                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?>​</label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?= form_dropdown('province', 
                                                         array_column($provinces, 'name_id', 'id'), 
@@ -92,8 +94,8 @@
                                 <div class="col-12 col-lg-12 col-md-12">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5 text-center">
-                                            <h6 class="text-muted font-semibold">Children Zero Dose Year 2023 (National Baseline)</h6>
-                                            <h6 class="font-extrabold mb-0 highlight"><?= number_format($national_baseline_zd) ?> children</h6>
+                                            <h6 class="text-muted font-semibold"><?= $translations['text_baseline'] ?></h6>
+                                            <h6 class="font-extrabold mb-0 highlight"><?= number_format($national_baseline_zd) ?> <?= $translations['children'] ?></h6>
                                         </div>
                                     </div>
                                 </div>
@@ -110,9 +112,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                        <h6 class="text-muted font-semibold">Target Year <?= $year; ?></h6>
+                                                        <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> <?= $year; ?></h6>
                                                         <div class="card-number font-extrabold mb-0"><?= number_format(${"total_target_dpt_1_$year"}); ?></div>
-                                                        <div class="card-subtext">Based on the Population Census Survey (SUPAS)</div>
+                                                        <div class="card-subtext"><?= $translations['text2'] ?></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -130,11 +132,11 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                        <h6 class="text-muted font-semibold">DPT-1 Coverage Year <?= $year; ?></h6>
+                                                        <h6 class="text-muted font-semibold"><?= $translations['text3'] ?> <?= $year; ?></h6>
                                                         <div class="card-number font-extrabold mb-0"><?= number_format(${"total_dpt_1_$year"}); ?></div>
                                                         <div class="card-subtext">
                                                             <?= ${"total_target_dpt_1_$year"} > 0 
-                                                                ? round((${"total_dpt_1_$year"} / ${"total_target_dpt_1_$year"}) * 100, 1) . '% of the target' 
+                                                                ? round((${"total_dpt_1_$year"} / ${"total_target_dpt_1_$year"}) * 100, 1) . $translations['text4']
                                                                 : '0% of the target'; 
                                                             ?>
 
@@ -156,7 +158,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                        <h6 class="text-muted font-semibold">Zero Dose Year <?= $year; ?></h6>
+                                                        <h6 class="text-muted font-semibold"><?= $translations['text5'] ?> <?= $year; ?></h6>
                                                         <div class="card-number font-extrabold mb-0"><?= number_format(${"zero_dose_$year"}); ?></div>
                                                         <div class="card-subtext"><?= ${"zd_narrative_$year"}; ?></div>
                                                     </div>
@@ -179,9 +181,9 @@
                                     <div class="col-12 col-lg-6 col-md-6">
                                         <div class="card">
                                             <div class="card-body px-4 py-4-5">
-                                                <h6 class="text-muted font-semibold">DPT-3 Coverage Year <?= $year; ?></h6>
+                                                <h6 class="text-muted font-semibold"><?= $translations['text10'] ?> <?= $year; ?></h6>
                                                 <div class="card-number font-extrabold mb-3"><?= number_format(${"total_dpt_3_$year"}); ?></div>
-                                                <div class="card-subtext mb-1"><?= ${"percent_dpt_3_$year"}; ?>% of the baseline</div>
+                                                <div class="card-subtext mb-1"><?= ${"percent_dpt_3_$year"}; ?><?= $translations['text11'] ?></div>
                                                 <div class="progress" style="height: 20px;">
                                                     <div class="progress-bar" role="progressbar" 
                                                         style="width: <?= ${"percent_dpt_3_$year"}; ?>%;" 
@@ -189,12 +191,12 @@
                                                         aria-valuemin="0" aria-valuemax="100">
                                                     </div>
                                                 </div>
-                                                <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_dpt_3_$year"}); ?> children need vaccination</div>
+                                                <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_dpt_3_$year"}); ?> <?= $translations['text12'] ?></div>
 
                                                 <!-- Baseline and Target Coverage -->
                                                 <div class="mt-1">
-                                                    <p><strong>Baseline: </strong><?= number_format(${"total_target_dpt_3_$year"}); ?> children</p>
-                                                    <p><strong>Target Coverage <?= ($year == 2024) ? '90%' : '95%'; ?> </strong></p>
+                                                    <p><strong>Baseline: </strong><?= number_format(${"total_target_dpt_3_$year"}); ?> <?= $translations['children'] ?></p>
+                                                    <p><strong><?= $translations['text13'] ?> <?= ($year == 2024) ? '90%' : '95%'; ?> </strong></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -204,9 +206,9 @@
                                     <div class="col-12 col-lg-6 col-md-6">
                                         <div class="card">
                                             <div class="card-body px-4 py-4-5">
-                                                <h6 class="text-muted font-semibold">MR-1 Coverage Year <?= $year; ?></h6>
+                                                <h6 class="text-muted font-semibold"><?= $translations['text14'] ?> <?= $year; ?></h6>
                                                 <div class="card-number font-extrabold mb-3"><?= number_format(${"total_mr_1_$year"}); ?></div>
-                                                <div class="card-subtext mb-1"><?= ${"percent_mr_1_$year"}; ?>% of the baseline</div>
+                                                <div class="card-subtext mb-1"><?= ${"percent_mr_1_$year"}; ?> <?= $translations['text11'] ?></div>
                                                 <div class="progress" style="height: 20px;">
                                                     <div class="progress-bar" role="progressbar" 
                                                         style="width: <?= ${"percent_mr_1_$year"}; ?>%;" 
@@ -214,19 +216,18 @@
                                                         aria-valuemin="0" aria-valuemax="100">
                                                     </div>
                                                 </div>
-                                                <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_mr_1_$year"}); ?> children need vaccination</div>
+                                                <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_mr_1_$year"}); ?> <?= $translations['text12'] ?></div>
 
                                                 <!-- Baseline and Target Coverage -->
                                                 <div class="mt-1">
-                                                    <p><strong>Baseline: </strong><?= number_format(${"total_target_mr_1_$year"}); ?> children</p>
-                                                    <p><strong>Target Coverage <?= ($year == 2024) ? '90%' : '95%'; ?> </strong></p>
+                                                    <p><strong>Baseline: </strong><?= number_format(${"total_target_mr_1_$year"}); ?> <?= $translations['children'] ?></p>
+                                                    <p><strong><?= $translations['text13'] ?> <?= ($year == 2024) ? '90%' : '95%'; ?> </strong></p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
-
 
                             <!-- <div class="row">
                                 <h4>Total Immunized Children</h4>
@@ -300,12 +301,13 @@
                                     </div>
                                 </div>
                             </div> -->
+
                             <!-- table -->
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4>District with the highest number of zero dose children</h4>
+                                            <h4><?= $translations['text17']; ?></h4>
                                         </div>
                                         <!-- <div class="card-body">
                                             <div id="chart-profile-visit"></div>
@@ -360,12 +362,12 @@
                                                 <table class="table table-striped" id="table1">
                                                     <thead>
                                                         <tr>
-                                                            <th>District</th>
-                                                            <th>Target District</th>
-                                                            <th>Total Coverage DPT1</th>
-                                                            <th>% of Total Target</th>
-                                                            <th>Number of ZD Children</th>
-                                                            <th>% of Zero Dose</th>
+                                                            <th><?= $translations['tabelcoloumn1'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn6'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn2'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn3'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn5'] ?></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -392,7 +394,7 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4>Zero Dose Children Mapping</h4>
+                                            <h4><?= $translations['text18'] ?></h4>
                                         </div>
                                         <div class="card-body">
                                             <!-- <div class="googlemaps">
@@ -413,7 +415,7 @@
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title">Zero-Dose Children Trend by Month</h4>
+                                            <h4 class="card-title"><?= $translations['text19'] ?></h4>
                                         </div>
                                         <div class="card-body">
                                             <!-- Tombol Filter Grafik (Hanya jika provinsi ≠ "All" atau "Targeted") -->
@@ -466,7 +468,7 @@
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title">Zero Dose Children by Region Type</h4>
+                                            <h4 class="card-title"><?= $translations['text20'] ?></h4>
                                         </div>
                                         <div class="card-body">
                                             <?php

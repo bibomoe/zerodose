@@ -110,6 +110,37 @@ class Home extends CI_Controller {
     //     load_template('zd-cases', $this->data);
     // }
 
+    public function set_language() {
+        // Menambahkan CORS header agar bisa menerima request dari domain lain
+        header('Access-Control-Allow-Origin: *'); // Memungkinkan semua origin
+        header('Access-Control-Allow-Methods: POST, GET, OPTIONS'); // Metode HTTP yang diperbolehkan
+        header('Access-Control-Allow-Headers: Content-Type, Authorization'); // Headers yang diperbolehkan
+
+        // Jika request method adalah OPTIONS (preflight request), cukup kembalikan status 200 OK
+        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+            exit(0);
+        }
+
+        // // Cek CSRF token
+        // if ($this->input->post('csrf_test_name') !== $this->security->get_csrf_hash()) {
+        //     show_error('CSRF token mismatch');
+        //     return;
+        // }
+    
+        // Ambil bahasa yang dipilih dari POST request
+        $selected_language = $this->input->post('language');
+        
+        if ($selected_language) {
+            // Simpan bahasa yang dipilih ke dalam session
+            $this->session->set_userdata('language', $selected_language);
+        }
+    
+        // Mengirimkan response
+        echo json_encode(['status' => 'success']);
+    }
+    
+    
+
     public function restored() {
         $user_category = $this->session->userdata('user_category');
         $user_province = $this->session->userdata('province_id');
@@ -158,6 +189,9 @@ class Home extends CI_Controller {
         // Ambil baseline ZD 2023
         $this->data['national_baseline_zd'] = $this->Immunization_model->get_baseline_zd(2023);
 
+        // Menentukan bahasa yang dipilih
+        $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
+
         // Ambil data untuk tahun 2024 & 2025
         foreach ([2024, 2025] as $year) {
             if ($selected_province === 'all') {
@@ -181,15 +215,27 @@ class Home extends CI_Controller {
 
             // Hitung Zero Dose (ZD)
             $this->data["zero_dose_$year"] = max($this->data["total_target_dpt_1_$year"] - $this->data["total_dpt_1_$year"], 0);
-
-            // Hitung persentase ZD dari baseline 2023
-            if ($this->data["zero_dose_$year"] <= $this->data['national_baseline_zd']) {
-                $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% reduction from 2023 national baseline for $year";
-            } elseif ($this->data["zero_dose_$year"] > 2 * $this->data['national_baseline_zd']) {
-                $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% increase from 2023 national baseline for $year";
+            
+            if($this->session->userdata('language') == 'en'){
+                // Hitung persentase ZD dari baseline 2023
+                if ($this->data["zero_dose_$year"] <= $this->data['national_baseline_zd']) {
+                    $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% reduction from 2023 national baseline for $year";
+                } elseif ($this->data["zero_dose_$year"] > 2 * $this->data['national_baseline_zd']) {
+                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% increase from 2023 national baseline for $year";
+                } else {
+                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% change from 2023 national baseline for $year";
+                }
             } else {
-                $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% change from 2023 national baseline for $year";
+                // Hitung persentase ZD dari baseline 2023
+                if ($this->data["zero_dose_$year"] <= $this->data['national_baseline_zd']) {
+                    $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% penurunan dari baseline nasional 2023 untuk tahun $year";
+                } elseif ($this->data["zero_dose_$year"] > 2 * $this->data['national_baseline_zd']) {
+                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% peningkatan dari baseline nasional 2023 untuk tahun $year";
+                } else {
+                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% perubahan dari baseline nasional 2023 untuk tahun $year";
+                }
             }
+            
 
             // Hitung anak yang belum divaksinasi
             $this->data["missing_dpt_3_$year"] = max($this->data["total_target_dpt_3_$year"] - $this->data["total_dpt_3_$year"], 0);
@@ -254,8 +300,92 @@ class Home extends CI_Controller {
         $this->data['districts_array'] =  $this->Immunization_model->get_cities_by_province_array($selected_province);
 
         $this->data['title'] = 'Restored ZD Children';
+
+        
+
+        // Memuat data terjemahan
+        $translations = $this->load_translation_restored($selected_language);
+
+        // Mengirim data terjemahan ke view
+        $this->data['translations'] = $translations;
+
+
         load_template('restored-zd-children', $this->data);
     }
+
+    private function load_translation_restored($lang) {
+        $translations = [
+            'en' => [
+                'page_title' => 'Mitigate',
+                'page_subtitle' => 'Coverage rates restored, including by reaching zero-dose children',
+                'filter_label' => 'Select Province',
+                'text_baseline' => 'Children Zero Dose Year 2023 (National Baseline)',
+                'children' => ' children',
+                'text1' => 'Target Year ',
+                'text2' => 'Based on the Population Census Survey (SUPAS)',
+                'text3' => 'DPT-1 Coverage Year ',
+                'text4' => ' of the target',
+                'text5' => 'Zero Dose Year ',
+                'text6' => 'from 2023 national baseline for 2024',
+                // 'text7' => 'Target Year 2025',
+                // 'text8' => 'DPT-1 Coverage Year 2025',
+                // 'text9' => 'Zero Dose Year 2025',
+                'text10' => 'DPT-3 Coverage Year ',
+                'text11' => ' of the baseline',
+                'text12' => ' children need vaccination',
+                'text13' => 'Target Coverage ',
+                'text14' => 'MR-1 Coverage Year ',
+                // 'text15' => 'DPT-3 Coverage Year 2025',
+                // 'text16' => 'MR-1 Coverage Year 2025',
+                'text17' => 'District with the highest number of zero dose children',
+                'tabelcoloumn1' => 'District',
+                'tabelcoloumn6' => 'Target District',
+                'tabelcoloumn2' => 'Total Coverage DPT1',
+                'tabelcoloumn3' => '% of Total Target',
+                'tabelcoloumn4' => 'Number of ZD Children',
+                'tabelcoloumn5' => '% of Zero Dose',
+                'text18' => 'Zero Dose Children Mapping',
+                'text19' => 'Zero-Dose Children Trend by Month',
+                'text20' => 'Zero Dose Children by Region Type'
+            ],
+            'id' => [
+                'page_title' => 'Mitigasi',
+                'page_subtitle' => 'Tingkat cakupan yang dipulihkan, termasuk mencapai anak zero-dose',
+                'filter_label' => 'Pilih Provinsi',
+                'text_baseline' => 'Anak Zero Dose Tahun 2023 (National Baseline)',
+                'children' => ' anak',
+                'text1' => 'Target Tahun ',
+                'text2' => 'Berdasarkan Survei Penduduk (SUPAS)',
+                'text3' => 'Cakupan DPT-1 Tahun ',
+                'text4' => ' dari target',
+                'text5' => 'Zero Dose Tahun ',
+                'text6' => 'dari baseline nasional 2023 untuk 2024',
+                // 'text7' => 'Target Tahun 2025',
+                // 'text8' => 'Cakupan DPT-1 Tahun 2025',
+                // 'text9' => 'Zero Dose Tahun 2025',
+                'text10' => 'Cakupan DPT-3 Tahun ',
+                'text11' => ' dari baseline',
+                'text12' => ' anak-anak membutuhkan vaksinasi',
+                'text13' => 'Target Cakupan ',
+                'text14' => 'Cakupan MR-1 Tahun ',
+                // 'text15' => 'Cakupan DPT-3 Tahun 2025',
+                // 'text16' => 'Cakupan MR-1 Tahun 2025',
+                'text17' => 'Kab/Kota dengan jumlah anak zero dose terbanyak',
+                'tabelcoloumn1' => 'Kab/Kota',
+                'tabelcoloumn6' => 'Target Kab/Kota',
+                'tabelcoloumn2' => 'Total Cakupan DPT1',
+                'tabelcoloumn3' => '% dari Total Target',
+                'tabelcoloumn4' => 'Jumlah Anak ZD',
+                'tabelcoloumn5' => '% dari Zero Dose',
+                'text18' => 'Pemetaan Anak Zero Dose',
+                'text19' => 'Tren Anak Zero-Dose per Bulan',
+                'text20' => 'Anak Zero Dose Berdasarkan Jenis Wilayah'
+            ]
+        ];
+    
+        return $translations[$lang] ?? $translations['id']; // Default ke bahasa Indonesia
+    }
+    
 
     // public function lost() {
     //     $this->data['title'] = 'Lost Children';
@@ -376,10 +506,61 @@ class Home extends CI_Controller {
         // echo "Total districts from model: " . count($this->data['district_details']);
         // print_r($this->data['district_details']);
         // exit;
-    
+
+        // Menentukan bahasa yang dipilih
+        $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
+        
+        // Memuat data terjemahan
+        $translations = $this->load_translation_dpt1($selected_language);
+
+        // Mengirim data terjemahan ke view
+        $this->data['translations'] = $translations;
+
         $this->data['title'] = 'DPT1 in targeted areas';
         load_template('dpt1', $this->data);
     }
+
+    private function load_translation_dpt1($lang) {
+        $translations = [
+            'en' => [
+                'page_title' => 'DPT-1 coverage and drop out rates',
+                'page_subtitle' => 'Percentage children -under 5 years with DPT 1 coverage and number of district with DO (DPT1-DPT3) less than 5%',
+                'filter_label' => 'Select Year',
+                'text1' => 'DPT-1 Coverage',
+                'text2' => 'Dropout Rate',
+                'text3' => 'Number of districts with DO (DPT1-DPT3) less than 5%',
+                'text4' => 'Total Districts',
+                'tabelcoloumn1' => 'Province',
+                'tabelcoloumn2' => 'District',
+                'tabelcoloumn3' => 'Target',
+                'tabelcoloumn4' => 'DPT1 Coverage',
+                'tabelcoloumn5' => '% of DPT1 Coverage',
+                'tabelcoloumn6' => 'DPT3 Coverage',
+                'tabelcoloumn7' => 'Number of Dropout',
+                'tabelcoloumn8' => 'Drop Out Rate',
+            ],
+            'id' => [
+                'page_title' => 'Cakupan DPT-1 dan Tingkat Dropout',
+                'page_subtitle' => 'Persentase anak - di bawah 5 tahun dengan cakupan DPT 1 dan jumlah Kab/Kota dengan DO (DPT1-DPT3) kurang dari 5%',
+                'filter_label' => 'Pilih Tahun',
+                'text1' => 'Cakupan DPT-1',
+                'text2' => 'Tingkat Dropout',
+                'text3' => 'Jumlah Kab/Kota dengan DO (DPT1-DPT3) kurang dari 5%',
+                'text4' => 'Jumlah Kab/Kota',
+                'tabelcoloumn1' => 'Provinsi',
+                'tabelcoloumn2' => 'Kab/Kota',
+                'tabelcoloumn3' => 'Target',
+                'tabelcoloumn4' => 'Cakupan DPT1',
+                'tabelcoloumn5' => '% Cakupan DPT1',
+                'tabelcoloumn6' => 'Cakupan DPT3',
+                'tabelcoloumn7' => 'Jumlah Dropout',
+                'tabelcoloumn8' => 'Tingkat Dropout',
+            ]
+        ];
+    
+        return $translations[$lang] ?? $translations['id']; // Default ke Bahasa Indonesia
+    }
+    
     
 
     public function zd_tracking() {
@@ -457,11 +638,62 @@ class Home extends CI_Controller {
         // var_dump($rca_puskesmas_data);
         // exit;
 
+        // Menentukan bahasa yang dipilih
+        $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
+        
+        // Memuat data terjemahan
+        $translations = $this->load_translation_zd_tracking($selected_language);
+
+        // Mengirim data terjemahan ke view
+        $this->data['translations'] = $translations;
+
         $this->data['title'] = 'Percentage of Primary Health Facility to Conduct Immunization Service as Planned​';
 
         // Load template
         load_template('zd-tracking', $this->data);
     }
+
+    private function load_translation_zd_tracking($lang) {
+        $translations = [
+            'en' => [
+                'page_title' => 'PHC Immunization Performance',
+                'page_subtitle' => 'Percentage of Primary Health Facility to Conduct Immunization Service as Planned',
+                'filter_label' => 'Select Province',
+                'text1' => 'Total number of Puskesmas',
+                'text2' => 'Total Puskesmas that have conducted immunization',
+                'text3' => 'Percentage of Puskesmas that have conducted immunization',
+                'text4' => 'Number of Puskesmas have conducted a Rapid Community Assessment (RCA)',
+                'text5' => 'Number of Health Facilities manage immunization program as per national guidance in 10 targeted provinces Year ',
+                'text6' => ' % of Total Puskesmas',
+                'text7' => 'Number of Health Facilities manage immunization program as per national guidance in 10 targeted provinces',
+                'tabelcoloumn1' => 'Province',
+                'tabelcoloumn2' => 'District',
+                'tabelcoloumn3' => 'Total number of Puskesmas',
+                'tabelcoloumn4' => 'Number of Puskesmas that Have Undergone Supportive Supervision with "Good" Category',
+                'tabelcoloumn5' => 'Percentage of "Good" Category',
+            ],
+            'id' => [
+                'page_title' => 'Kinerja Imunisasi Puskesmas',
+                'page_subtitle' => 'Persentase Fasilitas Kesehatan Primer untuk Melaksanakan Layanan Imunisasi sesuai Rencana',
+                'filter_label' => 'Pilih Provinsi',
+                'text1' => 'Jumlah Puskesmas',
+                'text2' => 'Jumlah Puskesmas yang telah melaksanakan imunisasi',
+                'text3' => 'Persentase Puskesmas yang telah melaksanakan imunisasi',
+                'text4' => 'Jumlah Puskesmas yang telah melakukan Rapid Community Assessment (RCA)',
+                'text5' => 'Jumlah Fasilitas Kesehatan yang mengelola program imunisasi sesuai pedoman nasional di 10 provinsi yang menjadi sasaran Tahun ',
+                'text6' => ' % dari Total Puskesmas',
+                'text7' => 'Jumlah Fasilitas Kesehatan yang mengelola program imunisasi sesuai pedoman nasional di 10 provinsi yang menjadi sasaran',
+                'tabelcoloumn1' => 'Provinsi',
+                'tabelcoloumn2' => 'Kabupaten/Kota',
+                'tabelcoloumn3' => 'Jumlah Puskesmas',
+                'tabelcoloumn4' => 'Jumlah Puskesmas yang telah mengikuti Supervisi Dukungan dengan Kategori "Baik"',
+                'tabelcoloumn5' => 'Persentase Kategori "Baik"',
+            ]
+        ];
+    
+        return $translations[$lang] ?? $translations['id']; // Default ke Bahasa Indonesia
+    }
+    
     
 
     public function dpt_stock() {
@@ -482,10 +714,38 @@ class Home extends CI_Controller {
         // $this->data['stock_out_data'] = json_encode($stock_out_data); // Kirim dalam bentuk JSON
         $this->data['stock_out_data'] = $stock_out_data; // Kirim dalam bentuk JSON
 
+        // Menentukan bahasa yang dipilih
+        $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
+        
+        // Memuat data terjemahan
+        $translations = $this->load_translation_dpt_stock($selected_language);
+
+        // Mengirim data terjemahan ke view
+        $this->data['translations'] = $translations;
 
         $this->data['title'] = 'Number of DTP Stock Out at Health Facilities';
         load_template('dpt-stock', $this->data);
     }
+
+    private function load_translation_dpt_stock($lang) {
+        $translations = [
+            'en' => [
+                'page_title' => 'Number of DTP Stock Out at Health Facilities',
+                'page_subtitle' => 'Vaccine Availability',
+                'filter_label' => 'Select Province',
+                'text1' => 'Stock Out by Duration',
+            ],
+            'id' => [
+                'page_title' => 'Jumlah Stock Out DTP di Fasilitas Kesehatan',
+                'page_subtitle' => 'Ketersediaan Vaksin',
+                'filter_label' => 'Pilih Provinsi',
+                'text1' => 'Stock Out Berdasarkan Durasi',
+            ]
+        ];
+    
+        return $translations[$lang] ?? $translations['id']; // Default ke Bahasa Indonesia
+    }
+    
 
     public function district() {
         $this->data['title'] = 'District Program';

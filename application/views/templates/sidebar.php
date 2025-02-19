@@ -6,16 +6,119 @@
                             <img src="<?= base_url('assets/kemenkes2.png'); ?>" alt="Logo" srcset="" style="width: 30px; height: auto;" > 
                         </div>
                         <div class="logo">
-                            <img src="<?= base_url('assets/gavi_logo.png'); ?>" alt="Logo" srcset="" style="width: 30px; height: auto;" > 
+                            <img src="<?= base_url('assets/imunisasi_lengkap.png'); ?>" alt="Logo" srcset="" style="width: 60px; height: auto;" > 
                         </div>
                         <div class="logo">
                             <img src="<?= base_url('assets/logo.png'); ?>" alt="Logo" srcset="" style="width: 60px; height: auto;" > 
+                        </div>
+                        <div class="logo">
+                            <img src="<?= base_url('assets/undp-logo-blue.svg'); ?>" alt="Logo" style="width: 20px; height: auto;"> 
                         </div>
                         
                         <!-- <div class="language-toggle" id="language-toggle">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/2560px-Flag_of_Indonesia.svg.png" alt="Indonesian Flag" id="lang-id">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/2560px-Flag_of_the_United_States.svg.png" alt="English Flag" id="lang-en" style="display: none;">
                         </div> -->
+                        <!-- <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                                role="img" class="iconify iconify--system-uicons" width="20" height="20"
+                                preserveAspectRatio="xMidYMid meet" viewBox="0 0 21 21">
+                                <g fill="none" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M10.5 14.5c2.219 0 4-1.763 4-3.982a4.003 4.003 0 0 0-4-4.018c-2.219 0-4 1.781-4 4c0 2.219 1.781 4 4 4zM4.136 4.136L5.55 5.55m9.9 9.9l1.414 1.414M1.5 10.5h2m14 0h2M4.135 16.863L5.55 15.45m9.899-9.9l1.414-1.415M10.5 19.5v-2m0-14v-2"
+                                        opacity=".3"></path>
+                                    <g transform="translate(-210 -1)">
+                                        <path d="M220.5 2.5v2m6.5.5l-1.5 1.5"></path>
+                                        <circle cx="220.5" cy="11.5" r="4"></circle>
+                                        <path d="m214 5l1.5 1.5m5 14v-2m6.5-.5l-1.5-1.5M214 18l1.5-1.5m-4-5h2m14 0h2"></path>
+                                    </g>
+                                </g>
+                            </svg>
+                            <div class="form-check form-switch fs-6">
+                                <input class="form-check-input  me-0" type="checkbox" id="toggle-dark" style="cursor: pointer">
+                                <label class="form-check-label"></label>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                                role="img" class="iconify iconify--mdi" width="20" height="20" preserveAspectRatio="xMidYMid meet"
+                                viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="m17.75 4.09l-2.53 1.94l.91 3.06l-2.63-1.81l-2.63 1.81l.91-3.06l-2.53-1.94L12.44 4l1.06-3l1.06 3l3.19.09m3.5 6.91l-1.64 1.25l.59 1.98l-1.7-1.17l-1.7 1.17l.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95l2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85c-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14c.4-.4.82-.76 1.27-1.08c.75-.53 1.93.36 1.85 1.19c-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82c-2.81 3.14-2.7 7.96.31 10.98c3.02 3.01 7.84 3.12 10.98.31Z">
+                                </path>
+                            </svg>
+                        </div> -->
+                        <div class="sidebar-toggler  x">
+                            <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="logo">
+                            <img src="<?= base_url('assets/who-emblem.png'); ?>" alt="Logo" srcset="" style="width: 40px; height: auto;" > 
+                        </div>
+                        <div class="logo">
+                            <img src="<?= base_url('assets/unicef_logo2.png'); ?>" alt="Logo" srcset="" style="width: 60px; height: auto;" > 
+                        </div>
+
+                        <!-- <div class="language-toggle" id="language-toggle">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/2560px-Flag_of_Indonesia.svg.png" alt="Indonesian Flag" id="lang-id">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/2560px-Flag_of_the_United_States.svg.png" alt="English Flag" id="lang-en" style="display: none;">
+                        </div> -->
+                        <!-- Language Toggle -->
+                        <style>
+                            /* Language Toggle */
+                            .dropdown-toggle {
+                                background: transparent;
+                                border: none;
+                                font-size: 1rem;
+                                color: #333;
+                                display: flex;
+                                align-items: center;
+                            }
+
+                            .dropdown-toggle img {
+                                width: 25px;
+                                margin-right: 5px;
+                            }
+
+                            .dropdown-menu {
+                                min-width: 150px;
+                            }
+
+                            .dropdown-item {
+                                display: flex;
+                                align-items: center;
+                            }
+
+                            .dropdown-item img {
+                                width: 20px;
+                                margin-right: 10px;
+                            }
+
+
+                            .language-toggle {
+                                display: flex;
+                                align-items: center;
+                                gap: 10px;
+                                cursor: pointer;
+                                margin-left: 15px;
+                            }
+
+                            .language-toggle img {
+                                width: 30px;
+                                height: 20px;
+                                border-radius: 3px;
+                                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                            }
+                        </style>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img id="current-lang" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/2560px-Flag_of_Indonesia.svg.png" width="20" alt="Current Language">
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                                        <li><a class="dropdown-item lang-option" href="#" data-lang="en"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/2560px-Flag_of_the_United_States.svg.png" width="20"> English</a></li>
+                                        <li><a class="dropdown-item lang-option" href="#" data-lang="id"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/2560px-Flag_of_Indonesia.svg.png" width="20"> Bahasa Indonesia</a></li>
+                                    </ul>
+                                </div>
                         <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
                             <!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
                                 role="img" class="iconify iconify--system-uicons" width="20" height="20"
@@ -44,11 +147,7 @@
                                 </path>
                             </svg> -->
                         </div>
-                        <div class="sidebar-toggler  x">
-                            <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
+                        
                     </div>
                 </div>
                 <div class="sidebar-menu">
@@ -435,4 +534,83 @@
                         </div>
                     </div>
                 </nav>
+                <meta name="csrf_token" content="<?= $this->security->get_csrf_hash(); ?>">
             </header>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const langOptions = document.querySelectorAll(".lang-option");
+            const currentLangImg = document.getElementById("current-lang");
+
+            function updateLanguage(lang, imgSrc) {
+                // Cek apakah bahasa yang dipilih berbeda dari yang sebelumnya
+                const currentLang = localStorage.getItem("selectedLanguage");
+
+                if (lang !== currentLang) {
+                    // Simpan bahasa yang dipilih ke localStorage
+                    localStorage.setItem("selectedLanguage", lang);
+
+                    // Perbarui gambar bahasa yang dipilih
+                    currentLangImg.src = imgSrc;
+
+                    // Ambil CSRF token dari meta tag atau hidden field
+                    const csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
+
+                    // Kirim bahasa yang dipilih ke server menggunakan fetch
+                    fetch("<?= base_url('home/set_language'); ?>", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: `language=${lang}&csrf_test_name=${csrfToken}`
+                    }).then(response => {
+                        if (response.ok) {
+                            // Setelah bahasa berhasil dikirim ke server, refresh halaman
+                            window.location.reload(); // Halaman akan di-refresh setelah bahasa dipilih
+                        } else {
+                            console.error("Failed to set language.");
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            }
+
+            // Inisialisasi bahasa berdasarkan localStorage
+            let savedLang = localStorage.getItem("selectedLanguage");
+
+            // Jika bahasa tidak ada di localStorage, set bahasa default dan kirim ke server
+            if (!savedLang) {
+                savedLang = 'en'; // Atur bahasa default ke 'en' (english)
+                const defaultLangOption = document.querySelector(`.lang-option[data-lang="${savedLang}"] img`);
+                const defaultLangImgSrc = defaultLangOption ? defaultLangOption.src : ''; // Mendapatkan gambar bendera default
+                updateLanguage(savedLang, defaultLangImgSrc); // Ubah gambar dan kirim ke server
+            } else {
+                // Update gambar bahasa yang disimpan
+                const savedLangOption = document.querySelector(`.lang-option[data-lang="${savedLang}"] img`);
+                if (savedLangOption) {
+                    currentLangImg.src = savedLangOption.src; // Update gambar bahasa yang disimpan
+                }
+                // // Tetap update bahasa walaupun sudah ada di localStorage
+                // updateLanguage(savedLang, savedLangOption.src);
+            }
+
+            langOptions.forEach(option => {
+                option.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const selectedLang = this.getAttribute("data-lang");
+                    const imgSrc = this.querySelector("img").src;
+                    updateLanguage(selectedLang, imgSrc);  // Panggil fungsi untuk memperbarui bahasa
+                });
+            });
+
+            // Set bahasa yang tersimpan sebelumnya jika ada
+            // const savedLang = localStorage.getItem("selectedLanguage") || 'en';
+            // const savedLangOption = document.querySelector(`.lang-option[data-lang="${savedLang}"] img`);
+            // if (savedLangOption) {
+            //     currentLangImg.src = savedLangOption.src; // Update gambar bahasa yang disimpan
+            // }
+        });
+
+
+
+    </script>

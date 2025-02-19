@@ -4,8 +4,8 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>PHC Immunization Performance​</h3>
-                                <p class="text-subtitle text-muted">Percentage of Primary Health Facility to Conduct Immunization Service as Planned​</p>
+                                <h3><?= $translations['page_title'] ?></h3>
+                                <p class="text-subtitle text-muted"><?= $translations['page_subtitle'] ?>​</p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -32,7 +32,7 @@
                                                 // var_dump($selected_province);
                                             ?>
                                             <?= form_open('home/zd_tracking', ['method' => 'get']) ?>
-                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;">Select Year</label>
+                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?></label>
 
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?= form_dropdown('province', 
@@ -85,7 +85,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-9">
-                                                    <h6 class="text-muted font-semibold">Total number of Puskesmas</h6>
+                                                    <h6 class="text-muted font-semibold"><?= $translations['text1'] ?></h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_puskesmas) ?></h6>
                                                 </div>
                                             </div>
@@ -102,7 +102,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-9">
-                                                    <h6 class="text-muted font-semibold">Total Puskesmas that have conducted immunization</h6>
+                                                    <h6 class="text-muted font-semibold"><?= $translations['text2'] ?></h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_immunized_puskesmas) ?></h6>
                                                 </div>
                                             </div>
@@ -119,7 +119,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-9">
-                                                    <h6 class="text-muted font-semibold">Percentage of Puskesmas that have conducted immunization</h6>
+                                                    <h6 class="text-muted font-semibold"><?= $translations['text3'] ?></h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($percentage_puskesmas, 2) ?>%</h6>
                                                 </div>
                                             </div>
@@ -136,7 +136,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-9">
-                                                    <h6 class="text-muted font-semibold">Number of Puskesmas have conducted a Rapid Community Assessment (RCA)</h6>
+                                                    <h6 class="text-muted font-semibold"><?= $translations['text4'] ?></h6>
                                                     <h6 class="font-extrabold mb-0"><?= $total_puskesmas_rca ?></h6>
                                                 </div>
                                             </div> 
@@ -181,12 +181,12 @@
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold">Number of Health Facilities manage immunization program as per national guidance in 10 targeted provinces Year 2024</h6>
+                                            <h6 class="text-muted font-semibold"><?= $translations['text5'] ?> 2024</h6>
                                             <div class="card-number font-extrabold mb-3">
                                                 <?= number_format($supportive_supervision_2024['total_good_puskesmas'] ?? 0); ?>
                                             </div>
                                             <div class="card-subtext mb-1">
-                                                <?= number_format($supportive_supervision_2024['percentage_good'] ?? 0,2); ?>% of Total Puskesmas
+                                                <?= number_format($supportive_supervision_2024['percentage_good'] ?? 0,2); ?> <?= $translations['text6'] ?>
                                             </div>
                                             <div class="progress" style="height: 20px;">
                                                 <div class="progress-bar" role="progressbar" 
@@ -203,12 +203,12 @@
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold">Number of Health Facilities manage immunization program as per national guidance in 10 targeted provinces Year 2025</h6>
+                                            <h6 class="text-muted font-semibold"><?= $translations['text5'] ?> 2025</h6>
                                             <div class="card-number font-extrabold mb-3">
                                                 <?= number_format($supportive_supervision_2025['total_good_puskesmas'] ?? 0); ?>
                                             </div>
                                             <div class="card-subtext mb-1">
-                                                <?= number_format($supportive_supervision_2025['percentage_good'] ?? 0,2); ?>% of Total Puskesmas
+                                                <?= number_format($supportive_supervision_2025['percentage_good'] ?? 0,2); ?> <?= $translations['text6'] ?>
                                             </div>
                                             <div class="progress" style="height: 20px;">
                                                 <div class="progress-bar" role="progressbar" 
@@ -227,7 +227,7 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4>Number of Health Facilities manage immunization program as per national guidance in 10 targeted provinces</h4>
+                                            <h4><?= $translations['text7'] ?></h4>
                                         </div>
                                         <!-- <div class="card-body">
                                             <div id="chart-profile-visit"></div>
@@ -236,11 +236,11 @@
                                             <table class="table table-striped" id="table1">
                                                 <thead>
                                                     <tr>
-                                                        <th>Province</th>
-                                                        <th>District</th>
-                                                        <th>Total number of Puskesmas</th>
-                                                        <th>Number of Puskesmas that Have Undergone Supportive Supervision with "Good" Category</th>
-                                                        <th>Percentage of "Good" Category</th>
+                                                        <th><?= $translations['tabelcoloumn1'] ?></th>
+                                                        <th><?= $translations['tabelcoloumn2'] ?></th>
+                                                        <th><?= $translations['tabelcoloumn3'] ?></th>
+                                                        <th><?= $translations['tabelcoloumn4'] ?></th>
+                                                        <th><?= $translations['tabelcoloumn5'] ?></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

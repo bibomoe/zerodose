@@ -506,7 +506,7 @@
             });
 
             // Set bahasa yang tersimpan sebelumnya
-            const savedLang = localStorage.getItem("selectedLanguage") || 'id';
+            const savedLang = localStorage.getItem("selectedLanguage") || 'en';
             const savedLangOption = document.querySelector(`.lang-option[data-lang="${savedLang}"] img`);
             if (savedLangOption) {
                 updateLanguage(savedLang, savedLangOption.src);

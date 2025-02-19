@@ -4,8 +4,8 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>Number of DTP Stock Out at Health Facilities</h3>
-                                <p class="text-subtitle text-muted">Vaccine Availability</p>
+                                <h3><?= $translations['page_title'] ?></h3>
+                                <p class="text-subtitle text-muted"><?= $translations['page_subtitle'] ?>​</p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -32,7 +32,7 @@
                                                 // var_dump($selected_province);
                                             ?>
                                             <?= form_open('home/dpt_stock', ['method' => 'get']) ?>
-                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;">Select Province</label>
+                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?></label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?= form_dropdown('province', 
                                                         array_column($provinces, 'name_id', 'id'), 
@@ -78,7 +78,7 @@
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title">Stock Out by Duration</h4>
+                                            <h4 class="card-title"><?= $translations['text1'] ?></h4>
                                         </div>
                                         <div class="card-body">
                                             <canvas id="stockOutByDurationChart"></canvas>

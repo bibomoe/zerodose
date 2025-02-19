@@ -55,6 +55,8 @@
                                     Keep me logged in
                                 </label>
                             </div> -->
+                            <!-- Menyertakan bahasa yang dipilih di dalam hidden input -->
+                            <input type="hidden" name="language" id="language">
                             <button class="btn btn-primary btn-block btn-lg shadow-lg ">Log in</button>
                         </form>
 
@@ -72,3 +74,9 @@
         </div>
     </body>
 </html>
+
+<script>
+    // Set nilai bahasa yang dipilih ke hidden input form sebelum submit
+    const selectedLang = localStorage.getItem("selectedLanguage") || 'en'; // Default 'en' jika tidak ada bahasa yang dipilih
+    document.getElementById("language").value = selectedLang;
+</script>

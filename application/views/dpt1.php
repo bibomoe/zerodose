@@ -4,8 +4,8 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>DPT-1 coverage and drop out rates</h3>
-                                <p class="text-subtitle text-muted">Percentage children -under 5 years with DPT 1 coverage and number of district with DO (DPT1-DPT3) less than 5%​</p>
+                                <h3><?= $translations['page_title'] ?></h3>
+                                <p class="text-subtitle text-muted"><?= $translations['page_subtitle'] ?>​</p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -32,7 +32,7 @@
                                                 // var_dump($selected_province);
                                             ?>
                                             <?= form_open('home/dpt1', ['method' => 'get']) ?>
-                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;">Select Year</label>
+                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?></label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?= form_dropdown(
                                                             'year', 
@@ -62,7 +62,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">DPT-1 Coverage</h6>
+                                                    <h6 class="text-muted font-semibold"><?= $translations['text1'] ?></h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_dpt1_coverage); ?> <small>(<?= number_format($percent_dpt1_coverage, 0) ?>%)</small></h6>
                                                 </div>
                                             </div>
@@ -96,7 +96,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">Dropout Rate</h6>
+                                                    <h6 class="text-muted font-semibold"><?= $translations['text2'] ?></h6>
                                                     <h6 class="text-muted font-semibold">(DPT-3 - DPT-1)</h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($dropout_rate_all_provinces,2); ?>%</h6>
                                                 </div>
@@ -114,7 +114,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">Number of districts with DO (DPT1-DPT3) less than 5%</h6>
+                                                    <h6 class="text-muted font-semibold"><?= $translations['text3'] ?></h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_dropout_rate); ?> <small>(<?= number_format($percent_districts_under_5, 2) ?>%)</small></h6>
                                                 </div>
                                             </div>
@@ -131,7 +131,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold">Total Districts</h6>
+                                                    <h6 class="text-muted font-semibold"><?= $translations['text4'] ?></h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_regencies_cities); ?></h6>
                                                 </div>
                                             </div>
@@ -174,14 +174,14 @@
                                                 <table class="table table-striped" id="table1">
                                                     <thead>
                                                         <tr>
-                                                            <th>Province</th>
-                                                            <th>District</th>
-                                                            <th>Target</th>
-                                                            <th>DPT1 Coverage</th>
-                                                            <th>% of DPT1 Coverage</th>
-                                                            <th>DPT3 Coverage</th>
-                                                            <th>Number of Dropout</th>
-                                                            <th>Drop Out Rates</th>
+                                                            <th><?= $translations['tabelcoloumn1'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn2'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn3'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn5'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn6'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn7'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn8'] ?></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
