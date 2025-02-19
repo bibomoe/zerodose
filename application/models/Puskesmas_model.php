@@ -160,4 +160,33 @@ class Puskesmas_model extends CI_Model {
     
         return array_column($query->result_array(), 'id'); // Return array ID
     }
+
+    public function get_puskesmas_rca_data($province_id, $year) {
+        $province_ids = $this->get_targeted_province_ids(); // Jika ada targeted province
+    
+        // Query untuk mengambil total Puskesmas yang melakukan Rapid Community Assessment (RCA)
+        $this->db->select('COUNT(DISTINCT r.id) AS total_puskesmas_rca'); // Menghitung total Puskesmas yang melakukan RCA
+        $this->db->from('puskesmas p');
+        $this->db->join('puskesmas_rca r', 'r.puskesmas_id = p.id AND r.year = ' . $this->db->escape($year), 'left');
+        
+        // Jika province_id adalah 'targeted', filter berdasarkan targeted provinces
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('p.province_id', $province_ids);
+            } else {
+                return 0; // Jika tidak ada province_ids yang ditentukan, return 0
+            }
+        } elseif ($province_id !== 'all') {
+            // Jika province_id bukan 'all', filter berdasarkan province_id tertentu
+            $this->db->where('p.province_id', $province_id);
+        }
+    
+        // Jalankan query dan ambil hasilnya
+        $query = $this->db->get();
+    
+        // Return total Puskesmas yang melakukan RCA
+        return $query->row()->total_puskesmas_rca ?? 0;
+    }
+    
+    
 }

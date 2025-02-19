@@ -447,7 +447,14 @@ class Home extends CI_Controller {
         $this->data['supportive_supervision_2024'] = $this->District_model->get_supportive_supervision_targeted_summary(2024);
         $this->data['supportive_supervision_2025'] = $this->District_model->get_supportive_supervision_targeted_summary(2025);
 
-        // var_dump($puskesmas_data);
+        // Ambil data Puskesmas yang melakukan RCA
+        $rca_puskesmas_data = $this->Puskesmas_model->get_puskesmas_rca_data($selected_province, $selected_year);
+        
+        // Kirim data ke view
+        $this->data['total_puskesmas_rca'] = $rca_puskesmas_data;
+        $this->data['title'] = 'Tracking Puskesmas RCA Data';
+
+        // var_dump($rca_puskesmas_data);
         // exit;
 
         $this->data['title'] = 'Percentage of Primary Health Facility to Conduct Immunization Service as Planned​';
