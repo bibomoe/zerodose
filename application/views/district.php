@@ -4,8 +4,8 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>Trained Private Facilities</h3>
-                                <!-- <p class="text-subtitle text-muted">Number of ZD children in targeted areas​</p> -->
+                                <h3><?= $translations['page_title'] ?></h3>
+                                <p class="text-subtitle text-muted"><?= $translations['page_subtitle'] ?>​</p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -32,7 +32,7 @@
                                                 // var_dump($selected_province);
                                             ?>
                                             <?= form_open('home/district', ['method' => 'get']) ?>
-                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;">Select Year</label>
+                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?></label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?= form_dropdown(
                                                             'year', 
@@ -130,7 +130,7 @@
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold">Number of private facilities trained on Immunization Program Management for Private Sectors SOP Year 2024</h6>
+                                            <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> 2024</h6>
                                             <div class="card-number font-extrabold mb-3">
                                                 <?= number_format($private_facility_training_2024) ?>
                                             </div>
@@ -142,7 +142,7 @@
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold">Number of private facilities trained on Immunization Program Management for Private Sectors SOP Year 2025</h6>
+                                            <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> 2025</h6>
                                             <div class="card-number font-extrabold mb-3">
                                                 <?= number_format($private_facility_training_2025) ?>
                                             </div>
@@ -197,15 +197,15 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4>Number of private facilities trained on Immunization Program Management for Private Sectors SOP</h4>
+                                            <h4><?= $translations['text2'] ?></h4>
                                         </div>
                                         <div class="card-body">
                                             <table class="table table-striped" id="table1">
                                                 <thead>
                                                     <tr>
-                                                        <th>Province</th>
-                                                        <th>Total Number of Private Facilities</th>
-                                                        <th>Number of Private Facilities Trained</th>
+                                                        <th><?= $translations['tabelcoloumn1'] ?></th>
+                                                        <th><?= $translations['tabelcoloumn2'] ?></th>
+                                                        <th><?= $translations['tabelcoloumn3'] ?></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

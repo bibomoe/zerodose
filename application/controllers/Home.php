@@ -684,7 +684,7 @@ class Home extends CI_Controller {
                 'text6' => ' % dari Total Puskesmas',
                 'text7' => 'Jumlah Fasilitas Kesehatan yang mengelola program imunisasi sesuai pedoman nasional di 10 provinsi yang menjadi sasaran',
                 'tabelcoloumn1' => 'Provinsi',
-                'tabelcoloumn2' => 'Kabupaten/Kota',
+                'tabelcoloumn2' => 'Kab/Kota',
                 'tabelcoloumn3' => 'Jumlah Puskesmas',
                 'tabelcoloumn4' => 'Jumlah Puskesmas yang telah mengikuti Supervisi Dukungan dengan Kategori "Baik"',
                 'tabelcoloumn5' => 'Persentase Kategori "Baik"',
@@ -770,11 +770,45 @@ class Home extends CI_Controller {
         $this->data['private_facility_training_2024'] = $this->District_model->get_private_facility_training_summary(2024);
         $this->data['private_facility_training_2025'] = $this->District_model->get_private_facility_training_summary(2025);
 
+        // Menentukan bahasa yang dipilih
+        $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
+        
+        // Memuat data terjemahan
+        $translations = $this->load_translation_trained_private_facilities($selected_language);
+
+        // Mengirim data terjemahan ke view
+        $this->data['translations'] = $translations;
 
     
         load_template('district', $this->data);
     }
     
+    private function load_translation_trained_private_facilities($lang) {
+        $translations = [
+            'en' => [
+                'page_title' => 'Trained Private Facilities',
+                'page_subtitle' => '', // Subtitle can be added if required
+                'filter_label' => 'Select Year',
+                'text1' => 'Number of private facilities trained on Immunization Program Management for Private Sectors SOP Year ',
+                'text2' => 'Number of private facilities trained on Immunization Program Management for Private Sectors SOP',
+                'tabelcoloumn1' => 'Province',
+                'tabelcoloumn2' => 'Total Number of Private Facilities',
+                'tabelcoloumn3' => 'Number of Private Facilities Trained',
+            ],
+            'id' => [
+                'page_title' => 'Fasilitas Swasta yang Telah Dilatih',
+                'page_subtitle' => '', // Subtitle can be added if required
+                'filter_label' => 'Pilih Tahun',
+                'text1' => 'Jumlah fasilitas swasta yang dilatih mengenai Manajemen Program Imunisasi untuk SOP Sektor Swasta Tahun ',
+                'text2' => 'Jumlah fasilitas swasta yang dilatih mengenai Manajemen Program Imunisasi untuk SOP Sektor Swasta',
+                'tabelcoloumn1' => 'Provinsi',
+                'tabelcoloumn2' => 'Jumlah Total Fasilitas Swasta',
+                'tabelcoloumn3' => 'Jumlah Fasilitas Swasta yang Telah Dilatih',
+            ]
+        ];
+    
+        return $translations[$lang] ?? $translations['id']; // Default ke Bahasa Indonesia
+    }
     
 
     public function policy() {
@@ -799,8 +833,63 @@ class Home extends CI_Controller {
         $this->data['district_policy_2024'] = $this->Policy_model->get_policy_summary(2024);
         $this->data['district_policy_2025'] = $this->Policy_model->get_policy_summary(2025);
 
+        // Menentukan bahasa yang dipilih
+        $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
+        
+        // Memuat data terjemahan
+        $translations = $this->load_translation_policy($selected_language);
+
+        // Mengirim data terjemahan ke view
+        $this->data['translations'] = $translations;
+
         load_template('policy', $this->data);
     }
+
+    private function load_translation_policy($lang) {
+        $translations = [
+            'en' => [
+                'page_title' => 'District Policy and Financing',
+                'page_subtitle' => '', // Subtitle can be added if required
+                'filter_label' => 'Select Year',
+                'text1' => 'Number of district allocated domestic funding for key immunization activities and other relevant activities to support immunization program at 10 provinces Year ',
+                'text2' => '% of Total District',
+                'text3' => 'Number of district developed or enacted policy relevant to targeting for immunization program in general Year ',
+                'text4' => 'of Total District',
+                'text5' => 'Number of district allocated domestic funding for key immunization activities and other relevant activities to support immunization program at 10 provinces',
+                'tabelcoloumn1' => 'Province',
+                'tabelcoloumn2' => 'Total Number of Districts',
+                'tabelcoloumn3' => 'Number of Districts Allocated Domestic Funding',
+                'tabelcoloumn4' => 'Percentage Allocated',
+                'text6' => 'Number of district developed or enacted policy relevant to targeting for immunization program in general',
+                'tabel2coloumn1' => 'Province',
+                'tabel2coloumn2' => 'Total Number of Districts',
+                'tabel2coloumn3' => 'Number of Districts with Policies Supporting the Immunization Program or Zero Dose',
+                'tabel2coloumn4' => 'Percentage',
+            ],
+            'id' => [
+                'page_title' => 'Kebijakan dan Pendanaan Kab/Kota',
+                'page_subtitle' => '', // Subtitle can be added if required
+                'filter_label' => 'Pilih Tahun',
+                'text1' => 'Jumlah Kab/Kota yang mengalokasikan pendanaan domestik untuk kegiatan imunisasi utama dan kegiatan relevan lainnya untuk mendukung program imunisasi di 10 provinsi Tahun ',
+                'text2' => '% dari Total Kab/Kota',
+                'text3' => 'Jumlah Kab/Kota yang mengembangkan atau memberlakukan kebijakan terkait sasaran untuk program imunisasi secara umum Tahun ',
+                'text4' => 'dari Total Kab/Kota',
+                'text5' => 'Jumlah Kab/Kota yang mengalokasikan pendanaan domestik untuk kegiatan imunisasi utama dan kegiatan relevan lainnya untuk mendukung program imunisasi di 10 provinsi',
+                'tabelcoloumn1' => 'Provinsi',
+                'tabelcoloumn2' => 'Jumlah Total Kab/Kota',
+                'tabelcoloumn3' => 'Jumlah Kab/Kota yang Dialokasikan Pendanaan Domestik',
+                'tabelcoloumn4' => 'Persentase yang Dialokasikan',
+                'text6' => 'Jumlah Kab/Kota yang mengembangkan atau memberlakukan kebijakan terkait sasaran untuk program imunisasi secara umum',
+                'tabel2coloumn1' => 'Provinsi',
+                'tabel2coloumn2' => 'Jumlah Total Kab/Kota',
+                'tabel2coloumn3' => 'Jumlah Kab/Kota dengan Kebijakan yang Mendukung Program Imunisasi atau Zero Dose',
+                'tabel2coloumn4' => 'Persentase',
+            ]
+        ];
+    
+        return $translations[$lang] ?? $translations['id']; // Default ke Bahasa Indonesia
+    }
+    
     
 
     public function grant_implementation() {

@@ -4,8 +4,8 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>District Policy and Financing</h3>
-                                <!-- <p class="text-subtitle text-muted">Number of ZD children in targeted areas​</p> -->
+                                <h3><?= $translations['page_title'] ?></h3>
+                                <p class="text-subtitle text-muted"><?= $translations['page_subtitle'] ?>​</p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -32,7 +32,7 @@
                                                 // var_dump($selected_province);
                                             ?>
                                             <?= form_open('home/policy', ['method' => 'get']) ?>
-                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;">Select Year</label>
+                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?></label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?= form_dropdown(
                                                             'year', 
@@ -87,12 +87,12 @@
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold">Number of district allocated domestic funding for key immunization activities and other relevant activities to support immunization program at 10 provinces Year 2024</h6>
+                                            <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> 2024</h6>
                                             <div class="card-number font-extrabold mb-3">
                                                 <?= number_format($district_funding_2024['total_funded_districts']); ?>
                                             </div>
                                             <div class="card-subtext mb-1">
-                                                <?= $district_funding_2024['percentage_funded']; ?>% of Total District
+                                                <?= $district_funding_2024['percentage_funded']; ?><?= $translations['text2'] ?>
                                             </div>
                                             <div class="progress" style="height: 20px;">
                                                 <div class="progress-bar" role="progressbar" 
@@ -109,12 +109,12 @@
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold">Number of district allocated domestic funding for key immunization activities and other relevant activities to support immunization program at 10 provinces Year 2025</h6>
+                                            <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> 2025</h6>
                                             <div class="card-number font-extrabold mb-3">
                                                 <?= number_format($district_funding_2025['total_funded_districts']); ?>
                                             </div>
                                             <div class="card-subtext mb-1">
-                                                <?= $district_funding_2025['percentage_funded']; ?>% of Total District
+                                                <?= $district_funding_2025['percentage_funded']; ?><?= $translations['text2'] ?>
                                             </div>
                                             <div class="progress" style="height: 20px;">
                                                 <div class="progress-bar" role="progressbar" 
@@ -134,12 +134,12 @@
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold">Number of district developed or enacted policy relevant to targeting for immunization program in general Year 2024</h6>
+                                            <h6 class="text-muted font-semibold"><?= $translations['text3'] ?> 2024</h6>
                                             <div class="card-number font-extrabold mb-3">
                                                 <?= $district_policy_2024['policy_districts']; ?>
                                             </div>
                                             <div class="card-subtext mb-1">
-                                                <?= $district_policy_2024['percentage_policy']; ?> of Total District
+                                                <?= $district_policy_2024['percentage_policy']; ?> <?= $translations['text4'] ?>
                                             </div>
                                             <div class="progress" style="height: 20px;">
                                                 <div class="progress-bar" role="progressbar" 
@@ -156,12 +156,12 @@
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold">Number of district developed or enacted policy relevant to targeting for immunization program in general Year 2025</h6>
+                                            <h6 class="text-muted font-semibold"><?= $translations['text3'] ?> 2025</h6>
                                             <div class="card-number font-extrabold mb-3">
                                                 <?= $district_policy_2025['policy_districts']; ?>
                                             </div>
                                             <div class="card-subtext mb-1">
-                                                <?= $district_policy_2025['percentage_policy']; ?> of Total District
+                                                <?= $district_policy_2025['percentage_policy']; ?> <?= $translations['text4'] ?>
                                             </div>
                                             <div class="progress" style="height: 20px;">
                                                 <div class="progress-bar" role="progressbar" 
@@ -180,7 +180,7 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4>Number of district allocated domestic funding for key immunization activities and other relevant activities to support immunization program at 10 provinces</h4>
+                                            <h4><?= $translations['text5'] ?></h4>
                                         </div>
                                         <!-- <div class="card-body">
                                             <div id="chart-profile-visit"></div>
@@ -189,10 +189,10 @@
                                             <table class="table table-striped" id="table1">
                                                 <thead>
                                                     <tr>
-                                                        <th>Province</th>
-                                                        <th>Total Number of Districts</th>
-                                                        <th>Number of Districts Allocated Domestic Funding</th>
-                                                        <th>Percentage Allocated</th>
+                                                        <th><?= $translations['tabelcoloumn1'] ?></th>
+                                                        <th><?= $translations['tabelcoloumn2'] ?></th>
+                                                        <th><?= $translations['tabelcoloumn3'] ?></th>
+                                                        <th><?= $translations['tabelcoloumn4'] ?></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -217,7 +217,7 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4>Number of district developed or enacted policy relevant to targeting for immunization program in general</h4>
+                                            <h4><?= $translations['text6'] ?></h4>
                                         </div>
                                         <!-- <div class="card-body">
                                             <div id="chart-profile-visit"></div>
@@ -226,10 +226,10 @@
                                             <table class="table table-striped" id="table1">
                                                 <thead>
                                                     <tr>
-                                                        <th>Province</th>
-                                                        <th>Total Number of Districts</th>
-                                                        <th>Number of Districts with Policies Supporting the Immunization Program or Zero Dose</th>
-                                                        <th>Percentage</th>
+                                                        <th><?= $translations['tabel2coloumn1'] ?></th>
+                                                        <th><?= $translations['tabel2coloumn2'] ?></th>
+                                                        <th><?= $translations['tabel2coloumn3'] ?></th>
+                                                        <th><?= $translations['tabel2coloumn4'] ?></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
