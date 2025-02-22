@@ -13,6 +13,34 @@ class Immunization_model extends CI_Model {
         return $query->row()->zd ?? 0;
     }
 
+    // Ambil Zero Dose (ZD) berdasarkan provinsi atau seluruh provinsi
+    public function get_zero_dose_by_province($province_id) {
+        $province_ids = $this->get_targeted_province_ids();  // Ambil provinsi yang ditargetkan
+        $this->db->select('SUM(zd_cases) AS total_zd_cases');
+        $this->db->from('zd_cases_2023');
+        // $this->db->where('year', $year); // Filter berdasarkan tahun
+
+        // Jika provinsi yang dipilih adalah 'targeted', ambil provinsi yang ditargetkan
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);  // Filter berdasarkan provinsi yang ditargetkan
+            } else {
+                return 0;  // Jika tidak ada provinsi yang ditargetkan
+            }
+        } elseif ($province_id === 'all') {
+            // Jika provinsi yang dipilih adalah 'all', ambil data untuk seluruh provinsi
+            $query = $this->db->get()->row();
+            return $query->total_zd_cases ?? 0;
+        } else {
+            // Jika provinsi yang dipilih adalah provinsi tertentu
+            $this->db->where('province_id', $province_id);
+        }
+
+        $query = $this->db->get()->row();
+        return $query->total_zd_cases ?? 0;
+    }
+
+
     // Ambil total target dari target_coverage (All Provinces) dengan filter tahun
     public function get_total_target_coverage($vaccine_type, $year) {
         $query = $this->db->select('SUM(target_population) AS total_target')

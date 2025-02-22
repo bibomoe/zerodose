@@ -186,25 +186,32 @@ class Home extends CI_Controller {
             $this->data['districts_array'] = [];
         }
 
-        // Ambil baseline ZD 2023
-        $this->data['national_baseline_zd'] = $this->Immunization_model->get_baseline_zd(2023);
+        // Menentukan baseline ZD
+        if ($selected_province == 'all') {
+            // Ambil baseline ZD 2023 dari tabel target_baseline
+            $this->data['national_baseline_zd'] = $this->Immunization_model->get_baseline_zd(2023);
+        } else {
+            // Ambil total ZD dari tabel zd_cases_2023 berdasarkan provinsi yang dipilih
+            $this->data['national_baseline_zd'] = $this->Immunization_model->get_zero_dose_by_province($selected_province);
+        }
 
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
 
         // Ambil data untuk tahun 2024 & 2025
         foreach ([2024, 2025] as $year) {
-            if ($selected_province === 'all') {
-                // Ambil target dari target_coverage untuk semua provinsi
-                $this->data["total_target_dpt_1_$year"] = $this->Immunization_model->get_total_target_coverage('DPT-1', $year);
-                $this->data["total_target_dpt_3_$year"] = $this->Immunization_model->get_total_target_coverage('DPT-3', $year);
-                $this->data["total_target_mr_1_$year"] = $this->Immunization_model->get_total_target_coverage('MR-1', $year);
-            } else {
+            // Hitung target dpt1 pertahun
+            // if ($selected_province === 'all') {
+            //     // Ambil target dari target_coverage untuk semua provinsi
+            //     $this->data["total_target_dpt_1_$year"] = $this->Immunization_model->get_total_target_coverage('DPT-1', $year);
+            //     $this->data["total_target_dpt_3_$year"] = $this->Immunization_model->get_total_target_coverage('DPT-3', $year);
+            //     $this->data["total_target_mr_1_$year"] = $this->Immunization_model->get_total_target_coverage('MR-1', $year);
+            // } else {
                 // Ambil target dari target_immunization untuk provinsi tertentu atau targeted
                 $this->data["total_target_dpt_1_$year"] = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province, $year);
                 $this->data["total_target_dpt_3_$year"] = $this->Immunization_model->get_total_target('dpt_hb_hib_3', $selected_province, $year);
                 $this->data["total_target_mr_1_$year"] = $this->Immunization_model->get_total_target('mr_1', $selected_province, $year);
-            }
+            // }
 
             // Ambil data cakupan imunisasi dari immunization_data
             $this->data["total_dpt_1_$year"] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province, $year);
@@ -220,19 +227,21 @@ class Home extends CI_Controller {
                 // Hitung persentase ZD dari baseline 2023
                 if ($this->data["zero_dose_$year"] <= $this->data['national_baseline_zd']) {
                     $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% reduction from 2023 national baseline for $year";
-                } elseif ($this->data["zero_dose_$year"] > 2 * $this->data['national_baseline_zd']) {
-                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% increase from 2023 national baseline for $year";
+                // } elseif ($this->data["zero_dose_$year"] > 2 * $this->data['national_baseline_zd']) {
                 } else {
-                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% change from 2023 national baseline for $year";
+                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% increase from 2023 national baseline for $year";
+                // } else {
+                //     $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% change from 2023 national baseline for $year";
                 }
             } else {
                 // Hitung persentase ZD dari baseline 2023
                 if ($this->data["zero_dose_$year"] <= $this->data['national_baseline_zd']) {
                     $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% penurunan dari baseline nasional 2023 untuk tahun $year";
-                } elseif ($this->data["zero_dose_$year"] > 2 * $this->data['national_baseline_zd']) {
-                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% peningkatan dari baseline nasional 2023 untuk tahun $year";
+                // } elseif ($this->data["zero_dose_$year"] > 2 * $this->data['national_baseline_zd']) {
                 } else {
-                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% perubahan dari baseline nasional 2023 untuk tahun $year";
+                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% peningkatan dari baseline nasional 2023 untuk tahun $year";
+                // } else {
+                //     $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% perubahan dari baseline nasional 2023 untuk tahun $year";
                 }
             }
             
