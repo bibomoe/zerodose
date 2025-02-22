@@ -141,15 +141,19 @@ class Dpt1_model extends CI_Model {
             $dpt1_coverage = $district['dpt1_coverage'];
             $dpt3_coverage = $district['dpt3_coverage'];
 
-            // Menghitung drop-out rate dari DPT-1 ke DPT-3
-            $dropout_rate_dpt1_to_dpt3 = 0;
             if ($dpt1_coverage > 0) {
-                // Jumlah yang tidak menerima DPT-3
-                $not_received_dpt3 = $dpt1_coverage - $dpt3_coverage;
-                // Drop-out rate formula: (Jumlah yang tidak menerima DPT-3 / Jumlah yang menerima DPT-1) * 100
-                $dropout_rate_dpt1_to_dpt3 = ($not_received_dpt3 / $dpt1_coverage) * 100;
+                // Jika DPT-3 lebih besar dari DPT-1, tidak ada drop-out
+                if ($dpt3_coverage > $dpt1_coverage) {
+                    $dropout_rate_dpt1_to_dpt3 = 0;  // Tidak ada drop-out karena cakupan DPT-3 lebih tinggi
+                } else {
+                    // Jumlah yang tidak menerima DPT-3
+                    $not_received_dpt3 = $dpt1_coverage - $dpt3_coverage;
+                    // Drop-out rate formula: (Jumlah yang tidak menerima DPT-3 / Jumlah yang menerima DPT-1) * 100
+                    $dropout_rate_dpt1_to_dpt3 = ($not_received_dpt3 / $dpt1_coverage) * 100;
+                }
             } else {
-                $dropout_rate_dpt1_to_dpt3 = 100;
+                // Jika DPT-1 coverage 0, kita anggap dropout rate 100% (karena tidak ada cakupan DPT-1)
+                $dropout_rate_dpt1_to_dpt3 = 0;
             }
 
             // Pastikan dropout rate tidak negatif, jika ya set ke 0
