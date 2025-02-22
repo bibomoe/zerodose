@@ -155,7 +155,7 @@ class Immunization_model extends CI_Model {
             SUM(i.mr_1) AS mr1,
             SUM(t.dpt_hb_hib_1_target) AS target_dpt1,
             SUM(t.dpt_hb_hib_3_target) AS target_dpt3,
-            IFNULL(zd.zd_cases, 0) AS zd_cases_2023,
+            IFNULL(SUM(zd.zd_cases), 0) AS zd_cases_2023,
             SUM(t.mr_1_target) AS target_mr1
             
         ', false);
