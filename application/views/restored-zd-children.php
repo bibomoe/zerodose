@@ -912,9 +912,10 @@ document.addEventListener("DOMContentLoaded", function () {
         return isPercentage ? value.toFixed(1) + "%" : value;
     }
 
-    function getColor(dpt1, isProvince) {
-        let threshold = isProvince ? 10000 : 1000;
-        return dpt1 > threshold ? '#1A9850' : '#D73027';
+    function getColor(percentReductionZD) {
+        // let threshold = isProvince ? 10000 : 1000;
+        // return dpt1 > threshold ? '#1A9850' : '#D73027';
+        return percentReductionZD > 85 ? '#1A9850' : '#D73027';
     }
 
     let isProvinceLevel = ["all", "targeted"].includes("<?= $selected_province ?>");
@@ -932,9 +933,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 let regionData = immunizationData[regionId] || {}; 
 
                 let dpt1 = formatValue(regionData.dpt1);
+                let percentReductionZD  = formatValue(regionData.percent_reduction);
+                console.log(percentReductionZD);
 
                 return {
-                    fillColor: getColor(dpt1, isProvinceLevel),
+                    fillColor: getColor(percentReductionZD),
                     weight: 1.5,
                     opacity: 1,
                     color: '#ffffff',
@@ -961,6 +964,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 let dpt3Coverage = formatValue(regionData.percentage_target_dpt3, true);
                 let mr1Coverage  = formatValue(regionData.percentage_target_mr1, true);
 
+                let zd2023 = formatValue(regionData.zd_children_2023);
+                let percentReductionZD  = formatValue(regionData.percent_reduction, true);
+
                 let name = isProvinceLevel 
                     ? feature.properties.WADMPR  
                     : feature.properties.NAMOBJ;  
@@ -978,7 +984,10 @@ document.addEventListener("DOMContentLoaded", function () {
                                     DPT3 Coverage: ${dpt3} (Coverage: ${dpt3Coverage})<br>
                                     MR1 Coverage: ${mr1} (Coverage: ${mr1Coverage})<br>
                                     Zero Dose Children: ${zeroDoseChildren}<br>
-                                    % Zero Dose: ${percentZD}`;
+                                    % Zero Dose: ${percentZD}<br>
+                                    Zero Dose Children 2023: ${zd2023}<br>
+                                    % Reduction From ZD 2023: ${percentReductionZD}`;
+                                    
                 
                 // Jika ini level provinsi, tambahkan tombol
                 if (isProvinceLevel) {

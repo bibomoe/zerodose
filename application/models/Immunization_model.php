@@ -155,12 +155,15 @@ class Immunization_model extends CI_Model {
             SUM(i.mr_1) AS mr1,
             SUM(t.dpt_hb_hib_1_target) AS target_dpt1,
             SUM(t.dpt_hb_hib_3_target) AS target_dpt3,
+            IFNULL(zd.zd_cases, 0) AS zd_cases_2023,
             SUM(t.mr_1_target) AS target_mr1
+            
         ', false);
         
         $this->db->from('immunization_data i');
         $this->db->join('target_immunization t', 't.city_id = i.city_id AND t.year = i.year', 'left');
-        
+        $this->db->join('zd_cases_2023 zd', 'zd.city_id = i.city_id', 'left'); // Join berdasarkan city_id
+
         // Filter berdasarkan tahun
         $this->db->where('i.year', $year);
     
@@ -178,6 +181,9 @@ class Immunization_model extends CI_Model {
         $this->db->group_by(($province_id !== 'all' && $province_id !== 'targeted') ? 'i.city_id' : 'i.province_id');
     
         $query = $this->db->get();
+
+        // var_dump($query->result_array());
+        // exit;
         $result = [];
     
         foreach ($query->result_array() as $row) {
@@ -187,7 +193,12 @@ class Immunization_model extends CI_Model {
             $percentage_target_dpt3 = ($row['target_dpt3'] != 0) ? ($row['dpt3'] / $row['target_dpt3']) * 100 : 0;
             $percentage_target_mr1 = ($row['target_mr1'] != 0) ? ($row['mr1'] / $row['target_mr1']) * 100 : 0;
             $percent_zero_dose = ($row['target_dpt1'] != 0) ? ($zero_dose_children / $row['target_dpt1']) * 100 : 0;
-    
+
+            // Hitung % reduction dari ZD 2023
+            $zd_cases_2023 = $row['zd_cases_2023'];
+            $percent_reduction = ($zd_cases_2023 > 0) ? (($zd_cases_2023 - $zero_dose_children) / $zd_cases_2023) * 100 : 0;
+
+
             $result_key = ($province_id !== 'all' && $province_id !== 'targeted') ? $row['city_id'] : $row['province_id'];
     
             $result[$result_key] = array_merge($row, [
@@ -195,6 +206,8 @@ class Immunization_model extends CI_Model {
                 'percentage_target_dpt1' => $percentage_target_dpt1,
                 'percentage_target_dpt3' => $percentage_target_dpt3,
                 'percentage_target_mr1' => $percentage_target_mr1,
+                'zd_children_2023' => $zd_cases_2023,
+                'percent_reduction' => $percent_reduction,
                 'percent_zero_dose' => $percent_zero_dose
             ]);
         }
