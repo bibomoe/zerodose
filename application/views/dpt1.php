@@ -303,6 +303,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Safely access average and handle undefined values
                 let averageDropoutRate = dropoutRate.average ? dropoutRate.average.toFixed(2) : '0';  // Default to '100' if undefined
 
+                // Jika nilai averageDropoutRate kurang dari 0, set ke 0
+                averageDropoutRate = parseFloat(averageDropoutRate) < 0 ? '0' : averageDropoutRate;
+
                 // Ambil persentase districts dengan coverage (DPT1-DPT3) < 5% per provinsi
                 let percentDptUnder5 = percentDptUnder5Data[regionId] || 0;
 
