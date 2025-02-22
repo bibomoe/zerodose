@@ -287,7 +287,10 @@ class Input extends CI_Controller {
     
         // Ambil data transaksi jika sudah ada
         $transactions = $this->Transaction_model->get_transactions($partner_id, $year, $month);
-    
+        
+        // Nilai konversi USD ke IDR
+        $conversion_rate = 14500; // Rp 14.500 per USD
+
         // Gabungkan data activities dengan transaksi
         $this->data['activity_data'] = [];
         foreach ($activities as $activity) {
@@ -300,6 +303,10 @@ class Input extends CI_Controller {
                     break;
                 }
             }
+
+            // Jika transaksi ditemukan, gunakan datanya; jika tidak, buat data kosong
+            $total_budget_usd = $matched_transaction ? $matched_transaction->total_budget : 0;
+            $total_budget_idr = $total_budget_usd * $conversion_rate; // Konversi ke IDR
     
             // Jika transaksi ditemukan, gunakan datanya; jika tidak, buat data kosong
             $this->data['activity_data'][] = [
@@ -307,7 +314,8 @@ class Input extends CI_Controller {
                 'activity_code' => $activity->activity_code,
                 'description' => $activity->description,
                 'number_of_activities' => $matched_transaction ? $matched_transaction->number_of_activities : 0,
-                'total_budget' => $matched_transaction ? $matched_transaction->total_budget : 0
+                'total_budget' => $total_budget_usd,
+                'total_budget_idr' => $total_budget_idr, // Menyimpan nilai IDR untuk digunakan di view
             ];
         }
     
@@ -401,7 +409,10 @@ class Input extends CI_Controller {
 
         // Ambil target budgets dari tabel partners_activities
         $target_budgets = $this->PartnersActivities_model->get_target_budget_by_partner($partner_id);
-    
+
+        // Nilai konversi dari USD ke IDR
+        $conversion_rate = 14500; // Rp14.500 per USD
+
         // Ambil total budget dari tabel total_target_budgets
         $total_budgets = $this->db->select('year, total_budget')
                                   ->where('partner_id', $partner_id)
@@ -431,14 +442,21 @@ class Input extends CI_Controller {
                     break;
                 }
             }
+
+            // Tambahkan data target budget ke setiap activity (termasuk IDR)
+            $target_budget_2024_idr = $matched_budget ? $matched_budget->target_budget_2024 * $conversion_rate : 0;
+            $target_budget_2025_idr = $matched_budget ? $matched_budget->target_budget_2025 * $conversion_rate : 0;
+
     
             // Tambahkan data target budget ke setiap activity
             $this->data['activities'][] = [
                 'id' => $activity->id,
                 'activity_code' => $activity->activity_code,
                 'description' => $activity->description,
-                'target_budget_2024' => $matched_budget ? $matched_budget->target_budget_2024 : 0,
-                'target_budget_2025' => $matched_budget ? $matched_budget->target_budget_2025 : 0,
+                'target_budget_2024_usd' => $matched_budget ? $matched_budget->target_budget_2024 : 0,
+                'target_budget_2025_usd' => $matched_budget ? $matched_budget->target_budget_2025 : 0,
+                'target_budget_2024_idr' => $target_budget_2024_idr,
+                'target_budget_2025_idr' => $target_budget_2025_idr,
             ];
         }
 
@@ -452,8 +470,10 @@ class Input extends CI_Controller {
         // Tambahkan data untuk view
         $this->data['partners'] = $this->Partner_model->get_all_partners();
         $this->data['selected_partner'] = $partner_id;
-        $this->data['total_budget_2024'] = $total_budget_2024;
-        $this->data['total_budget_2025'] = $total_budget_2025;
+        $this->data['total_budget_2024_idr'] = $total_budget_2024 * $conversion_rate;
+        $this->data['total_budget_2025_idr'] = $total_budget_2025 * $conversion_rate;
+        $this->data['total_budget_2024_usd'] = $total_budget_2024;
+        $this->data['total_budget_2025_usd'] = $total_budget_2025;
         $this->data['title'] = 'Set Target Budget for 2024 and 2025';
     
         // Load view

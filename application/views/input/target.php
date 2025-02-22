@@ -153,136 +153,80 @@
                                                             <div class="row">
                                                                 <div class="col-md-12">
                                                                     </br>
-                                                                    <!-- <h6>Country Objectives</h6> -->
-                                                                    <table class="table table-hover" id="table">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th rowspan="2" style="width: 5%;">Activity Code</th>
-                                                                                <th rowspan="2" style="width: 30%;">Description</th>
-                                                                                <th colspan="2" style="width: 65%;">Target (IDR)</th>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <th>Y1 (2024) </th>
-                                                                                <th>Y2 (2025) </th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <!-- <tbody>
-                                                                            <tr>
-                                                                                <td>1. Improve subnational capacity in planning, implementing and monitoring to catch-up vaccination</td>
-                                                                                <td>Percent of workplan activities executed</td>
-                                                                                <td>
-                                                                                    <input type="number" id="targety1Input" class="form-control" name="targety1Input" min="0"
-                                                                                        placeholder="" value="0">
-                                                                                </td>
-                                                                                <td>
-                                                                                    <input type="number" id="targety2Input" class="form-control" name="targety2Input" min="0"
-                                                                                        placeholder="" value="0">
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>2. Improve routine data quality and data use, including high risk and hard to reach areas, to identify and target zero dose</td>
-                                                                                <td>Percent of workplan activities executed</td>
-                                                                                <td>
-                                                                                    <input type="number" id="targety1Input" class="form-control" name="targety1Input" min="0"
-                                                                                        placeholder="" value="0">
-                                                                                </td>
-                                                                                <td>
-                                                                                    <input type="number" id="targety2Input" class="form-control" name="targety2Input" min="0"
-                                                                                        placeholder="" value="0">
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>3. Evidence-based demand generation supported by cross sectoral involvement, including private sector, particularly for missed communities</td>
-                                                                                <td>Percent of workplan activities executed</td>
-                                                                                <td>
-                                                                                    <input type="number" id="targety1Input" class="form-control" name="targety1Input" min="0"
-                                                                                        placeholder="" value="0">
-                                                                                </td>
-                                                                                <td>
-                                                                                    <input type="number" id="targety2Input" class="form-control" name="targety2Input" min="0"
-                                                                                        placeholder="" value="0">
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>4. Improve EPI capacity at national and subnational level in vaccine logistics, social mobilization and advocacy for sustainable and equitable immunization coverage</td>
-                                                                                <td>Percent of workplan activities executed</td>
-                                                                                <td>
-                                                                                    <input type="number" id="targety1Input" class="form-control" name="targety1Input" min="0"
-                                                                                        placeholder="" value="0">
-                                                                                </td>
-                                                                                <td>
-                                                                                    <input type="number" id="targety2Input" class="form-control" name="targety2Input" min="0"
-                                                                                        placeholder="" value="0">
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>5. Facilitate sustainable subnational financing for operations of immunization programs</td>
-                                                                                <td>Percent of workplan activities executed</td>
-                                                                                <td>
-                                                                                    <input type="number" id="targety1Input" class="form-control" name="targety1Input" min="0"
-                                                                                        placeholder="" value="0">
-                                                                                </td>
-                                                                                <td>
-                                                                                    <input type="number" id="targety2Input" class="form-control" name="targety2Input" min="0"
-                                                                                        placeholder="" value="0">
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>6. Strengthen coordination to promote shared accountability at national and subnational level</td>
-                                                                                <td>Percent of workplan activities executed</td>
-                                                                                <td>
-                                                                                    <input type="number" id="targety1Input" class="form-control" name="targety1Input" min="0"
-                                                                                        placeholder="" value="0">
-                                                                                </td>
-                                                                                <td>
-                                                                                    <input type="number" id="targety2Input" class="form-control" name="targety2Input" min="0"
-                                                                                        placeholder="" value="0">
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody> -->
-                                                                        <tbody>
-                                                                            <?php foreach ($activities as $activity): ?>
+                                                                    <div class="table-responsive">
+                                                                        <table class="table table-hover" id="table">
+                                                                            <thead>
                                                                                 <tr>
-                                                                                    <td><?= $activity['activity_code']; ?></td>
-                                                                                    <td><?= $activity['description']; ?></td>
+                                                                                    <th rowspan="2" style="width: 5%;">Activity Code</th>
+                                                                                    <th rowspan="2" style="width: 30%;">Description</th>
+                                                                                    <th colspan="2" style="width: 65%;">Target (USD)</th>
+                                                                                    <th colspan="2" style="width: 65%;">Target (IDR)</th> <!-- New columns for IDR -->
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <th>Y1 (2024 USD)</th>
+                                                                                    <th>Y2 (2025 USD)</th>
+                                                                                    <th>Y1 (2024 IDR)</th> <!-- New column for IDR -->
+                                                                                    <th>Y2 (2025 IDR)</th> <!-- New column for IDR -->
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <?php foreach ($activities as $activity): ?>
+                                                                                    <tr>
+                                                                                        <td><?= $activity['activity_code']; ?></td>
+                                                                                        <td><?= $activity['description']; ?></td>
+                                                                                        <td>
+                                                                                            <input type="number" 
+                                                                                                name="activities[<?= $activity['id']; ?>][target_budget_2024]" 
+                                                                                                value="<?= $activity['target_budget_2024_usd']; ?>" 
+                                                                                                class="form-control target_budget_2024" 
+                                                                                                min="0" required>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input type="number" 
+                                                                                                name="activities[<?= $activity['id']; ?>][target_budget_2025]" 
+                                                                                                value="<?= $activity['target_budget_2025_usd']; ?>" 
+                                                                                                class="form-control target_budget_2025" 
+                                                                                                min="0" required>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <label id="target_budget_2024_idr"><?= number_format($activity['target_budget_2024_idr'], 0, ',', '.'); ?></label> <!-- Convert USD to IDR -->
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <label id="target_budget_2025_idr"><?= number_format($activity['target_budget_2025_idr'], 0, ',', '.'); ?></label> <!-- Convert USD to IDR -->
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                <?php endforeach; ?>
+                                                                                <!-- Baris Total -->
+                                                                                <tr>
+                                                                                    <td colspan="2"><strong>Total Target Budget</strong></td>
                                                                                     <td>
-                                                                                        <input type="number" 
-                                                                                            name="activities[<?= $activity['id']; ?>][target_budget_2024]" 
-                                                                                            value="<?= $activity['target_budget_2024']; ?>" 
-                                                                                            class="form-control target_budget_2024" 
-                                                                                            min="0" required>
+                                                                                        <strong id="total_budget_2024">
+                                                                                            <?= number_format($total_budget_2024_usd, 0, ',', '.'); ?>
+                                                                                        </strong>
                                                                                     </td>
                                                                                     <td>
-                                                                                        <input type="number" 
-                                                                                            name="activities[<?= $activity['id']; ?>][target_budget_2025]" 
-                                                                                            value="<?= $activity['target_budget_2025']; ?>" 
-                                                                                            class="form-control target_budget_2025" 
-                                                                                            min="0" required>
+                                                                                        <strong id="total_budget_2025">
+                                                                                            <?= number_format($total_budget_2025_usd, 0, ',', '.'); ?>
+                                                                                        </strong>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <strong id="total_budget_2024_idr">
+                                                                                            <?= number_format($total_budget_2024_idr, 0, ',', '.'); ?>
+                                                                                        </strong>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <strong id="total_budget_2025_idr">
+                                                                                            <?= number_format($total_budget_2025_idr, 0, ',', '.'); ?>
+                                                                                        </strong>
                                                                                     </td>
                                                                                 </tr>
-                                                                            <?php endforeach; ?>
-                                                                            <!-- Baris Total -->
-                                                                            <tr>
-                                                                                <td colspan="2"><strong>Total Target Budget</strong></td>
-                                                                                <td>
-                                                                                    <strong id="total_budget_2024">
-                                                                                        <?= number_format($total_budget_2024, 0, ',', '.'); ?>
-                                                                                    </strong>
-                                                                                    <!-- <br>
-                                                                                    <small>(Indicator: Budget execution (use) rate for 2024 reporting period, Gavi)</small> -->
-                                                                                </td>
-                                                                                <td>
-                                                                                    <strong id="total_budget_2025">
-                                                                                        <?= number_format($total_budget_2025, 0, ',', '.'); ?>
-                                                                                    </strong>
-                                                                                    <!-- <br>
-                                                                                    <small>(Indicator: Budget execution (use) rate for 2025 reporting period, Gavi)</small> -->
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                    <input type="hidden" id="hidden_total_budget_2024" name="total_budget_2024" value="<?= $total_budget_2024; ?>">
-                                                                    <input type="hidden" id="hidden_total_budget_2025" name="total_budget_2025" value="<?= $total_budget_2025; ?>">
+
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+
+                                                                    <input type="hidden" id="hidden_total_budget_2024" name="total_budget_2024" value="<?= $total_budget_2024_idr; ?>">
+                                                                    <input type="hidden" id="hidden_total_budget_2025" name="total_budget_2025" value="<?= $total_budget_2025_idr; ?>">
                                                                     <div class="col-sm-12 d-flex justify-content-end">
                                                                         <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
                                                                         <button type="reset"
@@ -351,7 +295,7 @@
                                 </div>
                             </div>
                         </div> -->
-                    </section>
+                </section>
 
                     <!-- Basic Horizontal form layout section start -->
                     <?php if (in_array($this->session->userdata('user_category'), [2, 9])): ?>
@@ -540,33 +484,71 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Fungsi untuk menghitung total dan update IDR
         function calculateTotals() {
             let total2024 = 0;
             let total2025 = 0;
 
+            // Menghitung total untuk tahun 2024
             document.querySelectorAll('.target_budget_2024').forEach(input => {
                 total2024 += parseFloat(input.value) || 0;
             });
 
+            // Menghitung total untuk tahun 2025
             document.querySelectorAll('.target_budget_2025').forEach(input => {
                 total2025 += parseFloat(input.value) || 0;
             });
 
+            // Update total USD
             document.getElementById('total_budget_2024').textContent = total2024.toLocaleString();
             document.getElementById('total_budget_2025').textContent = total2025.toLocaleString();
 
+            // Update hidden total values for form submission
             document.getElementById('hidden_total_budget_2024').value = total2024;
             document.getElementById('hidden_total_budget_2025').value = total2025;
+
+            // Update IDR labels based on USD inputs
+            updateIDRLabels(total2024, total2025); // Passing total2024 and total2025 as parameters
         }
 
-        // Hitung total setiap kali input berubah
+        // Fungsi untuk mengupdate label IDR
+        function updateIDRLabels(total2024, total2025) {
+            const conversionRate = 14500; // Rp14.500 per USD
+
+            // Update IDR for 2024
+            document.querySelectorAll('.target_budget_2024').forEach(input => {
+                const usdValue = parseFloat(input.value) || 0;
+                const idrValue = usdValue * conversionRate;
+                // Update the corresponding IDR label
+                input.closest('tr').querySelector('label[id="target_budget_2024_idr"]').textContent = idrValue.toLocaleString();
+            });
+
+            // Update IDR for 2025
+            document.querySelectorAll('.target_budget_2025').forEach(input => {
+                const usdValue = parseFloat(input.value) || 0;
+                const idrValue = usdValue * conversionRate;
+                // Update the corresponding IDR label
+                input.closest('tr').querySelector('label[id="target_budget_2025_idr"]').textContent = idrValue.toLocaleString();
+            });
+
+            // Update total IDR in the last row based on USD totals
+            const total2024IDR = total2024 * conversionRate;
+            const total2025IDR = total2025 * conversionRate;
+
+            // Update the total IDR labels in the footer
+            document.getElementById('total_budget_2024_idr').textContent = total2024IDR.toLocaleString();
+            document.getElementById('total_budget_2025_idr').textContent = total2025IDR.toLocaleString();
+        }
+
+        // Recalculate totals and update labels whenever an input changes
         document.querySelectorAll('input[type="number"]').forEach(input => {
             input.addEventListener('input', calculateTotals);
         });
 
-        // Hitung total saat halaman dimuat
+        // Initial IDR update when the page is loaded
         calculateTotals();
     });
+
 
     $('#province_id').change(function () {
         var province_id = $(this).val();

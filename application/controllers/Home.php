@@ -933,6 +933,11 @@ class Home extends CI_Controller {
             ? $this->PartnersActivities_model->get_total_target_budget_by_year(2025) 
             : $this->PartnersActivities_model->get_target_budget_by_partner_and_year($filter_partner_id, 2025);
 
+        // Konversi target budget USD ke IDR
+        $conversion_rate = 14500; // Rp 14.500 per USD
+        $total_target_budget_2024_idr = $total_target_budget_2024 * $conversion_rate;
+        $total_target_budget_2025_idr = $total_target_budget_2025 * $conversion_rate;
+
         // Ambil data budget absorption berdasarkan filter
         if ($filter_partner_id === 'all') {
             $data_2024 = $this->Transaction_model->get_cumulative_budget_absorption_with_percentage(2024);
@@ -1001,6 +1006,8 @@ class Home extends CI_Controller {
         $this->data['percentage_2025'] = $percentage_2025;
         $this->data['total_target_budget_2024'] = $total_target_budget_2024;
         $this->data['total_target_budget_2025'] = $total_target_budget_2025;
+        $this->data['total_target_budget_2024_idr'] = $total_target_budget_2024_idr; // IDR
+        $this->data['total_target_budget_2025_idr'] = $total_target_budget_2025_idr; // IDR
         $this->data['partners'] = $partners;
         $this->data['selected_partner'] = $filter_partner_id;
         // Kirim data ke view

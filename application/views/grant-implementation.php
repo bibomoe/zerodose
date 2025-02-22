@@ -86,7 +86,8 @@
                                                         <strong style="color: <?= ($selected_year == 2024) ? '#0056b3' : '#00b359'; ?>;">
                                                             <?= $selected_year; ?>:
                                                         </strong> 
-                                                        <?= number_format(($selected_year == 2024) ? $total_target_budget_2024 : $total_target_budget_2025, 0, ',', '.'); ?> IDR
+                                                        <?= number_format(($selected_year == 2024) ? $total_target_budget_2024 : $total_target_budget_2025, 0, ',', '.'); ?> USD | 
+                                                        <?= number_format(($selected_year == 2024) ? $total_target_budget_2024_idr : $total_target_budget_2025_idr, 0, ',', '.'); ?> IDR
                                                     </p>
                                                 </div>
                                                 <div id="chartWrapper" class="d-flex justify-content-center">
@@ -354,10 +355,15 @@
                                 const label = context.dataset.label || '';
                                 const value = context.parsed.y.toFixed(2) + '%';
                                 
+                                // Menambahkan nilai IDR pada tooltip
                                 const totalBudget = selectedYear == 2024 ? <?= json_encode($budget_2024); ?> : <?= json_encode($budget_2025); ?>;
-                                let totalValue = ` (Absorption: ${totalBudget[context.dataIndex].toLocaleString()} IDR)`;
+                                const totalValue = totalBudget[context.dataIndex].toLocaleString();
 
-                                return `${label}: ${value}${totalValue}`;
+                                // Konversi ke IDR
+                                const totalValueIDR = totalBudget[context.dataIndex] * 14500;
+                                const totalValueIDRFormatted = totalValueIDR.toLocaleString();
+
+                                return `${label}: ${value} (Absorption: ${totalValue} USD | ${totalValueIDRFormatted} IDR)`;
                             }
                         }
                     },
@@ -410,12 +416,15 @@
             const selectedDataset = budgetAbsorptionChart.data.datasets[0]; // Ambil dataset aktif
             const selectedYear = selectedDataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label
             const selectedBudget = selectedYear == 2024 ? budget2024 : budget2025; // Ambil data sesuai tahun
+            const conversionRate = 14500; // Kurs IDR per USD
 
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += `Month,${selectedYear} Budget Absorption (IDR)\n`; // Header
+            csvContent += `Month,${selectedYear} Budget Absorption (USD),${selectedYear} Budget Absorption (IDR)\n`; // Header
 
             months.forEach((month, index) => {
-                csvContent += `${month},${selectedBudget[index]}\n`;
+                const usdValue = selectedBudget[index];
+                const idrValue = usdValue * conversionRate;
+                csvContent += `${month},${usdValue},${idrValue}\n`;
             });
 
             const encodedUri = encodeURI(csvContent);
@@ -426,17 +435,21 @@
             link.click();
         }
 
-
         // Fungsi download Excel
         function downloadBudgetAbsorptionExcel() {
             const selectedDataset = budgetAbsorptionChart.data.datasets[0]; // Ambil dataset aktif
             const selectedYear = selectedDataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label
             const selectedBudget = selectedYear == 2024 ? budget2024 : budget2025; // Ambil data sesuai tahun
+            const conversionRate = 14500; // Kurs IDR per USD
 
             // Buat worksheet
             const worksheetData = [
-                ["Month", `${selectedYear} Budget Absorption (IDR)`], // Header
-                ...months.map((month, index) => [month, selectedBudget[index]]) // Data
+                ["Month", `${selectedYear} Budget Absorption (USD)`, `${selectedYear} Budget Absorption (IDR)`], // Header
+                ...months.map((month, index) => {
+                    const usdValue = selectedBudget[index];
+                    const idrValue = usdValue * conversionRate;
+                    return [month, usdValue, idrValue]; // Data
+                })
             ];
 
             const workbook = XLSX.utils.book_new();
@@ -446,6 +459,7 @@
             // Generate file Excel dan unduh
             XLSX.writeFile(workbook, `budget_absorption_${selectedYear}.xlsx`);
         }
+
 
 
         // Tambahkan tombol download saat halaman dimuat
