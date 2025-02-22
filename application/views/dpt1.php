@@ -244,13 +244,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let dropout_rate_per_provinces = <?= json_encode($dropout_rate_per_provinces, JSON_NUMERIC_CHECK); ?>;
     let percentDptUnder5Data = <?= json_encode($percent_dpt_under_5_per_province, JSON_NUMERIC_CHECK); ?>;
 
-    console.log(dptUnder5Data);
-    // console.log(dptCoverageData);
-    // console.log(dptTargetData);
-    // console.log(totalCitiesData);
-    // console.log(percentDptCoverageData);
     // console.log(dropout_rate_per_provinces);
-    // console.log(percentDptUnder5Data);
+    
 
     function getColor(dpt, doRate) {
         return (doRate < 5 && dpt != 0) ? '#1A9850' : '#D73027'; // Hijau jika do < 5 dan dpt != 0, merah jika tidak

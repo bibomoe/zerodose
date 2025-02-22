@@ -491,18 +491,28 @@ class Home extends CI_Controller {
 
         // var_dump($this->data['total_dpt1_coverage_per_province']);
         // exit;
+
+        // var_dump($this->data['total_cities_per_province']);
         
         
 
         // **Hitung persentase districts dengan coverage < 5% per provinsi**
         $this->data['percent_dpt_under_5_per_province'] = [];
         foreach ($dpt_under_5_data as $province_id => $district_count) {
-            $total_cities = $this->data['total_cities_per_province'][$province_id]['total_cities'] ?? 0;
+            // Cari total cities berdasarkan province_id
+            $total_cities = 0;
+            foreach ($this->data['total_cities_per_province'] as $province_data) {
+                if ($province_data['province_id'] == $province_id) {
+                    $total_cities = (int)$province_data['total_cities'];
+                    break; // Keluar dari loop jika ditemukan
+                }
+            }
 
             $this->data['percent_dpt_under_5_per_province'][$province_id] = ($total_cities > 0)
                 ? round(($district_count / $total_cities) * 100, 2)
                 : 0;
         }
+
 
         //DO per Provinces untuk peta
         $this->data['dropout_rate_per_provinces'] = $dropout_rates_per_province;
