@@ -175,8 +175,8 @@ class Dpt1_model extends CI_Model {
             }
         }
 
-        var_dump($dropout_rates_per_province);
-        exit;
+        // var_dump($dropout_rates_per_province);
+        // exit;
 
         // Menghitung rata-rata dropout rate untuk setiap provinsi
         foreach ($dropout_rates_per_province as $province_id => $data) {
