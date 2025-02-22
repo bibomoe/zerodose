@@ -152,6 +152,11 @@ class Dpt1_model extends CI_Model {
                 $dropout_rate_dpt1_to_dpt3 = 100;
             }
 
+            // Pastikan dropout rate tidak negatif, jika ya set ke 0
+            if ($dropout_rate_dpt1_to_dpt3 < 0) {
+                $dropout_rate_dpt1_to_dpt3 = 0;
+            }
+
             // Menambahkan dropout rate untuk provinsi
             if (isset($dropout_rates_per_province[$district['province_id']])) {
                 // Menambahkan dropout rate untuk provinsi yang ada
