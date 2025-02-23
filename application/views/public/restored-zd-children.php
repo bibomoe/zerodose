@@ -438,7 +438,7 @@
                                             <?php
                                                 // var_dump($selected_province);
                                             ?>
-                                            <?= form_open('publicdashboard/', ['method' => 'get']) ?>
+                                            <?= form_open('PublicDashboard', ['method' => 'get']) ?>
                                                 <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?>​</label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?= form_dropdown('province', 
@@ -752,7 +752,7 @@
                         let selectedYear = "<?= $selected_year ?>"; // Ambil dari PHP
 
                         popupContent += `<br><br>
-                            <a href="<?= base_url('publicdashboard'); ?>?year=${selectedYear}&province=${regionId}&get_detail=1" target="">
+                            <a href="<?= base_url('PublicDashboard'); ?>?year=${selectedYear}&province=${regionId}&get_detail=1" target="">
                                 <button class="btn btn-primary btn-sm">View Details</button>
                             </a>`;
                     }
@@ -815,7 +815,7 @@
                     const csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
 
                     // Kirim bahasa yang dipilih ke server menggunakan fetch
-                    fetch("<?= base_url('publicdashboard/set_language'); ?>", {
+                    fetch("<?= base_url('PublicDashboard/set_language'); ?>", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
