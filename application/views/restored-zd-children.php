@@ -114,7 +114,7 @@
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
                                                         <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> <?= $year; ?></h6>
                                                         <div class="card-number font-extrabold mb-0"><?= number_format(${"total_target_dpt_1_$year"}); ?></div>
-                                                        <div class="card-subtext"><?= $translations['text2'] ?></div>
+                                                        <div class="card-subtext"><?= $translations['text2'] ?> <?= $year; ?></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -191,7 +191,7 @@
                                                         aria-valuemin="0" aria-valuemax="100">
                                                     </div>
                                                 </div>
-                                                <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_dpt_3_$year"}); ?> <?= $translations['text12'] ?></div>
+                                                <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_dpt_3_$year"}); ?> <?= $translations['text12'] ?> DPT-3</div>
 
                                                 <!-- Baseline and Target Coverage -->
                                                 <div class="mt-1">
@@ -216,7 +216,7 @@
                                                         aria-valuemin="0" aria-valuemax="100">
                                                     </div>
                                                 </div>
-                                                <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_mr_1_$year"}); ?> <?= $translations['text12'] ?></div>
+                                                <div class="mt-1 text-muted mb-4"><?= number_format(${"missing_mr_1_$year"}); ?> <?= $translations['text12'] ?> MR-1</div>
 
                                                 <!-- Baseline and Target Coverage -->
                                                 <div class="mt-1">
@@ -498,7 +498,8 @@
         </div>
     </div>
     
-    <script>
+<!-- Grafik Line -->
+<script>
         // console.log("Zero Dose Data:", <?= json_encode($zero_dose_cases); ?>);
 
         const zeroDoseData = <?= json_encode($zero_dose_cases); ?>;
@@ -521,6 +522,34 @@
         });
 
         year = <?= $selected_year ?>;
+        let scaleXlabel ='';
+        let scaleYlabel ='';
+        let titleLineChart ='';
+
+        // Object untuk menyimpan terjemahan
+        const translationsLineChart = {
+                en: {
+                    title: `ZD Children ${year}`,
+                    scaleX: 'Months',
+                    scaleY: 'ZD Children'
+                    
+                },
+                id: {
+                    title: `Jumlah Anak ZD Tahun ${year}`,
+                    scaleX: 'Bulan',
+                    scaleY: 'Jumlah Anak ZD'
+                }
+        };
+
+        function setLanguageLineChart(lang) {
+            titleLineChart = translationsLineChart[lang].title;
+            scaleXlabel = translationsLineChart[lang].scaleX;
+            scaleYlabel = translationsLineChart[lang].scaleY;
+        }
+
+        // Inisialisasi bahasa berdasarkan localStorage
+        let savedLang = localStorage.getItem("selectedLanguage");
+        setLanguageLineChart(savedLang);
 
         let zdChart; // Mendeklarasikan variable untuk chart
         const zdCtx = document.getElementById('zdChart').getContext('2d');
@@ -529,7 +558,7 @@
             data: {
                 labels: months,
                 datasets: [{
-                    label: `ZD Cases ${year}`,
+                    label: titleLineChart,
                     data: year === 2024 ? zdCases2024 : zdCases2025,
                     backgroundColor: 'rgba(0, 86, 179, 0.2)',
                     borderColor: 'rgba(0, 86, 179, 1)',
@@ -543,8 +572,8 @@
                     legend: { display: true, position: 'top' }
                 },
                 scales: {
-                    x: { title: { display: true, text: 'Months' } },
-                    y: { title: { display: true, text: 'ZD Cases' } }
+                    x: { title: { display: true, text: scaleXlabel } },
+                    y: { title: { display: true, text: scaleYlabel } }
                 }
             }
         });
@@ -680,7 +709,7 @@
 
 </script>
 
-
+<!-- Grafik Bar -->
 <script>
 
             // Fetch data from PHP
@@ -690,14 +719,46 @@
             const regency = restoredData.kabupaten ?? 0;
             const city = restoredData.kota ?? 0;
 
+            let scaleXlabel2 ='';
+            let scaleYlabel2 ='';
+            let titleBarChart ='';
+            let valueLabel =[];
+
+            // Object untuk menyimpan terjemahan
+            const translationsBarChart = {
+                    en: {
+                        title: `Number of Restored Children`,
+                        scaleX: 'Region Type',
+                        scaleY: 'ZD Children',
+                        valueLabel : ['Regency', 'City']
+                    },
+                    id: {
+                        title: `Jumlah Anak Terimunisasi`,
+                        scaleX: 'Jenis Wilayah',
+                        scaleY: 'Jumlah Anak Terimunisasi',
+                        valueLabel : ['Kabupaten', 'Kota']
+                    }
+            };
+
+            function setLanguageBarChart(lang) {
+                titleBarChart = translationsBarChart[lang].title;
+                scaleXlabel2 = translationsBarChart[lang].scaleX;
+                scaleYlabel2 = translationsBarChart[lang].scaleY;
+                valueLabel = translationsBarChart[lang].valueLabel;
+            }
+
+            // Inisialisasi bahasa berdasarkan localStorage
+            // let savedLang = localStorage.getItem("selectedLanguage");
+            setLanguageBarChart(savedLang);
+
             // Chart.js setup for locationChart
             const locationCtx = document.getElementById('locationChart').getContext('2d');
             new Chart(locationCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Regency', 'City'], // Replacing Kabupaten/Kota with English terms
+                    labels: valueLabel, // Replacing Kabupaten/Kota with English terms
                     datasets: [{
-                        label: 'Number of Restored Children', // More descriptive label
+                        label: titleBarChart, // More descriptive label
                         data: [regency, city], // Data from backend
                         backgroundColor: ['rgba(0, 86, 179, 0.7)', 'rgba(0, 179, 230, 0.7)']
                     }]
@@ -713,13 +774,13 @@
                         x: {
                             title: {
                                 display: true,
-                                text: 'Region Type' // Replacing "Place of Residence" with a more accurate term
+                                text: scaleXlabel2 // Replacing "Place of Residence" with a more accurate term
                             }
                         },
                         y: {
                             title: {
                                 display: true,
-                                text: 'Number of Restored Children'
+                                text: scaleYlabel2
                             }
                         }
                     }

@@ -248,7 +248,7 @@
                             class="sidebar-item  ">
                             <a href="<?= base_url('home/restored'); ?>" class='sidebar-link'>
                                 <i class="bi bi-shield-fill-check"></i>
-                                <span>Long-term Health Outcomes</span>
+                                <span id="longterm-menu-label">Long-term Health Outcomes</span>
                             </a>
                             
                             <!-- <ul class="submenu ">
@@ -266,7 +266,7 @@
                             class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-exclamation-triangle-fill"></i>
-                                <span>Intermediate Health Outcomes</span>
+                                <span id="intermediate-menu-label">Intermediate Health Outcomes</span>
                             </a>
                             
                             <ul class="submenu ">
@@ -283,21 +283,21 @@
                                 </li> -->
                                 
                                 <li class="submenu-item  ">
-                                    <a href="<?= base_url('home/dpt1'); ?>" class='sidebar-link'>
+                                    <a href="<?= base_url('home/dpt1'); ?>" class='sidebar-link' id="intermediate-submenu1-label">
                                         <!-- DPT 1 in targeted areas -->
                                         DPT-1 Coverage
                                     </a>
                                 </li>
 
                                 <li class="submenu-item  ">
-                                    <a href="<?= base_url('home/dpt_stock'); ?>" class='sidebar-link'>
+                                    <a href="<?= base_url('home/dpt_stock'); ?>" class='sidebar-link' id="intermediate-submenu2-label">
                                         <!-- Number of DTP Stock Out at Health Facilities -->
                                         DPT Stock Out in Health Facilities
                                     </a>
                                 </li>
 
                                 <li class="submenu-item  ">
-                                    <a href="<?= base_url('home/zd_tracking'); ?>" class='sidebar-link'>
+                                    <a href="<?= base_url('home/zd_tracking'); ?>" class='sidebar-link' id="intermediate-submenu3-label">
                                         <!-- Percentage of Primary Health Facility to Conduct Immunization Service as Planned -->
                                         PHC Immunization Performance
                                     </a>
@@ -311,14 +311,14 @@
                                 </li> -->
 
                                 <li class="submenu-item  ">
-                                    <a href="<?= base_url('home/district'); ?>" class='sidebar-link'>
+                                    <a href="<?= base_url('home/district'); ?>" class='sidebar-link' id="intermediate-submenu4-label">
                                         <!-- District Program -->
                                         Trained Private Facilities
                                     </a>
                                 </li>
 
                                 <li class="submenu-item  ">
-                                    <a href="<?= base_url('home/policy'); ?>" class='sidebar-link'>
+                                    <a href="<?= base_url('home/policy'); ?>" class='sidebar-link' id="intermediate-submenu5-label">
                                         District Policy and Financing
                                     </a>
                                 </li>
@@ -357,7 +357,7 @@
                             class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-currency-dollar"></i>
-                                <span>Grant Implementation & Budget Disbursement Outcomes</span>
+                                <span id="grant-menu-label">Grant Implementation & Budget Disbursement Outcomes</span>
                             </a>
                             
                             <ul class="submenu ">
@@ -387,7 +387,7 @@
                             class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-pen-fill"></i>
-                                <span>Entry Form</span>
+                                <span id="entry-menu-label">Entry Form</span>
                             </a>
                             
                             <ul class="submenu ">
@@ -541,6 +541,44 @@
             const langOptions = document.querySelectorAll(".lang-option");
             const currentLangImg = document.getElementById("current-lang");
 
+            // Object untuk menyimpan terjemahan
+            const translations = {
+                en: {
+                    longterm: 'Long-term Health Outcomes',
+                    intermediate: 'Intermediate Health Outcomes',
+                    intermediateSub1: 'DPT-1 Coverage',
+                    intermediateSub2: 'DPT Stock Out in Health Facilities',
+                    intermediateSub3: 'PHC Immunization Performance',
+                    intermediateSub4: 'Trained Private Facilities',
+                    intermediateSub5: 'District Policy and Financing',
+                    grant: 'Grant Implementation & Budget Disbursement Outcomes',
+                    entry: 'Entry Form'
+                },
+                id: {
+                    longterm: 'Indikator Jangka Panjang',
+                    intermediate: 'Indikator Jangka Menengah',
+                    intermediateSub1: 'Cakupan DPT-1',
+                    intermediateSub2: 'Jumlah Stock Out DTP di Fasyankes',
+                    intermediateSub3: 'Pelayanan Imunisasi di Puskesmas',
+                    intermediateSub4: 'Fasyankes swasta yang sudah terlatih',
+                    intermediateSub5: 'Kebijakan dan Pembiayaan di daerah',
+                    grant: 'Indikator Implementasi Kegiatan dan Penyerapan Budget',
+                    entry: 'Form Entri Data'
+                }
+            };
+
+            function setLanguage(lang) {
+                document.getElementById('longterm-menu-label').textContent = translations[lang].longterm;
+                document.getElementById('intermediate-menu-label').textContent = translations[lang].intermediate;
+                document.getElementById('intermediate-submenu1-label').textContent = translations[lang].intermediateSub1;
+                document.getElementById('intermediate-submenu2-label').textContent = translations[lang].intermediateSub2;
+                document.getElementById('intermediate-submenu3-label').textContent = translations[lang].intermediateSub3;
+                document.getElementById('intermediate-submenu4-label').textContent = translations[lang].intermediateSub4;
+                document.getElementById('intermediate-submenu5-label').textContent = translations[lang].intermediateSub5;
+                document.getElementById('grant-menu-label').textContent = translations[lang].grant;
+                document.getElementById('entry-menu-label').textContent = translations[lang].entry;
+            }
+
             function updateLanguage(lang, imgSrc) {
                 // Cek apakah bahasa yang dipilih berbeda dari yang sebelumnya
                 const currentLang = localStorage.getItem("selectedLanguage");
@@ -551,6 +589,8 @@
 
                     // Perbarui gambar bahasa yang dipilih
                     currentLangImg.src = imgSrc;
+
+                    setLanguage(lang);
 
                     // Ambil CSRF token dari meta tag atau hidden field
                     const csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
@@ -577,6 +617,7 @@
 
             // Inisialisasi bahasa berdasarkan localStorage
             let savedLang = localStorage.getItem("selectedLanguage");
+            setLanguage(savedLang);
 
             // Jika bahasa tidak ada di localStorage, set bahasa default dan kirim ke server
             if (!savedLang) {
