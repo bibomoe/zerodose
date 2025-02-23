@@ -100,9 +100,137 @@ class Home extends CI_Controller {
         $this->data['percent_district_policy_2024'] = $this->Dashboard_model->get_district_policy_percentage(2024);
         $this->data['percent_district_policy_2025'] = $this->Dashboard_model->get_district_policy_percentage(2025);
 
+        // Menentukan bahasa yang dipilih
+        $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
+
+        // Memuat data terjemahan
+        $translations = $this->load_translation_dashboard($selected_language);
+
+        // Mengirim data terjemahan ke view
+        $this->data['translations'] = $translations;
 
         load_template('dashboard', $this->data);
     }
+
+    private function load_translation_dashboard($lang) {
+        $translations = [
+            'en' => [
+                'page_title' => 'Dashboard',
+                'page_subtitle' => 'Accountability Framework​',
+                // 'filter_label' => 'Select Year',
+                'text1' => 'Note:',
+                'text2' => 'The cells highlighted in <span class="text-warning"><strong>yellow</strong></span> represent the <span class="text-warning"><strong>Actual</strong></span> values.',
+                'text3' => 'The cells highlighted in <span class="text-success"><strong>green</strong></span> represent the <span class="text-success"><strong>Target</strong></span> values.',
+                'text4' => 'Long Term Outcomes',
+                'text5' => 'Intermediate Outcomes',
+                'text6' => 'Grant Implementation & Budget Disbursement',
+                'text7' => 'Country Objectives',
+                'text8' => 'Indicator',
+                'text9' => 'Indicator Value',
+                'table1text1' => 'MITIGATE<br>Coverage rates restored, including by reaching zero-dose children',
+                'table1text2' => 'DPT-3 Coverage',
+                'table1text3' => 'MR-1 Coverage',
+                'table1text4' => 'Reduction in zero-dose',
+                'table1text5' => ' of ',
+                'table1text6' => 'Target reduction by end of 2024 (15%)',
+                'table1text7' => 'Target reduction by end of 2025 (25%)',
+                'table1text8' => 'Target reduction by end of 2024 (5%)',
+                'table1text9' => 'Target reduction by end of 2025 (10%)',
+
+                'table2text1' => 'Routine immunization services restored and reinforced to catch up missed children',
+                'table2text2' => 'Percent of primary health facility to conduct immunization service as planned',
+                'table2text3' => 'No Baseline Data',
+                'table2text4' => 'No target',
+                'table2text5' => 'Zero-dose children identified and targeted in reinforcement of routine immunization services',
+                'table2text6' => 'DPT1 in targeted areas',
+                'table2text7' => '82.6% (10 provinces 2021)',
+                'table2text8' => 'Community demand for & confidence in vaccines and immunization services, including among missed communities',
+                'table2text9' => 'Number of district with DO (DPT1-DPT3) less than 5%',
+                'table2text10' => 'Institutional capacities to plan and deliver sustained, equitable immunization programmes, as a platform for broader PHC delivery',
+                'table2text11' => 'Number of health facilities managing immunization programs as per national guidance in 10 targeted provinces. The data will be retracted from Supportive supervision report (dashboard)',
+                'table2text12' => 'No baseline available',
+                'table2text13' => 'Number of DTP stock out at health facilities',
+                'table2text14' => 'No DPT vaccine stock out in 2022',
+                'table2text15' => 'Zero stock outs',
+                'table2text16' => 'Number of private facilities trained on Immunization Program Management for Private Sectors SOP',
+                'table2text17' => '248 (DKI Jakarta, East Java and Central Java) - HSS report',
+                'table2text18' => 'Sufficient, sustained, and reliable domestic resources for immunization programmes',
+                'table2text19' => 'Number of districts allocated domestic funding for key immunization activities and other relevant activities to immunization program at 10 provinces',
+                'table2text20' => 'No baseline available',
+                'table2text21' => 'Political commitment to & accountability for equitable immunization (including zero-dose agenda) at national & subnational levels',
+                'table2text22' => 'Number of districts developed or enacted policy relevant to targeting zero dose and under immunized specifically or immunization program in general',
+                
+                'table3text1' => 'Budget execution (use) rate for a given reporting period, Gavi',
+                'table4text1' => 'Objective',
+                'table4text2' => 'Percent of workplan activities executed',
+                'table4text3' => '1. Improve subnational capacity in planning, implementing and monitoring to catch-up vaccination',
+                'table4text4' => '2. Improve routine data quality and data use, including high risk and hard to reach areas, to identify and target zero dose',
+                'table4text5' => '3. Evidence-based demand generation supported by cross sectoral involvement, including private sector, particularly for missed communities',
+                'table4text6' => '4. Improve EPI capacity at national and subnational level in vaccine logistics, social mobilization and advocacy for sustainable and equitable immunization coverage',
+                'table4text7' => '5. Facilitate sustainable subnational financing for operations of immunization programs',
+                'table4text8' => '6. Strengthen coordination to promote shared accountability at national and subnational level',
+            ],
+            'id' => [
+                'page_title' => 'Dashboard',
+                'page_subtitle' => 'Accountability Framework',
+                // 'filter_label' => 'Pilih Tahun',
+                'text1' => 'Catatan:',
+                'text2' => 'Sel-sel yang disorot dengan <span class="text-warning"><strong>kuning</strong></span> mewakili nilai <span class="text-warning"><strong>Aktual</strong></span>.',
+                'text3' => 'Sel-sel yang disorot dengan <span class="text-success"><strong>hijau</strong></span> mewakili nilai <span class="text-success"><strong>Target</strong></span>.',
+                'text4' => 'Indikator Jangka Panjang',
+                'text5' => 'Indikator Jangka Menengah',
+                'text6' => 'Implementasi Kegiatan & Penyerapan Budget',
+                'text7' => 'Tujuan',
+                'text8' => 'Indikator',
+                'text9' => 'Nilai Indikator',
+                'table1text1' => 'MITIGASI </br> Tingkat cakupan dipulihkan, termasuk dengan menjangkau anak-anak yang tidak mendapat imunisasi (zero-dose)',
+                'table1text2' => 'Cakupan DPT-3',
+                'table1text3' => 'Cakupan MR-1',
+                'table1text4' => 'Penurunan Zero Dose',
+                'table1text5' => ' dari ',
+                'table1text6' => 'Target penurunan pada akhir 2024 (15%)',
+                'table1text7' => 'Target penurunan pada akhir 2025 (25%)',
+                'table1text8' => 'Target penurunan pada akhir 2024 (5%)',
+                'table1text9' => 'Target penurunan pada akhir 2025 (10%)',
+
+                'table2text1' => 'Penguatan layanan imunisasi untuk menjangkau anak anak Zero Dose',
+                'table2text2' => '% puskesmas yang melakukan pelayanan imunisasi ',
+                'table2text3' => 'Tanpa Baseline',
+                'table2text4' => 'Tanpa target',
+                'table2text5' => 'Teridentifikasinya anak anak yang belum pernah menerima imunisasi dan menjadi sasaran dalam imunisasi rutin',
+                'table2text6' => 'Cakupan DPT-1 di wilayah dampingan',
+                'table2text7' => '82,6% (10 provinsi 2021)',
+                'table2text8' => 'Peningkatan kepercayaan dan permintaan masyarakat terhadap layanan imunisasi, termasuk pada komunitas yang belum terjangkau',
+                'table2text9' => 'Jumlah Kab/Kota dengan %DO dibawah 5% ',
+                'table2text10' => 'Penguatan kapasitas puskesmas untuk merencanakan dan memberikan layanan imunisasi yang sustainable dan equitable',
+                'table2text11' => 'Jumlah puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional pada 10 provinsi dampingan (data diambil dari dashboard supervisi suportif)',
+                'table2text12' => 'Tanpa baseline',
+                'table2text13' => 'Jumlah puskesmas dengan status DPT stock out',
+                'table2text14' => 'Tidak ada puskesmas dengan status DPT stock out stock out di tahun  2022',
+                'table2text15' => 'Tidak ada DPT Stock Out',
+                'table2text16' => 'Jumlah layanan swasta yang dilatih mengenai SOP manajemen program imunisasi untuk layanan swasta',
+                'table2text17' => '248 (DKI Jakarta,  Jawa Timur dan Jawa Tengah ) - Laporan HSS',
+                'table2text18' => 'Penyediaan sumber daya yang cukup, berkelanjutan dan handal untuk program imunisasi',
+                'table2text19' => 'Jumlah Kab/Kota yang mengalokasikan pendanaan domestik untuk kegiatan imunisasi dan kegiatan lainnya yang mendukung program imunisasi pada 10 provinsi dampingan',
+                'table2text20' => 'Tanpa baseline',
+                'table2text21' => 'Komitmen politis dan akuntabilitas untuk pemerataan layanan imunisasi di tingkat nasional dan daerah',
+                'table2text22' => 'Jumlah Kab/Kota yang mengembangkan dan memberlakukan kebijakan yang relevant dengan penjangkauan anak ZD secara spesifik atau imunisasi secara umum',
+
+                'table3text1' => 'Pengunaan (penyerapan) Budget untuk periode pelaporan tertentu, Gavi',
+                'table4text1' => 'Tujuan',
+                'table4text2' => 'Persentase kegiatan rencana kerja yang terlaksana',
+                'table4text3' => '1. Meningkatkan kapasitas daerah dalam perencanaan, pelaksanaan, dan pemantauan imunisasi kejar',
+                'table4text4' => '2. Meningkatkan kualitas dan pemanfaatan data rutin, termasuk di daerah berisiko tinggi dan sulit dijangkau, untuk mengidentifikasi serta menjangkau anak yang belum pernah imunisasi (Zero Dose)',
+                'table4text5' => '3. Meningkatkan permintaan imunisasi berbasis bukti dengan melibatkan berbagai sektor, termasuk sektor swasta, khususnya untuk komunitas yang terlewat',
+                'table4text6' => '4. Memperkuat kapasitas program imunisasi (EPI) di tingkat nasional dan daerah dalam logistik vaksin, mobilisasi sosial, dan advokasi untuk cakupan imunisasi yang berkelanjutan dan merata',
+                'table4text7' => '5. Memfasilitasi pendanaan daerah yang berkelanjutan untuk operasional program imunisasi',
+                'table4text8' => '6. Memperkuat koordinasi untuk meningkatkan akuntabilitas bersama di tingkat nasional dan daerah',
+            ]
+        ];
+    
+        return $translations[$lang] ?? $translations['id']; // Default to Bahasa Indonesia
+    }
+    
 
     // Fungsi lainnya
     // public function zd_cases() {
@@ -308,7 +436,7 @@ class Home extends CI_Controller {
         $this->data['show_chart_filter'] = ($selected_province !== 'all' && $selected_province !== 'targeted');
         $this->data['districts_array'] =  $this->Immunization_model->get_cities_by_province_array($selected_province);
 
-        $this->data['title'] = 'Restored ZD Children';
+        $this->data['title'] = 'Long-term Health Outcomes';
 
         
 

@@ -395,7 +395,7 @@
                                 <a href="<?= base_url('auth/login'); ?>" class="btn btn-outline-primary">Login</a>
                             </div>
                         </div>
-                    </nav>
+                </nav>
 
                 <!-- Hero Section -->
                 <section class="hero-section">
@@ -407,7 +407,7 @@
                                     <p class="text-muted" id="subtitle"></p>
                                     <p id="description"></p>
                                     <button class="btn btn-primary" id="download-btn">Download Panduan</button>
-                                    <!-- <a href="<?= base_url('PublicController'); ?>" id="public-dashboard-button" class="btn btn-custom">Lihat Selengkapnya</a> -->
+                                    <a href="<?= base_url('PublicDashboard'); ?>" id="public-dashboard-button"class="btn btn-primary">Public Dashboard</a>
                                 </div>
                             <!-- </div> -->
                             <div class="col-md-6 text-center">
@@ -469,7 +469,7 @@
                     downloadBtn: 'Download Guide',
                     publicDashboardTitle: 'Public Dashboard',
                     publicDashboardDescription: 'Explore real-time insights about vaccination coverage on our public dashboard.',
-                    publicDashboardButton: 'Explore Now'
+                    publicDashboardButton: 'Public Dashboard'
                 },
                 id: {
                     title: 'Zero Dose',
@@ -477,7 +477,7 @@
                     downloadBtn: 'Download Panduan',
                     publicDashboardTitle: 'Dashboard Publik',
                     publicDashboardDescription: 'Temukan wawasan real-time tentang cakupan vaksinasi di dashboard publik kami.',
-                    publicDashboardButton: 'Lihat Selengkapnya'
+                    publicDashboardButton: 'Dashboard Publik'
                 }
             };
 

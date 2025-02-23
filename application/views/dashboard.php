@@ -3,8 +3,8 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>Dashboard</h3>
-                                <p class="text-subtitle text-muted">Accountability Framework​</p>
+                                <h3><?= $translations['page_title'] ?></h3>
+                                <p class="text-subtitle text-muted"><?= $translations['page_subtitle'] ?>​</p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -25,10 +25,10 @@
                             <!-- Penjelasan di luar tabel -->
                             <!-- Penjelasan di luar tabel -->
                             <div class="alert alert-secondary mb-3" role="alert">
-                                <strong>Note:</strong> 
+                                <strong><?= $translations['text1'] ?></strong> 
                                 <ul>
-                                    <li>The cells highlighted in <span class="text-warning"><strong>yellow</strong></span> represent the <span class="text-warning"><strong>Actual</strong></span> values.</li>
-                                    <li>The cells highlighted in <span class="text-success"><strong>green</strong></span> represent the <span class="text-success"><strong>Target</strong></span> values.</li>
+                                    <li><?= $translations['text2'] ?></li>
+                                    <li><?= $translations['text3'] ?></li>
                                 </ul>
                             </div>
 
@@ -41,7 +41,7 @@
                                 <div class="col-12">
                                     <div class="card shadow-sm">
                                         <div class="card-header bg-success text-white" style="color: white !important;">
-                                            <h4 style="color: white !important;">Long Term Outcomes</h4>
+                                            <h4 style="color: white !important;"><?= $translations['text4'] ?></h4>
                                             <button class="btn btn-primary ms-auto floating-button bg-success border-success" type="button" style="margin-right: 20px;"
                                                 data-bs-toggle="collapse" data-bs-target="#cardContent" aria-expanded="false" aria-controls="cardContent">
                                                 <i class="bi bi-arrows-collapse"></i> 
@@ -118,8 +118,8 @@
                                                             <table class="table table-hover" id="table">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th rowspan="2">Long Term Outcome</th>
-                                                                        <th rowspan="2">Indicator</th>
+                                                                        <th rowspan="2"><?= $translations['text4'] ?></th>
+                                                                        <th rowspan="2"><?= $translations['text8'] ?></th>
                                                                         <!-- <th colspan="3">Indicator Value</th> -->
                                                                         <!-- <th rowspan="2">Data Source</th>
                                                                         <th rowspan="2">Frequency of Reporting</th> -->
@@ -135,8 +135,8 @@
                                                                 </thead>
                                                                 <tbody>
                                                                     <tr>
-                                                                        <td rowspan="7">MITIGATE<br>Coverage rates restored, including by reaching zero-dose children</td>
-                                                                        <td rowspan="2">DPT3</td>
+                                                                        <td rowspan="7"><?= $translations['table1text1'] ?></td>
+                                                                        <td rowspan="2"><?= $translations['table1text2'] ?></td>
                                                                         <td ><?= number_format($long_term_outcomes['dpt3']['baseline_y1']) ?> (2024)</td>
                                                                         <td class="table-success" style="text-align: center">90%</td>
                                                                         <td class="table-success" style="text-align: center">95%</td>
@@ -149,7 +149,7 @@
                                                                         <td class="table-warning" style="text-align: center"><?= number_format($long_term_outcomes['dpt3']['actual_y2'], 1) ?>%</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td rowspan="2">MR1 Coverage (additional long term indicator)</td>
+                                                                        <td rowspan="2"><?= $translations['table1text3'] ?></td>
                                                                         <td ><?= number_format($long_term_outcomes['mr1']['baseline_y1']) ?> (2024)</td>
                                                                         <td class="table-success" style="text-align: center">90%</td>
                                                                         <td class="table-success" style="text-align: center">95%</td>
@@ -162,10 +162,10 @@
                                                                         <td class="table-warning" style="text-align: center"><?= number_format($long_term_outcomes['mr1']['actual_y2'], 1) ?>%</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td rowspan="2">Reduction in zero-dose</td>
-                                                                        <td rowspan="2"><?= $long_term_outcomes['reduction_zd']['baseline'] ?></td>
-                                                                        <td class="table-success">Target reduction by end of year 1 (15%)</td>
-                                                                        <td class="table-success">Target reduction by end of year 2 (25%)</td>
+                                                                        <td rowspan="2"><?= $translations['table1text4'] ?></td>
+                                                                        <td rowspan="2">25% <?= $translations['table1text5'] ?> <?= $long_term_outcomes['reduction_zd']['baseline'] ?></td>
+                                                                        <td class="table-success"><?= $translations['table1text6'] ?></td>
+                                                                        <td class="table-success"><?= $translations['table1text7'] ?></td>
                                                                         <!-- <td rowspan="2">Administrative Reports</td>
                                                                         <td rowspan="2">Quarterly</td> -->
                                                                     </tr>
@@ -174,10 +174,10 @@
                                                                         <td class="table-warning" style="text-align: center"><?= number_format($long_term_outcomes['reduction_zd']['actual_y2'], 2) ?>%</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>Reduction in zero-dose</td>
-                                                                        <td>10% of 569,414 (per Dec 2022)</td>
-                                                                        <td >Target reduction by end of year 1 (5%)</td>
-                                                                        <td >Target reduction by end of year 2 (10%)</td>
+                                                                        <td><?= $translations['table1text4'] ?></td>
+                                                                        <td>10% <?= $translations['table1text5'] ?> <?= $long_term_outcomes['reduction_zd']['baseline'] ?></td>
+                                                                        <td ><?= $translations['table1text8'] ?></td>
+                                                                        <td ><?= $translations['table1text9'] ?></td>
                                                                         <!-- <td>Administrative Reports</td>
                                                                         <td>Quarterly</td> -->
                                                                     </tr>
@@ -199,7 +199,7 @@
                                     <div class="card shadow-sm">
                                         
                                         <div class="card-header bg-danger text-white" style="color: white !important;">
-                                            <h4 style="color: white !important;">Intermediate Outcomes</h4>
+                                            <h4 style="color: white !important;"><?= $translations['text5'] ?></h4>
                                             <button class="btn btn-primary ms-auto floating-button bg-danger border-danger" type="button" style="margin-right: 20px;"
                                                 data-bs-toggle="collapse" data-bs-target="#cardContent2" aria-expanded="false" aria-controls="cardContent2">
                                                 <i class="bi bi-arrows-collapse"></i> 
@@ -213,10 +213,10 @@
                                                         <table class="table table-hover" id="table">
                                                             <thead>
                                                                 <tr>
-                                                                    <th rowspan="2">Intermediate Outcomes</th>
-                                                                    <th rowspan="2">Indicator</th>
+                                                                    <th rowspan="2"><?= $translations['text5'] ?></th>
+                                                                    <th rowspan="2"><?= $translations['text8'] ?></th>
                                                                     
-                                                                    <th colspan="3">Indicator Value</th>
+                                                                    <th colspan="3"><?= $translations['text9'] ?></th>
                                                                     <!-- <th rowspan="2">Data Source</th>
                                                                     <th rowspan="2">Frequency of Reporting</th> -->
                                                                 </tr>
@@ -228,10 +228,10 @@
                                                             </thead>
                                                             <tbody>
                                                                 <tr>
-                                                                    <td rowspan="2">Routine immunization services restored and reinforced to catch up missed children</td>
-                                                                    <td rowspan="2">Percent of primary health facility to conduct immunization service as planned</td>
-                                                                    <td rowspan="2">No Baseline Data (See cell comment)</td>
-                                                                    <td class="table-success">No Y1 target</td>
+                                                                    <td rowspan="2"><?= $translations['table2text1'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text2'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text3'] ?></td>
+                                                                    <td class="table-success"><?= $translations['table2text4'] ?></td>
                                                                     <td class="table-success">80%</td>
                                                                     <!-- <td rowspan="2">Indonesian Sehat Application (ASIK) digital-based</td>
                                                                     <td rowspan="2">Annually</td> -->
@@ -241,9 +241,9 @@
                                                                     <td class="table-warning"><?= number_format($percent_puskesmas_immunized_2025, 2) . '%' ?></td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td rowspan="2">Zero-dose children identified and targeted in reinforcement of routine immunization services</td>
-                                                                    <td rowspan="2">DPT1 in targeted areas</td>
-                                                                    <td rowspan="2">82.6% (10 provinces 2021)</td>
+                                                                    <td rowspan="2"><?= $translations['table2text5'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text6'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text7'] ?></td>
                                                                     <td class="table-success">90%</td>
                                                                     <td class="table-success">93%</td>
                                                                     <!-- <td rowspan="2">Administrative Reports</td>
@@ -254,8 +254,8 @@
                                                                     <td class="table-warning"><?= number_format($percent_dpt1_coverage_2025, 2) ?>%</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td rowspan="2">Community demand for & confidence in vaccines and immunization services, including among missed communities</td>
-                                                                    <td rowspan="2">Number of district with DO (DPT1-DPT3) less than 5%</td>
+                                                                    <td rowspan="2"><?= $translations['table2text8'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text9'] ?></td>
                                                                     <td rowspan="2">62% (2021)</td>
                                                                     <td class="table-success">75%</td>
                                                                     <td class="table-success">85%</td>
@@ -267,9 +267,9 @@
                                                                     <td class="table-warning"><?= number_format($percent_districts_under_5_2025, 0) ?>%</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td rowspan="6">Institutional capacities to plan and deliver sustained, equitable immunization programmes, as a platform for broader PHC delivery</td>
-                                                                    <td rowspan="2">Number of health facilities manage immunization program as per national guidance in 10 targeted provinces. The data will be retracted from Supportive supervision report (dashboard)</td>
-                                                                    <td rowspan="2">No baseline available</td>
+                                                                    <td rowspan="6"><?= $translations['table2text10'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text11'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text12'] ?></td>
                                                                     <td class="table-success">30%</td>
                                                                     <td class="table-success">50%</td>
                                                                     <!-- <td rowspan="2">Supportive Supervision Report (Dashboard)</td>
@@ -285,10 +285,10 @@
                                                                 </tr>
 
                                                                 <tr>
-                                                                    <td rowspan="2">Number of DTP stock out at health facilities</td>
-                                                                    <td rowspan="2">No DPT vaccine stock out in 2022</td>
+                                                                    <td rowspan="2"><?= $translations['table2text13'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text14'] ?></td>
                                                                     <td class="table-success">N/A</td>
-                                                                    <td class="table-success">Zero stock outs</td>
+                                                                    <td class="table-success"><?= $translations['table2text15'] ?></td>
                                                                     <!-- <td rowspan="2">SMILE</td>
                                                                     <td rowspan="2"></td> -->
                                                                 </tr>
@@ -297,8 +297,8 @@
                                                                     <td class="table-warning"><?= number_format($total_dpt_stockout_2025); ?></td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td rowspan="2">Number of private facilities trained on Immunization Program Management for Private Sectors SOP</td>
-                                                                    <td rowspan="2">248 (DKI Jakarta, East Java and Central Java) - HSS report</td>
+                                                                    <td rowspan="2"><?= $translations['table2text16'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text17'] ?></td>
                                                                     <td class="table-success">350</td>
                                                                     <td class="table-success">235</td>
                                                                     <!-- <td rowspan="2">Training results</td>
@@ -313,9 +313,9 @@
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td rowspan="2">Sufficient, sustained, and reliable domestic resources for immunization programmes</td>
-                                                                    <td rowspan="2">Number of district allocated domestic funding for key immunization activities and other relevant activities to immunization program at 10 provinces</td>
-                                                                    <td rowspan="2">No baseline available</td>
+                                                                    <td rowspan="2"><?= $translations['table2text18'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text19'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text20'] ?></td>
                                                                     <td class="table-success">50%</td>
                                                                     <td class="table-success">90%</td>
                                                                     <!-- <td rowspan="2">Assessment/reviews/survey/admins data</td>
@@ -326,9 +326,9 @@
                                                                     <td class="table-warning"><?= $percent_district_funding_2025; ?>%</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td rowspan="2">Political commitment to & accountability for equitable immunization (including zero-dose agenda) at national & subnational levels</td>
-                                                                    <td rowspan="2">Number of district developed or enacted policy relevant to targeting zero dose and under immunized specifically or immunization program in general</td>
-                                                                    <td rowspan="2">No baseline available</td>
+                                                                    <td rowspan="2"><?= $translations['table2text21'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text22'] ?></td>
+                                                                    <td rowspan="2"><?= $translations['table2text20'] ?></td>
                                                                     <td class="table-success">50%</td>
                                                                     <td class="table-success">90%</td>
                                                                     <!-- <td rowspan="2">Assessment/reviews/survey</td>
@@ -397,7 +397,7 @@
                                 <div class="col-12">
                                     <div class="card shadow-sm">
                                         <div class="card-header bg-warning text-white" style="color: white !important;">
-                                            <h4 style="color: white !important;">Grant Implementation & Budget Disbursement</h4>
+                                            <h4 style="color: white !important;"><?= $translations['text6'] ?></h4>
                                             <button class="btn btn-primary ms-auto floating-button bg-warning border-warning" type="button" style="margin-right: 20px;"
                                                 data-bs-toggle="collapse" data-bs-target="#cardContent3" aria-expanded="false" aria-controls="cardContent3">
                                                 <i class="bi bi-arrows-collapse"></i> 
@@ -411,8 +411,8 @@
                                                         <table class="table table-hover" id="table">
                                                             <thead >
                                                                 <tr>
-                                                                    <th rowspan="2">Indicator</th>
-                                                                    <th colspan="2">Indicator Value</th>
+                                                                    <th rowspan="2"><?= $translations['text8'] ?></th>
+                                                                    <th colspan="2"><?= $translations['text9'] ?></th>
                                                                     <!-- <th rowspan="2">Data Source</th>
                                                                     <th rowspan="2">Frequency of Reporting</th> -->
                                                                 </tr>
@@ -423,7 +423,7 @@
                                                             </thead>
                                                             <tbody>
                                                                 <tr>
-                                                                    <td rowspan="2">Budget execution (use) rate for a given reporting period, Gavi</td>
+                                                                    <td rowspan="2"><?= $translations['table3text1'] ?></td>
                                                                     <td class="table-success">90%</td>
                                                                     <td class="table-success">90%</td>
                                                                     <!-- <td rowspan="2">Costed Workplan</td>
@@ -495,7 +495,7 @@
                                 <div class="col-12">
                                     <div class="card shadow-sm">
                                         <div class="card-header bg-info text-white" style="color: white !important;">
-                                            <h4 style="color: white !important;">Country Objectives</h4>
+                                            <h4 style="color: white !important;"><?= $translations['text7'] ?></h4>
                                             <button class="btn btn-primary ms-auto floating-button bg-info border-info" type="button" style="margin-right: 20px;"
                                                 data-bs-toggle="collapse" data-bs-target="#cardContent4" aria-expanded="false" aria-controls="cardContent4">
                                                 <i class="bi bi-arrows-collapse"></i> 
@@ -509,9 +509,9 @@
                                                         <table class="table table-hover" id="table">
                                                             <thead>
                                                                 <tr>
-                                                                    <th rowspan="2">Objective</th>
-                                                                    <th rowspan="2">Indicator</th>
-                                                                    <th colspan="2">Indicator Value</th>
+                                                                    <th rowspan="2"><?= $translations['table4text1'] ?></th>
+                                                                    <th rowspan="2"><?= $translations['text8'] ?></th>
+                                                                    <th colspan="2"><?= $translations['text9'] ?></th>
                                                                     <!-- <th rowspan="2">Data Source</th>
                                                                     <th rowspan="2">Frequency of Reporting</th> -->
                                                                 </tr>
@@ -524,7 +524,7 @@
                                                                 <?php foreach ($objectives as $index => $objective): ?>
                                                                     <tr>
                                                                         <td rowspan="2"><?= ($index + 1) . '. ' . $objective['objective_name']; ?></td>
-                                                                        <td rowspan="2">Percent of workplan activities executed</td>
+                                                                        <td rowspan="2"><?= $translations['table4text2'] ?></td>
                                                                         <td class="table-success">90%</td>
                                                                         <td class="table-success">100%</td>
                                                                         <!-- <td rowspan="2">Costed Workplan</td>

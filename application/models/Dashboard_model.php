@@ -164,7 +164,13 @@ class Dashboard_model extends CI_Model {
      * Mengambil semua country objectives
      */
     public function get_all_objectives() {
-        $this->db->select('id, objective_name');
+        if($this->session->userdata('language') == 'id'){
+            $this->db->select('id, objective_name_id as objective_name');
+        } else {
+            $this->db->select('id, objective_name');
+        }
+        
+
         $this->db->from('country_objectives');
         return $this->db->get()->result_array();
     }
@@ -328,7 +334,7 @@ class Dashboard_model extends CI_Model {
             ],
             'reduction_zd' => [
                 // 'baseline' => "25% of {$baseline_zd_2023} (per Dec 2022)",
-                'baseline' => "25% of {$baseline_zd_2023}",
+                'baseline' => $baseline_zd_2023,
                 // 'target_y1' => $target_reduction_y1,
                 // 'target_y2' => $target_reduction_y2,
                 'actual_y1' => $percent_reduction_y1,
