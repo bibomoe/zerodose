@@ -1291,9 +1291,9 @@ class Report extends CI_Controller {
         foreach ($data['country_objectives'] as $objective) {
             $html .= "<tr>
                         <td>{$objective[0]}</td>
+                        <td>Persentase kegiatan rencana kerja yang terlaksana</td>
                         <td>{$objective[1]}</td>
                         <td>{$objective[2]}</td>
-                        <td>{$objective[3]}</td>
                       </tr>";
         }
         $html .= '</tbody></table>';
