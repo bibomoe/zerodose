@@ -1096,6 +1096,8 @@ class Report extends CI_Controller {
         ];
     
         // Membuat objek TCPDF
+        // **1. Pastikan TCPDF sudah ada di lokasi yang benar**
+        require_once(APPPATH . 'libraries/tcpdf/tcpdf.php'); 
         $pdf = new TCPDF();
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Your Organization');
@@ -1108,116 +1110,116 @@ class Report extends CI_Controller {
         // Halaman 1 - Laporan Imunisasi
         $pdf->AddPage(); // Menambahkan halaman baru
         $html = '<h2 style="text-align:center;">Laporan Kerangka Kerja Penurunan Zero Dose di Indonesia</h2>';
-        $html .= "<h4>Indonesia</h4>";
+        // $html .= "<h4>Indonesia</h4>";
     
-        // Tabel 1: Indikator Jangka Panjang
-        $html .= '<h3>Indikator Jangka Panjang</h3>';
-        $html .= '<table border="1" cellpadding="5">
-                    <thead>
-                        <tr>
-                            <th>Cakupan DPT-3</th>
-                            <th>Cakupan MR-1</th>
-                            <th>Jumlah Anak Zero Dose</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>' . $data['cumulative_dpt3'] . '</td>
-                            <td>' . $data['cumulative_mr1'] . '</td>
-                            <td>' . $data['children_zero_dose'] . '</td>
-                        </tr>
-                    </tbody>
-                </table>';
+        // // Tabel 1: Indikator Jangka Panjang
+        // $html .= '<h3>Indikator Jangka Panjang</h3>';
+        // $html .= '<table border="1" cellpadding="5">
+        //             <thead>
+        //                 <tr>
+        //                     <th>Cakupan DPT-3</th>
+        //                     <th>Cakupan MR-1</th>
+        //                     <th>Jumlah Anak Zero Dose</th>
+        //                 </tr>
+        //             </thead>
+        //             <tbody>
+        //                 <tr>
+        //                     <td>' . $data['cumulative_dpt3'] . '</td>
+        //                     <td>' . $data['cumulative_mr1'] . '</td>
+        //                     <td>' . $data['children_zero_dose'] . '</td>
+        //                 </tr>
+        //             </tbody>
+        //         </table>';
     
-        // Menambahkan jarak antara tabel pertama dan kedua
-        $html .= '<br><br>';
+        // // Menambahkan jarak antara tabel pertama dan kedua
+        // $html .= '<br><br>';
     
-        // Tabel 2: Indikator Jangka Menengah
-        $html .= '<h3>Indikator Jangka Menengah</h3>';
-        $html .= '<table border="1" cellpadding="5">
-                    <thead>
-                        <tr>
-                            <th>Cakupan DPT-1</th>
-                            <th>% Drop Out</th>
-                            <th>% Puskesmas yang melakukan pelayanan imunisasi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>' . $data['cumulative_dpt1'] . '</td>
-                            <td>' . $data['drop_out_percentage'] . '</td>
-                            <td>' . $data['puskesmas_percentage'] . '</td>
-                        </tr>
-                    </tbody>
-                </table>';
+        // // Tabel 2: Indikator Jangka Menengah
+        // $html .= '<h3>Indikator Jangka Menengah</h3>';
+        // $html .= '<table border="1" cellpadding="5">
+        //             <thead>
+        //                 <tr>
+        //                     <th>Cakupan DPT-1</th>
+        //                     <th>% Drop Out</th>
+        //                     <th>% Puskesmas yang melakukan pelayanan imunisasi</th>
+        //                 </tr>
+        //             </thead>
+        //             <tbody>
+        //                 <tr>
+        //                     <td>' . $data['cumulative_dpt1'] . '</td>
+        //                     <td>' . $data['drop_out_percentage'] . '</td>
+        //                     <td>' . $data['puskesmas_percentage'] . '</td>
+        //                 </tr>
+        //             </tbody>
+        //         </table>';
     
-        // Menambahkan jarak antara tabel kedua dan ketiga
-        $html .= '<br><br>';
+        // // Menambahkan jarak antara tabel kedua dan ketiga
+        // $html .= '<br><br>';
     
-        // Tabel 3: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-        $html .= '<h3>Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional</h3>';
-        $html .= '<table border="1" cellpadding="5">
-                    <thead>
-                        <tr>
-                            <th>Nama Kab/Ko</th>
-                            <th>Jumlah Puskesmas</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-        foreach ($data['puskesmas_vaccine_compliant_data'] as $item) {
-            $html .= "<tr>
-                        <td>{$item[0]}</td>
-                        <td>{$item[1]}</td>
-                      </tr>";
-        }
-        $html .= '</tbody></table>';
+        // // Tabel 3: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
+        // $html .= '<h3>Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional</h3>';
+        // $html .= '<table border="1" cellpadding="5">
+        //             <thead>
+        //                 <tr>
+        //                     <th>Nama Kab/Ko</th>
+        //                     <th>Jumlah Puskesmas</th>
+        //                 </tr>
+        //             </thead>
+        //             <tbody>';
+        // foreach ($data['puskesmas_vaccine_compliant_data'] as $item) {
+        //     $html .= "<tr>
+        //                 <td>{$item[0]}</td>
+        //                 <td>{$item[1]}</td>
+        //               </tr>";
+        // }
+        // $html .= '</tbody></table>';
     
-        // Menambahkan jarak antara tabel ketiga dan keempat
-        $html .= '<br><br>';
+        // // Menambahkan jarak antara tabel ketiga dan keempat
+        // $html .= '<br><br>';
     
-        // Tabel 4: Puskesmas dengan status DPT stock out
-        $html .= '<h3>Puskesmas dengan status DPT stock out</h3>';
-        $html .= '<table border="1" cellpadding="5">
-                    <thead>
-                        <tr>
-                            <th>Nama Kab/Ko</th>
-                            <th>Jumlah Puskesmas</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-        foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
-            $html .= "<tr>
-                        <td>{$item[0]}</td>
-                        <td>{$item[1]}</td>
-                      </tr>";
-        }
-        $html .= '</tbody></table>';
+        // // Tabel 4: Puskesmas dengan status DPT stock out
+        // $html .= '<h3>Puskesmas dengan status DPT stock out</h3>';
+        // $html .= '<table border="1" cellpadding="5">
+        //             <thead>
+        //                 <tr>
+        //                     <th>Nama Kab/Ko</th>
+        //                     <th>Jumlah Puskesmas</th>
+        //                 </tr>
+        //             </thead>
+        //             <tbody>';
+        // foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
+        //     $html .= "<tr>
+        //                 <td>{$item[0]}</td>
+        //                 <td>{$item[1]}</td>
+        //               </tr>";
+        // }
+        // $html .= '</tbody></table>';
     
-        // Menambahkan jarak antara tabel keempat dan kelima
-        $html .= '<br><br>';
+        // // Menambahkan jarak antara tabel keempat dan kelima
+        // $html .= '<br><br>';
     
-        // Tabel 5: Kab/Ko dengan % DO dibawah 5%
-        $html .= '<h3>Kab/Ko dengan % DO dibawah 5%</h3>';
-        $html .= '<table border="1" cellpadding="5">
-                    <thead>
-                        <tr>
-                            <th>Nama Kab/Ko</th>
-                            <th>% Anak DO</th>
-                            <th>% Kab/Ko dengan % DO dibawah 5%</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-        foreach ($data['kabko_with_low_do'] as $item) {
-            $html .= "<tr>
-                        <td>{$item[0]}</td>
-                        <td>{$item[1]}</td>
-                        <td>{$item[2]}</td>
-                      </tr>";
-        }
-        $html .= '</tbody></table>';
+        // // Tabel 5: Kab/Ko dengan % DO dibawah 5%
+        // $html .= '<h3>Kab/Ko dengan % DO dibawah 5%</h3>';
+        // $html .= '<table border="1" cellpadding="5">
+        //             <thead>
+        //                 <tr>
+        //                     <th>Nama Kab/Ko</th>
+        //                     <th>% Anak DO</th>
+        //                     <th>% Kab/Ko dengan % DO dibawah 5%</th>
+        //                 </tr>
+        //             </thead>
+        //             <tbody>';
+        // foreach ($data['kabko_with_low_do'] as $item) {
+        //     $html .= "<tr>
+        //                 <td>{$item[0]}</td>
+        //                 <td>{$item[1]}</td>
+        //                 <td>{$item[2]}</td>
+        //               </tr>";
+        // }
+        // $html .= '</tbody></table>';
 
-        // Menambahkan jarak antara tabel keempat dan kelima
-        $html .= '<br><br>';
+        // // Menambahkan jarak antara tabel keempat dan kelima
+        // $html .= '<br><br>';
     
         // Halaman 2 - Laporan Grant Implementation & Country Objectives
         // $pdf->AddPage(); // Menambahkan halaman baru
@@ -1225,7 +1227,7 @@ class Report extends CI_Controller {
         $html .= '<h3>Penggunaan (penyerapan) Budget untuk periode pelaporan tertentu, Gavi</h3>';
     
         // Tabel 6: Grant Implementation & Budget Disbursement
-        $html .= '<table border="1" cellpadding="5" bgcolor="#f9b9b9">
+        $html .= '<table border="1" cellpadding="5">
                     <thead>
                         <tr>
                             <th>Indikator</th>
@@ -1247,7 +1249,7 @@ class Report extends CI_Controller {
     
         // Tabel 7: Country Objectives
         $html .= '<h3>Country Objectives</h3>';
-        $html .= '<table border="1" cellpadding="5" bgcolor="#f9b9b9">
+        $html .= '<table border="1" cellpadding="5" >
                     <thead>
                         <tr>
                             <th>Tujuan</th>
