@@ -308,7 +308,8 @@ class Report extends CI_Controller {
         $selected_province = $this->input->get('province') ?? 'all';
         $selected_district = $this->input->get('district') ?? 'all';
         $selected_year = $this->input->get('year') ?? 2024; // Default tahun 2025
-        $selected_month = $this->input->get('month') ?? date('m'); // Default bulan saat ini 2025
+        // $selected_month = $this->input->get('month') ?? date('m'); // Default bulan saat ini 2025
+        $selected_month = $this->input->get('month') ?? 12; // Default bulan saat ini 2025
 
         $year = $selected_year;
         // Menentukan baseline ZD
@@ -579,6 +580,34 @@ class Report extends CI_Controller {
             'puskesmas_do_immunization' => $table_puskesmas_immunization,
             'puskesmas_dpt_stock_out_data' => $table_puskesmas_stock_out
         ];
+
+        // Array nama bulan
+        $months = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
+
+        if ($this->input->get('month')){
+            if (isset($months[$selected_month])) {
+                $title_month = ' Bulan ' . $months[$selected_month];  // Gunakan nama bulan
+            } else {
+                $title_month = '';  // Jika bulan tidak valid
+            }
+        } else {
+            $title_month = '';
+        }
+
+        $title_year = ' Tahun ' . $selected_year;
     
         // Membuat objek TCPDF
         // Buat objek PDF
@@ -588,7 +617,7 @@ class Report extends CI_Controller {
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Your Organization');
         $pdf->SetTitle('Laporan Kerangka Kerja Penurunan Zero Dose');
-        $pdf->SetHeaderData('', 0, 'Laporan Kerangka Kerja Penurunan Zero Dose', "Indonesia");
+        $pdf->SetHeaderData('', 0, 'Laporan Kerangka Kerja Penurunan Zero Dose' . $title_year . $title_month, "Indonesia");
     
         // Mengatur margin
         $pdf->SetMargins(15, 20, 15);
