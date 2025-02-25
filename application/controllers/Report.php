@@ -581,6 +581,9 @@ class Report extends CI_Controller {
         ];
     
         // Membuat objek TCPDF
+        // Buat objek PDF
+        // **1. Pastikan TCPDF sudah ada di lokasi yang benar**
+        require_once(APPPATH . 'libraries/tcpdf/tcpdf.php'); 
         $pdf = new TCPDF();
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Your Organization');
