@@ -392,6 +392,7 @@ class Report_model extends CI_Model {
     // Tabel 3
     // Mengambil total jumlah cities per provinsi
     public function get_total_cities_per_province($province_id = 'all', $city_id = 'all') {
+        $province_ids = $this->get_targeted_province_ids();
         $this->db->select('province_id, COUNT(id) AS total_cities');
         $this->db->from('cities');
         // $this->db->where_in('province_id', $province_ids);
