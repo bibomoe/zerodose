@@ -114,15 +114,15 @@ class Immunization_model extends CI_Model {
         }
     
         $total_target = $this->db->get()->row()->total_target ?? 0;
-    
+
         // Ambil data DPT-1 per distrik berdasarkan tahun
         $this->db->select("
             cities.name_id AS district, 
             SUM(immunization_data.dpt_hb_hib_1) AS total_dpt1,
-            SUM(target_immunization.dpt_hb_hib_1_target) AS target_district,
-            (SUM(immunization_data.dpt_hb_hib_1) / NULLIF(SUM(target_immunization.dpt_hb_hib_1_target), 0)) * 100 AS percentage_target,
-            (SUM(target_immunization.dpt_hb_hib_1_target) - SUM(immunization_data.dpt_hb_hib_1)) AS zero_dose_children,
-            ((SUM(target_immunization.dpt_hb_hib_1_target) - SUM(immunization_data.dpt_hb_hib_1)) / NULLIF(SUM(target_immunization.dpt_hb_hib_1_target), 0)) * 100 AS percent_zero_dose
+            target_immunization.dpt_hb_hib_1_target AS target_district,
+            (SUM(immunization_data.dpt_hb_hib_1) / NULLIF(target_immunization.dpt_hb_hib_1_target, 0)) * 100 AS percentage_target,  -- Persentase target DPT-1
+            (target_immunization.dpt_hb_hib_1_target - SUM(immunization_data.dpt_hb_hib_1)) AS zero_dose_children,  -- Anak zero dose
+            ((target_immunization.dpt_hb_hib_1_target - SUM(immunization_data.dpt_hb_hib_1)) / NULLIF(target_immunization.dpt_hb_hib_1_target, 0)) * 100 AS percent_zero_dose  -- Persentase zero dose
         ", false);
     
         $this->db->from('immunization_data');
@@ -138,6 +138,8 @@ class Immunization_model extends CI_Model {
     
         $this->db->group_by('immunization_data.city_id, cities.name_id');
         $this->db->order_by('total_dpt1', 'DESC');
+        // var_dump($this->db->get()->result_array());
+        // exit;
     
         return $this->db->get()->result_array();
     }
@@ -153,16 +155,50 @@ class Immunization_model extends CI_Model {
             SUM(i.dpt_hb_hib_2) AS dpt2, 
             SUM(i.dpt_hb_hib_3) AS dpt3, 
             SUM(i.mr_1) AS mr1,
-            SUM(t.dpt_hb_hib_1_target) AS target_dpt1,
-            SUM(t.dpt_hb_hib_3_target) AS target_dpt3,
-            IFNULL(SUM(zd.zd_cases), 0) AS zd_cases_2023,
-            SUM(t.mr_1_target) AS target_mr1
+            t.dpt_hb_hib_1_target AS target_dpt1,
+            t.dpt_hb_hib_3_target AS target_dpt3,
+            IFNULL(zd.zd_cases_2023, 0) AS zd_cases_2023,
+            t.mr_1_target AS target_mr1
             
         ', false);
         
         $this->db->from('immunization_data i');
-        $this->db->join('target_immunization t', 't.city_id = i.city_id AND t.year = i.year', 'left');
-        $this->db->join('zd_cases_2023 zd', 'zd.city_id = i.city_id', 'left'); // Join berdasarkan city_id
+        // $this->db->join('target_immunization t', 't.city_id = i.city_id AND t.year = i.year', 'left');
+        // $this->db->join('zd_cases_2023 zd', 'zd.city_id = i.city_id', 'left'); // Join berdasarkan city_id
+        // Gabungkan dengan target_immunization menggunakan subquery
+
+        if ($province_id === 'targeted' || $province_id === 'all') {
+            $this->db->join('(
+                SELECT city_id, SUM(dpt_hb_hib_1_target) AS dpt_hb_hib_1_target, 
+                SUM(dpt_hb_hib_3_target) AS dpt_hb_hib_3_target, 
+                SUM(mr_1_target) AS mr_1_target
+                FROM target_immunization
+                WHERE year = ' . $year . '
+                GROUP BY province_id
+            ) t', 't.city_id = i.city_id', 'left'); // Menggunakan subquery untuk target_immunization
+            
+            $this->db->join('(
+                SELECT city_id, SUM(zd_cases) AS zd_cases_2023
+                FROM zd_cases_2023
+                GROUP BY province_id
+            ) zd', 'zd.city_id = i.city_id', 'left');  // Menggabungkan dengan hasil SUM
+        } else {
+
+            $this->db->join('(
+                SELECT city_id, SUM(dpt_hb_hib_1_target) AS dpt_hb_hib_1_target, 
+                SUM(dpt_hb_hib_3_target) AS dpt_hb_hib_3_target, 
+                SUM(mr_1_target) AS mr_1_target
+                FROM target_immunization
+                WHERE year = ' . $year . '
+                GROUP BY city_id
+            ) t', 't.city_id = i.city_id', 'left'); // Menggunakan subquery untuk target_immunization
+            
+            $this->db->join('(
+                SELECT city_id, SUM(zd_cases) AS zd_cases_2023
+                FROM zd_cases_2023
+                GROUP BY city_id
+            ) zd', 'zd.city_id = i.city_id', 'left');  // Menggabungkan dengan hasil SUM
+        }
 
         // Filter berdasarkan tahun
         $this->db->where('i.year', $year);
