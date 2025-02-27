@@ -478,7 +478,15 @@
                         <?php
                             }
                         ?>
+                        <li
+                                class="sidebar-item">
+                                <a href="<?= base_url('report'); ?>" class='sidebar-link'>
+                                    <i class="bi bi-file-earmark-fill"></i>
+                                    <span>Report</span>
+                                </a>
+                            </li>
                     </ul>
+                    
                 </div>
             </div>
         </div>

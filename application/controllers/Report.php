@@ -1846,7 +1846,353 @@ class Report extends CI_Controller {
             // echo $this->email->print_debugger();
         }
     }
+
+    // Fungsi untuk mengirim laporan via email
+    private function send_report_via_email_partner($report_data, $email) {
+        // Load library email
+        $this->load->library('email');
     
+        // Set konfigurasi email
+        $this->email->from('adminzd@zerodosemonitor.com', 'Admin Report');
+        $this->email->to($email);  // Ganti dengan email penerima
+    
+        // Subjek email
+        $this->email->subject('LAPORAN KERANGKA KERJA AKUNTABILITAS PENURUNAN ANAK ANAK ZERO DOSE GAVI');
+    
+        // Pesan email
+        $this->email->message('Berikut adalah laporan  yang diminta.');
+    
+        // Lampirkan file laporan (misalnya file PDF)
+        $this->email->attach($report_data, 'attachment', 'partner_report.pdf', 'application/pdf');
+    
+        // Kirim email dan cek jika berhasil
+        if ($this->email->send()) {
+            return true;  // Berhasil mengirim email
+        } else {
+            // Untuk debugging
+            // log_message('error', 'Email failed: ' . $this->email->print_debugger());  // Log error email
+            return false;  // Gagal mengirim email
+            // echo $this->email->print_debugger();
+        }
+    }
+
+    public function partner_report_indonesia_sent_email() {
+        // Ambil data dari form filter
+        $partner_id = $this->input->post('partner_id');
+        $month = $this->input->post('month');
+        $email = $this->input->post('email');
+    
+        // Generate laporan berdasarkan filter yang diberikan
+        $report_data = $this->partner_report_attach($partner_id, $month);
+
+        $this->send_report_via_email($report_data, $email);
+        // Kirim laporan melalui email
+        if ($this->send_report_via_email($report_data, $email)) {
+            // Set pesan sukses jika email berhasil dikirim
+            $this->session->set_flashdata('message', 'Laporan berhasil dikirim melalui email!');
+        } else {
+            // Set pesan error jika gagal mengirim email
+            $this->session->set_flashdata('message', 'Gagal mengirim laporan melalui email!');
+        }
+    
+        // Redirect kembali ke halaman atau tampilkan laporan
+        redirect('report');
+    }
+    
+
+    public function partner_report() {
+
+        $selected_partner = $this->input->post('partner_id') ?? 'all';
+        $selected_month = $this->input->post('month') ?? 'all'; // Default bulan saat ini 2025
+        $this->data['selected_partner'] = $selected_partner;
+
+        // Ambil data budget absorption
+        $this->data['budget_absorption_2024'] = $this->Report_model->get_total_budget_absorption_percentage(2024, $selected_month, $selected_partner);
+        $this->data['budget_absorption_2025'] = $this->Report_model->get_total_budget_absorption_percentage(2025, $selected_month, $selected_partner);
+
+        // Ambil semua country objectives
+        $objectives = $this->Dashboard_model->get_all_objectives();
+
+        // Ambil aktivitas yang sudah selesai
+        $this->data['completed_activities_2024'] = $this->Report_model->get_completed_activities_percentage_by_year(2024, $selected_month, $selected_partner);
+        $this->data['completed_activities_2025'] = $this->Report_model->get_completed_activities_percentage_by_year(2025, $selected_month, $selected_partner);
+
+        
+        // var_dump($this->data['completed_activities_2025'][1]);
+        
+
+        $table_country_objectives =[];
+
+        foreach($objectives as $row){
+
+            $table_country_objectives[] = [
+                'name' => $row['id']. '. ' . $row['objective_name'],
+                'completed_2024' => $this->data['completed_activities_2024'][$row['id']],
+                'completed_2025' => $this->data['completed_activities_2025'][$row['id']]
+            ];
+        }
+
+        // var_dump($table_country_objectives);
+        // exit;
+        
+        // Data untuk laporan imunisasi
+        $data = [
+    
+            // Data untuk laporan Grant Implementation & Budget Disbursement
+            'budget_2024' => $this->data['budget_absorption_2024'],
+            'budget_2025' => $this->data['budget_absorption_2025'],
+            'country_objectives' => $table_country_objectives
+        ];
+
+        // Array nama bulan
+        $months = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
+
+        if ($this->input->post('month')){
+            if (isset($months[$selected_month])) {
+                $title_month = ' Bulan ' . $months[$selected_month];  // Gunakan nama bulan
+            } else {
+                $title_month = '';  // Jika bulan tidak valid
+            }
+        } else {
+            $title_month = '';
+        }
+
+        $partner_name = $this->Report_model->get_partner_name_by_id($selected_partner);
+    
+        // Membuat objek TCPDF
+        // **1. Pastikan TCPDF sudah ada di lokasi yang benar**
+        require_once(APPPATH . 'libraries/tcpdf/tcpdf.php'); 
+        $pdf = new TCPDF();
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor('Zero Dose Indonesia Team');
+        $pdf->SetTitle('LAPORAN KERANGKA KERJA AKUNTABILITAS PENURUNAN ANAK ANAK ZERO DOSE GAVI ');
+        $pdf->SetHeaderData('', 0, '', $partner_name . $title_month);
+    
+        // Mengatur margin
+        $pdf->SetMargins(15, 20, 15);
+    
+        // Halaman 1 - Laporan Imunisasi
+        $pdf->AddPage(); // Menambahkan halaman baru
+        $html = '<h2 style="text-align:center;">LAPORAN KERANGKA KERJA AKUNTABILITAS PENURUNAN ANAK ANAK ZERO DOSE GAVI</h2>';
+        // $html .= "<h4>Indonesia</h4>";
+    
+        $html .= '<h3>Penggunaan (penyerapan) Budget untuk periode pelaporan tertentu, Gavi</h3>';
+    
+        // Tabel 6: Grant Implementation & Budget Disbursement
+        $html .= '<table border="1" cellpadding="5">
+                    <thead>
+                        <tr>
+                            <th>Indikator</th>
+                            <th>2024</th>
+                            <th>2025</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Penggunaan (penyerapan) Budget</td>
+                            <td>' . $data['budget_2024'] . '%</td>
+                            <td>' . $data['budget_2025'] . '%</td>
+                        </tr>
+                    </tbody>
+                </table>';
+    
+        // Menambahkan jarak antara tabel pengeluaran dan country objectives
+        $html .= '<br><br>';
+    
+        // Tabel 7: Country Objectives
+        $html .= '<h3>Country Objectives</h3>';
+        $html .= '<table border="1" cellpadding="5" >
+                    <thead>
+                        <tr>
+                            <th>Tujuan</th>
+                            <th>Indikator</th>
+                            <th>2024</th>
+                            <th>2025</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+        foreach ($data['country_objectives'] as $objective) {
+            $html .= "<tr>
+                        <td>{$objective['name']}</td>
+                        <td>Persentase kegiatan rencana kerja yang terlaksana</td>
+                        <td>{$objective['completed_2024']}%</td>
+                        <td>{$objective['completed_2025']}%</td>
+                      </tr>";
+        }
+        $html .= '</tbody></table>';
+    
+        // Menulis HTML ke PDF
+        $pdf->writeHTML($html, true, false, true, false, '');
+    
+        // Menyelesaikan PDF dan menampilkan di browser
+        ob_end_clean(); // Membersihkan output buffer sebelum mengirim PDF
+        $pdf->Output('Laporan_Imunisasi_Grant_Indonesia.pdf', 'I');
+        exit();
+    }
+
+    public function partner_report_attach($param_partner_id, $param_month) {
+        $selected_partner = $param_partner_id;
+                // $selected_month = $this->input->post('month') ?? date('m'); // Default bulan saat ini 2025
+                $selected_month = $param_month;
+
+        // $selected_partner = $this->input->post('partner_id') ?? 'all';
+        // $selected_month = $this->input->post('month') ?? 'all'; // Default bulan saat ini 2025
+        $this->data['selected_partner'] = $selected_partner;
+
+        // Ambil data budget absorption
+        $this->data['budget_absorption_2024'] = $this->Report_model->get_total_budget_absorption_percentage(2024, $selected_month, $selected_partner);
+        $this->data['budget_absorption_2025'] = $this->Report_model->get_total_budget_absorption_percentage(2025, $selected_month, $selected_partner);
+
+        // Ambil semua country objectives
+        $objectives = $this->Dashboard_model->get_all_objectives();
+
+        // Ambil aktivitas yang sudah selesai
+        $this->data['completed_activities_2024'] = $this->Report_model->get_completed_activities_percentage_by_year(2024, $selected_month, $selected_partner);
+        $this->data['completed_activities_2025'] = $this->Report_model->get_completed_activities_percentage_by_year(2025, $selected_month, $selected_partner);
+
+        
+        // var_dump($this->data['completed_activities_2025'][1]);
+        
+
+        $table_country_objectives =[];
+
+        foreach($objectives as $row){
+
+            $table_country_objectives[] = [
+                'name' => $row['id']. '. ' . $row['objective_name'],
+                'completed_2024' => $this->data['completed_activities_2024'][$row['id']],
+                'completed_2025' => $this->data['completed_activities_2025'][$row['id']]
+            ];
+        }
+
+        // var_dump($table_country_objectives);
+        // exit;
+        
+        // Data untuk laporan imunisasi
+        $data = [
+    
+            // Data untuk laporan Grant Implementation & Budget Disbursement
+            'budget_2024' => $this->data['budget_absorption_2024'],
+            'budget_2025' => $this->data['budget_absorption_2025'],
+            'country_objectives' => $table_country_objectives
+        ];
+
+        // Array nama bulan
+        $months = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
+
+        if ($this->input->post('month')){
+            if (isset($months[$selected_month])) {
+                $title_month = ' Bulan ' . $months[$selected_month];  // Gunakan nama bulan
+            } else {
+                $title_month = '';  // Jika bulan tidak valid
+            }
+        } else {
+            $title_month = '';
+        }
+
+        $partner_name = $this->Report_model->get_partner_name_by_id($selected_partner);
+    
+        // Membuat objek TCPDF
+        // **1. Pastikan TCPDF sudah ada di lokasi yang benar**
+        require_once(APPPATH . 'libraries/tcpdf/tcpdf.php'); 
+        $pdf = new TCPDF();
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor('Zero Dose Indonesia Team');
+        $pdf->SetTitle('LAPORAN KERANGKA KERJA AKUNTABILITAS PENURUNAN ANAK ANAK ZERO DOSE GAVI ');
+        $pdf->SetHeaderData('', 0, '', $partner_name . $title_month);
+    
+        // Mengatur margin
+        $pdf->SetMargins(15, 20, 15);
+    
+        // Halaman 1 - Laporan Imunisasi
+        $pdf->AddPage(); // Menambahkan halaman baru
+        $html = '<h2 style="text-align:center;">LAPORAN KERANGKA KERJA AKUNTABILITAS PENURUNAN ANAK ANAK ZERO DOSE GAVI</h2>';
+        // $html .= "<h4>Indonesia</h4>";
+    
+        $html .= '<h3>Penggunaan (penyerapan) Budget untuk periode pelaporan tertentu, Gavi</h3>';
+    
+        // Tabel 6: Grant Implementation & Budget Disbursement
+        $html .= '<table border="1" cellpadding="5">
+                    <thead>
+                        <tr>
+                            <th>Indikator</th>
+                            <th>2024</th>
+                            <th>2025</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Penggunaan (penyerapan) Budget</td>
+                            <td>' . $data['budget_2024'] . '%</td>
+                            <td>' . $data['budget_2025'] . '%</td>
+                        </tr>
+                    </tbody>
+                </table>';
+    
+        // Menambahkan jarak antara tabel pengeluaran dan country objectives
+        $html .= '<br><br>';
+    
+        // Tabel 7: Country Objectives
+        $html .= '<h3>Country Objectives</h3>';
+        $html .= '<table border="1" cellpadding="5" >
+                    <thead>
+                        <tr>
+                            <th>Tujuan</th>
+                            <th>Indikator</th>
+                            <th>2024</th>
+                            <th>2025</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+        foreach ($data['country_objectives'] as $objective) {
+            $html .= "<tr>
+                        <td>{$objective['name']}</td>
+                        <td>Persentase kegiatan rencana kerja yang terlaksana</td>
+                        <td>{$objective['completed_2024']}%</td>
+                        <td>{$objective['completed_2025']}%</td>
+                      </tr>";
+        }
+        $html .= '</tbody></table>';
+    
+        // Menulis HTML ke PDF
+        $pdf->writeHTML($html, true, false, true, false, '');
+    
+        // // Menyelesaikan PDF dan menampilkan di browser
+        // ob_end_clean(); // Membersihkan output buffer sebelum mengirim PDF
+        // $pdf->Output('Laporan_Imunisasi_Grant_Indonesia.pdf', 'I');
+        // exit();
+
+        // Mendapatkan PDF sebagai string (di memori)
+        $pdf_output = $pdf->Output('', 'S');  // 'S' untuk output sebagai string
+
+        return $pdf_output;
+    }
 
     public function immunization_and_grant_report_indonesia() {
         // Data untuk laporan imunisasi

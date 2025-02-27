@@ -144,7 +144,142 @@
                                                                         'value' => '',
                                                                         'class' => 'form-control',
                                                                         'placeholder' => 'Enter your email',
+                                                                        'required' => 'required',
                                                                         'style' => 'width: 20%; max-width: 300px; height: 48px; font-size: 1rem;'
+                                                                    ]); ?>
+                                                                    <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
+                                                                        <i class="bi bi-envelope-arrow-up-fill"></i> Kirim
+                                                                    </button>
+                                                                </div>
+                                                            <?= form_close(); ?>
+                                                        </div>
+                                                    </div>
+                                                <!-- </div> -->
+                                            <!-- </form> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </section>
+
+                <!-- Unduh Laporan Mitra -->
+                <section id="basic-horizontal-layouts">
+                    <div class="row match-height">
+                            <div class="col-md-12 col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Unduh Laporan Mitra</h4>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="card-body">
+                                            <!-- <form class="form form-horizontal"> -->
+                                                <!-- <div class="form-body"> -->
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            
+                                                            <?= form_open('report/partner_report'); ?>
+                                                                <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;">Pilih Filter </label>
+                                                                <div class="d-flex flex-column flex-md-row align-items-center gap-2">
+                                                                    <?php
+                                                                        // Ambil session partner_category
+                                                                        $partner_category = $this->session->userdata('partner_category');
+
+                                                                        // Cek apakah partner_category valid (tidak kosong, tidak null, tidak 0)
+                                                                        $is_disabled = !empty($partner_category) && $partner_category != 0;
+
+                                                                        // Tentukan value untuk partner_id
+                                                                        $partner_id_value = $is_disabled ? $partner_category : set_value('partner_id', $selected_partner);
+                                                                    ?>
+                                                                    <?= form_dropdown('partner_id', 
+                                                                        array_column($partners, 'name', 'id'), // Data dropdown: id => name
+                                                                        $partner_id_value, // Value yang dipilih
+                                                                        'id="partner_id" class="form-select" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;" ' 
+                                                                        // . ($is_disabled ? 'disabled' : '') 
+                                                                        . ' required'
+                                                                    ); ?>
+                                                                    <!-- <?php if ($is_disabled): ?>
+                                                                        <input type="hidden" name="partner_id" value="<?= $partner_category ?>">
+                                                                    <?php endif; ?> -->
+                                                                    <!-- <?= form_dropdown('province_id', $province_options, '', 
+                                                                        'class="form-select" id="province_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
+                                                                    <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
+                                                                        'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
+                                                                    <?= form_dropdown('year', $year_options, '', 
+                                                                        'class="form-select" id="year" style="width: 20%; max-width: 100px; height: 48px; font-size: 1rem;"'); ?> -->
+                                                                    <?= form_dropdown('month', $month_options, '', 
+                                                                        'class="form-select" id="month" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
+                                                                    <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
+                                                                        <i class="bi bi-download"></i> Download
+                                                                    </button>
+                                                                </div>
+                                                            <?= form_close(); ?>
+                                                        </div>
+                                                    </div>
+                                                <!-- </div> -->
+                                            <!-- </form> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </section>
+
+                <!-- Kirim laporan Mitra -->
+                <section id="basic-horizontal-layouts">
+                    <div class="row match-height">
+                            <div class="col-md-12 col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Kirim Laporan Mitra Melalui Email</h4>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="card-body">
+                                            <!-- <form class="form form-horizontal"> -->
+                                                <!-- <div class="form-body"> -->
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            
+                                                            <?= form_open('report/partner_report_indonesia_sent_email'); ?>
+                                                                <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;">Pilih Filter </label>
+                                                                <div class="d-flex flex-column flex-md-row align-items-center gap-2">
+                                                                <?php
+                                                                        // Ambil session partner_category
+                                                                        $partner_category = $this->session->userdata('partner_category');
+
+                                                                        // Cek apakah partner_category valid (tidak kosong, tidak null, tidak 0)
+                                                                        $is_disabled = !empty($partner_category) && $partner_category != 0;
+
+                                                                        // Tentukan value untuk partner_id
+                                                                        $partner_id_value = $is_disabled ? $partner_category : set_value('partner_id', $selected_partner);
+                                                                    ?>
+                                                                    <?= form_dropdown('partner_id', 
+                                                                        array_column($partners, 'name', 'id'), // Data dropdown: id => name
+                                                                        $partner_id_value, // Value yang dipilih
+                                                                        'id="partner_id" class="form-select" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;" ' 
+                                                                        // . ($is_disabled ? 'disabled' : '') 
+                                                                        . ' required'
+                                                                    ); ?>
+                                                                    <!-- <?php if ($is_disabled): ?>
+                                                                        <input type="hidden" name="partner_id" value="<?= $partner_category ?>">
+                                                                    <?php endif; ?> -->
+                                                                    <!-- <?= form_dropdown('province_id', $province_options, '', 
+                                                                        'class="form-select" id="province_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
+                                                                    <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
+                                                                        'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
+                                                                    <?= form_dropdown('year', $year_options, '', 
+                                                                        'class="form-select" id="year" style="width: 20%; max-width: 100px; height: 48px; font-size: 1rem;"'); ?> -->
+                                                                    <?= form_dropdown('month', $month_options, '', 
+                                                                        'class="form-select" id="month" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
+                                                                    <?= form_input([
+                                                                        'name' => 'email',
+                                                                        'id' => 'email',
+                                                                        'type' => 'email',
+                                                                        'value' => '',
+                                                                        'class' => 'form-control',
+                                                                        'placeholder' => 'Enter your email',
+                                                                        'required' => 'required',
+                                                                        'style' => 'width: 20%; max-width: 300px; height: 48px; font-size: 1rem; '
                                                                     ]); ?>
                                                                     <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
                                                                         <i class="bi bi-envelope-arrow-up-fill"></i> Kirim
