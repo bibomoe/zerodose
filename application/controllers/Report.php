@@ -1825,7 +1825,7 @@ class Report extends CI_Controller {
         $this->load->library('email');
     
         // Set konfigurasi email
-        $this->email->from('admin@zerodosemonitor.com', 'Admin Report');
+        $this->email->from('adminzd@zerodosemonitor.com', 'Admin Report');
         $this->email->to($email);  // Ganti dengan email penerima
     
         // Subjek email
@@ -1835,7 +1835,7 @@ class Report extends CI_Controller {
         $this->email->message('Berikut adalah laporan imunisasi Indonesia yang diminta.');
     
         // Lampirkan file laporan (misalnya file PDF)
-        $this->email->attach($report_data, 'attachment', 'immunization_report.pdf', 'application/pdf');
+        // $this->email->attach($report_data, 'attachment', 'immunization_report.pdf', 'application/pdf');
     
         // Kirim email dan cek jika berhasil
         if ($this->email->send()) {
