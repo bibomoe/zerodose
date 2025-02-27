@@ -22,7 +22,44 @@ class Report extends CI_Controller {
     }
 
     public function index(){
+        // Ambil daftar partner untuk dropdown
+        $this->data['partners'] = $this->Partner_model->get_all_partners();
 
+        // Ambil tahun dan bulan dalam bentuk array
+        $this->data['year_options'] = [
+            '2024' => '2024',
+            '2025' => '2025'
+        ];
+
+        $this->data['month_options'] = [
+            'all'  => '-- Bulan --',
+            '1'  => 'January',
+            '2'  => 'February',
+            '3'  => 'March',
+            '4'  => 'April',
+            '5'  => 'May',
+            '6'  => 'June',
+            '7'  => 'July',
+            '8'  => 'August',
+            '9'  => 'September',
+            '10' => 'October',
+            '11' => 'November',
+            '12' => 'December'
+        ];
+
+        // Inisialisasi data awal (belum ada filter yang diterapkan)
+        $this->data['selected_partner'] = '';
+        $this->data['activities'] = [];
+        $this->data['title'] = 'Set Target';
+
+        // Ambil data provinsi untuk dropdown
+        $provinces = $this->Immunization_model->get_provinces();
+        $this->data['province_options'] = ['all' => '-- Provinsi --'];
+        foreach ($provinces as $province) {
+            $this->data['province_options'][$province->id] = $province->name_id;
+        }
+
+        load_template('report', $this->data);
     }
 
     public function contohdetail($partner_id = 'all') {
@@ -307,16 +344,13 @@ class Report extends CI_Controller {
         exit();
     }
 
-
-
-
     public function immunization_report_indonesia() {
         // Ambil filter provinsi dari dropdown (default: all)
-        $selected_province = $this->input->get('province') ?? 'all';
-        $selected_district = $this->input->get('district') ?? 'all';
-        $selected_year = $this->input->get('year') ?? 2024; // Default tahun 2025
-        // $selected_month = $this->input->get('month') ?? date('m'); // Default bulan saat ini 2025
-        $selected_month = $this->input->get('month') ?? 'all'; // Default bulan saat ini 2025
+        $selected_province = $this->input->post('province_id') ?? 'all';
+        $selected_district = $this->input->post('city_id') ?? 'all';
+        $selected_year = $this->input->post('year') ?? 2024; // Default tahun 2025
+        // $selected_month = $this->input->post('month') ?? date('m'); // Default bulan saat ini 2025
+        $selected_month = $this->input->post('month') ?? 'all'; // Default bulan saat ini 2025
 
         $year = $selected_year;
         // Menentukan baseline ZD
@@ -713,7 +747,7 @@ class Report extends CI_Controller {
             12 => 'Desember'
         ];
 
-        if ($this->input->get('month')){
+        if ($this->input->post('month')){
             if (isset($months[$selected_month])) {
                 $title_month = ' Bulan ' . $months[$selected_month];  // Gunakan nama bulan
             } else {
@@ -723,7 +757,27 @@ class Report extends CI_Controller {
             $title_month = '';
         }
 
-        $title_year = ' Tahun ' . $selected_year;
+        // Mendapatkan nama provinsi
+        $province_name = $this->Report_model->get_province_name_by_id($selected_province);
+
+        // Mendapatkan nama kabupaten/kota
+        $district_name = $this->Report_model->get_district_name_by_id($selected_district);
+
+        if ($selected_province !== 'all'){
+            if ($selected_district !== 'all'){
+                $title_area = $district_name . ' '; // Gunakan nama Kab Kota
+            } else {
+                $title_area = 'Provinsi ' . $province_name .' '; // Gunakan nama Provinsi
+            }
+
+        } else {
+            $title_area = 'Indonesia '; // Gunakan nama Indonesia
+        }
+
+
+        
+
+        $title_year = 'Tahun ' . $selected_year;
     
         // Membuat objek TCPDF
         // Buat objek PDF
@@ -732,15 +786,15 @@ class Report extends CI_Controller {
         $pdf = new TCPDF();
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Your Organization');
-        $pdf->SetTitle('Laporan Kerangka Kerja Penurunan Zero Dose');
-        $pdf->SetHeaderData('', 0, 'Laporan Kerangka Kerja Penurunan Zero Dose' . $title_year . $title_month, "Indonesia");
+        $pdf->SetTitle('Laporan Kerangka Kerja Penurunan Zero Dose ' . $title_area);
+        $pdf->SetHeaderData('', 0, 'Laporan Kerangka Kerja Penurunan Zero Dose', $title_area  . $title_year . $title_month);
     
         // Mengatur margin
         $pdf->SetMargins(15, 20, 15);
         $pdf->AddPage();
     
         // Judul laporan
-        $html = '<h2 style="text-align:center;">Laporan Kerangka Kerja Penurunan Zero Dose di Indonesia</h2>';
+        $html = '<h2 style="text-align:center;">Laporan Kerangka Kerja Penurunan Zero Dose di '. $title_area .'</h2>';
         // $html .= "<h4>Indonesia</h4>";
 
             // Tabel 1: Indikator Jangka Panjang

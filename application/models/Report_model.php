@@ -3,6 +3,44 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Report_model extends CI_Model {
 
+    /**
+     * Fungsi untuk mendapatkan nama provinsi berdasarkan ID
+     * @param int $province_id
+     * @return string $province_name
+     */
+    public function get_province_name_by_id($province_id) {
+        // Query untuk mendapatkan nama provinsi berdasarkan ID
+        $this->db->select('name_id'); // Field name_id untuk nama provinsi dalam bahasa Indonesia
+        $this->db->from('provinces'); // Nama tabel provinsi
+        $this->db->where('id', $province_id);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->row()->name_id; // Mengembalikan nama provinsi dalam bahasa Indonesia
+        } else {
+            return null; // Jika provinsi tidak ditemukan
+        }
+    }
+
+    /**
+     * Fungsi untuk mendapatkan nama kabupaten/kota berdasarkan ID
+     * @param int $district_id
+     * @return string $district_name
+     */
+    public function get_district_name_by_id($district_id) {
+        // Query untuk mendapatkan nama kabupaten/kota berdasarkan ID
+        $this->db->select('name_id'); // Field name_id untuk nama kabupaten/kota dalam bahasa Indonesia
+        $this->db->from('cities'); // Nama tabel kota
+        $this->db->where('id', $district_id);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->row()->name_id; // Mengembalikan nama kabupaten/kota dalam bahasa Indonesia
+        } else {
+            return null; // Jika kabupaten/kota tidak ditemukan
+        }
+    }
+
     public function get_targeted_province_ids() {
         $query = $this->db->select('id')
                             ->from('provinces')
