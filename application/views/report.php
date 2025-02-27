@@ -21,10 +21,16 @@
                 </div>
                 <div class="page-content"> 
                 <?php if ($this->session->flashdata('success')): ?>
-                                                                <div class="alert alert-success">
-                                                                    <?= $this->session->flashdata('success'); ?>
-                                                                </div>
-                                                            <?php endif; ?>
+                    <div class="alert alert-success">
+                        <?= $this->session->flashdata('success'); ?>
+                    </div>
+                <?php endif; ?>
+                <?php if ($this->session->flashdata('message')): ?>
+                    <div class="alert alert-info">
+                        <?= $this->session->flashdata('message'); ?>
+                    </div>
+                <?php endif; ?>
+
                 <section id="basic-horizontal-layouts">
                     <div class="row match-height">
                             <div class="col-md-12 col-12">
@@ -39,7 +45,7 @@
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             
-                                                            <?= form_open('report/immunization_report_indonesia'); ?>
+                                                            <?= form_open('report/immunization_report_indonesia_sent_email'); ?>
                                                                 <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;">Pilih Filter </label>
                                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                                     <?php
@@ -76,99 +82,6 @@
                                                             <?= form_close(); ?>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
-                                                        </br>
-                                                    </div>
-                                                    <!-- <?php var_dump($selected_partner) ; ?> -->
-                                                    <?php if (!empty($activities)): ?>
-                                                        <?= form_open('input/save_target_budget'); ?>
-                                                            <input type="hidden" name="partner_id" value="<?= $partner_id_value; ?>">
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    </br>
-                                                                    <div class="table-responsive">
-                                                                        <table class="table table-hover" id="table">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th rowspan="2" style="width: 5%;">Activity Code</th>
-                                                                                    <th rowspan="2" style="width: 30%;">Description</th>
-                                                                                    <th colspan="2" style="width: 65%;">Target (USD)</th>
-                                                                                    <th colspan="2" style="width: 65%;">Target (IDR)</th> <!-- New columns for IDR -->
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <th>Y1 (2024 USD)</th>
-                                                                                    <th>Y2 (2025 USD)</th>
-                                                                                    <th>Y1 (2024 IDR)</th> <!-- New column for IDR -->
-                                                                                    <th>Y2 (2025 IDR)</th> <!-- New column for IDR -->
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                <?php foreach ($activities as $activity): ?>
-                                                                                    <tr>
-                                                                                        <td><?= $activity['activity_code']; ?></td>
-                                                                                        <td><?= $activity['description']; ?></td>
-                                                                                        <td>
-                                                                                            <input type="number" 
-                                                                                                name="activities[<?= $activity['id']; ?>][target_budget_2024]" 
-                                                                                                value="<?= $activity['target_budget_2024_usd']; ?>" 
-                                                                                                class="form-control target_budget_2024" 
-                                                                                                min="0" required>
-                                                                                        </td>
-                                                                                        <td>
-                                                                                            <input type="number" 
-                                                                                                name="activities[<?= $activity['id']; ?>][target_budget_2025]" 
-                                                                                                value="<?= $activity['target_budget_2025_usd']; ?>" 
-                                                                                                class="form-control target_budget_2025" 
-                                                                                                min="0" required>
-                                                                                        </td>
-                                                                                        <td>
-                                                                                            <label id="target_budget_2024_idr"><?= number_format($activity['target_budget_2024_idr'], 0, ',', '.'); ?></label> <!-- Convert USD to IDR -->
-                                                                                        </td>
-                                                                                        <td>
-                                                                                            <label id="target_budget_2025_idr"><?= number_format($activity['target_budget_2025_idr'], 0, ',', '.'); ?></label> <!-- Convert USD to IDR -->
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                <?php endforeach; ?>
-                                                                                <!-- Baris Total -->
-                                                                                <tr>
-                                                                                    <td colspan="2"><strong>Total Target Budget</strong></td>
-                                                                                    <td>
-                                                                                        <strong id="total_budget_2024">
-                                                                                            <?= number_format($total_budget_2024_usd, 0, ',', '.'); ?>
-                                                                                        </strong>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <strong id="total_budget_2025">
-                                                                                            <?= number_format($total_budget_2025_usd, 0, ',', '.'); ?>
-                                                                                        </strong>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <strong id="total_budget_2024_idr">
-                                                                                            <?= number_format($total_budget_2024_idr, 0, ',', '.'); ?>
-                                                                                        </strong>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <strong id="total_budget_2025_idr">
-                                                                                            <?= number_format($total_budget_2025_idr, 0, ',', '.'); ?>
-                                                                                        </strong>
-                                                                                    </td>
-                                                                                </tr>
-
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-
-                                                                    <input type="hidden" id="hidden_total_budget_2024" name="total_budget_2024" value="<?= $total_budget_2024_idr; ?>">
-                                                                    <input type="hidden" id="hidden_total_budget_2025" name="total_budget_2025" value="<?= $total_budget_2025_idr; ?>">
-                                                                    <div class="col-sm-12 d-flex justify-content-end">
-                                                                        <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
-                                                                        <button type="reset"
-                                                                            class="btn btn-light-secondary me-1 mb-1">Reset</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        <?= form_close(); ?>
-                                                    <?php endif; ?>
                                                 <!-- </div> -->
                                             <!-- </form> -->
                                         </div>
@@ -193,11 +106,11 @@
     
 
 <script>
-
+$(document).ready(function () {
 
     $('#province_id').change(function () {
         var province_id = $(this).val();
-        if (province_id) {
+        if (province_id !== 'all' || province_id !== 'targeted') {
             $.ajax({
                 url: "<?= base_url('input/get_cities_by_province') ?>",
                 type: "GET",
@@ -210,8 +123,30 @@
                     });
                 }
             });
+        } else {
+            $('#city_id').html('<option value="all">-- Kab/Kota --</option>');
         }
     });
+
+    // Mengecek jika province_id sudah memiliki nilai saat halaman dimuat
+    var initialProvinceId = $('#province_id').val();  // Ambil nilai province_id saat halaman dimuat
+        if (initialProvinceId && initialProvinceId !== 'all' && initialProvinceId !== 'targeted') {
+            // Jika province_id tidak bernilai 'all' atau 'targeted', lakukan request untuk mendapatkan kota
+            $.ajax({
+                url: "<?= base_url('input/get_cities_by_province') ?>",  // URL ke controller Anda
+                type: "GET",
+                data: { province_id: initialProvinceId },
+                dataType: "json",
+                success: function (data) {
+                    // Mengosongkan dropdown kota sebelum menambah opsi baru
+                    $('#city_id').html('<option value="all">-- Kab/Kota --</option>');
+                    $.each(data, function (key, value) {
+                        $('#city_id').append('<option value="' + value.id + '">' + value.name_id + '</option>');
+                    });
+                }
+            });
+        }
+});
 </script>
 
 <script>

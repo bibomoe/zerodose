@@ -50,7 +50,7 @@ class Report extends CI_Controller {
         // Inisialisasi data awal (belum ada filter yang diterapkan)
         $this->data['selected_partner'] = '';
         $this->data['activities'] = [];
-        $this->data['title'] = 'Set Target';
+        $this->data['title'] = 'Laporan Kerangka Kerja Penurunan Zero Dose';
 
         // Ambil data provinsi untuk dropdown
         $provinces = $this->Immunization_model->get_provinces();
@@ -345,14 +345,18 @@ class Report extends CI_Controller {
     }
 
     public function immunization_report_indonesia() {
-        // Ambil filter provinsi dari dropdown (default: all)
-        $selected_province = $this->input->post('province_id') ?? 'all';
-        $selected_district = $this->input->post('city_id') ?? 'all';
-        $selected_year = $this->input->post('year') ?? 2024; // Default tahun 2025
-        // $selected_month = $this->input->post('month') ?? date('m'); // Default bulan saat ini 2025
-        $selected_month = $this->input->post('month') ?? 'all'; // Default bulan saat ini 2025
+        
+        
+            // Ambil filter provinsi dari dropdown (default: all)
+            $selected_province = $this->input->post('province_id') ?? 'all';
+            $selected_district = $this->input->post('city_id') ?? 'all';
+            $selected_year = $this->input->post('year') ?? 2024; // Default tahun 2025
+            // $selected_month = $this->input->post('month') ?? date('m'); // Default bulan saat ini 2025
+            $selected_month = $this->input->post('month') ?? 'all'; // Default bulan saat ini 2025
 
-        $year = $selected_year;
+            $year = $selected_year;
+        
+        
         // Menentukan baseline ZD
         // if ($selected_province == 'all') {
             // Ambil baseline ZD 2023 dari tabel target_baseline
@@ -1066,6 +1070,784 @@ class Report extends CI_Controller {
         $pdf->Output('Laporan_Zerodose_Indonesia.pdf', 'I');
         exit();
     }
+
+    public function immunization_report_indonesia_attach($param_province, $param_district, $param_year, $param_month) {
+        
+        
+                // Ambil filter provinsi dari dropdown (default: all)
+                $selected_province = $param_province;
+                $selected_district = $param_district;
+                $selected_year = $param_year;
+                // $selected_month = $this->input->post('month') ?? date('m'); // Default bulan saat ini 2025
+                $selected_month = $param_month;
+
+                $year = $selected_year;
+
+        // Menentukan baseline ZD
+        if ($selected_province == 'all') {
+            // Ambil baseline ZD 2023 dari tabel target_baseline
+            $this->data['national_baseline_zd'] = $this->Immunization_model->get_baseline_zd(2023);
+        } else {
+            // Ambil total ZD dari tabel zd_cases_2023 berdasarkan provinsi yang dipilih
+            $this->data['national_baseline_zd'] = $this->Report_model->get_zero_dose_by_province($selected_province, $selected_district);
+        }
+
+        // Ambil target dari target_immunization untuk provinsi tertentu atau targeted
+        $this->data["total_target_dpt_1_$year"] = $this->Report_model->get_total_target('dpt_hb_hib_1', $selected_province, $selected_district, $year);
+        $this->data["total_target_dpt_3_$year"] = $this->Report_model->get_total_target('dpt_hb_hib_3', $selected_province, $selected_district, $year);
+        $this->data["total_target_mr_1_$year"] = $this->Report_model->get_total_target('mr_1', $selected_province, $selected_district, $year);
+
+        // Ambil data cakupan imunisasi dari immunization_data
+        $this->data["total_dpt_1_$year"] = $this->Report_model->get_total_vaccine('dpt_hb_hib_1', $selected_province, $selected_district, $year, $selected_month);
+        $this->data["total_dpt_3_$year"] = $this->Report_model->get_total_vaccine('dpt_hb_hib_3', $selected_province, $selected_district, $year, $selected_month);
+        $this->data["total_mr_1_$year"] = $this->Report_model->get_total_vaccine('mr_1', $selected_province, $selected_district, $year, $selected_month);
+
+        // Hitung Zero Dose (ZD)
+        $this->data["zero_dose_$year"] = max($this->data["total_target_dpt_1_$year"] - $this->data["total_dpt_1_$year"], 0);
+
+        // Hitung persentase cakupan terhadap baseline
+        $this->data["percent_dpt_3_$year"] = ($this->data["total_target_dpt_3_$year"] != 0)
+            ? round(($this->data["total_dpt_3_$year"] / $this->data["total_target_dpt_3_$year"]) * 100, 1)
+            : 0;
+    
+        $this->data["percent_mr_1_$year"] = ($this->data["total_target_mr_1_$year"] != 0)
+            ? round(($this->data["total_mr_1_$year"] / $this->data["total_target_mr_1_$year"]) * 100, 1)
+            : 0;
+        
+        $this->data["percent_dpt_1_$year"] = ($this->data["total_target_dpt_1_$year"] != 0)
+            ? round(($this->data["total_dpt_1_$year"] / $this->data["total_target_dpt_1_$year"]) * 100, 1)
+            : 0;
+        
+        // var_dump($this->data["percent_dpt_3_$year"]);
+        // exit;
+
+        $zero_dose = $this->data["zero_dose_$year"];
+        $percent_dpt3_coverage = $this->data["percent_dpt_3_$year"];
+        $total_dpt3_coverage = $this->data["total_dpt_3_$year"];
+        $total_mr1_coverage = $this->data["total_mr_1_$year"];
+        $percent_mr1_coverage = $this->data["percent_mr_1_$year"];
+
+        $total_dpt1_coverage = $this->data["total_dpt_1_$year"];
+        $percent_dpt1_coverage = $this->data["percent_dpt_1_$year"];
+
+        // TABLE 2 
+        // Mendapatkan dropout rates per provinsi
+        $dropout_rates = $this->Report_model->get_districts_under_5_percent($selected_province,$selected_district,$selected_year, $selected_month);
+        
+        // Menjumlahkan semua nilai dropout rate per provinsi
+        $total_dropout_rate = array_sum($dropout_rates);
+        
+        // Menambahkan total dropout rate ke data view
+        $this->data['total_dropout_rate'] = $total_dropout_rate;
+
+        // Ambil dropout rates per provinsi
+        $dropout_rates_per_province = $this->Report_model->get_dropout_rates_per_province($selected_province,$selected_district,$selected_year, $selected_month);
+
+        // Hitung total dan jumlah provinsi untuk perhitungan rata-rata
+        $total_dropout_rate = 0;
+        $total_provinces = count($dropout_rates_per_province);
+
+        // var_dump($dropout_rates_per_province);
+        // exit;
+        
+        foreach ($dropout_rates_per_province as $province_id => $data) {
+            $total_dropout_rate += $data['average']; // Menjumlahkan rata-rata dropout rate per provinsi
+        }
+
+        // Hitung rata-rata dropout rate dari semua provinsi
+        $average_dropout_rate_all_provinces = ($total_provinces > 0) ? $total_dropout_rate / $total_provinces : 0;
+
+        // Menambahkan rata-rata dropout rate ke data view
+        $this->data['dropout_rate_all_provinces'] = round($average_dropout_rate_all_provinces, 2);
+
+        $total_district_under_5_DO = $this->data['total_dropout_rate']; //Jumlah Kab/Kota dengan %DO dibawah 5%
+        $dropout_rate_all_provinces = $this->data['dropout_rate_all_provinces'];
+
+        // Ambil data jumlah puskesmas & imunisasi dari model baru
+        $puskesmas_data = $this->Report_model->get_puskesmas_data($selected_province, $selected_district, $selected_year, $selected_month);
+        $this->data['total_immunized_puskesmas'] = $puskesmas_data['total_immunized_puskesmas'];
+        $this->data['percentage_puskesmas'] = $puskesmas_data['percentage'];
+
+        $puskesmas_conduct_immunization = $this->data['total_immunized_puskesmas'];
+        $percentage_puskesmas_conduct_immunization = $this->data['percentage_puskesmas'];
+
+        $this->data["total_dpt_stockout_$year"] = $this->Report_model->get_total_dpt_stock_out($selected_province, $selected_district, $selected_year, $selected_month);
+
+        $total_dpt_stockout = $this->data["total_dpt_stockout_$year"];
+        
+        // TABLE 3
+
+        // Mengambil data provinsi menggunakan model
+        $list_province = $this->Report_model->get_provinces();
+        $table_do = []; // Array untuk menyimpan hasil laporan
+
+        if($selected_province === 'all' || $selected_province === 'targeted'){
+            // Mengambil data Jumlah District Dengan DO dibawah 5%
+            $dpt_under_5_data = $this->Report_model->get_districts_under_5_percent($selected_province,$selected_district,$selected_year, $selected_month);
+
+            // Mengambil data total cities per provinsi
+            $this->data['total_cities_per_province'] = $this->Report_model->get_total_cities_per_province($selected_province,$selected_district);
+
+            // **Hitung persentase districts dengan coverage < 5% per provinsi**
+            $this->data['percent_dpt_under_5_per_province'] = [];
+            foreach ($dpt_under_5_data as $province_id => $district_count) {
+                // Cari total cities berdasarkan province_id
+                $total_cities = 0;
+                foreach ($this->data['total_cities_per_province'] as $province_data) {
+                    if ($province_data['province_id'] == $province_id) {
+                        $total_cities = (int)$province_data['total_cities'];
+                        break; // Keluar dari loop jika ditemukan
+                    }
+                }
+
+                $this->data['percent_dpt_under_5_per_province'][$province_id] = ($total_cities > 0)
+                    ? round(($district_count / $total_cities) * 100, 2)
+                    : 0;
+            }
+
+            foreach ($list_province as $province) {
+                $province_id = $province['id'];
+                $province_name = $province['name_id'];  // Misalkan 'name' adalah nama provinsi, sesuaikan jika nama kolom berbeda
+                
+                // Ambil data untuk setiap provinsi dari variabel yang sudah ada
+                $do_rate = isset($dropout_rates_per_province[$province_id]) ? $dropout_rates_per_province[$province_id]['average'] : 0;
+                $cities_do_under_5 = isset($dpt_under_5_data[$province_id]) ? $dpt_under_5_data[$province_id] : 0;
+                $percentage_cities_do_under_5 = isset($this->data['percent_dpt_under_5_per_province'][$province_id]) ? $this->data['percent_dpt_under_5_per_province'][$province_id] : 0;
+    
+                // Masukkan data ke dalam array table_do
+                $table_do[] = [
+                    'province_id' => $province_id,
+                    'name' => $province_name,
+                    'do_rate' => number_format($do_rate, 2),  // DO rate dalam format 2 desimal
+                    'cities_do_under_5' => $cities_do_under_5,
+                    'percentage_cities_do_under_5' => number_format($percentage_cities_do_under_5, 2) . '%',  // Persentase dengan format %
+                ];
+            }
+        } else {
+            if ($selected_district !== 'all'){
+                // echo 'hi2';
+                $dpt_under_5_data_by_district = $this->Report_model->get_districts_under_5_percent_by_district($selected_province,$selected_district,$selected_year, $selected_month);
+                foreach ($dpt_under_5_data_by_district as $row){
+                    // Periksa apakah dropout_rate dan total_do kurang dari 0, jika iya set ke 0
+                    $dropout_rate = ($row['dropout_rate'] < 0) ? 0 : number_format($row['dropout_rate'], 2);
+                    $total_do = ($row['total_do'] < 0) ? 0 : $row['total_do'];
+
+                    $table_do[] = [
+                        'puskesmas_name' => $row['puskesmas_name'],
+                        'dropout_rate' => $dropout_rate,  // DO rate dalam format 2 desimal
+                        'total_do' => $total_do
+                    ];
+                }
+            } else {
+                // Data per province
+                $dpt_under_5_data_by_province = $this->Report_model->get_districts_under_5_percent_by_province($selected_province,$selected_district,$selected_year, $selected_month);
+                foreach ($dpt_under_5_data_by_province as $row){
+                    // Periksa apakah dropout_rate dan total_do kurang dari 0, jika iya set ke 0
+                    $dropout_rate = ($row['dropout_rate'] < 0) ? 0 : number_format($row['dropout_rate'], 2);
+                    $total_do = ($row['total_do'] < 0) ? 0 : $row['total_do'];
+
+                    $table_do[] = [
+                        'city_name' => $row['city_name'],
+                        'dropout_rate' => $dropout_rate,  // DO rate dalam format 2 desimal
+                        'total_do' => $total_do
+                    ];
+                }
+            }
+        }
+        
+
+        
+        // TABLE 4
+
+        // Array untuk menyimpan laporan puskesmas imunisasi
+        $table_puskesmas_immunization = [];
+
+        if($selected_province === 'all' || $selected_province === 'targeted'){
+            $immunization_data = $this->Report_model->get_immunization_puskesmas_table($selected_province,$selected_district,$selected_year, $selected_month);
+
+            foreach ($list_province as $province) {
+                $province_id = $province['id'];  // ID Provinsi
+                $province_name = $province['name_id'];  // Nama Provinsi (gunakan 'name_id' jika nama provinsi dalam bahasa Indonesia)
+    
+                // Inisialisasi variabel untuk menyimpan data
+                $total_puskesmas_with_immunization = 0;
+                $total_puskesmas = 0;
+                $percentage_immunization = 0;
+    
+                // Cari data imunisasi berdasarkan provinsi
+                foreach ($immunization_data as $data) {
+                    // Cek jika province_id dari data sama dengan id provinsi di $list_province
+                    if ($data['province_id'] == $province_id) {
+                        // Ambil total puskesmas yang sudah melakukan imunisasi
+                        $total_puskesmas_with_immunization = $data['total_puskesmas_with_immunization'];
+                        // Ambil total puskesmas
+                        $total_puskesmas = $data['total_puskesmas'];
+                        // Hitung persentase imunisasi
+                        $percentage_immunization = $data['percentage_immunization'];
+                        break;  // Setelah ditemukan data untuk provinsi ini, keluar dari loop
+                    }
+                }
+    
+                // Masukkan data ke dalam array $table_puskesmas_immunization
+                $table_puskesmas_immunization[] = [
+                    'province_id' => $province_id,
+                    'province_name' => $province_name,
+                    'total_puskesmas_with_immunization' => $total_puskesmas_with_immunization,
+                    'total_puskesmas' => $total_puskesmas,
+                    'percentage_immunization' => $percentage_immunization
+                ];
+            }
+        } else {
+            if ($selected_district !== 'all'){
+                $immunization_data = $this->Report_model->get_immunization_puskesmas_table_by_district($selected_province,$selected_district,$selected_year, $selected_month);
+                foreach ($immunization_data as $row) {
+                    // Masukkan data ke dalam array $table_puskesmas_immunization
+                    $table_puskesmas_immunization[] = [
+                        'puskesmas_name' => $row['puskesmas_name']
+                    ];
+                }
+            } else {
+                $immunization_data = $this->Report_model->get_immunization_puskesmas_table_by_province($selected_province,$selected_district,$selected_year, $selected_month);
+                foreach ($immunization_data as $row){
+                    $table_puskesmas_immunization[] = [
+                        'city_name' => $row['city_name'],
+                        'total_puskesmas_with_immunization' => $row['total_puskesmas_with_immunization'],
+                        'total_puskesmas' => $row['total_puskesmas'],
+                        'percentage_immunization' => $row['percentage_immunization']
+                    ];
+                }
+            }
+        }
+        
+
+        // TABLE 5
+        // Array untuk menyimpan laporan puskesmas stock out
+        $table_puskesmas_stock_out = [];
+
+        if($selected_province === 'all' || $selected_province === 'targeted'){
+            $puskesmas_dpt_stock_out_data = $this->Report_model->get_puskesmas_dpt_stock_out_table($selected_province,$selected_district,$selected_year, $selected_month);
+                foreach ($list_province as $province) {
+                    $province_id = $province['id'];  // ID Provinsi
+                    $province_name = $province['name_id'];  // Nama Provinsi (gunakan 'name_id' jika nama provinsi dalam bahasa Indonesia)
+
+                    // Inisialisasi variabel untuk menyimpan data
+                    $total_stock_out_1_month = 0;
+                    $total_stock_out_2_months = 0;
+                    $total_stock_out_3_months = 0;
+                    $total_stock_out_more_than_3_months = 0;
+                    $total_stock_out = 0;
+                    $total_puskesmas = 0;
+                    $percentage_stock_out = 0;
+
+                    // Cari data puskesmas dengan DPT stock out berdasarkan provinsi
+                    foreach ($puskesmas_dpt_stock_out_data as $data) {
+                        // Cek jika province_id dari data sama dengan id provinsi di $list_province
+                        if ($data['province_id'] == $province_id) {
+                            // Ambil data stock out berdasarkan durasi
+                            $total_stock_out_1_month = $data['total_stock_out_1_month'];
+                            $total_stock_out_2_months = $data['total_stock_out_2_months'];
+                            $total_stock_out_3_months = $data['total_stock_out_3_months'];
+                            $total_stock_out_more_than_3_months = $data['total_stock_out_more_than_3_months'];
+                            // Ambil total puskesmas aktif di provinsi
+                            $total_puskesmas = $data['total_puskesmas'];
+
+                            // Hitung total puskesmas yang mengalami DPT stock out
+                            $total_stock_out = $total_stock_out_1_month + $total_stock_out_2_months + $total_stock_out_3_months + $total_stock_out_more_than_3_months;
+
+                            // Hitung persentase Puskesmas dengan DPT stock out
+                            $percentage_stock_out = ($total_puskesmas > 0)
+                                ? round(($total_stock_out / $total_puskesmas) * 100, 2)
+                                : 0;
+                            break;  // Setelah ditemukan data untuk provinsi ini, keluar dari loop
+                        }
+                    }
+
+                    // Masukkan data ke dalam array $table_puskesmas_stock_out
+                    $table_puskesmas_stock_out[] = [
+                        'province_id' => $province_id,
+                        'province_name' => $province_name,
+                        'total_stock_out_1_month' => $total_stock_out_1_month,
+                        'total_stock_out_2_months' => $total_stock_out_2_months,
+                        'total_stock_out_3_months' => $total_stock_out_3_months,
+                        'total_stock_out_more_than_3_months' => $total_stock_out_more_than_3_months,
+                        'total_stock_out' => $total_stock_out,
+                        'total_puskesmas' => $total_puskesmas,
+                        'percentage_stock_out' => $percentage_stock_out
+                    ];
+                }
+        } else {
+            if ($selected_district !== 'all'){
+                $puskesmas_dpt_stock_out_data = $this->Report_model->get_puskesmas_dpt_stock_out_table_by_district($selected_province,$selected_district,$selected_year, $selected_month);
+
+                // Cari data puskesmas dengan DPT stock out berdasarkan provinsi
+                foreach ($puskesmas_dpt_stock_out_data as $data) {
+
+                // Masukkan data ke dalam array $table_puskesmas_stock_out
+                $table_puskesmas_stock_out[] = [
+                    'puskesmas_name' => $data['puskesmas_name'],
+                    'month' => $data['month']
+                ];
+            }
+            } else {
+                $puskesmas_dpt_stock_out_data = $this->Report_model->get_puskesmas_dpt_stock_out_table_by_province($selected_province,$selected_district,$selected_year, $selected_month);
+
+                // Cari data puskesmas dengan DPT stock out berdasarkan provinsi
+                foreach ($puskesmas_dpt_stock_out_data as $data) {
+                    
+                        // Ambil data stock out berdasarkan durasi
+                        $total_stock_out_1_month = $data['total_stock_out_1_month'];
+                        $total_stock_out_2_months = $data['total_stock_out_2_months'];
+                        $total_stock_out_3_months = $data['total_stock_out_3_months'];
+                        $total_stock_out_more_than_3_months = $data['total_stock_out_more_than_3_months'];
+                        // Ambil total puskesmas aktif di provinsi
+                        $total_puskesmas = $data['total_puskesmas'];
+
+                        // Hitung total puskesmas yang mengalami DPT stock out
+                        $total_stock_out = $total_stock_out_1_month + $total_stock_out_2_months + $total_stock_out_3_months + $total_stock_out_more_than_3_months;
+
+                        // Hitung persentase Puskesmas dengan DPT stock out
+                        $percentage_stock_out = ($total_puskesmas > 0)
+                            ? round(($total_stock_out / $total_puskesmas) * 100, 2)
+                            : 0;
+
+                    // Masukkan data ke dalam array $table_puskesmas_stock_out
+                    $table_puskesmas_stock_out[] = [
+                        'city_name' => $data['city_name'],
+                        'total_stock_out_1_month' => $total_stock_out_1_month,
+                        'total_stock_out_2_months' => $total_stock_out_2_months,
+                        'total_stock_out_3_months' => $total_stock_out_3_months,
+                        'total_stock_out_more_than_3_months' => $total_stock_out_more_than_3_months,
+                        'total_stock_out' => $total_stock_out,
+                        'total_puskesmas' => $total_puskesmas,
+                        'percentage_stock_out' => $percentage_stock_out
+                    ];
+                }
+
+                
+            }
+        }
+        
+        
+        // var_dump($table_puskesmas_stock_out);
+        // exit;
+
+        // var_dump($table_puskesmas_stock_out);
+        // exit;
+
+        // Data contoh, kamu bisa mengganti ini dengan data asli dari database
+        $province_name = "Indonesia";
+    
+        $data = [
+            'cumulative_dpt3' => $percent_dpt3_coverage . '% <br>' . $total_dpt3_coverage,
+            'cumulative_mr1' => $percent_mr1_coverage . '% <br>' . $total_mr1_coverage,
+            'children_zero_dose' => $zero_dose,
+            'cumulative_dpt1' => $percent_dpt1_coverage . '% <br>' . $total_dpt1_coverage,
+            'drop_out_percentage' => $dropout_rate_all_provinces . '% <br>',
+            'puskesmas_percentage' => $total_district_under_5_DO,
+            'puskesmas_conduct_immunization' => $puskesmas_conduct_immunization,
+            'percentage_puskesmas_conduct_immunization' => $percentage_puskesmas_conduct_immunization,
+            'total_dpt_stockout' => $total_dpt_stockout,
+            'province_do' => $table_do,
+            'puskesmas_do_immunization' => $table_puskesmas_immunization,
+            'puskesmas_dpt_stock_out_data' => $table_puskesmas_stock_out
+        ];
+
+        // Array nama bulan
+        $months = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
+
+        if ($this->input->post('month')){
+            if (isset($months[$selected_month])) {
+                $title_month = ' Bulan ' . $months[$selected_month];  // Gunakan nama bulan
+            } else {
+                $title_month = '';  // Jika bulan tidak valid
+            }
+        } else {
+            $title_month = '';
+        }
+
+        // Mendapatkan nama provinsi
+        $province_name = $this->Report_model->get_province_name_by_id($selected_province);
+
+        // Mendapatkan nama kabupaten/kota
+        $district_name = $this->Report_model->get_district_name_by_id($selected_district);
+
+        if ($selected_province !== 'all'){
+            if ($selected_district !== 'all'){
+                $title_area = $district_name . ' '; // Gunakan nama Kab Kota
+            } else {
+                $title_area = 'Provinsi ' . $province_name .' '; // Gunakan nama Provinsi
+            }
+
+        } else {
+            $title_area = 'Indonesia '; // Gunakan nama Indonesia
+        }
+
+
+        
+
+        $title_year = 'Tahun ' . $selected_year;
+    
+        // Membuat objek TCPDF
+        // Buat objek PDF
+        // **1. Pastikan TCPDF sudah ada di lokasi yang benar**
+        require_once(APPPATH . 'libraries/tcpdf/tcpdf.php'); 
+        $pdf = new TCPDF();
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor('Your Organization');
+        $pdf->SetTitle('Laporan Kerangka Kerja Penurunan Zero Dose ' . $title_area);
+        $pdf->SetHeaderData('', 0, 'Laporan Kerangka Kerja Penurunan Zero Dose', $title_area  . $title_year . $title_month);
+    
+        // Mengatur margin
+        $pdf->SetMargins(15, 20, 15);
+        $pdf->AddPage();
+    
+        // Judul laporan
+        $html = '<h2 style="text-align:center;">Laporan Kerangka Kerja Penurunan Zero Dose di '. $title_area .'</h2>';
+        // $html .= "<h4>Indonesia</h4>";
+
+            // Tabel 1: Indikator Jangka Panjang
+            $html .= '<h3>Indikator Jangka Panjang</h3>';
+            $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                        <thead>
+                            <tr>
+                                <th>Cakupan DPT-3</th>
+                                <th>Cakupan MR-1</th>
+                                <th>Jumlah Anak Zero Dose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>' . $data['cumulative_dpt3'] . '</td>
+                                <td>' . $data['cumulative_mr1'] . '</td>
+                                <td>' . $data['children_zero_dose'] . '</td>
+                            </tr>
+                        </tbody>
+                    </table>';
+        
+            // Menambahkan jarak antara tabel pertama dan kedua
+            $html .= '<br><br>';
+        
+            // Tabel 2: Indikator Jangka Menengah
+            $html .= '<h3>Indikator Jangka Menengah</h3>';
+            $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                        <thead>
+                            <tr>
+                                <th>Cakupan DPT-1</th>
+                                <th>% Drop Out</th>
+                                <th>Jumlah Kab/Kota dengan %DO dibawah 5%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>' . $data['cumulative_dpt1'] . '</td>
+                                <td>' . $data['drop_out_percentage'] . '</td>
+                                <td>' . $data['puskesmas_percentage'] . '</td>
+                            </tr>
+    
+                            <tr>
+                                <th>% puskesmas yang melakukan pelayanan imunisasi</th>
+                                <th>Jumlah puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional</th>
+                                <th>Jumlah puskesmas dengan status DPT stock out</th>
+                            </tr>
+    
+                            <tr>
+                                <td>' . $data['percentage_puskesmas_conduct_immunization'] . '</td>
+                                <td>' . $data['puskesmas_conduct_immunization'] . '</td>
+                                <td>' . $data['total_dpt_stockout'] . '</td>
+                            </tr>
+                        </tbody>
+                    </table>';
+        
+            
+                    // Menambahkan jarak antara tabel kedua dan ketiga
+            $html .= '<br><br>';
+    
+
+        if($selected_province === 'all' || $selected_province === 'targeted'){
+        
+            // Tabel 3: Kab/Ko dengan % DO dibawah 5%
+            $html .= '<h3>Kab/Kota dengan % DO dibawah 5%</h3>';
+            $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                        <thead>
+                            <tr>
+                                <th>Nama Provinsi</th>
+                                <th>% Anak DO</th>
+                                <th>Jumlah Kab/Kota dengan % DO dibawah 5%</th>
+                                <th>% Kab/Kota dengan % DO dibawah 5%</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+            foreach ($data['province_do'] as $item) {
+                $html .= "<tr>
+                            <td>{$item['name']}</td>
+                            <td>{$item['do_rate']}</td>
+                            <td>{$item['cities_do_under_5']}</td>
+                            <td>{$item['percentage_cities_do_under_5']}</td>
+                        </tr>";
+            }
+            $html .= '</tbody></table>';
+
+            // Menambahkan jarak antara tabel keempat dan kelima
+            $html .= '<br><br>';
+        
+            // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
+            $html .= '<h3>Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
+            $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                        <thead>
+                            <tr>
+                                <th>Nama Provinsi</th>
+                                <th>Jumlah Puskesmas</th>
+                                <th>% Puskesmas</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+            foreach ($data['puskesmas_do_immunization'] as $item) {
+                $html .= "<tr>
+                            <td>{$item['province_name']}</td>
+                            <td>{$item['total_puskesmas_with_immunization']}</td>
+                            <td>{$item['percentage_immunization']}%</td>
+                        </tr>";
+            }
+            $html .= '</tbody></table>';
+        
+            // Menambahkan jarak antara tabel ketiga dan keempat
+            $html .= '<br><br>';
+        
+            // Tabel 5: Puskesmas dengan status DPT stock out
+            $html .= '<h3>Jumlah Puskesmas dengan status DPT stock out</h3>';
+            $html .= '<table border="1" cellpadding="5">
+                        <thead>
+                            <tr>
+                                <th>Nama Provinsi</th>
+                                <th>Jumlah Puskesmas</th>
+                                <th>% Puskesmas</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+            foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
+                $html .= "<tr>
+                            <td>{$item['province_name']}</td>
+                            <td>{$item['total_stock_out']}</td>
+                            <td>{$item['percentage_stock_out']}%</td>
+                        </tr>";
+            }
+            $html .= '</tbody></table>';
+    
+        } else {
+            if ($selected_district !== 'all'){
+                // Tabel 3: Kab/Ko dengan % DO dibawah 5%
+                $html .= '<h3>Puskesmas dengan % DO dibawah 5%</h3>';
+                $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                            <thead>
+                                <tr>
+                                    <th>Nama Puskesmas</th>
+                                    <th>Jumlah Anak DO</th>
+                                    <th>% Anak DO</th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+                foreach ($data['province_do'] as $item) {
+                    $html .= "<tr>
+                                <td>{$item['puskesmas_name']}</td>
+                                <td>{$item['total_do']}</td>
+                                <td>{$item['dropout_rate']}%</td>
+                            </tr>";
+                }
+                $html .= '</tbody></table>';
+
+                // Menambahkan jarak antara tabel keempat dan kelima
+                $html .= '<br><br>';
+            
+                // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
+                $html .= '<h3>Puskesmas yang melakukan pelayanan imunisasi</h3>';
+                $html .= '<table border="1" cellpadding="5" style="text-align:left;">
+                            <thead>
+                                <tr align="center">
+                                    <th><b>NAMA PUSKESMAS</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+                $no = 0;
+                foreach ($data['puskesmas_do_immunization'] as $item) {
+                    $no++;
+                    $html .= "<tr>
+                                <td>{$item['puskesmas_name']}</td>
+                            </tr>";
+                }
+                $html .= '</tbody></table>';
+            
+                // Menambahkan jarak antara tabel ketiga dan keempat
+                $html .= '<br><br>';
+
+                // Tabel 5: Puskesmas dengan status DPT stock out
+                $html .= '<h3>Puskesmas dengan status DPT stock out</h3>';
+                $html .= '<table border="1" cellpadding="5">
+                            <thead>
+                                <tr>
+                                    <th>Nama Puskesmas</th>
+                                    <th>Bulan</th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+                foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
+                    $html .= "<tr>
+                                <td>{$item['puskesmas_name']}</td>
+                                <td>{$item['month']}</td>
+                            </tr>";
+                }
+                $html .= '</tbody></table>';
+
+            } else {
+                // Tabel 3: Kab/Ko dengan % DO dibawah 5%
+                $html .= '<h3>Kab/Kota dengan % DO dibawah 5%</h3>';
+                $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                            <thead>
+                                <tr>
+                                    <th>Nama Kab/Kota</th>
+                                    <th>Jumlah Anak DO</th>
+                                    <th>% Anak DO</th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+                foreach ($data['province_do'] as $item) {
+                    $html .= "<tr>
+                                <td>{$item['city_name']}</td>
+                                <td>{$item['total_do']}</td>
+                                <td>{$item['dropout_rate']}%</td>
+                            </tr>";
+                }
+                $html .= '</tbody></table>';
+
+                // Menambahkan jarak antara tabel keempat dan kelima
+                $html .= '<br><br>';
+            
+                // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
+                $html .= '<h3>Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
+                $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                            <thead>
+                                <tr>
+                                    <th>Nama Kab/Kota</th>
+                                    <th>Jumlah Puskesmas</th>
+                                    <th>% Puskesmas</th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+                foreach ($data['puskesmas_do_immunization'] as $item) {
+                    $html .= "<tr>
+                                <td>{$item['city_name']}</td>
+                                <td>{$item['total_puskesmas_with_immunization']}</td>
+                                <td>{$item['percentage_immunization']}%</td>
+                            </tr>";
+                }
+                $html .= '</tbody></table>';
+            
+                // Menambahkan jarak antara tabel ketiga dan keempat
+                $html .= '<br><br>';
+            
+                // Tabel 5: Puskesmas dengan status DPT stock out
+                $html .= '<h3>Jumlah Puskesmas dengan status DPT stock out</h3>';
+                $html .= '<table border="1" cellpadding="5">
+                            <thead>
+                                <tr>
+                                    <th>Nama Kab/Kota</th>
+                                    <th>Jumlah Puskesmas</th>
+                                    <th>% Puskesmas</th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+                foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
+                    $html .= "<tr>
+                                <td>{$item['city_name']}</td>
+                                <td>{$item['total_stock_out']}</td>
+                                <td>{$item['percentage_stock_out']}%</td>
+                            </tr>";
+                }
+                $html .= '</tbody></table>';
+            }
+        }
+        
+        // Menulis HTML ke PDF
+        $pdf->writeHTML($html, true, false, true, false, '');
+    
+        // Menyelesaikan PDF dan menampilkan di browser
+        // ob_end_clean(); // Membersihkan output buffer sebelum mengirim PDF
+        // $pdf->Output('Laporan_Zerodose_Indonesia.pdf', 'I');
+        // exit();
+
+        // Mendapatkan PDF sebagai string (di memori)
+        $pdf_output = $pdf->Output('', 'S');  // 'S' untuk output sebagai string
+
+        return $pdf_output;
+    }
+
+    public function immunization_report_indonesia_sent_email() {
+        // Ambil data dari form filter
+        $province_id = $this->input->post('province_id');
+        $city_id = $this->input->post('city_id');
+        $year = $this->input->post('year');
+        $month = $this->input->post('month');
+
+        $email = 'abdulrahmankhadafi9@gmail.com';
+    
+        // Generate laporan berdasarkan filter yang diberikan
+        $report_data = $this->immunization_report_indonesia_attach($province_id, $city_id, $year, $month);
+
+        $this->send_report_via_email($report_data, $email);
+        // Kirim laporan melalui email
+        // if ($this->send_report_via_email($report_data, $email)) {
+        //     // Set pesan sukses jika email berhasil dikirim
+        //     $this->session->set_flashdata('message', 'Laporan berhasil dikirim melalui email!');
+        // } else {
+        //     // Set pesan error jika gagal mengirim email
+        //     $this->session->set_flashdata('message', 'Gagal mengirim laporan melalui email!');
+        // }
+    
+        // Redirect kembali ke halaman atau tampilkan laporan
+        // redirect('report');
+    }
+    
+    // Fungsi untuk mengirim laporan via email
+    private function send_report_via_email($report_data, $email) {
+        // Load library email
+        $this->load->library('email');
+    
+        // Set konfigurasi email
+        $this->email->from('admin@zerodosemonitor.com', 'Admin Report');
+        $this->email->to($email);  // Ganti dengan email penerima
+    
+        // Subjek email
+        $this->email->subject('Laporan Imunisasi Indonesia');
+    
+        // Pesan email
+        $this->email->message('Berikut adalah laporan imunisasi Indonesia yang diminta.');
+    
+        // Lampirkan file laporan (misalnya file PDF)
+        $this->email->attach($report_data, 'attachment', 'immunization_report.pdf', 'application/pdf');
+    
+        // Kirim email dan cek jika berhasil
+        if ($this->email->send()) {
+            return true;  // Berhasil mengirim email
+        } else {
+            // Untuk debugging
+            // log_message('error', 'Email failed: ' . $this->email->print_debugger());  // Log error email
+            // return false;  // Gagal mengirim email
+            echo $this->email->print_debugger();
+        }
+    }
+    
 
     public function immunization_and_grant_report_indonesia() {
         // Data untuk laporan imunisasi
