@@ -1807,16 +1807,16 @@ class Report extends CI_Controller {
 
         $this->send_report_via_email($report_data, $email);
         // Kirim laporan melalui email
-        // if ($this->send_report_via_email($report_data, $email)) {
-        //     // Set pesan sukses jika email berhasil dikirim
-        //     $this->session->set_flashdata('message', 'Laporan berhasil dikirim melalui email!');
-        // } else {
-        //     // Set pesan error jika gagal mengirim email
-        //     $this->session->set_flashdata('message', 'Gagal mengirim laporan melalui email!');
-        // }
+        if ($this->send_report_via_email($report_data, $email)) {
+            // Set pesan sukses jika email berhasil dikirim
+            $this->session->set_flashdata('message', 'Laporan berhasil dikirim melalui email!');
+        } else {
+            // Set pesan error jika gagal mengirim email
+            $this->session->set_flashdata('message', 'Gagal mengirim laporan melalui email!');
+        }
     
         // Redirect kembali ke halaman atau tampilkan laporan
-        // redirect('report');
+        redirect('report');
     }
     
     // Fungsi untuk mengirim laporan via email
@@ -1835,7 +1835,7 @@ class Report extends CI_Controller {
         $this->email->message('Berikut adalah laporan imunisasi Indonesia yang diminta.');
     
         // Lampirkan file laporan (misalnya file PDF)
-        // $this->email->attach($report_data, 'attachment', 'immunization_report.pdf', 'application/pdf');
+        $this->email->attach($report_data, 'attachment', 'immunization_report.pdf', 'application/pdf');
     
         // Kirim email dan cek jika berhasil
         if ($this->email->send()) {
@@ -1843,8 +1843,8 @@ class Report extends CI_Controller {
         } else {
             // Untuk debugging
             // log_message('error', 'Email failed: ' . $this->email->print_debugger());  // Log error email
-            // return false;  // Gagal mengirim email
-            echo $this->email->print_debugger();
+            return false;  // Gagal mengirim email
+            // echo $this->email->print_debugger();
         }
     }
     
