@@ -130,15 +130,24 @@
                                                                         <input type="hidden" name="partner_id" value="<?= $partner_category ?>">
                                                                     <?php endif; ?> -->
                                                                     <?= form_dropdown('province_id', $province_options, '', 
-                                                                        'class="form-select" id="province_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
+                                                                        'class="form-select" id="province_id" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
-                                                                        'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
+                                                                        'class="form-select" id="city_id" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('year', $year_options, '', 
                                                                         'class="form-select" id="year" style="width: 20%; max-width: 100px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('month', $month_options, '', 
-                                                                        'class="form-select" id="month" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
+                                                                        'class="form-select" id="month" style="width: 20%; max-width: 100px; height: 48px; font-size: 1rem;"'); ?>
+                                                                    <?= form_input([
+                                                                        'name' => 'email',
+                                                                        'id' => 'email',
+                                                                        'type' => 'email',
+                                                                        'value' => '',
+                                                                        'class' => 'form-control',
+                                                                        'placeholder' => 'Enter your email',
+                                                                        'style' => 'width: 20%; max-width: 300px; height: 48px; font-size: 1rem;'
+                                                                    ]); ?>
                                                                     <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
-                                                                        <i class="bi bi-download"></i> Download
+                                                                        <i class="bi bi-envelope-arrow-up-fill"></i> Kirim
                                                                     </button>
                                                                 </div>
                                                             <?= form_close(); ?>

@@ -1799,8 +1799,7 @@ class Report extends CI_Controller {
         $city_id = $this->input->post('city_id');
         $year = $this->input->post('year');
         $month = $this->input->post('month');
-
-        $email = 'abdulrahmankhadafi9@gmail.com';
+        $email = $this->input->post('email');
     
         // Generate laporan berdasarkan filter yang diberikan
         $report_data = $this->immunization_report_indonesia_attach($province_id, $city_id, $year, $month);
