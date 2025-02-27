@@ -151,6 +151,8 @@ class Report_model extends CI_Model {
         // Ambil hasil query
         $query = $this->db->get();
         $districts = $query->result_array();
+
+        
     
         // Kumulatif data berdasarkan provinsi
         $dropout_rates = [];
@@ -193,9 +195,196 @@ class Report_model extends CI_Model {
                 }
             }
         }
+
+        // var_dump($dropout_rates);
+        // exit;
+
+        
     
         return $dropout_rates; // Kembalikan hanya drop-out rate
     }
+
+    public function get_districts_under_5_percent_by_province($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
+        $province_ids = $this->get_targeted_province_ids();
+        
+        // Query untuk mendapatkan cakupan DPT1, DPT2, DPT3 dan target masing-masing untuk setiap distrik
+        $this->db->select("
+            cities.province_id,
+            cities.id AS city_id,
+            cities.name_id AS city_name,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_2), 0) AS dpt2_coverage,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage,
+            COALESCE(target_immunization.dpt_hb_hib_1_target, 0) AS dpt_hb_hib_1_target,
+            COALESCE(target_immunization.dpt_hb_hib_2_target, 0) AS dpt_hb_hib_2_target,
+            COALESCE(target_immunization.dpt_hb_hib_3_target, 0) AS dpt_hb_hib_3_target
+        ");
+        $this->db->from('cities');
+        $this->db->join('immunization_data', 'immunization_data.city_id = cities.id', 'left');
+        $this->db->join('target_immunization', 'target_immunization.city_id = cities.id', 'left');
+        
+        // Kondisi untuk filter provinsi atau kota
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('cities.province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('cities.province_id', $province_id);
+        }
+    
+        if ($city_id !== 'all') {
+            $this->db->where('cities.id', $city_id);
+        } 
+    
+        $this->db->where('immunization_data.year', $year); // Filter berdasarkan tahun
+    
+        // Menambahkan kondisi untuk filter bulan
+        if ($month !== 'all') {
+            $this->db->where('immunization_data.month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
+        }
+    
+        $this->db->group_by('cities.id'); // Group by city_id untuk perhitungan tiap kota/distrik
+        
+        // Ambil hasil query
+        $query = $this->db->get();
+        $districts = $query->result_array();
+    
+        // Kumulatif data berdasarkan provinsi atau per kota
+        $dropout_rates = [];
+    
+        if ($province_id === 'all' || $province_id === 'targeted') {
+            // Kondisi ketika provinsi adalah 'all' atau 'targeted' (kumulatif per provinsi)
+            foreach ($districts as $district) {
+                $dpt1_coverage = $district['dpt1_coverage'];
+                $dpt3_coverage = $district['dpt3_coverage'];
+    
+                $dropout_rate_dpt1_to_dpt3 = 0;
+                if ($dpt1_coverage > 0) {
+                    $not_received_dpt3 = $dpt1_coverage - $dpt3_coverage;
+                    $dropout_rate_dpt1_to_dpt3 = ($not_received_dpt3 / $dpt1_coverage) * 100;
+                } else {
+                    $dropout_rate_dpt1_to_dpt3 = 100;
+                }
+    
+                // Masukkan hanya dropout rate untuk provinsi yang memiliki drop-out rate DPT-1 ke DPT-3 kurang dari 5%
+                if ($dropout_rate_dpt1_to_dpt3 < 5) {
+                    if (isset($dropout_rates[$district['province_id']])) {
+                        $dropout_rates[$district['province_id']] += 1;
+                    } else {
+                        $dropout_rates[$district['province_id']] = 1;
+                    }
+                } else {
+                    if (isset($dropout_rates[$district['province_id']])) {
+                        $dropout_rates[$district['province_id']] += 0;
+                    } else {
+                        $dropout_rates[$district['province_id']] = 0;
+                    }
+                }
+            }
+        } else {
+            // Kondisi ketika provinsi adalah selain 'all' atau 'targeted' (per kota)
+            foreach ($districts as $district) {
+                $dpt1_coverage = $district['dpt1_coverage'];
+                $dpt3_coverage = $district['dpt3_coverage'];
+                $city_name = $district['city_name'];
+    
+                $dropout_rate_dpt1_to_dpt3 = 0;
+                if ($dpt1_coverage > 0) {
+                    $not_received_dpt3 = $dpt1_coverage - $dpt3_coverage;
+                    $dropout_rate_dpt1_to_dpt3 = ($not_received_dpt3 / $dpt1_coverage) * 100;
+                } else {
+                    $not_received_dpt3 = 0;
+                    $dropout_rate_dpt1_to_dpt3 = 100;
+                }
+    
+                // Menambahkan hasil untuk tiap distrik
+                $dropout_rates[$district['city_id']] = [
+                    'city_name' => $city_name,
+                    'dpt1_coverage' => $dpt1_coverage,
+                    'dpt3_coverage' => $dpt3_coverage,
+                    'total_do' => $not_received_dpt3,
+                    'dropout_rate' => $dropout_rate_dpt1_to_dpt3
+                ];
+            }
+        }
+
+    
+        return $dropout_rates; // Kembalikan data dropout rates sesuai kondisi
+    }
+
+    public function get_districts_under_5_percent_by_district($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
+        
+        // Query untuk mendapatkan cakupan DPT1, DPT2, DPT3 dan target masing-masing untuk setiap distrik
+        $this->db->select("
+            puskesmas.id AS puskesmas_id,
+            puskesmas.name AS puskesmas_name,
+            COALESCE(immunization_data.dpt_hb_hib_1, 0) AS dpt1_coverage,
+            COALESCE(immunization_data.dpt_hb_hib_3, 0) AS dpt3_coverage
+        ");
+        $this->db->from('puskesmas');
+        $this->db->join('immunization_data', 'immunization_data.puskesmas_id = puskesmas.id', 'left');
+        
+        // Kondisi untuk filter provinsi atau kota
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('puskesmas.province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('puskesmas.province_id', $province_id);
+        }
+    
+        if ($city_id !== 'all') {
+            $this->db->where('puskesmas.city_id', $city_id);
+        } 
+    
+        $this->db->where('immunization_data.year', $year); // Filter berdasarkan tahun
+    
+        // Menambahkan kondisi untuk filter bulan
+        if ($month !== 'all') {
+            $this->db->where('immunization_data.month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
+        }
+    
+        // $this->db->group_by('cities.id'); // Group by city_id untuk perhitungan tiap kota/distrik
+        
+        // Ambil hasil query
+        $query = $this->db->get();
+        $districts = $query->result_array();
+    
+        // Kumulatif data berdasarkan provinsi atau per kota
+        $dropout_rates = [];
+    
+            // Kondisi ketika provinsi adalah selain 'all' atau 'targeted' (per kota)
+            foreach ($districts as $district) {
+                $dpt1_coverage = $district['dpt1_coverage'];
+                $dpt3_coverage = $district['dpt3_coverage'];
+                $puskesmas_name = $district['puskesmas_name'];
+    
+                $dropout_rate_dpt1_to_dpt3 = 0;
+                if ($dpt1_coverage > 0) {
+                    $not_received_dpt3 = $dpt1_coverage - $dpt3_coverage;
+                    $dropout_rate_dpt1_to_dpt3 = ($not_received_dpt3 / $dpt1_coverage) * 100;
+                } else {
+                    $not_received_dpt3 = 0;
+                    $dropout_rate_dpt1_to_dpt3 = 100;
+                }
+    
+                // Menambahkan hasil untuk tiap distrik
+                $dropout_rates[$district['puskesmas_id']] = [
+                    'puskesmas_name' => $puskesmas_name,
+                    'dpt1_coverage' => $dpt1_coverage,
+                    'dpt3_coverage' => $dpt3_coverage,
+                    'total_do' => $not_received_dpt3,
+                    'dropout_rate' => $dropout_rate_dpt1_to_dpt3
+                ];
+            }
+    
+        return $dropout_rates; // Kembalikan data dropout rates sesuai kondisi
+    }
+    
 
     // Menghitung dropout rate untuk tiap provinsi
     public function get_dropout_rates_per_province($province_id = 'all', $city_id = 'all',$year = 2025, $month = 12) {
@@ -559,6 +748,124 @@ class Report_model extends CI_Model {
         // Kembalikan hasil query
         return $query;
     }
+
+    public function get_immunization_puskesmas_table_by_province($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
+        // Mengambil daftar province yang ditargetkan (bisa menggunakan function get_targeted_province_ids)
+        $province_ids = $this->get_targeted_province_ids();
+    
+        // Mengambil data dari tabel-tabel yang dibutuhkan
+        $this->db->select("
+            p.id AS province_id,
+            p.name_id AS province_name,
+            c.id as city_id,
+            c.name_id AS city_name,
+            COUNT(DISTINCT pd.id) AS total_puskesmas_with_immunization,  -- Jumlah Puskesmas yang melakukan imunisasi
+            (SELECT COUNT(id) FROM puskesmas WHERE city_id = c.id ) AS total_puskesmas  -- Jumlah total Puskesmas aktif di provinsi
+        ");
+        $this->db->from('immunization_data id');
+        $this->db->join('puskesmas pd', 'id.puskesmas_id = pd.id', 'left');  // Gabungkan dengan tabel puskesmas
+        $this->db->join('provinces p', 'id.province_id = p.id', 'left');  // Gabungkan dengan tabel provinces
+        $this->db->join('cities c', 'id.city_id = c.id', 'left');
+
+        // Filter berdasarkan provinsi yang ditargetkan
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('id.province_id', $province_ids);
+            } else {
+                return []; // Jika tidak ada province yang ditargetkan, kembalikan array kosong
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('id.province_id', $province_id);
+        }
+    
+        // Filter berdasarkan kota jika diberikan
+        if ($city_id !== 'all') {
+            $this->db->where('id.city_id', $city_id);
+        }
+    
+        // Filter berdasarkan tahun
+        $this->db->where('id.year', $year);
+    
+        // Jika bulan bukan 'all', maka ambil data dari bulan 1 sampai bulan yang ditentukan
+        if ($month !== 'all') {
+            $this->db->where('id.month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
+        }
+    
+        // Kelompokkan hasil berdasarkan provinsi
+        // $this->db->group_by('id.province_id');
+        $this->db->group_by('id.city_id');
+        // $this->db->order_by('p.name_id');
+    
+        // Ambil hasil query
+        $query = $this->db->get()->result_array();
+    
+        // Proses untuk menghitung persentase
+        foreach ($query as &$row) {
+            $total_puskesmas = (int) $row['total_puskesmas'];
+            $puskesmas_with_immunization = (int) $row['total_puskesmas_with_immunization'];
+            
+            // Hitung persentase Puskesmas yang sudah melakukan imunisasi
+            $row['percentage_immunization'] = ($total_puskesmas > 0) 
+                ? round(($puskesmas_with_immunization / $total_puskesmas) * 100, 2) 
+                : 0;
+        }
+        
+        // var_dump($query);
+        // exit;
+    
+        // Kembalikan hasil query
+        return $query;
+    }
+
+    public function get_immunization_puskesmas_table_by_district($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
+        // Mengambil daftar province yang ditargetkan (bisa menggunakan function get_targeted_province_ids)
+        $province_ids = $this->get_targeted_province_ids();
+    
+        // Mengambil data dari tabel-tabel yang dibutuhkan
+        $this->db->select("
+            pd.id AS puskesmas_id,
+            pd.name AS puskesmas_name
+        ");
+        $this->db->from('immunization_data id');
+        $this->db->join('puskesmas pd', 'id.puskesmas_id = pd.id', 'left');  // Gabungkan dengan tabel puskesmas
+        
+
+        // Filter berdasarkan provinsi yang ditargetkan
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('id.province_id', $province_ids);
+            } else {
+                return []; // Jika tidak ada province yang ditargetkan, kembalikan array kosong
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('id.province_id', $province_id);
+        }
+    
+        // Filter berdasarkan kota jika diberikan
+        if ($city_id !== 'all') {
+            $this->db->where('id.city_id', $city_id);
+        }
+    
+        // Filter berdasarkan tahun
+        $this->db->where('id.year', $year);
+    
+        // Jika bulan bukan 'all', maka ambil data dari bulan 1 sampai bulan yang ditentukan
+        if ($month !== 'all') {
+            $this->db->where('id.month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
+        }
+
+        $this->db->group_by('id.puskesmas_id');
+        // $this->db->order_by('p.name_id');
+    
+        // Ambil hasil query
+        $query = $this->db->get()->result_array();
+        
+        // var_dump($query);
+        // exit;
+    
+        // Kembalikan hasil query
+        return $query;
+    }
     
     public function get_puskesmas_dpt_stock_out_table($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
         // Mengambil daftar province yang ditargetkan (bisa menggunakan function get_targeted_province_ids)
@@ -598,7 +905,7 @@ class Report_model extends CI_Model {
     
         // Jika bulan bukan 'all', maka ambil data dari bulan 1 sampai bulan yang ditentukan
         if ($month !== 'all') {
-            $this->db->where('sod.month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
+            $this->db->where('sod.month =', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
         }
     
         // Kelompokkan hasil berdasarkan provinsi
@@ -621,6 +928,132 @@ class Report_model extends CI_Model {
                 ? round(($total_stock_out / $total_puskesmas) * 100, 2) 
                 : 0;
         }
+    
+        // Kembalikan hasil query
+        return $query;
+    }
+
+    public function get_puskesmas_dpt_stock_out_table_by_province($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
+        // Mengambil daftar province yang ditargetkan (bisa menggunakan function get_targeted_province_ids)
+        $province_ids = $this->get_targeted_province_ids();
+    
+        // Mengambil data dari tabel stock_out_data yang berkaitan dengan DPT
+        $this->db->select("
+            p.id AS province_id,
+            p.name_id AS province_name,
+            c.id as city_id,
+            c.name_id AS city_name,
+            SUM(sod.stock_out_1_month) AS total_stock_out_1_month,  -- Jumlah Puskesmas yang mengalami stock out 1 bulan
+            SUM(sod.stock_out_2_months) AS total_stock_out_2_months,  -- Jumlah Puskesmas yang mengalami stock out 2 bulan
+            SUM(sod.stock_out_3_months) AS total_stock_out_3_months,  -- Jumlah Puskesmas yang mengalami stock out 3 bulan
+            SUM(sod.stock_out_more_than_3_months) AS total_stock_out_more_than_3_months,  -- Jumlah Puskesmas yang mengalami stock out lebih dari 3 bulan
+            (SELECT COUNT(id) FROM puskesmas WHERE city_id = c.id) AS total_puskesmas  -- Jumlah total Puskesmas aktif di provinsi
+        ");
+        $this->db->from('stock_out_data sod');
+        $this->db->join('provinces p', 'sod.province_id = p.id', 'left');  // Gabungkan dengan tabel provinces
+        $this->db->join('cities c', 'sod.city_id = c.id', 'left');
+
+        // Filter berdasarkan provinsi yang ditargetkan
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('sod.province_id', $province_ids);
+            } else {
+                return []; // Jika tidak ada province yang ditargetkan, kembalikan array kosong
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('sod.province_id', $province_id);
+        }
+    
+        // Filter berdasarkan kota jika diberikan
+        if ($city_id !== 'all') {
+            $this->db->where('sod.city_id', $city_id);
+        }
+    
+        // Filter berdasarkan tahun
+        $this->db->where('sod.year', $year);
+    
+        // Jika bulan bukan 'all', maka ambil data dari bulan 1 sampai bulan yang ditentukan
+        if ($month !== 'all') {
+            $this->db->where('sod.month =', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
+        }
+    
+        // Kelompokkan hasil berdasarkan provinsi
+        // $this->db->group_by('sod.province_id');
+        $this->db->group_by('sod.city_id');
+        // $this->db->order_by('p.name_id');
+    
+        // Ambil hasil query
+        $query = $this->db->get()->result_array();
+
+        
+    
+        // Proses untuk menghitung persentase
+        foreach ($query as &$row) {
+            $total_puskesmas = (int) $row['total_puskesmas'];
+            $total_stock_out = (int) $row['total_stock_out_1_month'] + (int) $row['total_stock_out_2_months'] + (int) $row['total_stock_out_3_months'] + (int) $row['total_stock_out_more_than_3_months'];
+    
+            // Hitung persentase Puskesmas yang mengalami DPT stock out
+            $row['percentage_stock_out'] = ($total_puskesmas > 0) 
+                ? round(($total_stock_out / $total_puskesmas) * 100, 2) 
+                : 0;
+        }
+
+        // var_dump($query);
+        // exit;
+    
+        // Kembalikan hasil query
+        return $query;
+    }
+
+    public function get_puskesmas_dpt_stock_out_table_by_district($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
+        // Mengambil daftar province yang ditargetkan (bisa menggunakan function get_targeted_province_ids)
+        $province_ids = $this->get_targeted_province_ids();
+    
+        // Mengambil data dari tabel stock_out_data yang berkaitan dengan DPT
+        $this->db->select("
+            sod.puskesmas_id AS puskesmas_id,
+            pd.name AS puskesmas_name,
+            sod.month AS month,
+            sod.total_dpt_stock AS stock
+        ");
+        $this->db->from('puskesmas_stock_out_details sod');
+        $this->db->join('provinces p', 'sod.province_id = p.id', 'left');  // Gabungkan dengan tabel provinces
+        $this->db->join('cities c', 'sod.city_id = c.id', 'left');
+        $this->db->join('puskesmas pd', 'sod.puskesmas_id = pd.id', 'left');
+
+        // Filter berdasarkan provinsi yang ditargetkan
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('sod.province_id', $province_ids);
+            } else {
+                return []; // Jika tidak ada province yang ditargetkan, kembalikan array kosong
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('sod.province_id', $province_id);
+        }
+    
+        // Filter berdasarkan kota jika diberikan
+        if ($city_id !== 'all') {
+            $this->db->where('sod.city_id', $city_id);
+        }
+    
+        // Filter berdasarkan tahun
+        $this->db->where('sod.year', $year);
+    
+        // Jika bulan bukan 'all', maka ambil data dari bulan 1 sampai bulan yang ditentukan
+        if ($month !== 'all') {
+            $this->db->where('sod.month =', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
+        }
+
+        $this->db->where('sod.total_dpt_stock =', 0);
+
+        // $this->db->group_by('sod.puskesmas_id');
+        $this->db->order_by('sod.month');
+        // Ambil hasil query
+        $query = $this->db->get()->result_array();
+
+        // var_dump($query);
+        // exit;
     
         // Kembalikan hasil query
         return $query;
