@@ -130,9 +130,9 @@
                                                                         <input type="hidden" name="partner_id" value="<?= $partner_category ?>">
                                                                     <?php endif; ?> -->
                                                                     <?= form_dropdown('province_id', $province_options, '', 
-                                                                        'class="form-select" id="province_id" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
+                                                                        'class="form-select" id="province_id2" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
-                                                                        'class="form-select" id="city_id" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
+                                                                        'class="form-select" id="city_id2" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('year', $year_options, '', 
                                                                         'class="form-select" id="year" style="width: 20%; max-width: 100px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('month', $month_options, '', 
@@ -334,6 +334,26 @@ $(document).ready(function () {
         }
     });
 
+    $('#province_id2').change(function () {
+        var province_id = $(this).val();
+        if (province_id !== 'all' || province_id !== 'targeted') {
+            $.ajax({
+                url: "<?= base_url('input/get_cities_by_province') ?>",
+                type: "GET",
+                data: { province_id: province_id },
+                dataType: "json",
+                success: function (data) {
+                    $('#city_id2').html('<option value="all">-- Kab/Kota --</option>');
+                    $.each(data, function (key, value) {
+                        $('#city_id2').append('<option value="' + value.id + '">' + value.name_id + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#city_id').html('<option value="all">-- Kab/Kota --</option>');
+        }
+    });
+
     // Mengecek jika province_id sudah memiliki nilai saat halaman dimuat
     var initialProvinceId = $('#province_id').val();  // Ambil nilai province_id saat halaman dimuat
         if (initialProvinceId && initialProvinceId !== 'all' && initialProvinceId !== 'targeted') {
@@ -352,7 +372,7 @@ $(document).ready(function () {
                 }
             });
         }
-});
+    });
 </script>
 
 <script>
