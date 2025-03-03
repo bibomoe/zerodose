@@ -786,7 +786,7 @@ class Report extends CI_Controller {
         require_once(APPPATH . 'libraries/tcpdf/tcpdf.php'); 
         $pdf = new TCPDF();
         $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Your Organization');
+        $pdf->SetAuthor('Zero Dose Indonesia Team');
         $pdf->SetTitle('Laporan Kerangka Kerja Penurunan Zero Dose ' . $title_area);
         $pdf->SetHeaderData('', 0, 'Laporan Kerangka Kerja Penurunan Zero Dose', $title_area  . $title_year . $title_month);
     
@@ -798,6 +798,7 @@ class Report extends CI_Controller {
         $html = '<h2 style="text-align:center; font-size:18pt;">Laporan Kerangka Kerja Penurunan Zero Dose di <br>'. $title_area .'</h2>';
 
         // $html .= "<h4>Indonesia</h4>";
+        $html .= '<p style="margin-bottom: 20px;"></p>';
 
         // Tabel 1: Indikator Jangka Panjang
         $html .= '<h3 style="font-size:14pt; ">Indikator Jangka Panjang</h3>';
@@ -1518,6 +1519,7 @@ class Report extends CI_Controller {
         $html = '<h2 style="text-align:center; font-size:18pt;">Laporan Kerangka Kerja Penurunan Zero Dose di <br>'. $title_area .'</h2>';
 
         // $html .= "<h4>Indonesia</h4>";
+        $html .= '<p style="margin-bottom: 20px;"></p>';
 
         // Tabel 1: Indikator Jangka Panjang
         $html .= '<h3 style="font-size:14pt; ">Indikator Jangka Panjang</h3>';
@@ -1917,7 +1919,7 @@ class Report extends CI_Controller {
         $this->data['budget_absorption_2025'] = $this->Report_model->get_total_budget_absorption_percentage(2025, $selected_month, $selected_partner);
 
         // Ambil semua country objectives
-        $objectives = $this->Dashboard_model->get_all_objectives();
+        $objectives = $this->Report_model->get_all_objectives();
 
         // Ambil aktivitas yang sudah selesai
         $this->data['completed_activities_2024'] = $this->Report_model->get_completed_activities_percentage_by_year(2024, $selected_month, $selected_partner);
@@ -1968,7 +1970,7 @@ class Report extends CI_Controller {
 
         if ($this->input->post('month')){
             if (isset($months[$selected_month])) {
-                $title_month = ' Bulan ' . $months[$selected_month];  // Gunakan nama bulan
+                $title_month = ', Bulan ' . $months[$selected_month];  // Gunakan nama bulan
             } else {
                 $title_month = '';  // Jika bulan tidak valid
             }
@@ -1976,7 +1978,12 @@ class Report extends CI_Controller {
             $title_month = '';
         }
 
-        $partner_name = $this->Report_model->get_partner_name_by_id($selected_partner);
+        if ($selected_partner === 'all'){
+            $partner_name = 'All';
+        } else {
+            $partner_name = $this->Report_model->get_partner_name_by_id($selected_partner);
+        }
+        
     
         // Membuat objek TCPDF
         // **1. Pastikan TCPDF sudah ada di lokasi yang benar**
@@ -1985,7 +1992,7 @@ class Report extends CI_Controller {
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Zero Dose Indonesia Team');
         $pdf->SetTitle('LAPORAN KERANGKA KERJA AKUNTABILITAS PENURUNAN ANAK ANAK ZERO DOSE GAVI ');
-        $pdf->SetHeaderData('', 0, '', $partner_name . $title_month);
+        $pdf->SetHeaderData('', 0, '', 'Partner: ' . $partner_name . $title_month);
     
         // Mengatur margin
         $pdf->SetMargins(15, 20, 15);
@@ -1994,23 +2001,25 @@ class Report extends CI_Controller {
         $pdf->AddPage(); // Menambahkan halaman baru
         $html = '<h2 style="text-align:center;">LAPORAN KERANGKA KERJA AKUNTABILITAS PENURUNAN ANAK ANAK ZERO DOSE GAVI</h2>';
         // $html .= "<h4>Indonesia</h4>";
+        // Menambahkan jarak antara tabel pengeluaran dan country objectives
+        $html .= '<p style="margin-bottom: 20px;"></p>';
     
-        $html .= '<h3>Penggunaan (penyerapan) Budget untuk periode pelaporan tertentu, Gavi</h3>';
+        $html .= '<h3 style="font-size:14pt; ">Penggunaan (penyerapan) Budget untuk periode pelaporan tertentu, Gavi</h3>';
     
         // Tabel 6: Grant Implementation & Budget Disbursement
-        $html .= '<table border="1" cellpadding="5">
+        $html .= '<table border="1" cellpadding="10" style="text-align:center;">
                     <thead>
                         <tr>
-                            <th>Indikator</th>
-                            <th>2024</th>
-                            <th>2025</th>
+                            <th width="50%" style="background-color:rgb(250, 185, 44); color: white; font-weight: bold;">Indikator</th>
+                            <th width="25%" style="background-color:rgb(250, 185, 44); color: white; font-weight: bold;">2024</th>
+                            <th width="25%" style="background-color:rgb(250, 185, 44); color: white; font-weight: bold;">2025</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Penggunaan (penyerapan) Budget</td>
-                            <td>' . $data['budget_2024'] . '%</td>
-                            <td>' . $data['budget_2025'] . '%</td>
+                            <td width="50%" style="font-size:12pt; ">Penggunaan (penyerapan) Budget</td>
+                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . $data['budget_2024'] . '%</td>
+                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . $data['budget_2025'] . '%</td>
                         </tr>
                     </tbody>
                 </table>';
@@ -2019,24 +2028,24 @@ class Report extends CI_Controller {
         $html .= '<br><br>';
     
         // Tabel 7: Country Objectives
-        $html .= '<h3>Country Objectives</h3>';
-        $html .= '<table border="1" cellpadding="5" >
+        $html .= '<h3 style="font-size:14pt; ">Country Objectives</h3>';
+        $html .= '<table border="1" cellpadding="10" style="text-align:center;">
                     <thead>
                         <tr>
-                            <th>Tujuan</th>
-                            <th>Indikator</th>
-                            <th>2024</th>
-                            <th>2025</th>
+                            <th width="40%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Tujuan</th>
+                            <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Indikator</th>
+                            <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2024</th>
+                            <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2025</th>
                         </tr>
                     </thead>
                     <tbody>';
         foreach ($data['country_objectives'] as $objective) {
-            $html .= "<tr>
-                        <td>{$objective['name']}</td>
-                        <td>Persentase kegiatan rencana kerja yang terlaksana</td>
-                        <td>{$objective['completed_2024']}%</td>
-                        <td>{$objective['completed_2025']}%</td>
-                      </tr>";
+            $html .= '<tr>
+                        <td width="40%" style="font-size:12pt; ">'. $objective['name'] . '</td>
+                        <td width="20%" style="font-size:12pt; ">Persentase kegiatan rencana kerja yang terlaksana</td>
+                        <td width="20%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. $objective['completed_2024'] . '%</td>
+                        <td width="20%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. $objective['completed_2025'] . '%</td>
+                      </tr>';
         }
         $html .= '</tbody></table>';
     
@@ -2114,7 +2123,7 @@ class Report extends CI_Controller {
 
         if ($this->input->post('month')){
             if (isset($months[$selected_month])) {
-                $title_month = ' Bulan ' . $months[$selected_month];  // Gunakan nama bulan
+                $title_month = ', Bulan ' . $months[$selected_month];  // Gunakan nama bulan
             } else {
                 $title_month = '';  // Jika bulan tidak valid
             }
@@ -2122,7 +2131,12 @@ class Report extends CI_Controller {
             $title_month = '';
         }
 
-        $partner_name = $this->Report_model->get_partner_name_by_id($selected_partner);
+        if ($selected_partner === 'all'){
+            $partner_name = 'All';
+        } else {
+            $partner_name = $this->Report_model->get_partner_name_by_id($selected_partner);
+        }
+        
     
         // Membuat objek TCPDF
         // **1. Pastikan TCPDF sudah ada di lokasi yang benar**
@@ -2131,7 +2145,7 @@ class Report extends CI_Controller {
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Zero Dose Indonesia Team');
         $pdf->SetTitle('LAPORAN KERANGKA KERJA AKUNTABILITAS PENURUNAN ANAK ANAK ZERO DOSE GAVI ');
-        $pdf->SetHeaderData('', 0, '', $partner_name . $title_month);
+        $pdf->SetHeaderData('', 0, '', 'Partner: ' . $partner_name . $title_month);
     
         // Mengatur margin
         $pdf->SetMargins(15, 20, 15);
@@ -2140,23 +2154,25 @@ class Report extends CI_Controller {
         $pdf->AddPage(); // Menambahkan halaman baru
         $html = '<h2 style="text-align:center;">LAPORAN KERANGKA KERJA AKUNTABILITAS PENURUNAN ANAK ANAK ZERO DOSE GAVI</h2>';
         // $html .= "<h4>Indonesia</h4>";
+        // Menambahkan jarak antara tabel pengeluaran dan country objectives
+        $html .= '<p style="margin-bottom: 20px;"></p>';
     
-        $html .= '<h3>Penggunaan (penyerapan) Budget untuk periode pelaporan tertentu, Gavi</h3>';
+        $html .= '<h3 style="font-size:14pt; ">Penggunaan (penyerapan) Budget untuk periode pelaporan tertentu, Gavi</h3>';
     
         // Tabel 6: Grant Implementation & Budget Disbursement
-        $html .= '<table border="1" cellpadding="5">
+        $html .= '<table border="1" cellpadding="10" style="text-align:center;">
                     <thead>
                         <tr>
-                            <th>Indikator</th>
-                            <th>2024</th>
-                            <th>2025</th>
+                            <th width="50%" style="background-color:rgb(250, 185, 44); color: white; font-weight: bold;">Indikator</th>
+                            <th width="25%" style="background-color:rgb(250, 185, 44); color: white; font-weight: bold;">2024</th>
+                            <th width="25%" style="background-color:rgb(250, 185, 44); color: white; font-weight: bold;">2025</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Penggunaan (penyerapan) Budget</td>
-                            <td>' . $data['budget_2024'] . '%</td>
-                            <td>' . $data['budget_2025'] . '%</td>
+                            <td width="50%" style="font-size:12pt; ">Penggunaan (penyerapan) Budget</td>
+                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . $data['budget_2024'] . '%</td>
+                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . $data['budget_2025'] . '%</td>
                         </tr>
                     </tbody>
                 </table>';
@@ -2165,24 +2181,24 @@ class Report extends CI_Controller {
         $html .= '<br><br>';
     
         // Tabel 7: Country Objectives
-        $html .= '<h3>Country Objectives</h3>';
-        $html .= '<table border="1" cellpadding="5" >
+        $html .= '<h3 style="font-size:14pt; ">Country Objectives</h3>';
+        $html .= '<table border="1" cellpadding="10" style="text-align:center;">
                     <thead>
                         <tr>
-                            <th>Tujuan</th>
-                            <th>Indikator</th>
-                            <th>2024</th>
-                            <th>2025</th>
+                            <th width="40%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Tujuan</th>
+                            <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Indikator</th>
+                            <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2024</th>
+                            <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2025</th>
                         </tr>
                     </thead>
                     <tbody>';
         foreach ($data['country_objectives'] as $objective) {
-            $html .= "<tr>
-                        <td>{$objective['name']}</td>
-                        <td>Persentase kegiatan rencana kerja yang terlaksana</td>
-                        <td>{$objective['completed_2024']}%</td>
-                        <td>{$objective['completed_2025']}%</td>
-                      </tr>";
+            $html .= '<tr>
+                        <td width="40%" style="font-size:12pt; ">'. $objective['name'] . '</td>
+                        <td width="20%" style="font-size:12pt; ">Persentase kegiatan rencana kerja yang terlaksana</td>
+                        <td width="20%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. $objective['completed_2024'] . '%</td>
+                        <td width="20%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. $objective['completed_2025'] . '%</td>
+                      </tr>';
         }
         $html .= '</tbody></table>';
     

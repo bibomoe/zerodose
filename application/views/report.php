@@ -162,7 +162,7 @@
                             </div>
                         </div>
                 </section>
-
+                <?php if (!in_array($this->session->userdata('user_category'), [7, 8])): ?>
                 <!-- Unduh Laporan Mitra -->
                 <section id="basic-horizontal-layouts">
                     <div class="row match-height">
@@ -190,9 +190,11 @@
 
                                                                         // Tentukan value untuk partner_id
                                                                         $partner_id_value = $is_disabled ? $partner_category : set_value('partner_id', $selected_partner);
+
+                                                                        $dropdown_options = ['all' => 'All'] + array_column($partners, 'name', 'id');
                                                                     ?>
                                                                     <?= form_dropdown('partner_id', 
-                                                                        array_column($partners, 'name', 'id'), // Data dropdown: id => name
+                                                                        $dropdown_options, // Data dropdown: ['all' => 'All', 'id' => 'name']
                                                                         $partner_id_value, // Value yang dipilih
                                                                         'id="partner_id" class="form-select" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;" ' 
                                                                         // . ($is_disabled ? 'disabled' : '') 
@@ -243,7 +245,7 @@
                                                             <?= form_open('report/partner_report_indonesia_sent_email'); ?>
                                                                 <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;">Pilih Filter </label>
                                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
-                                                                <?php
+                                                                    <?php
                                                                         // Ambil session partner_category
                                                                         $partner_category = $this->session->userdata('partner_category');
 
@@ -252,9 +254,10 @@
 
                                                                         // Tentukan value untuk partner_id
                                                                         $partner_id_value = $is_disabled ? $partner_category : set_value('partner_id', $selected_partner);
+                                                                        $dropdown_options = ['all' => 'All'] + array_column($partners, 'name', 'id');
                                                                     ?>
                                                                     <?= form_dropdown('partner_id', 
-                                                                        array_column($partners, 'name', 'id'), // Data dropdown: id => name
+                                                                        $dropdown_options, // Data dropdown: ['all' => 'All', 'id' => 'name']
                                                                         $partner_id_value, // Value yang dipilih
                                                                         'id="partner_id" class="form-select" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;" ' 
                                                                         // . ($is_disabled ? 'disabled' : '') 
@@ -296,6 +299,7 @@
                             </div>
                         </div>
                 </section>
+                <?php endif; ?>
 
                     <!-- Basic Horizontal form layout section start -->
                     <?php if (in_array($this->session->userdata('user_category'), [2, 9])): ?>
