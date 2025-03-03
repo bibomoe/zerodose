@@ -34,6 +34,11 @@
                                             <?= form_open('home/dpt1', ['method' => 'get']) ?>
                                                 <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?></label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
+                                                    <!-- <?= form_dropdown('province', 
+                                                        array_column($provinces, 'name_id', 'id'), 
+                                                        $selected_province, 
+                                                        ['class' => 'form-select', 'id' => 'provinceFilter', 'style' => 'width: 100%; max-width: 300px; height: 48px; font-size: 1rem;']
+                                                    ); ?> -->
                                                     <?= form_dropdown(
                                                             'year', 
                                                             [2025 => '2025', 2024 => '2024'], 

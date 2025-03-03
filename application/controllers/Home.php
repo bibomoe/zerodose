@@ -533,8 +533,40 @@ class Home extends CI_Controller {
         // Ambil data dari model
         $this->load->model('Dpt1_model');
 
+        $user_category = $this->session->userdata('user_category');
+        $user_province = $this->session->userdata('province_id');
+        $user_city = $this->session->userdata('city_id');
+
+        // Ambil filter provinsi dari dropdown (default: all)
+        $selected_province = $this->input->get('province') ?? 'all';
+        $selected_district = $this->input->get('district') ?? 'all';
         $selected_year = $this->input->get('year') ?? 2025; // Default tahun 2025
+
+        // Ambil parameter dari URL
+        $get_detail = $this->input->get('get_detail') ?? 0; // Default 0 jika tidak ada parameter
+
+        // Kirim data ke view
+        $this->data['get_detail'] = $get_detail;
+
+        // Jika user PHO, atur provinsi default sesuai wilayahnya
+        if ($user_category == 7 && empty($this->input->get('province'))) { 
+            $selected_province = $user_province;
+            $this->data['selected_province2'] = $selected_province;
+        }
+
+        // Jika user DHO, atur provinsi & district sesuai wilayahnya
+        if ($user_category == 8 && empty($this->input->get('province'))) {
+            $selected_province = $user_province;
+            $selected_district = $user_city;
+            $this->data['selected_province2'] = $selected_province;
+        }
+
+        $this->data['selected_province'] = $selected_province;
+        $this->data['selected_district'] = $selected_district;
         $this->data['selected_year'] = $selected_year;
+
+        // Ambil daftar provinsi untuk dropdown + targeted provinces
+        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
 
         $province_ids = $this->Immunization_model->get_targeted_province_ids(); // Ambil province_id yang priority = 1
         
@@ -672,7 +704,7 @@ class Home extends CI_Controller {
             'en' => [
                 'page_title' => 'DPT-1 coverage and drop out rates',
                 'page_subtitle' => 'Percentage children -under 5 years with DPT 1 coverage and number of district with DO (DPT1-DPT3) less than 5%',
-                'filter_label' => 'Select Year',
+                'filter_label' => 'Select Provinsi',
                 'text1' => 'DPT-1 Coverage',
                 'text2' => 'Dropout Rate',
                 'text3' => 'Number of districts with DO (DPT1-DPT3) less than 5%',
@@ -689,7 +721,7 @@ class Home extends CI_Controller {
             'id' => [
                 'page_title' => 'Cakupan DPT-1 dan % Dropout',
                 'page_subtitle' => 'Cakupan DPT-1 dan % drop out pada 10 provinsi dampingan ',
-                'filter_label' => 'Pilih Tahun',
+                'filter_label' => 'Pilih Provinsi',
                 'text1' => 'Cakupan DPT-1',
                 'text2' => '% drop out wilayah',
                 'text3' => 'Jumlah Kab/Kota dengan % DO (DPT1-DPT3) kurang dari 5%',

@@ -721,14 +721,14 @@ class Report extends CI_Controller {
         $province_name = "Indonesia";
     
         $data = [
-            'cumulative_dpt3' => $percent_dpt3_coverage . '% <br>' . $total_dpt3_coverage,
-            'cumulative_mr1' => $percent_mr1_coverage . '% <br>' . $total_mr1_coverage,
+            'cumulative_dpt3' => '<span style="font-size:22pt; font-weight: bold;">' . $total_dpt3_coverage . '</span> <br><br>' . $percent_dpt3_coverage . '%',
+            'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . $total_mr1_coverage . '</span> <br><br>' . $percent_mr1_coverage . '%',
             'children_zero_dose' => $zero_dose,
-            'cumulative_dpt1' => $percent_dpt1_coverage . '% <br>' . $total_dpt1_coverage,
+            'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . $total_dpt1_coverage . '</span> <br><br>' . $percent_dpt1_coverage . '%',
             'drop_out_percentage' => $dropout_rate_all_provinces . '% <br>',
             'puskesmas_percentage' => $total_district_under_5_DO,
             'puskesmas_conduct_immunization' => $puskesmas_conduct_immunization,
-            'percentage_puskesmas_conduct_immunization' => $percentage_puskesmas_conduct_immunization,
+            'percentage_puskesmas_conduct_immunization' => $percentage_puskesmas_conduct_immunization . '%',
             'total_dpt_stockout' => $total_dpt_stockout,
             'province_do' => $table_do,
             'puskesmas_do_immunization' => $table_puskesmas_immunization,
@@ -778,9 +778,6 @@ class Report extends CI_Controller {
             $title_area = 'Indonesia '; // Gunakan nama Indonesia
         }
 
-
-        
-
         $title_year = 'Tahun ' . $selected_year;
     
         // Membuat objek TCPDF
@@ -798,58 +795,59 @@ class Report extends CI_Controller {
         $pdf->AddPage();
     
         // Judul laporan
-        $html = '<h2 style="text-align:center;">Laporan Kerangka Kerja Penurunan Zero Dose di '. $title_area .'</h2>';
+        $html = '<h2 style="text-align:center; font-size:18pt;">Laporan Kerangka Kerja Penurunan Zero Dose di <br>'. $title_area .'</h2>';
+
         // $html .= "<h4>Indonesia</h4>";
 
-            // Tabel 1: Indikator Jangka Panjang
-            $html .= '<h3>Indikator Jangka Panjang</h3>';
-            $html .= '<table border="1" cellpadding="5" style="text-align:center;">
-                        <thead>
-                            <tr>
-                                <th>Cakupan DPT-3</th>
-                                <th>Cakupan MR-1</th>
-                                <th>Jumlah Anak Zero Dose</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>' . $data['cumulative_dpt3'] . '</td>
-                                <td>' . $data['cumulative_mr1'] . '</td>
-                                <td>' . $data['children_zero_dose'] . '</td>
-                            </tr>
-                        </tbody>
-                    </table>';
-        
-            // Menambahkan jarak antara tabel pertama dan kedua
-            $html .= '<br><br>';
+        // Tabel 1: Indikator Jangka Panjang
+        $html .= '<h3 style="font-size:14pt; ">Indikator Jangka Panjang</h3>';
+        $html .= '<table border="1" cellpadding="10" style="text-align:center; border-color: #dddddd;">
+                    <thead>
+                        <tr>
+                            <th style="background-color: green; color: white; font-weight: bold;">Cakupan DPT-3</th>
+                            <th style="background-color: green; color: white; font-weight: bold;">Cakupan MR-1</th>
+                            <th style="background-color: green; color: white; font-weight: bold;">Jumlah Anak Zero Dose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-size:12pt; ">' . $data['cumulative_dpt3'] . '</td>
+                            <td style="font-size:12pt; ">' . $data['cumulative_mr1'] . '</td>
+                            <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['children_zero_dose'] . '</td>
+                        </tr>
+                    </tbody>
+                </table>';
+
+        // Menambahkan jarak antara tabel pertama dan kedua
+        $html .= '<br><br>';
         
             // Tabel 2: Indikator Jangka Menengah
-            $html .= '<h3>Indikator Jangka Menengah</h3>';
-            $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+            $html .= '<h3 style="font-size:14pt;">Indikator Jangka Menengah</h3>';
+            $html .= '<table border="1" cellpadding="10" style="text-align:center; border-color: #dddddd;">
                         <thead>
                             <tr>
-                                <th>Cakupan DPT-1</th>
-                                <th>% Drop Out</th>
-                                <th>Jumlah Kab/Kota dengan %DO dibawah 5%</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">Cakupan DPT-1</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">% Drop Out</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">Jumlah Kab/Kota dengan %DO dibawah 5%</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>' . $data['cumulative_dpt1'] . '</td>
-                                <td>' . $data['drop_out_percentage'] . '</td>
-                                <td>' . $data['puskesmas_percentage'] . '</td>
+                                <td style="font-size:12pt; ">' . $data['cumulative_dpt1'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['drop_out_percentage'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_percentage'] . '</td>
                             </tr>
     
                             <tr>
-                                <th>% puskesmas yang melakukan pelayanan imunisasi</th>
-                                <th>Jumlah puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional</th>
-                                <th>Jumlah puskesmas dengan status DPT stock out</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">% puskesmas yang melakukan pelayanan imunisasi</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">Jumlah puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">Jumlah puskesmas dengan status DPT stock out</th>
                             </tr>
     
                             <tr>
-                                <td>' . $data['percentage_puskesmas_conduct_immunization'] . '</td>
-                                <td>' . $data['puskesmas_conduct_immunization'] . '</td>
-                                <td>' . $data['total_dpt_stockout'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; ">' . $data['percentage_puskesmas_conduct_immunization'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_conduct_immunization'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['total_dpt_stockout'] . '</td>
                             </tr>
                         </tbody>
                     </table>';
@@ -857,213 +855,218 @@ class Report extends CI_Controller {
             
                     // Menambahkan jarak antara tabel kedua dan ketiga
             $html .= '<br><br>';
-    
+        
+        // Menulis HTML ke PDF
+        $pdf->writeHTML($html, true, false, true, false, '');
+
+        // Tambahkan halaman baru sebelum menampilkan gambar grafik
+        $pdf->AddPage();
 
         if($selected_province === 'all' || $selected_province === 'targeted'){
         
             // Tabel 3: Kab/Ko dengan % DO dibawah 5%
-            $html .= '<h3>Kab/Kota dengan % DO dibawah 5%</h3>';
-            $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+            $html2 .= '<h3 style="font-size:14pt;">Kab/Kota dengan % DO dibawah 5%</h3>';
+            $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                         <thead>
                             <tr>
-                                <th>Nama Provinsi</th>
-                                <th>% Anak DO</th>
-                                <th>Jumlah Kab/Kota dengan % DO dibawah 5%</th>
-                                <th>% Kab/Kota dengan % DO dibawah 5%</th>
+                                <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">Nama Provinsi</th>
+                                <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">% Anak DO</th>
+                                <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">Jumlah Kab/Kota dengan % DO dibawah 5%</th>
+                                <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">% Kab/Kota dengan % DO dibawah 5%</th>
                             </tr>
                         </thead>
                         <tbody>';
             foreach ($data['province_do'] as $item) {
-                $html .= "<tr>
-                            <td>{$item['name']}</td>
-                            <td>{$item['do_rate']}</td>
+                $html2 .= "<tr>
+                            <td><b>{$item['name']}</b></td>
+                            <td>{$item['do_rate']}%</td>
                             <td>{$item['cities_do_under_5']}</td>
                             <td>{$item['percentage_cities_do_under_5']}</td>
                         </tr>";
             }
-            $html .= '</tbody></table>';
+            $html2 .= '</tbody></table>';
 
             // Menambahkan jarak antara tabel keempat dan kelima
-            $html .= '<br><br>';
+            $html2 .= '<br><br>';
         
             // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-            $html .= '<h3>Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
-            $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+            $html2 .= '<h3 style="font-size:14pt;">Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
+            $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                         <thead>
                             <tr>
-                                <th>Nama Provinsi</th>
-                                <th>Jumlah Puskesmas</th>
-                                <th>% Puskesmas</th>
+                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Provinsi</th>
+                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
                             </tr>
                         </thead>
                         <tbody>';
             foreach ($data['puskesmas_do_immunization'] as $item) {
-                $html .= "<tr>
-                            <td>{$item['province_name']}</td>
+                $html2 .= "<tr>
+                            <td><b>{$item['province_name']}</b></td>
                             <td>{$item['total_puskesmas_with_immunization']}</td>
                             <td>{$item['percentage_immunization']}%</td>
                         </tr>";
             }
-            $html .= '</tbody></table>';
+            $html2 .= '</tbody></table>';
         
             // Menambahkan jarak antara tabel ketiga dan keempat
-            $html .= '<br><br>';
+            $html2 .= '<br><br>';
         
             // Tabel 5: Puskesmas dengan status DPT stock out
-            $html .= '<h3>Jumlah Puskesmas dengan status DPT stock out</h3>';
-            $html .= '<table border="1" cellpadding="5">
+            $html2 .= '<h3 style="font-size:14pt;">Jumlah Puskesmas dengan status DPT stock out</h3>';
+            $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                         <thead>
                             <tr>
-                                <th>Nama Provinsi</th>
-                                <th>Jumlah Puskesmas</th>
-                                <th>% Puskesmas</th>
+                                <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Nama Provinsi</th>
+                                <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+                                <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">% Puskesmas</th>
                             </tr>
                         </thead>
                         <tbody>';
             foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
-                $html .= "<tr>
-                            <td>{$item['province_name']}</td>
+                $html2 .= "<tr>
+                            <td><b>{$item['province_name']}</b></td>
                             <td>{$item['total_stock_out']}</td>
                             <td>{$item['percentage_stock_out']}%</td>
                         </tr>";
             }
-            $html .= '</tbody></table>';
+            $html2 .= '</tbody></table>';
     
         } else {
             if ($selected_district !== 'all'){
                 // Tabel 3: Kab/Ko dengan % DO dibawah 5%
-                $html .= '<h3>Puskesmas dengan % DO dibawah 5%</h3>';
-                $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                $html2 .= '<h3 style="font-size:14pt;">Puskesmas dengan % DO dibawah 5%</h3>';
+                $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                             <thead>
                                 <tr>
-                                    <th>Nama Puskesmas</th>
-                                    <th>Jumlah Anak DO</th>
-                                    <th>% Anak DO</th>
+                                    <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">Nama Puskesmas</th>
+                                    <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">Jumlah Anak DO</th>
+                                    <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">% Anak DO</th>
                                 </tr>
                             </thead>
                             <tbody>';
                 foreach ($data['province_do'] as $item) {
-                    $html .= "<tr>
-                                <td>{$item['puskesmas_name']}</td>
+                    $html2 .= "<tr>
+                                <td><b>{$item['puskesmas_name']}</b></td>
                                 <td>{$item['total_do']}</td>
                                 <td>{$item['dropout_rate']}%</td>
                             </tr>";
                 }
-                $html .= '</tbody></table>';
+                $html2 .= '</tbody></table>';
 
                 // Menambahkan jarak antara tabel keempat dan kelima
-                $html .= '<br><br>';
+                $html2 .= '<br><br>';
             
                 // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-                $html .= '<h3>Puskesmas yang melakukan pelayanan imunisasi</h3>';
-                $html .= '<table border="1" cellpadding="5" style="text-align:left;">
+                $html2 .= '<h3 style="font-size:14pt;">Puskesmas yang melakukan pelayanan imunisasi</h3>';
+                $html2 .= '<table border="1" cellpadding="10" style="text-align: left;">
                             <thead>
                                 <tr align="center">
-                                    <th><b>NAMA PUSKESMAS</b></th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">NAMA PUSKESMAS</th>
                                 </tr>
                             </thead>
                             <tbody>';
                 $no = 0;
                 foreach ($data['puskesmas_do_immunization'] as $item) {
                     $no++;
-                    $html .= "<tr>
+                    $html2 .= "<tr>
                                 <td>{$item['puskesmas_name']}</td>
                             </tr>";
                 }
-                $html .= '</tbody></table>';
+                $html2 .= '</tbody></table>';
             
                 // Menambahkan jarak antara tabel ketiga dan keempat
-                $html .= '<br><br>';
+                $html2 .= '<br><br>';
 
                 // Tabel 5: Puskesmas dengan status DPT stock out
-                $html .= '<h3>Puskesmas dengan status DPT stock out</h3>';
-                $html .= '<table border="1" cellpadding="5">
+                $html2 .= '<h3 style="font-size:14pt;">Puskesmas dengan status DPT stock out</h3>';
+                $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                             <thead>
                                 <tr>
-                                    <th>Nama Puskesmas</th>
-                                    <th>Bulan</th>
+                                    <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Nama Puskesmas</th>
+                                    <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Bulan</th>
                                 </tr>
                             </thead>
                             <tbody>';
                 foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
-                    $html .= "<tr>
-                                <td>{$item['puskesmas_name']}</td>
+                    $html2 .= "<tr>
+                                <td><b>{$item['puskesmas_name']}</b></td>
                                 <td>{$item['month']}</td>
                             </tr>";
                 }
-                $html .= '</tbody></table>';
+                $html2 .= '</tbody></table>';
 
             } else {
                 // Tabel 3: Kab/Ko dengan % DO dibawah 5%
-                $html .= '<h3>Kab/Kota dengan % DO dibawah 5%</h3>';
-                $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                $html2 .= '<h3 style="font-size:14pt;">Kab/Kota dengan % DO dibawah 5%</h3>';
+                $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                             <thead>
                                 <tr>
-                                    <th>Nama Kab/Kota</th>
-                                    <th>Jumlah Anak DO</th>
-                                    <th>% Anak DO</th>
+                                    <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">Nama Kab/Kota</th>
+                                    <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">Jumlah Anak DO</th>
+                                    <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">% Anak DO</th>
                                 </tr>
                             </thead>
                             <tbody>';
                 foreach ($data['province_do'] as $item) {
-                    $html .= "<tr>
-                                <td>{$item['city_name']}</td>
+                    $html2 .= "<tr>
+                                <td><b>{$item['city_name']}</b></td>
                                 <td>{$item['total_do']}</td>
                                 <td>{$item['dropout_rate']}%</td>
                             </tr>";
                 }
-                $html .= '</tbody></table>';
+                $html2 .= '</tbody></table>';
 
                 // Menambahkan jarak antara tabel keempat dan kelima
-                $html .= '<br><br>';
+                $html2 .= '<br><br>';
             
                 // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-                $html .= '<h3>Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
-                $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                $html2 .= '<h3 style="font-size:14pt;"> Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
+                $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                             <thead>
                                 <tr>
-                                    <th>Nama Kab/Kota</th>
-                                    <th>Jumlah Puskesmas</th>
-                                    <th>% Puskesmas</th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Kab/Kota</th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
                                 </tr>
                             </thead>
                             <tbody>';
                 foreach ($data['puskesmas_do_immunization'] as $item) {
-                    $html .= "<tr>
-                                <td>{$item['city_name']}</td>
+                    $html2 .= "<tr>
+                                <td><b>{$item['city_name']}</b></td>
                                 <td>{$item['total_puskesmas_with_immunization']}</td>
                                 <td>{$item['percentage_immunization']}%</td>
                             </tr>";
                 }
-                $html .= '</tbody></table>';
+                $html2 .= '</tbody></table>';
             
                 // Menambahkan jarak antara tabel ketiga dan keempat
-                $html .= '<br><br>';
+                $html2 .= '<br><br>';
             
                 // Tabel 5: Puskesmas dengan status DPT stock out
-                $html .= '<h3>Jumlah Puskesmas dengan status DPT stock out</h3>';
-                $html .= '<table border="1" cellpadding="5">
+                $html2 .= '<h3 style="font-size:14pt;"> Jumlah Puskesmas dengan status DPT stock out</h3>';
+                $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                             <thead>
                                 <tr>
-                                    <th>Nama Kab/Kota</th>
-                                    <th>Jumlah Puskesmas</th>
-                                    <th>% Puskesmas</th>
+                                    <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Nama Kab/Kota</th>
+                                    <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+                                    <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">% Puskesmas</th>
                                 </tr>
                             </thead>
                             <tbody>';
                 foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
-                    $html .= "<tr>
-                                <td>{$item['city_name']}</td>
+                    $html2 .= "<tr>
+                                <td><b>{$item['city_name']}</b></td>
                                 <td>{$item['total_stock_out']}</td>
                                 <td>{$item['percentage_stock_out']}%</td>
                             </tr>";
                 }
-                $html .= '</tbody></table>';
+                $html2 .= '</tbody></table>';
             }
         }
         
         // Menulis HTML ke PDF
-        $pdf->writeHTML($html, true, false, true, false, '');
+        $pdf->writeHTML($html2, true, false, true, false, '');
     
         // Menyelesaikan PDF dan menampilkan di browser
         ob_end_clean(); // Membersihkan output buffer sebelum mengirim PDF
@@ -1438,14 +1441,14 @@ class Report extends CI_Controller {
         $province_name = "Indonesia";
     
         $data = [
-            'cumulative_dpt3' => $percent_dpt3_coverage . '% <br>' . $total_dpt3_coverage,
-            'cumulative_mr1' => $percent_mr1_coverage . '% <br>' . $total_mr1_coverage,
+            'cumulative_dpt3' => '<span style="font-size:22pt; font-weight: bold;">' . $total_dpt3_coverage . '</span> <br><br>' . $percent_dpt3_coverage . '%',
+            'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . $total_mr1_coverage . '</span> <br><br>' . $percent_mr1_coverage . '%',
             'children_zero_dose' => $zero_dose,
-            'cumulative_dpt1' => $percent_dpt1_coverage . '% <br>' . $total_dpt1_coverage,
+            'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . $total_dpt1_coverage . '</span> <br><br>' . $percent_dpt1_coverage . '%',
             'drop_out_percentage' => $dropout_rate_all_provinces . '% <br>',
             'puskesmas_percentage' => $total_district_under_5_DO,
             'puskesmas_conduct_immunization' => $puskesmas_conduct_immunization,
-            'percentage_puskesmas_conduct_immunization' => $percentage_puskesmas_conduct_immunization,
+            'percentage_puskesmas_conduct_immunization' => $percentage_puskesmas_conduct_immunization . '%',
             'total_dpt_stockout' => $total_dpt_stockout,
             'province_do' => $table_do,
             'puskesmas_do_immunization' => $table_puskesmas_immunization,
@@ -1495,9 +1498,6 @@ class Report extends CI_Controller {
             $title_area = 'Indonesia '; // Gunakan nama Indonesia
         }
 
-
-        
-
         $title_year = 'Tahun ' . $selected_year;
     
         // Membuat objek TCPDF
@@ -1515,58 +1515,59 @@ class Report extends CI_Controller {
         $pdf->AddPage();
     
         // Judul laporan
-        $html = '<h2 style="text-align:center;">Laporan Kerangka Kerja Penurunan Zero Dose di '. $title_area .'</h2>';
+        $html = '<h2 style="text-align:center; font-size:18pt;">Laporan Kerangka Kerja Penurunan Zero Dose di <br>'. $title_area .'</h2>';
+
         // $html .= "<h4>Indonesia</h4>";
 
-            // Tabel 1: Indikator Jangka Panjang
-            $html .= '<h3>Indikator Jangka Panjang</h3>';
-            $html .= '<table border="1" cellpadding="5" style="text-align:center;">
-                        <thead>
-                            <tr>
-                                <th>Cakupan DPT-3</th>
-                                <th>Cakupan MR-1</th>
-                                <th>Jumlah Anak Zero Dose</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>' . $data['cumulative_dpt3'] . '</td>
-                                <td>' . $data['cumulative_mr1'] . '</td>
-                                <td>' . $data['children_zero_dose'] . '</td>
-                            </tr>
-                        </tbody>
-                    </table>';
-        
-            // Menambahkan jarak antara tabel pertama dan kedua
-            $html .= '<br><br>';
+        // Tabel 1: Indikator Jangka Panjang
+        $html .= '<h3 style="font-size:14pt; ">Indikator Jangka Panjang</h3>';
+        $html .= '<table border="1" cellpadding="10" style="text-align:center; border-color: #dddddd;">
+                    <thead>
+                        <tr>
+                            <th style="background-color: green; color: white; font-weight: bold;">Cakupan DPT-3</th>
+                            <th style="background-color: green; color: white; font-weight: bold;">Cakupan MR-1</th>
+                            <th style="background-color: green; color: white; font-weight: bold;">Jumlah Anak Zero Dose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-size:12pt; ">' . $data['cumulative_dpt3'] . '</td>
+                            <td style="font-size:12pt; ">' . $data['cumulative_mr1'] . '</td>
+                            <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['children_zero_dose'] . '</td>
+                        </tr>
+                    </tbody>
+                </table>';
+
+        // Menambahkan jarak antara tabel pertama dan kedua
+        $html .= '<br><br>';
         
             // Tabel 2: Indikator Jangka Menengah
-            $html .= '<h3>Indikator Jangka Menengah</h3>';
-            $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+            $html .= '<h3 style="font-size:14pt;">Indikator Jangka Menengah</h3>';
+            $html .= '<table border="1" cellpadding="10" style="text-align:center; border-color: #dddddd;">
                         <thead>
                             <tr>
-                                <th>Cakupan DPT-1</th>
-                                <th>% Drop Out</th>
-                                <th>Jumlah Kab/Kota dengan %DO dibawah 5%</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">Cakupan DPT-1</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">% Drop Out</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">Jumlah Kab/Kota dengan %DO dibawah 5%</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>' . $data['cumulative_dpt1'] . '</td>
-                                <td>' . $data['drop_out_percentage'] . '</td>
-                                <td>' . $data['puskesmas_percentage'] . '</td>
+                                <td style="font-size:12pt; ">' . $data['cumulative_dpt1'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['drop_out_percentage'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_percentage'] . '</td>
                             </tr>
     
                             <tr>
-                                <th>% puskesmas yang melakukan pelayanan imunisasi</th>
-                                <th>Jumlah puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional</th>
-                                <th>Jumlah puskesmas dengan status DPT stock out</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">% puskesmas yang melakukan pelayanan imunisasi</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">Jumlah puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">Jumlah puskesmas dengan status DPT stock out</th>
                             </tr>
     
                             <tr>
-                                <td>' . $data['percentage_puskesmas_conduct_immunization'] . '</td>
-                                <td>' . $data['puskesmas_conduct_immunization'] . '</td>
-                                <td>' . $data['total_dpt_stockout'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; ">' . $data['percentage_puskesmas_conduct_immunization'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_conduct_immunization'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['total_dpt_stockout'] . '</td>
                             </tr>
                         </tbody>
                     </table>';
@@ -1574,213 +1575,218 @@ class Report extends CI_Controller {
             
                     // Menambahkan jarak antara tabel kedua dan ketiga
             $html .= '<br><br>';
-    
+        
+        // Menulis HTML ke PDF
+        $pdf->writeHTML($html, true, false, true, false, '');
+
+        // Tambahkan halaman baru sebelum menampilkan gambar grafik
+        $pdf->AddPage();
 
         if($selected_province === 'all' || $selected_province === 'targeted'){
         
             // Tabel 3: Kab/Ko dengan % DO dibawah 5%
-            $html .= '<h3>Kab/Kota dengan % DO dibawah 5%</h3>';
-            $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+            $html2 .= '<h3 style="font-size:14pt;">Kab/Kota dengan % DO dibawah 5%</h3>';
+            $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                         <thead>
                             <tr>
-                                <th>Nama Provinsi</th>
-                                <th>% Anak DO</th>
-                                <th>Jumlah Kab/Kota dengan % DO dibawah 5%</th>
-                                <th>% Kab/Kota dengan % DO dibawah 5%</th>
+                                <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">Nama Provinsi</th>
+                                <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">% Anak DO</th>
+                                <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">Jumlah Kab/Kota dengan % DO dibawah 5%</th>
+                                <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">% Kab/Kota dengan % DO dibawah 5%</th>
                             </tr>
                         </thead>
                         <tbody>';
             foreach ($data['province_do'] as $item) {
-                $html .= "<tr>
-                            <td>{$item['name']}</td>
-                            <td>{$item['do_rate']}</td>
+                $html2 .= "<tr>
+                            <td><b>{$item['name']}</b></td>
+                            <td>{$item['do_rate']}%</td>
                             <td>{$item['cities_do_under_5']}</td>
                             <td>{$item['percentage_cities_do_under_5']}</td>
                         </tr>";
             }
-            $html .= '</tbody></table>';
+            $html2 .= '</tbody></table>';
 
             // Menambahkan jarak antara tabel keempat dan kelima
-            $html .= '<br><br>';
+            $html2 .= '<br><br>';
         
             // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-            $html .= '<h3>Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
-            $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+            $html2 .= '<h3 style="font-size:14pt;">Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
+            $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                         <thead>
                             <tr>
-                                <th>Nama Provinsi</th>
-                                <th>Jumlah Puskesmas</th>
-                                <th>% Puskesmas</th>
+                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Provinsi</th>
+                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
                             </tr>
                         </thead>
                         <tbody>';
             foreach ($data['puskesmas_do_immunization'] as $item) {
-                $html .= "<tr>
-                            <td>{$item['province_name']}</td>
+                $html2 .= "<tr>
+                            <td><b>{$item['province_name']}</b></td>
                             <td>{$item['total_puskesmas_with_immunization']}</td>
                             <td>{$item['percentage_immunization']}%</td>
                         </tr>";
             }
-            $html .= '</tbody></table>';
+            $html2 .= '</tbody></table>';
         
             // Menambahkan jarak antara tabel ketiga dan keempat
-            $html .= '<br><br>';
+            $html2 .= '<br><br>';
         
             // Tabel 5: Puskesmas dengan status DPT stock out
-            $html .= '<h3>Jumlah Puskesmas dengan status DPT stock out</h3>';
-            $html .= '<table border="1" cellpadding="5">
+            $html2 .= '<h3 style="font-size:14pt;">Jumlah Puskesmas dengan status DPT stock out</h3>';
+            $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                         <thead>
                             <tr>
-                                <th>Nama Provinsi</th>
-                                <th>Jumlah Puskesmas</th>
-                                <th>% Puskesmas</th>
+                                <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Nama Provinsi</th>
+                                <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+                                <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">% Puskesmas</th>
                             </tr>
                         </thead>
                         <tbody>';
             foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
-                $html .= "<tr>
-                            <td>{$item['province_name']}</td>
+                $html2 .= "<tr>
+                            <td><b>{$item['province_name']}</b></td>
                             <td>{$item['total_stock_out']}</td>
                             <td>{$item['percentage_stock_out']}%</td>
                         </tr>";
             }
-            $html .= '</tbody></table>';
+            $html2 .= '</tbody></table>';
     
         } else {
             if ($selected_district !== 'all'){
                 // Tabel 3: Kab/Ko dengan % DO dibawah 5%
-                $html .= '<h3>Puskesmas dengan % DO dibawah 5%</h3>';
-                $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                $html2 .= '<h3 style="font-size:14pt;">Puskesmas dengan % DO dibawah 5%</h3>';
+                $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                             <thead>
                                 <tr>
-                                    <th>Nama Puskesmas</th>
-                                    <th>Jumlah Anak DO</th>
-                                    <th>% Anak DO</th>
+                                    <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">Nama Puskesmas</th>
+                                    <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">Jumlah Anak DO</th>
+                                    <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">% Anak DO</th>
                                 </tr>
                             </thead>
                             <tbody>';
                 foreach ($data['province_do'] as $item) {
-                    $html .= "<tr>
-                                <td>{$item['puskesmas_name']}</td>
+                    $html2 .= "<tr>
+                                <td><b>{$item['puskesmas_name']}</b></td>
                                 <td>{$item['total_do']}</td>
                                 <td>{$item['dropout_rate']}%</td>
                             </tr>";
                 }
-                $html .= '</tbody></table>';
+                $html2 .= '</tbody></table>';
 
                 // Menambahkan jarak antara tabel keempat dan kelima
-                $html .= '<br><br>';
+                $html2 .= '<br><br>';
             
                 // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-                $html .= '<h3>Puskesmas yang melakukan pelayanan imunisasi</h3>';
-                $html .= '<table border="1" cellpadding="5" style="text-align:left;">
+                $html2 .= '<h3 style="font-size:14pt;">Puskesmas yang melakukan pelayanan imunisasi</h3>';
+                $html2 .= '<table border="1" cellpadding="10" style="text-align: left;">
                             <thead>
                                 <tr align="center">
-                                    <th><b>NAMA PUSKESMAS</b></th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">NAMA PUSKESMAS</th>
                                 </tr>
                             </thead>
                             <tbody>';
                 $no = 0;
                 foreach ($data['puskesmas_do_immunization'] as $item) {
                     $no++;
-                    $html .= "<tr>
+                    $html2 .= "<tr>
                                 <td>{$item['puskesmas_name']}</td>
                             </tr>";
                 }
-                $html .= '</tbody></table>';
+                $html2 .= '</tbody></table>';
             
                 // Menambahkan jarak antara tabel ketiga dan keempat
-                $html .= '<br><br>';
+                $html2 .= '<br><br>';
 
                 // Tabel 5: Puskesmas dengan status DPT stock out
-                $html .= '<h3>Puskesmas dengan status DPT stock out</h3>';
-                $html .= '<table border="1" cellpadding="5">
+                $html2 .= '<h3 style="font-size:14pt;">Puskesmas dengan status DPT stock out</h3>';
+                $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                             <thead>
                                 <tr>
-                                    <th>Nama Puskesmas</th>
-                                    <th>Bulan</th>
+                                    <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Nama Puskesmas</th>
+                                    <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Bulan</th>
                                 </tr>
                             </thead>
                             <tbody>';
                 foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
-                    $html .= "<tr>
-                                <td>{$item['puskesmas_name']}</td>
+                    $html2 .= "<tr>
+                                <td><b>{$item['puskesmas_name']}</b></td>
                                 <td>{$item['month']}</td>
                             </tr>";
                 }
-                $html .= '</tbody></table>';
+                $html2 .= '</tbody></table>';
 
             } else {
                 // Tabel 3: Kab/Ko dengan % DO dibawah 5%
-                $html .= '<h3>Kab/Kota dengan % DO dibawah 5%</h3>';
-                $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                $html2 .= '<h3 style="font-size:14pt;">Kab/Kota dengan % DO dibawah 5%</h3>';
+                $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                             <thead>
                                 <tr>
-                                    <th>Nama Kab/Kota</th>
-                                    <th>Jumlah Anak DO</th>
-                                    <th>% Anak DO</th>
+                                    <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">Nama Kab/Kota</th>
+                                    <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">Jumlah Anak DO</th>
+                                    <th style="background-color: rgb(235, 44, 44); color: white; font-weight: bold;">% Anak DO</th>
                                 </tr>
                             </thead>
                             <tbody>';
                 foreach ($data['province_do'] as $item) {
-                    $html .= "<tr>
-                                <td>{$item['city_name']}</td>
+                    $html2 .= "<tr>
+                                <td><b>{$item['city_name']}</b></td>
                                 <td>{$item['total_do']}</td>
                                 <td>{$item['dropout_rate']}%</td>
                             </tr>";
                 }
-                $html .= '</tbody></table>';
+                $html2 .= '</tbody></table>';
 
                 // Menambahkan jarak antara tabel keempat dan kelima
-                $html .= '<br><br>';
+                $html2 .= '<br><br>';
             
                 // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-                $html .= '<h3>Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
-                $html .= '<table border="1" cellpadding="5" style="text-align:center;">
+                $html2 .= '<h3 style="font-size:14pt;"> Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
+                $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                             <thead>
                                 <tr>
-                                    <th>Nama Kab/Kota</th>
-                                    <th>Jumlah Puskesmas</th>
-                                    <th>% Puskesmas</th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Kab/Kota</th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
                                 </tr>
                             </thead>
                             <tbody>';
                 foreach ($data['puskesmas_do_immunization'] as $item) {
-                    $html .= "<tr>
-                                <td>{$item['city_name']}</td>
+                    $html2 .= "<tr>
+                                <td><b>{$item['city_name']}</b></td>
                                 <td>{$item['total_puskesmas_with_immunization']}</td>
                                 <td>{$item['percentage_immunization']}%</td>
                             </tr>";
                 }
-                $html .= '</tbody></table>';
+                $html2 .= '</tbody></table>';
             
                 // Menambahkan jarak antara tabel ketiga dan keempat
-                $html .= '<br><br>';
+                $html2 .= '<br><br>';
             
                 // Tabel 5: Puskesmas dengan status DPT stock out
-                $html .= '<h3>Jumlah Puskesmas dengan status DPT stock out</h3>';
-                $html .= '<table border="1" cellpadding="5">
+                $html2 .= '<h3 style="font-size:14pt;"> Jumlah Puskesmas dengan status DPT stock out</h3>';
+                $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                             <thead>
                                 <tr>
-                                    <th>Nama Kab/Kota</th>
-                                    <th>Jumlah Puskesmas</th>
-                                    <th>% Puskesmas</th>
+                                    <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Nama Kab/Kota</th>
+                                    <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+                                    <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">% Puskesmas</th>
                                 </tr>
                             </thead>
                             <tbody>';
                 foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
-                    $html .= "<tr>
-                                <td>{$item['city_name']}</td>
+                    $html2 .= "<tr>
+                                <td><b>{$item['city_name']}</b></td>
                                 <td>{$item['total_stock_out']}</td>
                                 <td>{$item['percentage_stock_out']}%</td>
                             </tr>";
                 }
-                $html .= '</tbody></table>';
+                $html2 .= '</tbody></table>';
             }
         }
         
         // Menulis HTML ke PDF
-        $pdf->writeHTML($html, true, false, true, false, '');
+        $pdf->writeHTML($html2, true, false, true, false, '');
     
         // Menyelesaikan PDF dan menampilkan di browser
         // ob_end_clean(); // Membersihkan output buffer sebelum mengirim PDF
