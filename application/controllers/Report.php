@@ -501,9 +501,9 @@ class Report extends CI_Controller {
                 $table_do[] = [
                     'province_id' => $province_id,
                     'name' => $province_name,
-                    'do_rate' => number_format($do_rate, 2),  // DO rate dalam format 2 desimal
+                    'do_rate' => number_format($do_rate, 2, ',', '.'),  // DO rate dalam format 2 desimal
                     'cities_do_under_5' => $cities_do_under_5,
-                    'percentage_cities_do_under_5' => number_format($percentage_cities_do_under_5, 2) . '%',  // Persentase dengan format %
+                    'percentage_cities_do_under_5' => number_format($percentage_cities_do_under_5, 2, ',', '.') . '%',  // Persentase dengan format %
                 ];
             }
         } else {
@@ -512,7 +512,7 @@ class Report extends CI_Controller {
                 $dpt_under_5_data_by_district = $this->Report_model->get_districts_under_5_percent_by_district($selected_province,$selected_district,$selected_year, $selected_month);
                 foreach ($dpt_under_5_data_by_district as $row){
                     // Periksa apakah dropout_rate dan total_do kurang dari 0, jika iya set ke 0
-                    $dropout_rate = ($row['dropout_rate'] < 0) ? 0 : number_format($row['dropout_rate'], 2);
+                    $dropout_rate = ($row['dropout_rate'] < 0) ? 0 : number_format($row['dropout_rate'], 2, ',', '.');
                     $total_do = ($row['total_do'] < 0) ? 0 : $row['total_do'];
 
                     $table_do[] = [
@@ -526,7 +526,7 @@ class Report extends CI_Controller {
                 $dpt_under_5_data_by_province = $this->Report_model->get_districts_under_5_percent_by_province($selected_province,$selected_district,$selected_year, $selected_month);
                 foreach ($dpt_under_5_data_by_province as $row){
                     // Periksa apakah dropout_rate dan total_do kurang dari 0, jika iya set ke 0
-                    $dropout_rate = ($row['dropout_rate'] < 0) ? 0 : number_format($row['dropout_rate'], 2);
+                    $dropout_rate = ($row['dropout_rate'] < 0) ? 0 : number_format($row['dropout_rate'], 2, ',', '.');
                     $total_do = ($row['total_do'] < 0) ? 0 : $row['total_do'];
 
                     $table_do[] = [
@@ -577,7 +577,7 @@ class Report extends CI_Controller {
                     'province_name' => $province_name,
                     'total_puskesmas_with_immunization' => $total_puskesmas_with_immunization,
                     'total_puskesmas' => $total_puskesmas,
-                    'percentage_immunization' => $percentage_immunization
+                    'percentage_immunization' => number_format($percentage_immunization, 2, ',', '.')
                 ];
             }
         } else {
@@ -596,7 +596,7 @@ class Report extends CI_Controller {
                         'city_name' => $row['city_name'],
                         'total_puskesmas_with_immunization' => $row['total_puskesmas_with_immunization'],
                         'total_puskesmas' => $row['total_puskesmas'],
-                        'percentage_immunization' => $row['percentage_immunization']
+                        'percentage_immunization' => number_format($row['percentage_immunization'], 2, ',', '.')
                     ];
                 }
             }
@@ -655,7 +655,7 @@ class Report extends CI_Controller {
                         'total_stock_out_more_than_3_months' => $total_stock_out_more_than_3_months,
                         'total_stock_out' => $total_stock_out,
                         'total_puskesmas' => $total_puskesmas,
-                        'percentage_stock_out' => $percentage_stock_out
+                        'percentage_stock_out' => number_format($percentage_stock_out, 2, ',', '.')
                     ];
                 }
         } else {
@@ -702,7 +702,7 @@ class Report extends CI_Controller {
                         'total_stock_out_more_than_3_months' => $total_stock_out_more_than_3_months,
                         'total_stock_out' => $total_stock_out,
                         'total_puskesmas' => $total_puskesmas,
-                        'percentage_stock_out' => $percentage_stock_out
+                        'percentage_stock_out' => number_format($percentage_stock_out, 2, ',', '.')
                     ];
                 }
 
@@ -721,15 +721,15 @@ class Report extends CI_Controller {
         $province_name = "Indonesia";
     
         $data = [
-            'cumulative_dpt3' => '<span style="font-size:22pt; font-weight: bold;">' . $total_dpt3_coverage . '</span> <br><br>' . $percent_dpt3_coverage . '%',
-            'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . $total_mr1_coverage . '</span> <br><br>' . $percent_mr1_coverage . '%',
-            'children_zero_dose' => $zero_dose,
-            'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . $total_dpt1_coverage . '</span> <br><br>' . $percent_dpt1_coverage . '%',
-            'drop_out_percentage' => $dropout_rate_all_provinces . '% <br>',
-            'puskesmas_percentage' => $total_district_under_5_DO,
-            'puskesmas_conduct_immunization' => $puskesmas_conduct_immunization,
-            'percentage_puskesmas_conduct_immunization' => $percentage_puskesmas_conduct_immunization . '%',
-            'total_dpt_stockout' => $total_dpt_stockout,
+            'cumulative_dpt3' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt3_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_dpt3_coverage, 1, ',', '.') . '%',
+            'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_mr1_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_mr1_coverage, 1, ',', '.') . '%',
+            'children_zero_dose' => number_format($zero_dose, 0, ',', '.'),
+            'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt1_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '%',
+            'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
+            'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
+            'puskesmas_conduct_immunization' => number_format($puskesmas_conduct_immunization, 0, ',', '.'),
+            'percentage_puskesmas_conduct_immunization' => number_format($percentage_puskesmas_conduct_immunization, 1, ',', '.') . '%',
+            'total_dpt_stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
             'province_do' => $table_do,
             'puskesmas_do_immunization' => $table_puskesmas_immunization,
             'puskesmas_dpt_stock_out_data' => $table_puskesmas_stock_out
@@ -1222,9 +1222,9 @@ class Report extends CI_Controller {
                 $table_do[] = [
                     'province_id' => $province_id,
                     'name' => $province_name,
-                    'do_rate' => number_format($do_rate, 2),  // DO rate dalam format 2 desimal
+                    'do_rate' => number_format($do_rate, 2, ',', '.'),  // DO rate dalam format 2 desimal
                     'cities_do_under_5' => $cities_do_under_5,
-                    'percentage_cities_do_under_5' => number_format($percentage_cities_do_under_5, 2) . '%',  // Persentase dengan format %
+                    'percentage_cities_do_under_5' => number_format($percentage_cities_do_under_5, 2, ',', '.') . '%',  // Persentase dengan format %
                 ];
             }
         } else {
@@ -1233,7 +1233,7 @@ class Report extends CI_Controller {
                 $dpt_under_5_data_by_district = $this->Report_model->get_districts_under_5_percent_by_district($selected_province,$selected_district,$selected_year, $selected_month);
                 foreach ($dpt_under_5_data_by_district as $row){
                     // Periksa apakah dropout_rate dan total_do kurang dari 0, jika iya set ke 0
-                    $dropout_rate = ($row['dropout_rate'] < 0) ? 0 : number_format($row['dropout_rate'], 2);
+                    $dropout_rate = ($row['dropout_rate'] < 0) ? 0 : number_format($row['dropout_rate'], 2, ',', '.');
                     $total_do = ($row['total_do'] < 0) ? 0 : $row['total_do'];
 
                     $table_do[] = [
@@ -1247,7 +1247,7 @@ class Report extends CI_Controller {
                 $dpt_under_5_data_by_province = $this->Report_model->get_districts_under_5_percent_by_province($selected_province,$selected_district,$selected_year, $selected_month);
                 foreach ($dpt_under_5_data_by_province as $row){
                     // Periksa apakah dropout_rate dan total_do kurang dari 0, jika iya set ke 0
-                    $dropout_rate = ($row['dropout_rate'] < 0) ? 0 : number_format($row['dropout_rate'], 2);
+                    $dropout_rate = ($row['dropout_rate'] < 0) ? 0 : number_format($row['dropout_rate'], 2, ',', '.');
                     $total_do = ($row['total_do'] < 0) ? 0 : $row['total_do'];
 
                     $table_do[] = [
@@ -1298,7 +1298,7 @@ class Report extends CI_Controller {
                     'province_name' => $province_name,
                     'total_puskesmas_with_immunization' => $total_puskesmas_with_immunization,
                     'total_puskesmas' => $total_puskesmas,
-                    'percentage_immunization' => $percentage_immunization
+                    'percentage_immunization' => number_format($percentage_immunization, 2, ',', '.')
                 ];
             }
         } else {
@@ -1317,7 +1317,7 @@ class Report extends CI_Controller {
                         'city_name' => $row['city_name'],
                         'total_puskesmas_with_immunization' => $row['total_puskesmas_with_immunization'],
                         'total_puskesmas' => $row['total_puskesmas'],
-                        'percentage_immunization' => $row['percentage_immunization']
+                        'percentage_immunization' => number_format($row['percentage_immunization'], 2, ',', '.')
                     ];
                 }
             }
@@ -1376,7 +1376,7 @@ class Report extends CI_Controller {
                         'total_stock_out_more_than_3_months' => $total_stock_out_more_than_3_months,
                         'total_stock_out' => $total_stock_out,
                         'total_puskesmas' => $total_puskesmas,
-                        'percentage_stock_out' => $percentage_stock_out
+                        'percentage_stock_out' => number_format($percentage_stock_out, 2, ',', '.')
                     ];
                 }
         } else {
@@ -1423,7 +1423,7 @@ class Report extends CI_Controller {
                         'total_stock_out_more_than_3_months' => $total_stock_out_more_than_3_months,
                         'total_stock_out' => $total_stock_out,
                         'total_puskesmas' => $total_puskesmas,
-                        'percentage_stock_out' => $percentage_stock_out
+                        'percentage_stock_out' => number_format($percentage_stock_out, 2, ',', '.')
                     ];
                 }
 
@@ -1442,15 +1442,15 @@ class Report extends CI_Controller {
         $province_name = "Indonesia";
     
         $data = [
-            'cumulative_dpt3' => '<span style="font-size:22pt; font-weight: bold;">' . $total_dpt3_coverage . '</span> <br><br>' . $percent_dpt3_coverage . '%',
-            'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . $total_mr1_coverage . '</span> <br><br>' . $percent_mr1_coverage . '%',
-            'children_zero_dose' => $zero_dose,
-            'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . $total_dpt1_coverage . '</span> <br><br>' . $percent_dpt1_coverage . '%',
-            'drop_out_percentage' => $dropout_rate_all_provinces . '% <br>',
-            'puskesmas_percentage' => $total_district_under_5_DO,
-            'puskesmas_conduct_immunization' => $puskesmas_conduct_immunization,
-            'percentage_puskesmas_conduct_immunization' => $percentage_puskesmas_conduct_immunization . '%',
-            'total_dpt_stockout' => $total_dpt_stockout,
+            'cumulative_dpt3' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt3_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_dpt3_coverage, 1, ',', '.') . '%',
+            'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_mr1_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_mr1_coverage, 1, ',', '.') . '%',
+            'children_zero_dose' => number_format($zero_dose, 0, ',', '.'),
+            'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt1_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '%',
+            'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
+            'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
+            'puskesmas_conduct_immunization' => number_format($puskesmas_conduct_immunization, 0, ',', '.'),
+            'percentage_puskesmas_conduct_immunization' => number_format($percentage_puskesmas_conduct_immunization, 1, ',', '.') . '%',
+            'total_dpt_stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
             'province_do' => $table_do,
             'puskesmas_do_immunization' => $table_puskesmas_immunization,
             'puskesmas_dpt_stock_out_data' => $table_puskesmas_stock_out
@@ -1507,7 +1507,7 @@ class Report extends CI_Controller {
         require_once(APPPATH . 'libraries/tcpdf/tcpdf.php'); 
         $pdf = new TCPDF();
         $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Your Organization');
+        $pdf->SetAuthor('Zero Dose Indonesia Team');
         $pdf->SetTitle('Laporan Kerangka Kerja Penurunan Zero Dose ' . $title_area);
         $pdf->SetHeaderData('', 0, 'Laporan Kerangka Kerja Penurunan Zero Dose', $title_area  . $title_year . $title_month);
     
@@ -2018,8 +2018,8 @@ class Report extends CI_Controller {
                     <tbody>
                         <tr>
                             <td width="50%" style="font-size:12pt; ">Penggunaan (penyerapan) Budget</td>
-                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . $data['budget_2024'] . '%</td>
-                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . $data['budget_2025'] . '%</td>
+                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . number_format($data['budget_2024'], 2, ',', '.') . '%</td>
+                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . number_format($data['budget_2025'], 2, ',', '.') . '%</td>
                         </tr>
                     </tbody>
                 </table>';
@@ -2032,19 +2032,19 @@ class Report extends CI_Controller {
         $html .= '<table border="1" cellpadding="10" style="text-align:center;">
                     <thead>
                         <tr>
-                            <th width="40%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Tujuan</th>
+                            <th width="30%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Tujuan</th>
                             <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Indikator</th>
-                            <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2024</th>
-                            <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2025</th>
+                            <th width="25%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2024</th>
+                            <th width="25%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2025</th>
                         </tr>
                     </thead>
                     <tbody>';
         foreach ($data['country_objectives'] as $objective) {
             $html .= '<tr>
-                        <td width="40%" style="font-size:12pt; ">'. $objective['name'] . '</td>
+                        <td width="30%" style="font-size:12pt; ">'. $objective['name'] . '</td>
                         <td width="20%" style="font-size:12pt; ">Persentase kegiatan rencana kerja yang terlaksana</td>
-                        <td width="20%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. $objective['completed_2024'] . '%</td>
-                        <td width="20%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. $objective['completed_2025'] . '%</td>
+                        <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. number_format($objective['completed_2024'], 2, ',', '.') . '%</td>
+                        <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. number_format($objective['completed_2025'], 2, ',', '.') . '%</td>
                       </tr>';
         }
         $html .= '</tbody></table>';
@@ -2171,8 +2171,8 @@ class Report extends CI_Controller {
                     <tbody>
                         <tr>
                             <td width="50%" style="font-size:12pt; ">Penggunaan (penyerapan) Budget</td>
-                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . $data['budget_2024'] . '%</td>
-                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . $data['budget_2025'] . '%</td>
+                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . number_format($data['budget_2024'], 2, ',', '.') . '%</td>
+                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . number_format($data['budget_2025'], 2, ',', '.') . '%</td>
                         </tr>
                     </tbody>
                 </table>';
@@ -2185,19 +2185,19 @@ class Report extends CI_Controller {
         $html .= '<table border="1" cellpadding="10" style="text-align:center;">
                     <thead>
                         <tr>
-                            <th width="40%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Tujuan</th>
+                            <th width="30%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Tujuan</th>
                             <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Indikator</th>
-                            <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2024</th>
-                            <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2025</th>
+                            <th width="25%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2024</th>
+                            <th width="25%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2025</th>
                         </tr>
                     </thead>
                     <tbody>';
         foreach ($data['country_objectives'] as $objective) {
             $html .= '<tr>
-                        <td width="40%" style="font-size:12pt; ">'. $objective['name'] . '</td>
+                        <td width="30%" style="font-size:12pt; ">'. $objective['name'] . '</td>
                         <td width="20%" style="font-size:12pt; ">Persentase kegiatan rencana kerja yang terlaksana</td>
-                        <td width="20%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. $objective['completed_2024'] . '%</td>
-                        <td width="20%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. $objective['completed_2025'] . '%</td>
+                        <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. number_format($objective['completed_2024'], 2, ',', '.') . '%</td>
+                        <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. number_format($objective['completed_2025'], 2, ',', '.') . '%</td>
                       </tr>';
         }
         $html .= '</tbody></table>';
