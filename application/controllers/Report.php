@@ -793,7 +793,28 @@ class Report extends CI_Controller {
         // Mengatur margin
         $pdf->SetMargins(15, 20, 15);
         $pdf->AddPage();
-    
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/kemenkes.jpg'), 15, 15, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/imunisasi_lengkap.jpg'), 45, 15, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/logo.jpg'), 67, 20, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/undp-logo-blue.jpg'), 91, 20, 6, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/who.jpg'), 100, 16, 35, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/UNICEF_Logo.jpg'), 137, 21, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan jarak antara gambar dan judul (gunakan Ln untuk jarak)
+        $pdf->Ln(20);  // Menambah jarak 25 unit antara gambar dan judul
+
         // Judul laporan
         $html = '<h2 style="text-align:center; font-size:18pt;">Laporan Kerangka Kerja Penurunan Zero Dose di <br>'. $title_area .'</h2>';
 
@@ -1514,6 +1535,27 @@ class Report extends CI_Controller {
         // Mengatur margin
         $pdf->SetMargins(15, 20, 15);
         $pdf->AddPage();
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/kemenkes.jpg'), 15, 15, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/imunisasi_lengkap.jpg'), 45, 15, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/logo.jpg'), 67, 20, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/undp-logo-blue.jpg'), 91, 20, 6, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/who.jpg'), 100, 16, 35, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/UNICEF_Logo.jpg'), 137, 21, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan jarak antara gambar dan judul (gunakan Ln untuk jarak)
+        $pdf->Ln(20);  // Menambah jarak 25 unit antara gambar dan judul
     
         // Judul laporan
         $html = '<h2 style="text-align:center; font-size:18pt;">Laporan Kerangka Kerja Penurunan Zero Dose di <br>'. $title_area .'</h2>';
@@ -1999,6 +2041,28 @@ class Report extends CI_Controller {
     
         // Halaman 1 - Laporan Imunisasi
         $pdf->AddPage(); // Menambahkan halaman baru
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/kemenkes.jpg'), 15, 15, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/imunisasi_lengkap.jpg'), 45, 15, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/logo.jpg'), 67, 20, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/undp-logo-blue.jpg'), 91, 20, 6, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/who.jpg'), 100, 16, 35, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/UNICEF_Logo.jpg'), 137, 21, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan jarak antara gambar dan judul (gunakan Ln untuk jarak)
+        $pdf->Ln(20);  // Menambah jarak 25 unit antara gambar dan judul
+
         $html = '<h2 style="text-align:center;">LAPORAN KERANGKA KERJA AKUNTABILITAS PENURUNAN ANAK ANAK ZERO DOSE GAVI</h2>';
         // $html .= "<h4>Indonesia</h4>";
         // Menambahkan jarak antara tabel pengeluaran dan country objectives
@@ -2152,6 +2216,28 @@ class Report extends CI_Controller {
     
         // Halaman 1 - Laporan Imunisasi
         $pdf->AddPage(); // Menambahkan halaman baru
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/kemenkes.jpg'), 15, 15, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/imunisasi_lengkap.jpg'), 45, 15, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/logo.jpg'), 67, 20, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/undp-logo-blue.jpg'), 91, 20, 6, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/who.jpg'), 100, 16, 35, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
+        $pdf->Image(base_url('assets/UNICEF_Logo.jpg'), 137, 21, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+
+        // Menambahkan jarak antara gambar dan judul (gunakan Ln untuk jarak)
+        $pdf->Ln(20);  // Menambah jarak 25 unit antara gambar dan judul
+
         $html = '<h2 style="text-align:center;">LAPORAN KERANGKA KERJA AKUNTABILITAS PENURUNAN ANAK ANAK ZERO DOSE GAVI</h2>';
         // $html .= "<h4>Indonesia</h4>";
         // Menambahkan jarak antara tabel pengeluaran dan country objectives
