@@ -2524,6 +2524,18 @@ class Report extends CI_Controller {
         $pdf->Output('Laporan_Imunisasi_Grant_Indonesia.pdf', 'I');
         exit();
     }
+
+    public function sent_monthly_email_chai() {
+        // Ambil data dari form filter
+        $partner_id = 2;
+        $month = 'all';
+        $email = 'abdulrahmankhadafi9@gmail.com';
+    
+        // Generate laporan berdasarkan filter yang diberikan
+        $report_data = $this->partner_report_attach($partner_id, $month);
+
+        $this->send_report_via_email($report_data, $email);
+    }
     
 }
 ?>

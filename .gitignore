@@ -34,3 +34,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 # /assets/
 /system/
 /application/config/
+/application/controllers/Puskesmas.php
