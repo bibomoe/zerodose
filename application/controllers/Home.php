@@ -784,6 +784,7 @@ class Home extends CI_Controller {
         $this->data['percentage_puskesmas'] = $puskesmas_data['percentage'];
 
         $puskesmas_data = $this->Puskesmas_model->get_puskesmas_coverage($selected_province, $selected_year);
+        $ss_data = $this->District_model->get_supportive_supervision($selected_province, $selected_year);
 
         // Ambil file GeoJSON berdasarkan provinsi
         if ($selected_province !== 'all' && $selected_province !== 'targeted') {
@@ -799,9 +800,10 @@ class Home extends CI_Controller {
         }
 
         $this->data['puskesmas_data'] = json_encode($puskesmas_data, JSON_NUMERIC_CHECK);
+        $this->data['ss_data'] = json_encode($ss_data, JSON_NUMERIC_CHECK);
 
         // ✅ Data untuk tabel (per district)
-        $this->data['supportive_supervision_table'] = $this->District_model->get_supportive_supervision_targeted_table($selected_year);
+        $this->data['supportive_supervision_table'] = $this->District_model->get_supportive_supervision_targeted_table($selected_province, $selected_year);
     
         // ✅ Data untuk card (summary seluruh 10 targeted provinces)
         $this->data['supportive_supervision_2024'] = $this->District_model->get_supportive_supervision_targeted_summary(2024);
@@ -850,6 +852,7 @@ class Home extends CI_Controller {
                 'tabelcoloumn3' => 'Total number of Puskesmas',
                 'tabelcoloumn4' => 'Number of Puskesmas that Have Undergone Supportive Supervision with "Good" Category',
                 'tabelcoloumn5' => 'Percentage of "Good" Category',
+                'tabelcoloumn6' => 'Total Supportive Supervision'
             ],
             'id' => [
                 'page_title' => 'Kinerja Imunisasi',
@@ -867,6 +870,7 @@ class Home extends CI_Controller {
                 'tabelcoloumn3' => 'Jumlah Puskesmas',
                 'tabelcoloumn4' => 'Jumlah Puskesmas yang telah mengikuti Supervisi Dukungan dengan Kategori "Baik"',
                 'tabelcoloumn5' => 'Persentase Kategori "Baik"',
+                'tabelcoloumn6' => 'Jumlah Supervisi Dukungan'
             ]
         ];
     

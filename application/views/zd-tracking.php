@@ -239,6 +239,7 @@
                                                         <th><?= $translations['tabelcoloumn1'] ?></th>
                                                         <th><?= $translations['tabelcoloumn2'] ?></th>
                                                         <th><?= $translations['tabelcoloumn3'] ?></th>
+                                                        <th><?= $translations['tabelcoloumn6'] ?></th>
                                                         <th><?= $translations['tabelcoloumn4'] ?></th>
                                                         <th><?= $translations['tabelcoloumn5'] ?></th>
                                                     </tr>
@@ -250,13 +251,14 @@
                                                                 <td><?= $row['province_name']; ?></td>
                                                                 <td><?= $row['city_name']; ?></td>
                                                                 <td><?= $row['total_puskesmas']; ?></td>
+                                                                <td><?= $row['total_ss']; ?></td>
                                                                 <td><?= $row['good_category_puskesmas']; ?></td>
                                                                 <td><?= $row['percentage_good_category']; ?>%</td>
                                                             </tr>
                                                         <?php endforeach; ?>
                                                     <?php else : ?>
                                                         <tr>
-                                                            <td colspan="5" class="text-center">No data available</td>
+                                                            <td colspan="6" class="text-center">No data available</td>
                                                         </tr>
                                                     <?php endif; ?>
                                                 </tbody>
@@ -385,6 +387,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }).addTo(map);
 
     let puskesmasData = <?= $puskesmas_data ?>;
+    let ssData = <?= $ss_data ?>;
+    // console.log(puskesmasData);
+    // console.log(ssData);
     
     function cleanRegionCode(code) { 
         return code ? String(code).replace(/\./g, '') : ""; 
@@ -428,17 +433,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 let rawCode = isProvinceLevel ? feature.properties.KDPPUM : feature.properties.KDPKAB;
                 let regionId = cleanRegionCode(rawCode);
                 let regionData = puskesmasData[regionId] || {}; 
+                let regionSSData = ssData[regionId] || {}; 
 
                 let totalPuskesmas = formatValue(regionData.total_puskesmas);
                 let conductedPuskesmas = formatValue(regionData.conducted_puskesmas);
                 let percentageImmunization = formatValue(regionData.percentage_immunization, true);
+
+                let total_ss = formatValue(regionSSData.total_ss);
+                let good_puskesmas = formatValue(regionSSData.good_puskesmas);
+                let percentage_good_category = formatValue(regionSSData.percentage_good_category, true);
 
                 let name = isProvinceLevel ? feature.properties.WADMPR : feature.properties.NAMOBJ;
 
                 let popupContent = `<b>${name}</b><br>
                                     Total Puskesmas: ${totalPuskesmas}<br>
                                     Conducted Immunization: ${conductedPuskesmas}<br>
-                                    % Immunization: ${percentageImmunization}`;
+                                    % Immunization: ${percentageImmunization}<br>
+                                    Total SS: ${total_ss}<br>
+                                    Good Category: ${good_puskesmas}<br>
+                                    % Good Category: ${percentage_good_category}`;
+                                    
 
                 if (isProvinceLevel) {
                     let selectedYear = "<?= $selected_year ?>"; 

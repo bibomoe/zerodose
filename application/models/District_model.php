@@ -4,16 +4,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class District_model extends CI_Model {
 
     // ✅ Ambil data supportive supervision hanya untuk 10 targeted provinces
-    public function get_supportive_supervision_targeted_table($year) {
-        $targeted_provinces = $this->get_targeted_province_ids(); // Ambil ID targeted provinces
+    public function get_supportive_supervision_targeted_table($province_id = 'all', $year = 2025) {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil ID targeted provinces
 
-        if (empty($targeted_provinces)) {
-            return []; // Jika tidak ada data, return array kosong
-        }
+        // if (empty($targeted_provinces)) {
+        //     return []; // Jika tidak ada data, return array kosong
+        // }
 
         $this->db->select("
             p.name_id AS province_name,
             c.name_id AS city_name,
+            SUM(ss.total_ss) AS total_ss,
             (SELECT COUNT(id) FROM puskesmas WHERE city_id = ss.city_id) AS total_puskesmas, 
             SUM(ss.good_category_puskesmas) AS good_category_puskesmas
         ");
@@ -22,13 +23,25 @@ class District_model extends CI_Model {
         $this->db->join('provinces p', 'ss.province_id = p.id', 'left');
 
         // ✅ Filter hanya untuk 10 targeted provinces
-        $this->db->where_in('ss.province_id', $targeted_provinces);
+        // $this->db->where_in('ss.province_id', $targeted_provinces);
         
         // ✅ Filter berdasarkan tahun
         $this->db->where('ss.year', $year);
 
-        $this->db->group_by('ss.city_id');
-        $this->db->order_by('p.name_id, c.name_id');
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('ss.province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('ss.province_id', $province_id);
+        }
+
+        // $this->db->group_by('ss.city_id');
+        // Grouping berdasarkan province atau city
+        $this->db->group_by(($province_id !== 'all' && $province_id !== 'targeted') ? 'ss.city_id' : 'ss.province_id');
+        // $this->db->order_by('p.name_id, c.name_id');
 
         $query = $this->db->get()->result_array();
 
@@ -47,9 +60,77 @@ class District_model extends CI_Model {
         return $query;
     }
 
+    // ✅ Ambil data supportive supervision hanya untuk peta
+    public function get_supportive_supervision($province_id = 'all', $year = 2025) {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil ID targeted provinces
+
+        // if (empty($targeted_provinces)) {
+        //     return []; // Jika tidak ada data, return array kosong
+        // }
+
+        $this->db->select("
+            ss.province_id AS province_id,
+            ss.city_id AS city_id,
+            SUM(ss.total_ss) AS total_ss,
+            (SELECT COUNT(id) FROM puskesmas WHERE city_id = ss.city_id) AS total_puskesmas, 
+            SUM(ss.good_category_puskesmas) AS good_category_puskesmas
+        ");
+        $this->db->from('supportive_supervision ss');
+        $this->db->join('cities c', 'ss.city_id = c.id', 'left');
+        $this->db->join('provinces p', 'ss.province_id = p.id', 'left');
+
+        // ✅ Filter hanya untuk 10 targeted provinces
+        // $this->db->where_in('ss.province_id', $targeted_provinces);
+        
+        // ✅ Filter berdasarkan tahun
+        $this->db->where('ss.year', $year);
+
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('ss.province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('ss.province_id', $province_id);
+        }
+
+        // $this->db->group_by('ss.city_id');
+        // Grouping berdasarkan province atau city
+        $this->db->group_by(($province_id !== 'all' && $province_id !== 'targeted') ? 'ss.city_id' : 'ss.province_id');
+        // $this->db->order_by('p.name_id, c.name_id');
+
+        // $query = $this->db->get()->result_array();
+        $query = $this->db->get();
+        $result = [];
+
+        // 🔄 Hitung persentase setelah mendapatkan hasil query
+        foreach ($query->result_array() as &$row) {
+            $total_puskesmas = (int) $row['total_puskesmas'];
+            $good_puskesmas = (int) $row['good_category_puskesmas'];
+            $total_ss = (int) $row['total_ss'];
+            $percentage_good_category = ($total_puskesmas > 0) 
+                ? round(($good_puskesmas / $total_puskesmas) * 100, 2) 
+                : 0;
+
+            $result_key = ($province_id !== 'all' && $province_id !== 'targeted') ? $row['city_id'] : $row['province_id'];
+            $result[$result_key] = array_merge($row, [
+                'total_puskesmas' => $total_puskesmas,
+                'total_ss' => $total_ss,
+                'good_puskesmas' => $good_puskesmas,
+                'percentage_good_category' => $percentage_good_category
+            ]);
+        }
+
+        // var_dump($result);
+        // exit;
+
+        return $result;
+    }
+
     // ✅ Fungsi untuk card (Mengambil total data untuk semua 10 targeted provinces)
     public function get_supportive_supervision_targeted_summary($year) {
-        $province_ids = $this->get_targeted_province_ids();
+        // $province_ids = $this->get_targeted_province_ids();
 
         $this->db->select('SUM(ss.good_category_puskesmas) AS total_good_puskesmas', false);
         $this->db->from('supportive_supervision ss');
@@ -64,9 +145,9 @@ class District_model extends CI_Model {
         // Hitung total seluruh puskesmas di targeted provinces
         $this->db->select('COUNT(id) AS total_puskesmas');
         $this->db->from('puskesmas');
-        if (!empty($province_ids)) {
-            $this->db->where_in('province_id', $province_ids);
-        }
+        // if (!empty($province_ids)) {
+        //     $this->db->where_in('province_id', $province_ids);
+        // }
 
         $total_puskesmas = $this->db->get()->row()->total_puskesmas ?? 0;
 
