@@ -400,6 +400,9 @@ class Home extends CI_Controller {
         // Ambil data cakupan imunisasi berdasarkan provinsi/kota
         $this->data['immunization_data'] = $this->Immunization_model->get_immunization_coverage($selected_province, $selected_year);
 
+        // Ambil last update
+        $this->data['last_update_date'] = $this->Immunization_model->get_last_immunization_update_date($selected_year);
+
         // var_dump($this->data['immunization_data']);
         // exit;
 
@@ -483,7 +486,10 @@ class Home extends CI_Controller {
                 'tabelcoloumn5' => '% of Zero Dose',
                 'text18' => 'Zero Dose Children Mapping',
                 'text19' => 'Zero-Dose Children Trend by Month',
-                'text20' => 'Zero Dose Children by Region Type'
+                'text20' => 'Zero Dose Children by Region Type',
+                'text21' => 'Data is sourced from the 2023 Combined Data of the Ministry of Health (Kemenkes)',
+                'text22' => 'Data is sourced from WUENIC',
+                'text23' => 'Data is sourced from ASIK, last updated on '
             ],
             'id' => [
                 'page_title' => 'Mitigasi',
@@ -516,7 +522,10 @@ class Home extends CI_Controller {
                 'tabelcoloumn5' => '% dari Zero Dose',
                 'text18' => 'Pemetaan Anak Zero Dose',
                 'text19' => 'Tren Anak Zero-Dose per Bulan',
-                'text20' => 'Jumlah Anak Zero Dose Berdasarkan Jenis Wilayah'
+                'text20' => 'Jumlah Anak Zero Dose Berdasarkan Jenis Wilayah',
+                'text21' => 'Data bersumber dari Data Kombinasi Kemenkes tahun 2023',
+                'text22' => 'Data bersumber dari WUENIC',
+                'text23' => 'Data bersumber dari ASIK terakhir diperbaharui pada '
             ]
         ];
     

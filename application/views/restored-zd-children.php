@@ -96,6 +96,18 @@
                                         <div class="card-body px-4 py-4-5 text-center">
                                             <h6 class="text-muted font-semibold"><?= $translations['text_baseline'] ?></h6>
                                             <h6 class="font-extrabold mb-0 highlight"><?= number_format($national_baseline_zd) ?> <?= $translations['children'] ?></h6>
+                                            <br>
+                                            <?php
+                                                if($selected_province == 'all'){
+                                            ?>
+                                                <div class="card-subtext"><?= $translations['text22'] ?></div>
+                                            <?php
+                                                } else {
+                                            ?>
+                                                <div class="card-subtext"><?= $translations['text21'] ?></div>
+                                            <?php
+                                                }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>
@@ -227,6 +239,20 @@
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
+                            </div>
+
+                            <!-- LAST UPDATE -->
+                            <div class="row">
+                                <div class="col-12" style="margin-bottom: 20px; text-align: left;">
+                                    <!-- <div class="card">
+                                        <div class="card-header"></div>
+                                        <div class="card-body"> -->
+                                            
+                                                <span  class="form-label" style="font-size: 14px;"><?= $translations['text23'] ?>​ <?= $last_update_date;?></span>
+                                                
+                                        <!-- </div>
+                                    </div> -->
+                                </div>
                             </div>
 
                             <!-- <div class="row">

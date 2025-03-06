@@ -251,6 +251,30 @@ class Immunization_model extends CI_Model {
         return $result;
     }
 
+    // Fungsi untuk mendapatkan tanggal terakhir data imunisasi diupdate berdasarkan tahun
+    public function get_last_immunization_update_date($year = 2025) {
+        $this->db->select('DATE_FORMAT(MAX(i.updated_at), "%d %M %Y") AS last_update_date');
+        $this->db->from('immunization_data i');
+        
+        // Filter berdasarkan tahun
+        $this->db->where('i.year', $year);
+
+        // Eksekusi query
+        $query = $this->db->get();
+
+        // Ambil hasilnya
+        $result = $query->row_array();
+        
+        // Jika ada hasil, return tanggal terakhir update
+        if (!empty($result['last_update_date'])) {
+            return $result['last_update_date'];
+        }
+
+        // Jika tidak ada data, return null
+        return null;
+    }
+
+
     public function get_zero_dose_cases($province_id = 'all', $city_id = 'all') {
         // Ambil provinsi yang memiliki priority = 1 (targeted)
         $province_ids = $this->get_targeted_province_ids();
