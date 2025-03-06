@@ -18,14 +18,14 @@
                     <div id="auth-left">
                         <div class="auth-logo">
                             <!-- <img src="<?= base_url('assets/kemenkes2.png'); ?>" alt="Logo" style="width: 40px; height: auto; margin-right: 10px;"> -->
-                            <img src="<?= base_url('assets/kemkes_update.png'); ?>" alt="Logo" style="width: 80px; height: auto; margin-right: 0px;"> 
+                            <img src="<?= base_url('assets/kemkes_update.png'); ?>" alt="Logo" style="width: 70px; height: auto; margin-right: 0px;"> 
                             <!-- <img src="<?= base_url('assets/gavi_full_logo.png'); ?>" alt="Logo" style="width: 150px; height: auto;">  -->
                             <img src="<?= base_url('assets/imunisasi_lengkap.png'); ?>" alt="Logo" style="width: 70px; height: auto; margin-right: 10px;"> 
                             <img src="<?= base_url('assets/logo.png'); ?>" alt="Logo" style="width: 70px; height: auto; margin-right: 10px;">
                             <img src="<?= base_url('assets/undp-logo-blue.svg'); ?>" alt="Logo" style="width: 30px; height: auto; margin-right: 10px;"> 
                             <!-- <img src="<?= base_url('assets/who-emblem.png'); ?>" alt="Logo" style="width: 50px; height: auto;"> 
                             <img src="<?= base_url('assets/unicef_logo2.png'); ?>" alt="Logo" style="width: 80px; height: auto;">  -->
-                            <img src="<?= base_url('assets/who_update.png'); ?>" alt="Logo" style="width: 80px; height: auto; margin-right: 10px;"> 
+                            <img src="<?= base_url('assets/who_update.png'); ?>" alt="Logo" style="width: 70px; height: auto; margin-right: 10px;"> 
                             <img src="<?= base_url('assets/unicef_update.png'); ?>" alt="Logo" style="width: 40px; height: auto; "> 
                             
                         </div>
