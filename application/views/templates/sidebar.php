@@ -2,8 +2,11 @@
             <div class="sidebar-wrapper active">
                 <div class="sidebar-header position-relative">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div class="logo">
+                        <!-- <div class="logo">
                             <img src="<?= base_url('assets/kemenkes2.png'); ?>" alt="Logo" srcset="" style="width: 30px; height: auto;" > 
+                        </div> -->
+                        <div class="logo">
+                            <img src="<?= base_url('assets/kemkes_update.png'); ?>" alt="Logo" srcset="" style="width: 60px; height: auto;" > 
                         </div>
                         <div class="logo">
                             <img src="<?= base_url('assets/imunisasi_lengkap.png'); ?>" alt="Logo" srcset="" style="width: 60px; height: auto;" > 
@@ -52,11 +55,17 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
-                        <div class="logo">
+                        <!-- <div class="logo">
                             <img src="<?= base_url('assets/who-emblem.png'); ?>" alt="Logo" srcset="" style="width: 40px; height: auto;" > 
                         </div>
                         <div class="logo">
                             <img src="<?= base_url('assets/unicef_logo2.png'); ?>" alt="Logo" srcset="" style="width: 60px; height: auto;" > 
+                        </div> -->
+                        <div class="logo">
+                            <img src="<?= base_url('assets/who_update.png'); ?>" alt="Logo" srcset="" style="width: 60px; height: auto;" > 
+                        </div>
+                        <div class="logo">
+                            <img src="<?= base_url('assets/unicef_update.png'); ?>" alt="Logo" srcset="" style="width: 35px; height: auto;" > 
                         </div>
 
                         <!-- <div class="language-toggle" id="language-toggle">

@@ -357,8 +357,11 @@
                         <div class="container d-flex justify-content-between align-items-center">
                             
                         <div class="header-top-left">
-                            <a href="#" class="logo">
+                            <!-- <a href="#" class="logo">
                                 <img src="<?= base_url('assets/kemenkes.png'); ?>" alt="Logo" style="width: 120px; height: auto; margin-right: 10px;">
+                            </a> -->
+                            <a href="#" class="logo">
+                                <img src="<?= base_url('assets/kemkes_update.png'); ?>" alt="Logo" style="width: 100px; height: auto; margin-right: 0px;">
                             </a>
                             <!-- <a href="#" class="logo">
                                 <img src="<?= base_url('assets/gavi_full_logo.png'); ?>" alt="Logo" style="width: 150px; height: auto; margin-right: 20px;">
@@ -372,11 +375,17 @@
                             <a href="#" class="logo">
                                 <img src="<?= base_url('assets/undp-logo-blue.svg'); ?>" alt="Logo" style="width: 30px; height: auto; margin-right: 20px;">
                             </a>
-                            <a href="#" class="logo">
+                            <!-- <a href="#" class="logo">
                                 <img src="<?= base_url('assets/who.svg'); ?>" alt="Logo" style="width: 100px; height: auto; margin-right: 20px;">
                             </a>
                             <a href="#" class="logo">
                                 <img src="<?= base_url('assets/UNICEF_Logo.png'); ?>" alt="Logo" style="width: 100px; height: auto; margin-right: 10px;">
+                            </a> -->
+                            <a href="#" class="logo">
+                                <img src="<?= base_url('assets/who_update.png'); ?>" alt="Logo" style="width: 100px; height: auto; margin-right: 20px;">
+                            </a>
+                            <a href="#" class="logo">
+                                <img src="<?= base_url('assets/unicef_update.png'); ?>" alt="Logo" style="width: 50px; height: auto; margin-right: 10px;">
                             </a>
                             
                         </div>
