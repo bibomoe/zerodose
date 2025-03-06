@@ -102,7 +102,7 @@
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
                                                     <h6 class="text-muted font-semibold"><?= $translations['text2'] ?></h6>
-                                                    <h6 class="text-muted font-semibold">(DPT-3 - DPT-1)</h6>
+                                                    <h6 class="text-muted font-semibold">(DPT-1 - DPT-3)</h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($dropout_rate_all_provinces,2); ?>%</h6>
                                                 </div>
                                             </div>
