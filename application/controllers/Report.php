@@ -795,22 +795,22 @@ class Report extends CI_Controller {
         $pdf->AddPage();
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/kemenkes.jpg'), 15, 15, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/kemkes_update.jpg'), 30, 18, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/imunisasi_lengkap.jpg'), 45, 15, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/imunisasi_lengkap.jpg'), 55, 15, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/logo.jpg'), 67, 20, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/logo.jpg'), 82, 20, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/undp-logo-blue.jpg'), 91, 20, 6, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/undp-logo-blue.jpg'), 112, 20, 6, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
         
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/who.jpg'), 100, 16, 35, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/who_update.jpg'), 130, 20, 25, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/UNICEF_Logo.jpg'), 137, 21, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/unicef_update.jpg'), 165, 20, 11, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan jarak antara gambar dan judul (gunakan Ln untuk jarak)
         $pdf->Ln(20);  // Menambah jarak 25 unit antara gambar dan judul
@@ -1537,22 +1537,22 @@ class Report extends CI_Controller {
         $pdf->AddPage();
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/kemenkes.jpg'), 15, 15, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/kemkes_update.jpg'), 30, 18, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/imunisasi_lengkap.jpg'), 45, 15, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/imunisasi_lengkap.jpg'), 55, 15, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/logo.jpg'), 67, 20, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/logo.jpg'), 82, 20, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/undp-logo-blue.jpg'), 91, 20, 6, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/undp-logo-blue.jpg'), 112, 20, 6, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
         
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/who.jpg'), 100, 16, 35, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/who_update.jpg'), 130, 20, 25, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/UNICEF_Logo.jpg'), 137, 21, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/unicef_update.jpg'), 165, 20, 11, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan jarak antara gambar dan judul (gunakan Ln untuk jarak)
         $pdf->Ln(20);  // Menambah jarak 25 unit antara gambar dan judul
@@ -2043,22 +2043,22 @@ class Report extends CI_Controller {
         $pdf->AddPage(); // Menambahkan halaman baru
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/kemenkes.jpg'), 15, 15, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/kemkes_update.jpg'), 30, 18, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/imunisasi_lengkap.jpg'), 45, 15, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/imunisasi_lengkap.jpg'), 55, 15, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/logo.jpg'), 67, 20, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/logo.jpg'), 82, 20, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/undp-logo-blue.jpg'), 91, 20, 6, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/undp-logo-blue.jpg'), 112, 20, 6, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
         
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/who.jpg'), 100, 16, 35, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/who_update.jpg'), 130, 20, 25, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/UNICEF_Logo.jpg'), 137, 21, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/unicef_update.jpg'), 165, 20, 11, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan jarak antara gambar dan judul (gunakan Ln untuk jarak)
         $pdf->Ln(20);  // Menambah jarak 25 unit antara gambar dan judul
@@ -2218,22 +2218,22 @@ class Report extends CI_Controller {
         $pdf->AddPage(); // Menambahkan halaman baru
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/kemenkes.jpg'), 15, 15, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/kemkes_update.jpg'), 30, 18, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/imunisasi_lengkap.jpg'), 45, 15, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/imunisasi_lengkap.jpg'), 55, 15, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/logo.jpg'), 67, 20, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/logo.jpg'), 82, 20, 20, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/undp-logo-blue.jpg'), 91, 20, 6, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/undp-logo-blue.jpg'), 112, 20, 6, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
         
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/who.jpg'), 100, 16, 35, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/who_update.jpg'), 130, 20, 25, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan gambar logo dengan ukuran yang sesuai dan proporsional
-        $pdf->Image(base_url('assets/UNICEF_Logo.jpg'), 137, 21, 30, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
+        $pdf->Image(base_url('assets/unicef_update.jpg'), 165, 20, 11, 0, 'JPG', '', '', true, 150, '', false, false, 0, false, false, false);
 
         // Menambahkan jarak antara gambar dan judul (gunakan Ln untuk jarak)
         $pdf->Ln(20);  // Menambah jarak 25 unit antara gambar dan judul
