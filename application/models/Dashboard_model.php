@@ -302,7 +302,7 @@ class Dashboard_model extends CI_Model {
         SUM(CASE WHEN year = 2024 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y1,
         SUM(CASE WHEN year = 2025 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y2
         ", FALSE);
-        $this->db->where_in('province_id', $province_ids);
+        //$this->db->where_in('province_id', $province_ids);
         $reduction_zd = $this->db->get('immunization_data')->row_array();
 
         // Hitung jumlah anak yang belum menerima DPT-1 (Zero Dose)
