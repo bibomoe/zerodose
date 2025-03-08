@@ -1626,6 +1626,8 @@ class Report extends CI_Controller {
         // Tambahkan halaman baru sebelum menampilkan gambar grafik
         $pdf->AddPage();
 
+        $html2 = '';
+
         if($selected_province === 'all' || $selected_province === 'targeted'){
         
             // Tabel 3: Kab/Ko dengan % DO dibawah 5%
@@ -2550,9 +2552,9 @@ class Report extends CI_Controller {
             return true;  // Berhasil mengirim email
         } else {
             // Untuk debugging
-            // log_message('error', 'Email failed: ' . $this->email->print_debugger());  // Log error email
+            log_message('error', 'Email failed: ' . $this->email->print_debugger());  // Log error email
             return false;  // Gagal mengirim email
-            // echo $this->email->print_debugger();
+            echo $this->email->print_debugger();
         }
     }
 
