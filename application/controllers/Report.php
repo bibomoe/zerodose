@@ -2525,17 +2525,95 @@ class Report extends CI_Controller {
         exit();
     }
 
+    // Fungsi untuk mengirim laporan via email
+    private function send_report_via_email_automatic($report_data_1, $report_data_2, $email) {
+        // Load library email
+        $this->load->library('email');
+    
+        // Set konfigurasi email
+        $this->email->from('adminzd@zerodosemonitor.com', 'Admin Report');
+        $this->email->to($email);  // Ganti dengan email penerima
+    
+        // Subjek email
+        $this->email->subject('Laporan Imunisasi Indonesia');
+    
+        // Pesan email
+        $this->email->message('Berikut adalah laporan imunisasi Indonesia yang diminta.');
+    
+        // Lampirkan file laporan (misalnya file PDF)
+        $this->email->attach($report_data_1, 'attachment', 'immunization_report.pdf', 'application/pdf');
+        // Lampirkan file laporan (misalnya file PDF)
+        $this->email->attach($report_data_2, 'attachment', 'partner_report.pdf', 'application/pdf');
+    
+        // Kirim email dan cek jika berhasil
+        if ($this->email->send()) {
+            return true;  // Berhasil mengirim email
+        } else {
+            // Untuk debugging
+            // log_message('error', 'Email failed: ' . $this->email->print_debugger());  // Log error email
+            return false;  // Gagal mengirim email
+            // echo $this->email->print_debugger();
+        }
+    }
+
+    // public function sent_monthly_email_chai() {
+        
+    //     $province_id = 'all';
+    //     $city_id = 'all';
+    //     $year = date('Y');
+    //     $month = 'all';
+
+    //     $partner_id = 2;
+    //     $email = 'abdulrahmankhadafi9@gmail.com';
+    
+    //     // Generate laporan berdasarkan filter yang diberikan
+    //     $report_data_1 = $this->immunization_report_indonesia_attach($province_id, $city_id, $year, $month);
+
+    //     // Generate laporan berdasarkan filter yang diberikan
+    //     $report_data_2 = $this->partner_report_attach($partner_id, $month);
+
+    //     $this->send_report_via_email_automatic($report_data_1, $report_data_2, $email);
+    // }
+
     public function sent_monthly_email_chai() {
-        // Ambil data dari form filter
-        $partner_id = 2;
+
+        $province_id = 'all';
+        $city_id = 'all';
+        $year = date('Y');
         $month = 'all';
-        $email = 'abdulrahmankhadafi9@gmail.com';
     
         // Generate laporan berdasarkan filter yang diberikan
-        $report_data = $this->partner_report_attach($partner_id, $month);
-
-        $this->send_report_via_email($report_data, $email);
+        // Partner ID default
+        $partner_id = 2;
+    
+        // Ambil email yang ditandai untuk menerima email otomatis dan memiliki category antara 1 dan 6
+        $this->db->where('send_auto_email', 1); // Ambil hanya email yang perlu dikirimi email otomatis
+        $this->db->where_in('category', [1, 2, 3, 4, 5, 6]); // Filter berdasarkan category antara 1-6
+        $query = $this->db->get('users');
+        $users_to_send_email = $query->result();
+    
+        // Kirim email ke setiap pengguna yang memenuhi kriteria
+        foreach ($users_to_send_email as $user) {
+            $email = $user->email; // Ambil email dari data pengguna
+    
+            // Atur partner_id berdasarkan category
+            if ($user->category == 6) {
+                $partner_id = 'all'; // Jika category = 6, partner_id di-set 'all'
+            } else {
+                $partner_id = $user->category; // Jika tidak, partner_id sesuai dengan category
+            }
+    
+            // Generate laporan berdasarkan filter yang diberikan
+            $report_data_1 = $this->immunization_report_indonesia_attach($province_id, $city_id, $year, $month);
+    
+            // Generate laporan berdasarkan partner_id yang sudah diatur
+            $report_data_2 = $this->partner_report_attach($partner_id, $month);
+    
+            // Kirim email otomatis
+            $this->send_report_via_email_automatic($report_data_1, $report_data_2, $email);
+        }
     }
+    
     
 }
 ?>
