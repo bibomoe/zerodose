@@ -22,8 +22,17 @@
                 <div class="page-content"> 
                     <!-- Basic Horizontal form layout section start -->
                     <section id="basic-horizontal-layouts">
+                        <!-- Display success or error messages -->
+                        <?php if($this->session->flashdata('success')): ?>
+                            <div style="color: green;"><?php echo $this->session->flashdata('success'); ?></div>
+                        <?php endif; ?>
+
+                        <?php if($this->session->flashdata('error')): ?>
+                            <div style="color: red;"><?php echo $this->session->flashdata('error'); ?></div>
+                        <?php endif; ?>
+
                         <div class="row match-height">
-                            <div class="col-md-6 col-12">
+                            <div class="col-md-8 col-12">
                                 <div class="card">
                                     <!-- <div class="card-header">
                                         <h4 class="card-title">Input Excel</h4>
@@ -33,15 +42,20 @@
                                             <form class="form form-horizontal">
                                                 <div class="form-body">
                                                     <div class="row">
-                                                        <div class="col-md-4">
-                                                            <label for="formFile">Upload Excel File</label>
-                                                        </div>
-                                                        <div class="col-md-8 form-group">
-                                                            <input class="form-control" type="file" id="formFile">
-                                                        </div>
-                                                        <div class="col-sm-12 d-flex justify-content-end">
-                                                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
-                                                        </div>
+                                                        <?= form_open('input/import', ['class' => 'form form-horizontal', 'enctype' => 'multipart/form-data']); ?>
+                                                        <!-- <div class="form-body"> -->
+                                                            <div class="col-md-4">
+                                                                <label for="formFile">Choose Excel File to Import:</label>
+                                                            </div>
+                                                            <div class="col-md-8 form-group">
+                                                                <input class="form-control" type="file" name="excel_file" id="formFile">
+                                                            </div>
+                                                            <div class="col-sm-12 d-flex justify-content-end">
+                                                                <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                                            </div>
+                                                        <!-- </div> -->
+                                                        <?= form_close(); ?>
+
                                                     </div>
                                                 </div>
                                             </form>

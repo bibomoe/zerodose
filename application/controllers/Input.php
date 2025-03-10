@@ -41,47 +41,10 @@ class Input extends CI_Controller {
         $this->load->model('StockOut_model');
         $this->load->model('District_model');
         $this->load->model('Policy_model');
+        $this->load->model('Excel_model');
+
+        $this->load->library('upload'); 
     }
-
-    // public function index() {
-    //     $this->data['title'] = 'Input Data Current ZD Cases';
-    //     load_template('input/zd-cases', $this->data);
-    // }
-
-    // public function restored() {
-    //     $this->data['title'] = 'Input Data Restored ZD Children';
-    //     load_template('input/restored-zd-children', $this->data);
-    // }
-
-    // public function lost() {
-    //     $this->data['title'] = 'Input Data Lost Children';
-    //     load_template('input/lost-children', $this->data);
-    // }
-
-    // public function dpt1() {
-    //     $this->data['title'] = 'Input Data DTP1 in targeted areas';
-    //     load_template('input/dpt1', $this->data);
-    // }
-
-    // public function zd_tracking() {
-    //     $this->data['title'] = 'Input Data Primary Health Facility to Conduct Immunization Service as Planned';
-    //     load_template('input/zd-tracking', $this->data);
-    // }
-
-    // public function dpt_stock() {
-    //     $this->data['title'] = 'Input Data Number of DTP Stock Out at Health Facilities';
-    //     load_template('input/dpt-stock', $this->data);
-    // }
-
-    // public function district() {
-    //     $this->data['title'] = 'Input Data District Program';
-    //     load_template('input/district', $this->data);
-    // }
-
-    // public function policy() {
-    //     $this->data['title'] = 'Input Data District Policy and Financing';
-    //     load_template('input/policy', $this->data);
-    // }
 
     public function grant_implementation() {
         $this->data['title'] = 'Input Data Grants Implementation and Budget Disbursement';
@@ -91,11 +54,6 @@ class Input extends CI_Controller {
     public function private_health_facilities() {
         $this->data['title'] = 'Input Data Number of private health facilities in targeted areas​';
         load_template('input/private-health-facilities', $this->data);
-    }
-
-    public function excel() {
-        $this->data['title'] = 'Input Data from Excel Template​';
-        load_template('input/excel', $this->data);
     }
 
     public function manual() {
@@ -171,97 +129,6 @@ class Input extends CI_Controller {
         $puskesmas = $this->Immunization_model->get_puskesmas_by_subdistrict($subdistrict_id);
         echo json_encode($puskesmas);
     }
-    
-
-    // public function activity_tracker() {
-    //     $data['title'] = 'Activity Tracker';
-    //     $data['partners'] = $this->Partner_model->get_all_partners();
-    //     $data['transactions'] = null;  // Awal tidak ada data transaksi
-    //     $data['selected_partner'] = '';
-    //     $data['selected_year'] = '';
-    //     $data['selected_month'] = '';
-
-    //     load_template('input/activity-tracker', $data);  // Menggunakan helper untuk memuat template
-    // }
-
-    // public function filter() {
-    //     // Ambil data dari POST atau GET
-    //     $partner_id = $this->input->post('partner_id') ?? $this->input->get('partner_id');
-    //     $year = $this->input->post('year') ?? $this->input->get('year');
-    //     $month = $this->input->post('month') ?? $this->input->get('month');
-
-    //     // Ambil semua activities berdasarkan partner
-    //     $activities = $this->Activity_model->get_activities_by_partner($partner_id);
-
-    //     // Ambil data transaksi jika sudah ada
-    //     $transactions = $this->Transaction_model->get_transactions($partner_id, $year, $month);
-
-    //     // Gabungkan data activities dengan transaksi
-    //     $data['activity_data'] = [];
-    //     foreach ($activities as $activity) {
-    //         $matched_transaction = null;
-
-    //         // Cari transaksi yang cocok berdasarkan activity_id
-    //         foreach ($transactions as $transaction) {
-    //             if ($transaction->activity_id == $activity->id) {
-    //                 $matched_transaction = $transaction;
-    //                 break;
-    //             }
-    //         }
-
-    //         // Jika transaksi ditemukan, gunakan datanya; jika tidak, buat data kosong
-    //         $data['activity_data'][] = [
-    //             'id' => $activity->id,
-    //             'activity_code' => $activity->activity_code,
-    //             'description' => $activity->description,
-    //             'number_of_activities' => $matched_transaction ? $matched_transaction->number_of_activities : 0,
-    //             'total_budget' => $matched_transaction ? $matched_transaction->total_budget : 0
-    //         ];
-    //     }
-
-    //     $data['partners'] = $this->Partner_model->get_all_partners();
-    //     $data['selected_partner'] = $partner_id;
-    //     $data['selected_year'] = $year;
-    //     $data['selected_month'] = $month;
-    //     $data['title'] = 'Activity Tracker';
-    
-    //     load_template('input/activity-tracker', $data);
-    // }
-
-    // public function save_transaction() {
-    //     $partner_id = $this->input->post('partner_id');
-    //     $year = $this->input->post('year');
-    //     $month = $this->input->post('month');
-    //     $activities = $this->input->post('activities');
-    
-    //     foreach ($activities as $activity_id => $values) {
-    //         // Cek apakah transaksi sudah ada
-    //         $existing_transaction = $this->Transaction_model->check_transaction_exists($partner_id, $year, $month, $activity_id);
-    
-    //         $data = [
-    //             'partner_id' => $partner_id,
-    //             'activity_id' => $activity_id,
-    //             'year' => $year,
-    //             'month' => $month,
-    //             'number_of_activities' => $values['number'],
-    //             'total_budget' => $values['budget']
-    //         ];
-    
-    //         if ($existing_transaction) {
-    //             // Update data jika sudah ada
-    //             $this->Transaction_model->update_transaction($existing_transaction->id, $data);
-    //         } else {
-    //             // Insert data baru jika belum ada
-    //             $this->Transaction_model->insert_transaction($data);
-    //         }
-    //     }
-
-    //     // Set flashdata untuk notifikasi sukses
-    //     $this->session->set_flashdata('success', 'Transactions saved successfully!');
-    
-    //     // Redirect kembali ke halaman filter dengan parameter yang sama
-    //     redirect("input/filter?partner_id=$partner_id&year=$year&month=$month");
-    // }
 
     public function activity_tracker() {
         // Menambahkan data khusus untuk view ini
@@ -892,6 +759,81 @@ class Input extends CI_Controller {
         }
     }
     
+    public function excel() {
+        $this->data['title'] = 'Input Data from Excel Template​';
+        load_template('input/excel', $this->data);
+    }
+
+    public function import() {
+        echo "hello";
+        exit;
+        // Configuration for file upload (we won't store the file)
+        $config['upload_path'] = './uploads/';
+        $config['allowed_types'] = 'xls|xlsx|csv';
+        $config['max_size'] = 1024 * 5; // 5MB limit
+
+        $this->upload->initialize($config);
+
+        if (!$this->upload->do_upload('excel_file')) {
+            // Show error if upload fails
+            $this->session->set_flashdata('error', $this->upload->display_errors());
+            redirect('input/excel');
+        } else {
+            // File uploaded successfully, get file content directly from the input stream
+            $file_data = $this->upload->data();
+
+            // Get the uploaded file's content as a stream (we won't store it on the server)
+            $file_path = './uploads/' . $file_data['file_name'];
+            $this->loadExcel($file_path); // Process file directly without saving permanently
+        }
+    }
+
+    private function loadExcel($file_path) {
+        // Load PhpSpreadsheet library to process the Excel file directly from the uploaded file
+        $spreadsheet = IOFactory::load($file_path); // Read file into memory without saving
+
+        // Get the first sheet
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Loop through each row in the sheet
+        foreach ($sheet->getRowIterator() as $row) {
+            $row_data = [];
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
+
+            // Process each cell in the row
+            foreach ($cellIterator as $cell) {
+                $row_data[] = $cell->getValue(); // Get the value of each cell
+            }
+
+            // Process columns with code and name (Province, City, Subdistrict, Puskesmas)
+            $province = $this->Excel_model->splitCodeName($row_data[0]);  // Province
+            $city = $this->Excel_model->splitCodeName($row_data[1]);      // City
+            $subdistrict = $this->Excel_model->splitCodeName($row_data[2]); // Subdistrict
+            $puskesmas = $this->Excel_model->splitCodeName($row_data[3]);   // Puskesmas
+
+            // Prepare data for insertion
+            $data = [
+                'province_id' => $province,       // Only store code
+                'city_id' => $city,               // Only store code
+                'subdistrict_id' => $subdistrict, // Only store code
+                'puskesmas_id' => $puskesmas,     // Only store code
+                'year' => $row_data[4],
+                'month' => $row_data[5],
+                'dpt_hb_hib_1' => $row_data[6],
+                'dpt_hb_hib_2' => $row_data[7],
+                'dpt_hb_hib_3' => $row_data[8],
+                'mr_1' => $row_data[9]
+            ];
+
+            // Insert data into the database
+            $this->Excel_model->insertData($data);
+        }
+
+        // Redirect with success message
+        $this->session->set_flashdata('success', 'Data Imported Successfully');
+        redirect('input/excel');
+    }
 
 
 }

@@ -2616,6 +2616,37 @@ class Report extends CI_Controller {
         }
     }
     
+    public function sent_monthly_email_dinkes() {
+
+        $province_id = 'all';
+        $city_id = 'all';
+        $year = date('Y');
+        $month = date('n');
     
+        // Ambil email yang ditandai untuk menerima email otomatis dan memiliki category antara 1 dan 6
+        $this->db->where('send_auto_email', 1); // Ambil hanya email yang perlu dikirimi email otomatis
+        $this->db->where_in('category', [7,8]); // Filter berdasarkan category antara 1-6
+        $query = $this->db->get('users');
+        $users_to_send_email = $query->result();
+    
+        // Kirim email ke setiap pengguna yang memenuhi kriteria
+        foreach ($users_to_send_email as $user) {
+            $email = $user->email; // Ambil email dari data pengguna
+    
+            // Atur partner_id berdasarkan category
+            if ($user->category == 7) {
+                $province_id = $user->province_id;
+            } else {
+                $province_id = $user->province_id;
+                $city_id = $user->city_id;
+            }
+    
+            // Generate laporan berdasarkan filter yang diberikan
+            $report_data_1 = $this->immunization_report_indonesia_attach($province_id, $city_id, $year, $month);
+    
+            // Kirim email otomatis
+            $this->send_report_via_email($report_data_1, $email);
+        }
+    }
 }
 ?>
