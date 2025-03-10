@@ -23,7 +23,7 @@ class Api_users extends REST_Controller {
         $this->methods['users_get']['limit'] = 500; // 500 requests per hour per user/key
         $this->methods['users_post']['limit'] = 100; // 100 requests per hour per user/key
 
-        $this->load->helper('jwt_helper');  // Pastikan sudah load helper
+        $this->load->helper('Jwt_helper');  // Pastikan sudah load helper
     }
 
     /**
