@@ -1106,8 +1106,6 @@ class Report extends CI_Controller {
                 // $selected_month = $this->input->post('month') ?? date('m'); // Default bulan saat ini 2025
                 $selected_month = $param_month;
 
-                echo $selected_month . "2 <br>";
-
                 $year = $selected_year;
 
         // Menentukan baseline ZD
@@ -1495,7 +1493,7 @@ class Report extends CI_Controller {
             12 => 'Desember'
         ];
 
-        if ($this->input->post('month')){
+        if ($selected_month !== 'all'){
             if (isset($months[$selected_month])) {
                 $title_month = ' Bulan ' . $months[$selected_month];  // Gunakan nama bulan
             } else {
@@ -2624,7 +2622,6 @@ class Report extends CI_Controller {
         $city_id = 'all';
         $year = date('Y');
         $month = date('n');
-        echo $month . "1 <br>";
     
         // Ambil email yang ditandai untuk menerima email otomatis dan memiliki category antara 1 dan 6
         $this->db->where('send_auto_email', 1); // Ambil hanya email yang perlu dikirimi email otomatis
