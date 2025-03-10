@@ -1,188 +1,318 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "title": "Immunization API",
-      "description": "API for managing immunization data and user login.",
-      "version": "1.0.0"
-    },
-    "servers": [
-      {
-        "url": "http://localhost/zerodozed/api",
-        "description": "Local API Server"
-      }
-    ],
-    "paths": {
-      "/users/login": {
-        "post": {
-          "summary": "User login and generate a token",
-          "operationId": "loginUser",
-          "tags": ["Users"],
-          "requestBody": {
-            "description": "The user credentials for login",
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "username": {
-                      "type": "string",
-                      "example": "asik"
-                    },
-                    "password": {
-                      "type": "string",
-                      "example": "password123"
-                    }
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Immunization API",
+    "description": "API for managing immunization data and user login.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost/zerodozed/api",
+      "description": "Local API Server"
+    }
+  ],
+  "paths": {
+    "/users/login": {
+      "post": {
+        "summary": "User login and generate a token",
+        "operationId": "loginUser",
+        "tags": ["Users"],
+        "requestBody": {
+          "description": "The user credentials for login",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "asik"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
                   }
                 }
               }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Login successful, token generated.",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "status": {
-                        "type": "boolean",
-                        "example": true
-                      },
-                      "message": {
-                        "type": "string",
-                        "example": "Login successful"
-                      },
-                      "token": {
-                        "type": "string",
-                        "example": "d80be8286b5993272b9084c0a8aec06e"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Missing username or password"
-            },
-            "401": {
-              "description": "Invalid username or password"
             }
           }
-        }
-      },
-      "/asik": {
-        "post": {
-          "summary": "Add or update immunization data",
-          "operationId": "addImmunizationData",
-          "tags": ["Immunization"],
-          "requestBody": {
-            "description": "The immunization data to be inserted or updated.",
-            "required": true,
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful, token generated.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "province": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
                       "type": "string",
-                      "example": "99 - TES"
+                      "example": "Login successful"
                     },
-                    "city": {
+                    "token": {
                       "type": "string",
-                      "example": "9901 - KOTA TES JUGA"
-                    },
-                    "subdistrict": {
-                      "type": "string",
-                      "example": "110201 - LAWE ALAS"
-                    },
-                    "puskesmas": {
-                      "type": "string",
-                      "example": "1032292 - PANDAK I"
-                    },
-                    "year": {
-                      "type": "integer",
-                      "example": 2025
-                    },
-                    "month": {
-                      "type": "integer",
-                      "example": 3
-                    },
-                    "dpt_hb_hib_1": {
-                      "type": "integer",
-                      "example": 100
-                    },
-                    "dpt_hb_hib_2": {
-                      "type": "integer",
-                      "example": 120
-                    },
-                    "dpt_hb_hib_3": {
-                      "type": "integer",
-                      "example": 130
-                    },
-                    "mr_1": {
-                      "type": "integer",
-                      "example": 141
+                      "example": "d80be8286b5993272b9084c0a8aec06e"
                     }
                   }
                 }
               }
             }
           },
-          "responses": {
-            "201": {
-              "description": "Immunization data added successfully",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "status": {
-                        "type": "boolean",
-                        "example": true
-                      },
-                      "message": {
-                        "type": "string",
-                        "example": "Immunization data added successfully"
-                      }
-                    }
+          "400": {
+            "description": "Missing username or password"
+          },
+          "401": {
+            "description": "Invalid username or password"
+          }
+        }
+      }
+    },
+    "/asik": {
+      "post": {
+        "summary": "Add or update immunization data",
+        "operationId": "addImmunizationData",
+        "tags": ["Immunization"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "The immunization data to be inserted or updated.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "province": {
+                    "type": "string",
+                    "example": "99 - TES"
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "9901 - KOTA TES JUGA"
+                  },
+                  "subdistrict": {
+                    "type": "string",
+                    "example": "110201 - LAWE ALAS"
+                  },
+                  "puskesmas": {
+                    "type": "string",
+                    "example": "1032292 - PANDAK I"
+                  },
+                  "year": {
+                    "type": "integer",
+                    "example": 2025
+                  },
+                  "month": {
+                    "type": "integer",
+                    "example": 3
+                  },
+                  "dpt_hb_hib_1": {
+                    "type": "integer",
+                    "example": 100
+                  },
+                  "dpt_hb_hib_2": {
+                    "type": "integer",
+                    "example": 120
+                  },
+                  "dpt_hb_hib_3": {
+                    "type": "integer",
+                    "example": 130
+                  },
+                  "mr_1": {
+                    "type": "integer",
+                    "example": 141
                   }
                 }
               }
-            },
-            "200": {
-              "description": "Immunization data updated successfully",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "status": {
-                        "type": "boolean",
-                        "example": true
-                      },
-                      "message": {
-                        "type": "string",
-                        "example": "Immunization data updated successfully"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Invalid data provided"
-            },
-            "401": {
-              "description": "Invalid or missing token"
-            },
-            "500": {
-              "description": "Internal server error"
             }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Immunization data added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Immunization data added successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Immunization data updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Immunization data updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data provided"
+          },
+          "401": {
+            "description": "Invalid or missing token"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/smile": {
+      "post": {
+        "summary": "Add or update puskesmas stock out details",
+        "operationId": "addPuskesmasStockOutData",
+        "tags": ["StockOut"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "The puskesmas stock out data to be inserted or updated.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "type": "integer",
+                    "example": 2025
+                  },
+                  "month": {
+                    "type": "integer",
+                    "example": 3
+                  },
+                  "province_id": {
+                    "type": "integer",
+                    "example": 11
+                  },
+                  "city_id": {
+                    "type": "integer",
+                    "example": 1102
+                  },
+                  "subdistrict_id": {
+                    "type": "integer",
+                    "example": 110201
+                  },
+                  "puskesmas_id": {
+                    "type": "string",
+                    "example": "1032292"
+                  },
+                  "DPT_HB_Hib_5_ds": {
+                    "type": "float",
+                    "example": 100.5
+                  },
+                  "Pentavalent_Easyfive_10_ds": {
+                    "type": "float",
+                    "example": 200.5
+                  },
+                  "Pentavac_10_ds": {
+                    "type": "float",
+                    "example": 150.0
+                  },
+                  "Vaksin_ComBE_Five_10_ds": {
+                    "type": "float",
+                    "example": 120.0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Stock out details added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Stock out details added successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Stock out details updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Stock out details updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data provided"
+          },
+          "401": {
+            "description": "Invalid or missing token"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
     }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Bearer token authorization"
+      }
+    }
   }
-  
+}

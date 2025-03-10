@@ -22,11 +22,56 @@ class Api_users extends REST_Controller {
         $this->methods['login_post']['limit'] = 100; // 100 requests per hour per user/key
         $this->methods['users_get']['limit'] = 500; // 500 requests per hour per user/key
         $this->methods['users_post']['limit'] = 100; // 100 requests per hour per user/key
+
+        $this->load->helper('jwt_helper');  // Pastikan sudah load helper
     }
 
     /**
      * POST method for login and generating bearer token
      */
+    // public function login_post()
+    // {
+    //     // Get the username and password from the post request
+    //     $username = $this->post('username');
+    //     $password = $this->post('password');
+
+    //     // Validate that username and password are not empty
+    //     if (empty($username) || empty($password)) {
+    //         $this->response([
+    //             'status' => FALSE,
+    //             'message' => 'Username and password are required'
+    //         ], REST_Controller::HTTP_BAD_REQUEST); // 400 Bad Request
+    //     }
+
+    //     // Retrieve user data from the database based on the username
+    //     $this->load->database();
+    //     $this->db->where('username', $username);
+    //     $user = $this->db->get('api_users')->row_array();
+
+    //     // Check if the user exists and verify the password
+    //     if (!$user || md5($password) !== $user['password']) {
+    //         $this->response([
+    //             'status' => FALSE,
+    //             'message' => 'Invalid username or password'
+    //         ], REST_Controller::HTTP_UNAUTHORIZED); // 401 Unauthorized
+    //     }
+
+    //     // Generate a simple token (for example, we can use a hash of the username and time)
+    //     $token = md5($user['username'] . time());
+
+    //     // Store the token in session or pass it to client
+    //     $this->session->set_userdata('user_token', $token);
+    //     $this->session->set_userdata('user_id', $user['id']);
+
+    //     // Respond with the generated token
+    //     $this->response([
+    //         'status' => TRUE,
+    //         'message' => 'Login successful',
+    //         'token' => $token
+    //     ], REST_Controller::HTTP_OK); // 200 OK
+    // }
+
+    // Contoh di Api_users.php pada bagian login_post
     public function login_post()
     {
         // Get the username and password from the post request
@@ -54,8 +99,9 @@ class Api_users extends REST_Controller {
             ], REST_Controller::HTTP_UNAUTHORIZED); // 401 Unauthorized
         }
 
-        // Generate a simple token (for example, we can use a hash of the username and time)
-        $token = md5($user['username'] . time());
+        // Generate token menggunakan Jwt_helper
+        $jwt_helper = new Jwt_helper();  // Membuat objek Jwt_helper
+        $token = $jwt_helper->encode(['username' => $username]);  // Enkode data username ke dalam JWT
 
         // Store the token in session or pass it to client
         $this->session->set_userdata('user_token', $token);
@@ -68,6 +114,7 @@ class Api_users extends REST_Controller {
             'token' => $token
         ], REST_Controller::HTTP_OK); // 200 OK
     }
+
 
     /**
      * GET method for fetching users or a specific user by ID

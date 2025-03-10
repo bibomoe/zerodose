@@ -16,33 +16,153 @@ class Immunization_data extends REST_Controller {
 
         // Set the request rate limits
         $this->methods['immunization_post']['limit'] = 100; // 100 requests per hour per user/key
+        $this->load->helper('jwt_helper');  // Pastikan sudah load helper
     }
 
     /**
      * POST method for adding immunization data
      */
+    // public function immunization_post()
+    // {
+    //     // Get the token from the Authorization header
+    //     $token = $this->input->get_request_header('Authorization', TRUE);
+
+    //     // Validate the token
+    //     if (!$token) {
+    //         $this->response([
+    //             'status' => FALSE,
+    //             'message' => 'Token is required'
+    //         ], REST_Controller::HTTP_UNAUTHORIZED); // 401 Unauthorized
+    //     }
+
+    //     // Verify the token (check against the session or another method)
+    //     if ($token !== $this->session->userdata('user_token')) {
+    //         $this->response([
+    //             'status' => FALSE,
+    //             'message' => 'Invalid token'
+    //         ], REST_Controller::HTTP_UNAUTHORIZED); // 401 Unauthorized
+    //     }
+
+    //     // Receive the input data
+    //     $data = [
+    //         'province' => $this->post('province'), // Format: 11 - ACEH
+    //         'city' => $this->post('city'), // Format: 1102 - KAB. ACEH TENGGARA
+    //         'subdistrict' => $this->post('subdistrict'), // Format: 110201 - LAWE ALAS
+    //         'puskesmas' => $this->post('puskesmas'), // Format: 1032292 - PANDAK I
+    //         'year' => $this->post('year'),
+    //         'month' => $this->post('month'),
+    //         'dpt_hb_hib_1' => $this->post('dpt_hb_hib_1'),
+    //         'dpt_hb_hib_2' => $this->post('dpt_hb_hib_2'),
+    //         'dpt_hb_hib_3' => $this->post('dpt_hb_hib_3'),
+    //         'mr_1' => $this->post('mr_1')
+    //     ];
+
+    //     // Validate and insert into the respective master tables
+    //     $province_id = $this->validate_and_insert_province($data['province']);
+    //     $city_id = $this->validate_and_insert_city($data['city'], $province_id);
+    //     $subdistrict_id = $this->validate_and_insert_subdistrict($data['subdistrict'], $city_id, $province_id);
+    //     $puskesmas_id = $this->validate_and_insert_puskesmas($data['puskesmas'], $subdistrict_id, $city_id, $province_id);
+
+    //     // Prepare the data for insertion into the immunization_data table
+    //     $immunization_data = [
+    //         'province_id' => $province_id,
+    //         'city_id' => $city_id,
+    //         'subdistrict_id' => $subdistrict_id,
+    //         'puskesmas_id' => $puskesmas_id,
+    //         'year' => $data['year'],
+    //         'month' => $data['month'],
+    //         'dpt_hb_hib_1' => $data['dpt_hb_hib_1'],
+    //         'dpt_hb_hib_2' => $data['dpt_hb_hib_2'],
+    //         'dpt_hb_hib_3' => $data['dpt_hb_hib_3'],
+    //         'mr_1' => $data['mr_1']
+    //     ];
+
+    //     // Check if the immunization data already exists based on puskesmas_id, year, and month
+    //     $this->load->database();
+    //     $existing_data = $this->db->get_where('immunization_data', [
+    //         'puskesmas_id' => $puskesmas_id,
+    //         'year' => $data['year'],
+    //         'month' => $data['month']
+    //     ])->row_array();
+
+    //     if ($existing_data) {
+    //         // If the data exists, update the record
+    //         $this->db->where('id', $existing_data['id']);
+    //         if ($this->db->update('immunization_data', $immunization_data)) {
+    //             $this->response([
+    //                 'status' => TRUE,
+    //                 'message' => 'Immunization data updated successfully'
+    //             ], REST_Controller::HTTP_OK); // 200 OK
+    //         } else {
+    //             $this->response([
+    //                 'status' => FALSE,
+    //                 'message' => 'Failed to update immunization data'
+    //             ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+    //         }
+    //     } else {
+    //         // If the data doesn't exist, insert it as a new record
+    //         if ($this->db->insert('immunization_data', $immunization_data)) {
+    //             $this->response([
+    //                 'status' => TRUE,
+    //                 'message' => 'Immunization data added successfully'
+    //             ], REST_Controller::HTTP_CREATED); // 201 Created
+    //         } else {
+    //             $this->response([
+    //                 'status' => FALSE,
+    //                 'message' => 'Failed to add immunization data'
+    //             ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+    //         }
+    //     }
+    // }
+
     public function immunization_post()
     {
-        // Get the token from the Authorization header
+        // Get the token from the Authorization header (format: Bearer <token>)
         $token = $this->input->get_request_header('Authorization', TRUE);
 
-        // Validate the token
         if (!$token) {
             $this->response([
                 'status' => FALSE,
                 'message' => 'Token is required'
             ], REST_Controller::HTTP_UNAUTHORIZED); // 401 Unauthorized
+            return;
         }
 
-        // Verify the token (check against the session or another method)
-        if ($token !== $this->session->userdata('user_token')) {
+        // Validate the token format (Authorization: Bearer <token>)
+        if (!$token || !preg_match('/Bearer\s(\S+)/', $token, $matches)) {
+            $this->response([
+                'status' => FALSE,
+                'message' => 'Token is required or invalid format'
+            ], REST_Controller::HTTP_UNAUTHORIZED); // 401 Unauthorized
+        }
+
+        $token = $matches[1];  // Extract token from the format "Bearer <token>"
+
+        if (empty($token)) {
+            // If token is empty, respond with a clear error message
+            $this->response([
+                'status' => FALSE,
+                'message' => 'Token cannot be empty'
+            ], REST_Controller::HTTP_UNAUTHORIZED);
+            return;
+        }
+
+        $jwt_helper = new Jwt_helper();  // Membuat objek Jwt_helper
+        // Decode the token using Jwt_helper
+        $decoded = $jwt_helper->decode($token);
+
+        // If decoding fails or the token is invalid
+        if (!$decoded) {
             $this->response([
                 'status' => FALSE,
                 'message' => 'Invalid token'
             ], REST_Controller::HTTP_UNAUTHORIZED); // 401 Unauthorized
         }
 
-        // Receive the input data
+        // Now that the token is valid, you can extract the user information
+        $user_data = $decoded; // This will have the decoded data from JWT
+
+        // Proceed with receiving the input data
         $data = [
             'province' => $this->post('province'), // Format: 11 - ACEH
             'city' => $this->post('city'), // Format: 1102 - KAB. ACEH TENGGARA
@@ -113,6 +233,7 @@ class Immunization_data extends REST_Controller {
             }
         }
     }
+
 
     /**
      * Helper function to validate and insert province
