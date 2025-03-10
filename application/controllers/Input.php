@@ -527,57 +527,117 @@ class Input extends CI_Controller {
         }
     }
 
-    // Simpan data stock out
+    // // Simpan data stock out
+    // public function save_stock_out() {
+    //     $data = [
+    //         'province_id' => $this->input->post('province_id'),
+    //         'city_id'     => $this->input->post('city_id'),
+    //         'year'        => $this->input->post('year'),
+    //         'month'       => $this->input->post('month'),
+    //         'vaccine_type'=> $this->input->post('vaccine_type'),
+    //         'stock_out_1_month' => $this->input->post('stock_out_1_month'),
+    //         'stock_out_2_months'=> $this->input->post('stock_out_2_months'),
+    //         'stock_out_3_months'=> $this->input->post('stock_out_3_months'),
+    //         'stock_out_more_than_3_months' => $this->input->post('stock_out_more_than_3_months')
+    //     ];
+
+    //     $this->StockOut_model->save_stock_out($data);
+    //     $this->session->set_flashdata('success', 'Stock out data saved successfully!');
+    //     redirect('input/manual');
+    // }
+
+    // // Ambil data stock out berdasarkan filter
+    // public function get_stock_out_data() {
+    //     $province_id = $this->input->get('province_id');
+    //     $city_id     = $this->input->get('city_id');
+    //     $year        = $this->input->get('year');
+    //     $month       = $this->input->get('month');
+
+    //     $data = $this->StockOut_model->get_stock_out_data($province_id, $city_id, $year, $month);
+    //     echo json_encode($data);
+    // }
+
+    // // Hapus data stock out
+    // public function delete_stock_out_data($id) {
+    //     //Verifikasi CSRF
+    //     // if ($this->security->get_csrf_hash() !== $this->input->post($this->security->get_csrf_token_name())) {
+    //     //     echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token']);
+    //     //     return;
+    //     // }
+
+    //     if (!$id) {
+    //         echo json_encode(['status' => 'error', 'message' => 'Invalid ID']);
+    //         return;
+    //     }
+
+    //     $this->StockOut_model->delete_stock_out($id);
+
+    //     if ($this->db->affected_rows() > 0) {
+    //         echo json_encode(['status' => 'success', 'message' => 'Data deleted successfully']);
+    //     } else {
+    //         echo json_encode(['status' => 'error', 'message' => 'Failed to delete data']);
+    //     }
+    // }
+
     public function save_stock_out() {
+        // Ambil data dari input form
         $data = [
             'province_id' => $this->input->post('province_id'),
             'city_id'     => $this->input->post('city_id'),
+            'subdistrict_id' => $this->input->post('subdistrict_id'),  // Pastikan ada inputan subdistrict_id
+            'puskesmas_id'   => $this->input->post('puskesmas_id'),  // Pastikan ada inputan puskesmas_id
             'year'        => $this->input->post('year'),
             'month'       => $this->input->post('month'),
-            'vaccine_type'=> $this->input->post('vaccine_type'),
-            'stock_out_1_month' => $this->input->post('stock_out_1_month'),
-            'stock_out_2_months'=> $this->input->post('stock_out_2_months'),
-            'stock_out_3_months'=> $this->input->post('stock_out_3_months'),
-            'stock_out_more_than_3_months' => $this->input->post('stock_out_more_than_3_months')
+            
+            // Data vaksin baru
+            'DPT_HB_Hib_5_ds' => $this->input->post('DPT_HB_Hib_5_ds'),
+            'Pentavalent_Easyfive_10_ds' => $this->input->post('Pentavalent_Easyfive_10_ds'),
+            'Pentavac_10_ds' => $this->input->post('Pentavac_10_ds'),
+            'Vaksin_ComBE_Five_10_ds' => $this->input->post('Vaksin_ComBE_Five_10_ds')
         ];
-
+    
+        // Panggil model untuk menyimpan data
         $this->StockOut_model->save_stock_out($data);
         $this->session->set_flashdata('success', 'Stock out data saved successfully!');
         redirect('input/manual');
     }
 
-    // Ambil data stock out berdasarkan filter
     public function get_stock_out_data() {
+        // Ambil parameter filter dari GET
         $province_id = $this->input->get('province_id');
         $city_id     = $this->input->get('city_id');
+        $subdistrict_id = $this->input->get('subdistrict_id');
+        $puskesmas_id = $this->input->get('puskesmas_id');
         $year        = $this->input->get('year');
         $month       = $this->input->get('month');
-
-        $data = $this->StockOut_model->get_stock_out_data($province_id, $city_id, $year, $month);
+    
+        // Panggil model untuk mendapatkan data sesuai filter
+        $data = $this->StockOut_model->get_stock_out_data($province_id, $city_id, $subdistrict_id, $puskesmas_id, $year, $month);
+    
+        // Kembalikan data dalam format JSON
         echo json_encode($data);
     }
 
-    // Hapus data stock out
     public function delete_stock_out_data($id) {
-        //Verifikasi CSRF
-        // if ($this->security->get_csrf_hash() !== $this->input->post($this->security->get_csrf_token_name())) {
-        //     echo json_encode(['status' => 'error', 'message' => 'Invalid CSRF token']);
-        //     return;
-        // }
-
+        // Pastikan ID valid
         if (!$id) {
             echo json_encode(['status' => 'error', 'message' => 'Invalid ID']);
             return;
         }
-
+    
+        // Panggil model untuk menghapus data
         $this->StockOut_model->delete_stock_out($id);
-
+    
+        // Cek apakah penghapusan berhasil
         if ($this->db->affected_rows() > 0) {
             echo json_encode(['status' => 'success', 'message' => 'Data deleted successfully']);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Failed to delete data']);
         }
     }
+    
+    
+    
     
     // ✅ Simpan data Supportive Supervision
     public function save_supportive_supervision() {

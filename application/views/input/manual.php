@@ -128,7 +128,7 @@
                                                 <!-- Garis Pembatas -->
                                                 <hr class="my-4">
 
-                                                <div class="row">
+                                            <div class="row">
                                                 <div class="col-md-3">
                                                     <label for="filter_province">Filter By Province</label>
                                                     <!-- <select id="filter_province" class="form-select">
@@ -182,7 +182,7 @@
                                                         value="<?= $this->security->get_csrf_hash(); ?>">
 
                                                 <div class="col-md-3 d-flex align-items-end">
-                                                    <button id="btn_filter" class="btn btn-secondary">Apply Filter</button>
+                                                    <button id="btn_filter" class="btn btn-secondary" type="button">Apply Filter</button>
                                                 </div>
                                             </div>
 
@@ -238,13 +238,27 @@
                                                         <div class="col-md-4"><?= form_label('Select District', 'city_id'); ?></div>
                                                         <div class="col-md-8 form-group"><?= form_dropdown('city_id', ['' => '-- Select City --'], '', 'class="form-select" id="city_id2"'); ?></div>
 
+                                                        <div class="col-md-4">
+                                                            <?= form_label('Select Subdistrict', 'subdistrict_id'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_dropdown('subdistrict_id', ['' => '-- Select Subdistrict --'], '', 'class="form-select" id="subdistrict_id2"'); ?>
+                                                        </div>
+
+                                                        <div class="col-md-4">
+                                                            <?= form_label('Select Puskesmas', 'puskesmas_id'); ?>
+                                                        </div>
+                                                        <div class="col-md-8 form-group">
+                                                            <?= form_dropdown('puskesmas_id', ['' => '-- Select Puskesmas --'], '', 'class="form-select" id="puskesmas_id2"'); ?>
+                                                        </div>
+
                                                         <div class="col-md-4"><?= form_label('Select Year', 'year'); ?></div>
                                                         <div class="col-md-8 form-group"><?= form_dropdown('year', $year_options, '', 'class="form-select" id="year"'); ?></div>
 
                                                         <div class="col-md-4"><?= form_label('Select Month', 'month'); ?></div>
                                                         <div class="col-md-8 form-group"><?= form_dropdown('month', $month_options, '', 'class="form-select" id="month"'); ?></div>
 
-                                                        <div class="col-md-4"><?= form_label('Vaccine Type', 'vaccine_type'); ?></div>
+                                                        <!-- <div class="col-md-4"><?= form_label('Vaccine Type', 'vaccine_type'); ?></div>
                                                         <div class="col-md-8 form-group"><?= form_dropdown('vaccine_type', ['DPT' => 'DPT'], '', 'class="form-select" id="vaccine_type"'); ?></div>
 
                                                         <div class="col-md-4"><?= form_label('Stock Out 1 Month', 'stock_out_1_month'); ?></div>
@@ -257,7 +271,19 @@
                                                         <div class="col-md-8 form-group"><?= form_input(['name' => 'stock_out_3_months', 'type' => 'number', 'class' => 'form-control', 'min' => 0]); ?></div>
 
                                                         <div class="col-md-4"><?= form_label('Stock Out 3+ Months', 'stock_out_more_than_3_months'); ?></div>
-                                                        <div class="col-md-8 form-group"><?= form_input(['name' => 'stock_out_more_than_3_months', 'type' => 'number', 'class' => 'form-control', 'min' => 0]); ?></div>
+                                                        <div class="col-md-8 form-group"><?= form_input(['name' => 'stock_out_more_than_3_months', 'type' => 'number', 'class' => 'form-control', 'min' => 0]); ?></div> -->
+
+                                                        <div class="col-md-4"><?= form_label('DPT-HB-Hib @5 ds', 'DPT_HB_Hib_5_ds'); ?></div>
+                                                        <div class="col-md-8 form-group"><?= form_input(['name' => 'DPT_HB_Hib_5_ds', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'step' => 'any']); ?></div>
+
+                                                        <div class="col-md-4"><?= form_label('Pentavalent (Easyfive) @10 ds', 'Pentavalent_Easyfive_10_ds'); ?></div>
+                                                        <div class="col-md-8 form-group"><?= form_input(['name' => 'Pentavalent_Easyfive_10_ds', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'step' => 'any']); ?></div>
+
+                                                        <div class="col-md-4"><?= form_label('Pentavac 10 ds', 'Pentavac_10_ds'); ?></div>
+                                                        <div class="col-md-8 form-group"><?= form_input(['name' => 'Pentavac_10_ds', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'step' => 'any']); ?></div>
+
+                                                        <div class="col-md-4"><?= form_label('Vaksin ComBE Five @10 ds', 'Vaksin_ComBE_Five_10_ds'); ?></div>
+                                                        <div class="col-md-8 form-group"><?= form_input(['name' => 'Vaksin_ComBE_Five_10_ds', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'step' => 'any']); ?>
 
                                                         <div class="col-md-12 d-flex justify-content-end">
                                                             <?= form_submit('submit', 'Submit', 'class="btn btn-primary me-1 mb-1"'); ?>
@@ -271,16 +297,17 @@
                                                 <!-- Garis Pembatas -->
                                                 <hr class="my-4">
 
+
                                                 <div class="row">
                                                     <div class="col-md-3">
-                                                        <label for="filter_province2">Filter By Province</label>
+                                                        <label for="filter_province">Filter By Province</label>
                                                         <!-- <select id="filter_province" class="form-select">
                                                             <option value="">-- Select Province --</option>
                                                             <?php foreach ($provinces as $province): ?>
                                                                 <option value="<?= $province['id'] ?>"><?= $province['name_id'] ?></option>
                                                             <?php endforeach; ?>
                                                         </select> -->
-                                                        <?= form_dropdown('filter_province2', $province_options, '', 'class="form-select" id="filter_province2"'); ?>
+                                                        <?= form_dropdown('filter_province', $province_options, '', 'class="form-select" id="filter_province2"'); ?>
                                                     </div>
 
                                                     <div class="col-md-3">
@@ -290,19 +317,32 @@
                                                         </select>
                                                     </div>
 
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-3">
+                                                        <label for="filter_subdistrict2">Filter By Subdistrict</label>
+                                                        <select id="filter_subdistrict2" class="form-select">
+                                                            <option value="">-- Select Subdistrict --</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <label for="filter_puskesmas2">Filter By Puskesmas</label>
+                                                        <select id="filter_puskesmas2" class="form-select">
+                                                            <option value="">-- Select Puskesmas --</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-md-3">
                                                         <label for="filter_year2">Filter By Year</label>
                                                         <select id="filter_year2" class="form-select">
-                                                            <option value="">-- Select Year --</option>
                                                             <option value="2024">2024</option>
                                                             <option value="2025">2025</option>
                                                         </select>
                                                     </div>
 
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-3">
                                                         <label for="filter_month2">Filter By Month</label>
                                                         <select id="filter_month2" class="form-select">
-                                                            <option value="">-- Select Month --</option>
+                                                            <!-- <option value="">-- Select Month --</option> -->
                                                             <?php for ($i = 1; $i <= 12; $i++): ?>
                                                                 <option value="<?= $i ?>"><?= date('F', mktime(0, 0, 0, $i, 1)) ?></option>
                                                             <?php endfor; ?>
@@ -311,8 +351,8 @@
                                                     <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" 
                                                             value="<?= $this->security->get_csrf_hash(); ?>">
 
-                                                    <div class="col-md-2 d-flex align-items-end">
-                                                        <button id="btn_filter2" class="btn btn-secondary">Apply Filter</button>
+                                                    <div class="col-md-3 d-flex align-items-end">
+                                                        <button id="btn_filter2" class="btn btn-secondary" type="button">Apply Filter</button>
                                                     </div>
                                                 </div>
 
@@ -325,13 +365,14 @@
                                                                 <tr>
                                                                     <th>Province</th>
                                                                     <th>District</th>
+                                                                    <th>Subdistrict</th>
+                                                                    <th>Puskesmas</th>
                                                                     <th>Year</th>
                                                                     <th>Month</th>
-                                                                    <th>Vaccine Type</th>
-                                                                    <th>Stock Out 1 Month</th>
-                                                                    <th>Stock Out 2 Months</th>
-                                                                    <th>Stock Out 3 Months</th>
-                                                                    <th>Stock Out 3+ Months</th>
+                                                                    <th>DPT-HB-Hib @5 ds</th>
+                                                                    <th>Pentavalent (Easyfive) @10 ds</th>
+                                                                    <th>Pentavac 10 ds</th>
+                                                                    <th>Vaksin ComBE Five @10 ds</th>
                                                                     <th>Action</th> <!-- Kolom untuk tombol hapus -->
                                                                 </tr>
                                                             </thead>
@@ -830,6 +871,45 @@
                     });
                 }
             });
+
+            // Ketika district dipilih, load subdistrict
+            $('#city_id2').change(function () {
+                var city_id = $(this).val();
+                if (city_id) {
+                    $.ajax({
+                        url: "<?= base_url('input/get_subdistricts_by_city') ?>",
+                        type: "GET",
+                        data: { city_id: city_id },
+                        dataType: "json",
+                        success: function (data) {
+                            $('#subdistrict_id2').html('<option value="">-- Select Subdistrict --</option>');
+                            $('#puskesmas_id2').html('<option value="">-- Select Puskesmas --</option>');
+                            $.each(data, function (key, value) {
+                                $('#subdistrict_id2').append('<option value="' + value.id + '">' + value.name + '</option>');
+                            });
+                        }
+                    });
+                }
+            });
+
+            // Ketika subdistrict dipilih, load puskesmas
+            $('#subdistrict_id2').change(function () {
+                var subdistrict_id = $(this).val();
+                if (subdistrict_id) {
+                    $.ajax({
+                        url: "<?= base_url('input/get_puskesmas_by_subdistrict') ?>",
+                        type: "GET",
+                        data: { subdistrict_id: subdistrict_id },
+                        dataType: "json",
+                        success: function (data) {
+                            $('#puskesmas_id2').html('<option value="">-- Select Puskesmas --</option>');
+                            $.each(data, function (key, value) {
+                                $('#puskesmas_id2').append('<option value="' + value.id + '">' + value.name + '</option>');
+                            });
+                        }
+                    });
+                }
+            });
         });
     </script>
 
@@ -1059,6 +1139,45 @@ $(document).ready(function () {
         }
     });
 
+    // Ketika district dipilih, load subdistrict
+    $('#filter_city2').change(function () {
+        var city_id = $(this).val();
+        if (city_id) {
+            $.ajax({
+                url: "<?= base_url('input/get_subdistricts_by_city') ?>",
+                type: "GET",
+                data: { city_id: city_id },
+                dataType: "json",
+                success: function (data) {
+                    $('#filter_subdistrict2').html('<option value="">-- Select Subdistrict --</option>');
+                    $('#filter_puskesmas2').html('<option value="">-- Select Puskesmas --</option>');
+                    $.each(data, function (key, value) {
+                        $('#filter_subdistrict2').append('<option value="' + value.id + '">' + value.name + '</option>');
+                    });
+                }
+            });
+        }
+    });
+
+    // Ketika subdistrict dipilih, load puskesmas
+    $('#filter_subdistrict2').change(function () {
+        var subdistrict_id = $(this).val();
+        if (subdistrict_id) {
+            $.ajax({
+                url: "<?= base_url('input/get_puskesmas_by_subdistrict') ?>",
+                type: "GET",
+                data: { subdistrict_id: subdistrict_id },
+                dataType: "json",
+                success: function (data) {
+                    $('#filter_puskesmas2').html('<option value="">-- Select Puskesmas --</option>');
+                    $.each(data, function (key, value) {
+                        $('#filter_puskesmas2').append('<option value="' + value.id + '">' + value.name + '</option>');
+                    });
+                }
+            });
+        }
+    });
+
     // Inisialisasi DataTable hanya sekali
     let table3 = $('#table3').DataTable({
         paging: true,
@@ -1072,6 +1191,8 @@ $(document).ready(function () {
     function loadStockOutData() {
         let province = $("#filter_province2").val();
         let city = $("#filter_city2").val();
+        let subdistrict = $("#filter_subdistrict2").val();
+        let puskesmas = $("#filter_puskesmas2").val();
         let year = $("#filter_year2").val();
         let month = $("#filter_month2").val();
         // alert(city);
@@ -1082,6 +1203,8 @@ $(document).ready(function () {
             data: {
                 province_id: province,
                 city_id: city,
+                subdistrict_id: subdistrict,
+                puskesmas_id: puskesmas,
                 year: year,
                 month: month
             },
@@ -1114,18 +1237,35 @@ $(document).ready(function () {
                     //         </tr>
                     //     `);
                     // });
+                    // let rows = [];
+                    // data.forEach(row => {
+                    //     rows.push([
+                    //         row.province_name,
+                    //         row.city_name,
+                    //         row.year,
+                    //         new Date(row.month).toLocaleString('en-us', { month: 'long' }),
+                    //         row.vaccine_type,
+                    //         row.stock_out_1_month,
+                    //         row.stock_out_2_months,
+                    //         row.stock_out_3_months,
+                    //         row.stock_out_more_than_3_months,
+                    //         `<button class="btn btn-danger btn-sm delete-btn-stock-out" data-id="${row.id}" >Delete</button>`
+                    //     ]);
+                    // });
+
                     let rows = [];
                     data.forEach(row => {
                         rows.push([
                             row.province_name,
                             row.city_name,
+                            row.subdistrict_name,
+                            row.puskesmas_name,
                             row.year,
                             new Date(row.month).toLocaleString('en-us', { month: 'long' }),
-                            row.vaccine_type,
-                            row.stock_out_1_month,
-                            row.stock_out_2_months,
-                            row.stock_out_3_months,
-                            row.stock_out_more_than_3_months,
+                            row.DPT_HB_Hib_5_ds,
+                            row.Pentavalent_Easyfive_10_ds,
+                            row.Pentavac_10_ds,
+                            row.Vaksin_ComBE_Five_10_ds,
                             `<button class="btn btn-danger btn-sm delete-btn-stock-out" data-id="${row.id}" >Delete</button>`
                         ]);
                     });
@@ -1148,12 +1288,18 @@ $(document).ready(function () {
     $("#btn_filter2").on("click", function () {
         // alert('halo');
         let province = $("#filter_province2").val();
+        let city = $("#filter_city2").val();
         // let city = $("#filter_city2").val();
         // console.log(city);
 
         // Check if Province and City are selected
         if (!province) {
             alert("Please select a Province.");
+            return;  // Stop further code execution
+        }
+
+        if (!city) {
+            alert("Please select a District.");
             return;  // Stop further code execution
         }
 

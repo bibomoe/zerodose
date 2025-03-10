@@ -897,14 +897,23 @@ class Home extends CI_Controller {
         // Ambil daftar provinsi untuk dropdown + targeted provinces
         $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
 
-        // Ambil data stock out hanya untuk vaksin DPT
-        $stock_out_data = $this->StockOut_model->get_dpt_stock_out($selected_province, $selected_year);
+        // Ambil data stok kosong per bulan dan puskesmas
+        $stock_out_data = $this->StockOut_model->get_dpt_stock_out_by_month($selected_province, $selected_year);
+
+        // Menghitung kategori durasi stok kosong per bulan
+        $monthly_stock_out_categories = $this->StockOut_model->calculate_stock_out_category($stock_out_data);
+
+        // Ambil data stock out hanya untuk vaksin DPT - lama
+        // $stock_out_data = $this->StockOut_model->get_dpt_stock_out($selected_province, $selected_year);
+
 
         // Kirim data ke view
         $this->data['selected_province'] = $selected_province;
         $this->data['selected_year'] = $selected_year;
         // $this->data['stock_out_data'] = json_encode($stock_out_data); // Kirim dalam bentuk JSON
-        $this->data['stock_out_data'] = $stock_out_data; // Kirim dalam bentuk JSON
+        // $this->data['stock_out_data'] = $stock_out_data; // Kirim dalam bentuk JSON
+        $this->data['stock_out_data'] = $monthly_stock_out_categories; // Kirim dalam bentuk JSON
+
 
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
