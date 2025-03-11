@@ -213,6 +213,8 @@ class StockOut_model extends CI_Model {
                     $category = '3 Months';
                 } elseif ($shortest_duration > 120) {
                     $category = '> 3 Months';
+                } else {
+                    $category = 'No stock out';
                 }
             }
 
@@ -236,7 +238,7 @@ class StockOut_model extends CI_Model {
                 $monthly_stock_out[$row['month']]['stock_out_3']++;
             } elseif ($category == '> 3 Months') {
                 $monthly_stock_out[$row['month']]['stock_out_4']++;
-            } else {
+            } elseif ($category == 'No stock out') {
                 $monthly_stock_out[$row['month']]['stock_out_no']++;
             }
         }
