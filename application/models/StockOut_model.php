@@ -205,13 +205,13 @@ class StockOut_model extends CI_Model {
                 $shortest_duration = min($valid_durations);
 
                 // Tentukan kategori berdasarkan durasi stok kosong terpendek
-                if ($shortest_duration >= 30 && $shortest_duration <= 60) {
+                if ($shortest_duration >= 30 && $shortest_duration < 60) {
                     $category = '1 Month';
-                } elseif ($shortest_duration > 60 && $shortest_duration <= 90) {
+                } elseif ($shortest_duration >= 60 && $shortest_duration < 90) {
                     $category = '2 Months';
-                } elseif ($shortest_duration > 90 && $shortest_duration <= 120) {
+                } elseif ($shortest_duration >= 90 && $shortest_duration < 120) {
                     $category = '3 Months';
-                } elseif ($shortest_duration > 120) {
+                } elseif ($shortest_duration >= 120) {
                     $category = '> 3 Months';
                 } else {
                     $category = 'No stock out';
