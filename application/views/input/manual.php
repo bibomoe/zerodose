@@ -1266,7 +1266,7 @@ $(document).ready(function () {
                             row.Pentavalent_Easyfive_10_ds,
                             row.Pentavac_10_ds,
                             row.Vaksin_ComBE_Five_10_ds,
-                            `<button class="btn btn-danger btn-sm delete-btn-stock-out" data-id="${row.id}" >Delete</button>`
+                            `<button class="btn btn-danger btn-sm delete-btn-stock-out" data-id="${row.id}" type="button">Delete</button>`
                         ]);
                     });
 
