@@ -211,7 +211,7 @@ class StockOut_model extends CI_Model {
                     $category = '2 Months';
                 } elseif ($shortest_duration > 90 && $shortest_duration <= 120) {
                     $category = '3 Months';
-                } else {
+                } elseif ($shortest_duration > 120) {
                     $category = '> 3 Months';
                 }
             }
