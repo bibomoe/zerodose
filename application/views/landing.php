@@ -416,7 +416,7 @@
                                     <p class="text-muted" id="subtitle"></p>
                                     <p id="description"></p>
                                     <button class="btn btn-primary" id="download-btn">Download Panduan</button>
-                                    <a href="<?= base_url('PublicDashboard'); ?>" id="public-dashboard-button"class="btn btn-primary">Public Dashboard</a>
+                                    <!-- <a href="<?= base_url('PublicDashboard'); ?>" id="public-dashboard-button"class="btn btn-primary">Public Dashboard</a> -->
                                 </div>
                             <!-- </div> -->
                             <div class="col-md-6 text-center">
