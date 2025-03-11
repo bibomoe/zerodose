@@ -35,4 +35,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /system/
 /application/config/
 /application/controllers/Puskesmas.php
-/assets/swagger.json/
+/assets/swagger-json/

@@ -17,7 +17,7 @@
 
     <script>
         const ui = SwaggerUIBundle({
-            url: "<?php echo base_url('assets/swagger.json'); ?>",  // Point to your Swagger JSON file
+            url: "<?php echo base_url('assets/swagger-json/swagger.json'); ?>",  // Point to your Swagger JSON file
             dom_id: '#swagger-ui',
             deepLinking: true,
             presets: [
