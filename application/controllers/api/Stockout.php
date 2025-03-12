@@ -78,10 +78,11 @@ class Stockout extends REST_Controller {
             'city_id' => $this->post('city_id'),
             'subdistrict_id' => $this->post('subdistrict_id'),  // The new field
             'puskesmas_id' => $this->post('puskesmas_id'),
-            'DPT_HB_Hib_5_ds' => $this->post('DPT_HB_Hib_5_ds'),
-            'Pentavalent_Easyfive_10_ds' => $this->post('Pentavalent_Easyfive_10_ds'),
-            'Pentavac_10_ds' => $this->post('Pentavac_10_ds'),
-            'Vaksin_ComBE_Five_10_ds' => $this->post('Vaksin_ComBE_Five_10_ds')
+            'status_stockout' => $this->post('status_stockout')
+            // 'DPT_HB_Hib_5_ds' => $this->post('DPT_HB_Hib_5_ds'),
+            // 'Pentavalent_Easyfive_10_ds' => $this->post('Pentavalent_Easyfive_10_ds'),
+            // 'Pentavac_10_ds' => $this->post('Pentavac_10_ds'),
+            // 'Vaksin_ComBE_Five_10_ds' => $this->post('Vaksin_ComBE_Five_10_ds')
         ];
 
         // Validate if puskesmas_id is valid (check against database)

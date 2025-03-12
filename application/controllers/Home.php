@@ -901,7 +901,7 @@ class Home extends CI_Controller {
         $stock_out_data = $this->StockOut_model->get_dpt_stock_out_by_month($selected_province, $selected_year);
 
         // Menghitung kategori durasi stok kosong per bulan
-        $monthly_stock_out_categories = $this->StockOut_model->calculate_stock_out_category($stock_out_data);
+        $monthly_stock_out_categories = $this->StockOut_model->calculate_stock_out_category($stock_out_data, $selected_year);
 
         // Ambil data stock out hanya untuk vaksin DPT - lama
         // $stock_out_data = $this->StockOut_model->get_dpt_stock_out($selected_province, $selected_year);

@@ -588,13 +588,18 @@ class Input extends CI_Controller {
             'puskesmas_id'   => $this->input->post('puskesmas_id'),  // Pastikan ada inputan puskesmas_id
             'year'        => $this->input->post('year'),
             'month'       => $this->input->post('month'),
+
+            'status_stockout'       => (int) $this->input->post('status_stockout')
             
             // Data vaksin baru
-            'DPT_HB_Hib_5_ds' => $this->input->post('DPT_HB_Hib_5_ds'),
-            'Pentavalent_Easyfive_10_ds' => $this->input->post('Pentavalent_Easyfive_10_ds'),
-            'Pentavac_10_ds' => $this->input->post('Pentavac_10_ds'),
-            'Vaksin_ComBE_Five_10_ds' => $this->input->post('Vaksin_ComBE_Five_10_ds')
+            // 'DPT_HB_Hib_5_ds' => $this->input->post('DPT_HB_Hib_5_ds'),
+            // 'Pentavalent_Easyfive_10_ds' => $this->input->post('Pentavalent_Easyfive_10_ds'),
+            // 'Pentavac_10_ds' => $this->input->post('Pentavac_10_ds'),
+            // 'Vaksin_ComBE_Five_10_ds' => $this->input->post('Vaksin_ComBE_Five_10_ds')
         ];
+
+        // var_dump($data);
+        // exit;
     
         // Panggil model untuk menyimpan data
         $this->StockOut_model->save_stock_out($data);

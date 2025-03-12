@@ -373,19 +373,207 @@ class Dashboard_model extends CI_Model {
         return $query->row()->percentage ?? 0;
     }
 
-    public function get_total_dpt_stock_out($year) {
-        $this->db->select('
-            SUM(stock_out_1_month) + 
-            SUM(stock_out_2_months) + 
-            SUM(stock_out_3_months) + 
-            SUM(stock_out_more_than_3_months) AS total_stock_out', false);
-        $this->db->from('stock_out_data');
-        $this->db->where('vaccine_type', 'DPT'); // Hanya untuk DPT
-        $this->db->where('year', $year);
+    // public function get_total_dpt_stock_out($year) {
+    //     $this->db->select('
+    //         SUM(stock_out_1_month) + 
+    //         SUM(stock_out_2_months) + 
+    //         SUM(stock_out_3_months) + 
+    //         SUM(stock_out_more_than_3_months) AS total_stock_out', false);
+    //     $this->db->from('stock_out_data');
+    //     $this->db->where('vaccine_type', 'DPT'); // Hanya untuk DPT
+    //     $this->db->where('year', $year);
     
-        $query = $this->db->get();
-        return $query->row()->total_stock_out ?? 0;
+    //     $query = $this->db->get();
+    //     return $query->row()->total_stock_out ?? 0;
+    // }
+
+    // Fungsi untuk mengambil data stok kosong per puskesmas dan bulan, termasuk data tahun sebelumnya
+    public function get_dpt_stock_out_by_month($province_id, $year) {
+        // Ambil data vaksin per puskesmas tanpa melakukan SUM atau GROUP BY
+        $this->db->select('month, 
+                        year,
+                        province_id, 
+                        city_id, 
+                        subdistrict_id, 
+                        puskesmas_id, 
+                        DPT_HB_Hib_5_ds, 
+                        Pentavalent_Easyfive_10_ds, 
+                        Pentavac_10_ds, 
+                        Vaksin_ComBE_Five_10_ds, 
+                        status_stockout'); // Menambahkan status_stockout
+        $this->db->from('puskesmas_stock_out_details');
+
+        // Ambil data untuk tahun yang diminta
+        $this->db->where('year', $year);
+
+        // Jika province_id tidak 'all', filter berdasarkan province_id
+        if ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
+        // Ambil data untuk tahun sebelumnya
+        $this->db->or_where('year', $year - 1);
+
+        // Urutkan berdasarkan tahun, bulan, dan puskesmas_id
+        $this->db->order_by('year', 'ASC');
+        $this->db->order_by('month', 'ASC');
+        $this->db->order_by('puskesmas_id', 'ASC');
+
+        // Ambil data yang sesuai dengan filter
+        $result = $this->db->get()->result_array();
+
+        // var_dump($result);
+        // exit;
+        return $result;
     }
+
+
+    public function calculate_stock_out_category($data, $selected_year) {
+        $monthly_stock_out = [];
+        
+        // Array untuk menyimpan status stockout per bulan dan tahun
+        $previous_month_stockout = [];
+        
+        foreach ($data as $row) {
+            $month = $row['month'];
+            $year = $row['year']; // Tahun data
+    
+            // Hanya proses data untuk tahun yang dipilih
+            if ($year != $selected_year) {
+                continue; // Lewatkan data jika tahun tidak sesuai
+            }
+    
+            // Tentukan bulan-bulan yang akan dicek untuk 3 bulan sebelumnya
+            $previous_months = [];
+        
+            // Tentukan bulan-bulan sebelumnya
+            for ($i = 1; $i <= 3; $i++) {
+                $prev_month = $month - $i;
+        
+                // Jika bulan sebelumnya kurang dari 1 (misalnya Januari - 1), kita perlu mengubah tahun
+                if ($prev_month < 1) {
+                    $prev_month += 12; // Bulan Desember, November, Oktober...
+                    $prev_year = $year - 1; // Tahun sebelumnya
+                } else {
+                    $prev_year = $year; // Tahun yang sama jika bulan tidak kurang dari 1
+                }
+        
+                // Simpan bulan dan tahun sebelumnya
+                $previous_months[] = [
+                    'month' => $prev_month,
+                    'year' => $prev_year
+                ];
+            }
+        
+            // Menyimpan status stockout untuk bulan-bulan sebelumnya
+            $statuses_previous_months = [];
+        
+            // Loop untuk mencari status stockout bulan-bulan sebelumnya
+            foreach ($previous_months as $prev) {
+                foreach ($data as $previous_row) {
+                    if ($previous_row['month'] == $prev['month'] && $previous_row['year'] == $prev['year'] && $previous_row['puskesmas_id'] == $row['puskesmas_id']) {
+                        $statuses_previous_months[$prev['month']] = $previous_row['status_stockout'];
+                    }
+                }
+            }
+        
+            // Tentukan kategori berdasarkan status stockout
+            if ($row['status_stockout'] == 1) {
+                // Jika bulan sebelumnya ada yang memiliki status 0
+                if (!isset($statuses_previous_months[10]) && !isset($statuses_previous_months[11]) && !isset($statuses_previous_months[12])) {
+                    $category = '1 Month';
+                } else {
+                    // Jika ada lebih dari satu bulan berturut-turut dengan status 1
+                    $count_consecutive_1 = 0;
+                    foreach ($previous_months as $prev) {
+                        if (isset($statuses_previous_months[$prev['month']]) && $statuses_previous_months[$prev['month']] == 1) {
+                            $count_consecutive_1++;
+                        }
+                    }
+        
+                    // Tentukan kategori berdasarkan jumlah bulan berturut-turut
+                    if ($count_consecutive_1 >= 3) {
+                        $category = '> 3 Months';
+                    } elseif ($count_consecutive_1 == 2) {
+                        $category = '3 Months';
+                    } elseif ($count_consecutive_1 == 1) {
+                        $category = '2 Months';
+                    }
+                }
+            } else {
+                $category = 'No Stock Out';
+            }
+        
+            // Menyimpan kategori untuk setiap bulan
+            if (!isset($monthly_stock_out[$month])) {
+                $monthly_stock_out[$month] = [
+                    'stock_out_1' => 0,
+                    'stock_out_2' => 0,
+                    'stock_out_3' => 0,
+                    'stock_out_4' => 0,
+                    'stock_out_no' => 0
+                ];
+            }
+        
+            // Menambahkan jumlah puskesmas untuk kategori durasi stok kosong
+            if ($category == '1 Month') {
+                $monthly_stock_out[$month]['stock_out_1']++;
+            } elseif ($category == '2 Months') {
+                $monthly_stock_out[$month]['stock_out_2']++;
+            } elseif ($category == '3 Months') {
+                $monthly_stock_out[$month]['stock_out_3']++;
+            } elseif ($category == '> 3 Months') {
+                $monthly_stock_out[$month]['stock_out_4']++;
+            } elseif ($category == 'No Stock Out') {
+                $monthly_stock_out[$month]['stock_out_no']++;
+            }
+        
+            // Menyimpan status stockout untuk bulan ini
+            $previous_month_stockout[$month] = $row['status_stockout'];
+        }
+        
+        // Format data untuk menyesuaikan dengan struktur yang diinginkan
+        $result = [];
+        foreach ($monthly_stock_out as $month => $categories) {
+            $result[] = [
+                'month' => (string)$month,  // Menjadikan bulan dalam format string
+                'stock_out_1' => $categories['stock_out_1'],
+                'stock_out_2' => $categories['stock_out_2'],
+                'stock_out_3' => $categories['stock_out_3'],
+                'stock_out_4' => $categories['stock_out_4'],
+                'stock_out_no' => $categories['stock_out_no']
+            ];
+        }
+    
+        // var_dump($result);
+        
+        return $result;
+    }
+
+    public function get_total_dpt_stock_out($year) {
+        // Ambil data stok kosong per bulan dan puskesmas untuk tahun yang dipilih
+        $stock_out_data = $this->get_dpt_stock_out_by_month('all', $year);
+    
+        // Menghitung kategori durasi stok kosong per bulan
+        $monthly_stock_out_categories = $this->calculate_stock_out_category($stock_out_data, $year);
+    
+        // Menghitung total puskesmas stockout
+        $total_faskes_stockout = 0;
+    
+        // Menjumlahkan total faskes yang mengalami stockout berdasarkan kategori
+        foreach ($monthly_stock_out_categories as $category) {
+            // Menambah total faskes yang mengalami stockout di setiap kategori
+            $total_faskes_stockout += $category['stock_out_1']; // 1 Month
+            $total_faskes_stockout += $category['stock_out_2']; // 2 Months
+            $total_faskes_stockout += $category['stock_out_3']; // 3 Months
+            $total_faskes_stockout += $category['stock_out_4']; // > 3 Months
+        }
+    
+        // Mengembalikan total faskes yang mengalami stockout
+        return $total_faskes_stockout;
+    }
+
+    
 
     // ✅ Ambil ID dari 10 targeted provinces
     public function get_targeted_province_ids() {

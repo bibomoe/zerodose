@@ -258,22 +258,10 @@
                                                         <div class="col-md-4"><?= form_label('Select Month', 'month'); ?></div>
                                                         <div class="col-md-8 form-group"><?= form_dropdown('month', $month_options, '', 'class="form-select" id="month"'); ?></div>
 
-                                                        <!-- <div class="col-md-4"><?= form_label('Vaccine Type', 'vaccine_type'); ?></div>
-                                                        <div class="col-md-8 form-group"><?= form_dropdown('vaccine_type', ['DPT' => 'DPT'], '', 'class="form-select" id="vaccine_type"'); ?></div>
+                                                        <div class="col-md-4"><?= form_label('Select Stockout Status', 'status_stockout '); ?></div>
+                                                        <div class="col-md-8 form-group"><?= form_dropdown('status_stockout', array(1 => "Yes", 0 => "No"), '', 'class="form-select" id="status_stockout"'); ?></div>
 
-                                                        <div class="col-md-4"><?= form_label('Stock Out 1 Month', 'stock_out_1_month'); ?></div>
-                                                        <div class="col-md-8 form-group"><?= form_input(['name' => 'stock_out_1_month', 'type' => 'number', 'class' => 'form-control', 'min' => 0]); ?></div>
-
-                                                        <div class="col-md-4"><?= form_label('Stock Out 2 Months', 'stock_out_2_months'); ?></div>
-                                                        <div class="col-md-8 form-group"><?= form_input(['name' => 'stock_out_2_months', 'type' => 'number', 'class' => 'form-control', 'min' => 0]); ?></div>
-
-                                                        <div class="col-md-4"><?= form_label('Stock Out 3 Months', 'stock_out_3_months'); ?></div>
-                                                        <div class="col-md-8 form-group"><?= form_input(['name' => 'stock_out_3_months', 'type' => 'number', 'class' => 'form-control', 'min' => 0]); ?></div>
-
-                                                        <div class="col-md-4"><?= form_label('Stock Out 3+ Months', 'stock_out_more_than_3_months'); ?></div>
-                                                        <div class="col-md-8 form-group"><?= form_input(['name' => 'stock_out_more_than_3_months', 'type' => 'number', 'class' => 'form-control', 'min' => 0]); ?></div> -->
-
-                                                        <div class="col-md-4"><?= form_label('DPT-HB-Hib @5 ds', 'DPT_HB_Hib_5_ds'); ?></div>
+                                                        <!-- <div class="col-md-4"><?= form_label('DPT-HB-Hib @5 ds', 'DPT_HB_Hib_5_ds'); ?></div>
                                                         <div class="col-md-8 form-group"><?= form_input(['name' => 'DPT_HB_Hib_5_ds', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'step' => 'any']); ?></div>
 
                                                         <div class="col-md-4"><?= form_label('Pentavalent (Easyfive) @10 ds', 'Pentavalent_Easyfive_10_ds'); ?></div>
@@ -283,7 +271,7 @@
                                                         <div class="col-md-8 form-group"><?= form_input(['name' => 'Pentavac_10_ds', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'step' => 'any']); ?></div>
 
                                                         <div class="col-md-4"><?= form_label('Vaksin ComBE Five @10 ds', 'Vaksin_ComBE_Five_10_ds'); ?></div>
-                                                        <div class="col-md-8 form-group"><?= form_input(['name' => 'Vaksin_ComBE_Five_10_ds', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'step' => 'any']); ?>
+                                                        <div class="col-md-8 form-group"><?= form_input(['name' => 'Vaksin_ComBE_Five_10_ds', 'type' => 'number', 'class' => 'form-control', 'min' => 0, 'step' => 'any']); ?> -->
 
                                                         <div class="col-md-12 d-flex justify-content-end">
                                                             <?= form_submit('submit', 'Submit', 'class="btn btn-primary me-1 mb-1"'); ?>
@@ -369,10 +357,11 @@
                                                                     <th>Puskesmas</th>
                                                                     <th>Year</th>
                                                                     <th>Month</th>
-                                                                    <th>DPT-HB-Hib @5 ds</th>
+                                                                    <th>Status Stockout</th>
+                                                                    <!-- <th>DPT-HB-Hib @5 ds</th>
                                                                     <th>Pentavalent (Easyfive) @10 ds</th>
                                                                     <th>Pentavac 10 ds</th>
-                                                                    <th>Vaksin ComBE Five @10 ds</th>
+                                                                    <th>Vaksin ComBE Five @10 ds</th> -->
                                                                     <th>Action</th> <!-- Kolom untuk tombol hapus -->
                                                                 </tr>
                                                             </thead>
@@ -1215,7 +1204,7 @@ $(document).ready(function () {
                 tableBody.empty();
 
                 if (data.length === 0) {
-                    tableBody.append('<tr><td colspan="10" class="text-center">No Data Found</td></tr>');
+                    tableBody.append('<tr><td colspan="8" class="text-center">No Data Found</td></tr>');
                 } else {
                     // data.forEach(row => {
                     //     tableBody.append(`
@@ -1249,6 +1238,10 @@ $(document).ready(function () {
                     //         row.stock_out_2_months,
                     //         row.stock_out_3_months,
                     //         row.stock_out_more_than_3_months,
+                                // row.DPT_HB_Hib_5_ds,
+                                // row.Pentavalent_Easyfive_10_ds,
+                                // row.Pentavac_10_ds,
+                                // row.Vaksin_ComBE_Five_10_ds,
                     //         `<button class="btn btn-danger btn-sm delete-btn-stock-out" data-id="${row.id}" >Delete</button>`
                     //     ]);
                     // });
@@ -1262,10 +1255,7 @@ $(document).ready(function () {
                             row.puskesmas_name,
                             row.year,
                             new Date(row.month).toLocaleString('en-us', { month: 'long' }),
-                            row.DPT_HB_Hib_5_ds,
-                            row.Pentavalent_Easyfive_10_ds,
-                            row.Pentavac_10_ds,
-                            row.Vaksin_ComBE_Five_10_ds,
+                            row.status_stockout == 1 ? 'Yes' : 'No',
                             `<button class="btn btn-danger btn-sm delete-btn-stock-out" data-id="${row.id}" type="button">Delete</button>`
                         ]);
                     });
