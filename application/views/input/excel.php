@@ -32,33 +32,50 @@
                         <?php endif; ?>
 
                         <div class="row match-height">
-                            <div class="col-md-8 col-12">
+                            <div class="col-md-10 col-12">
                                 <div class="card">
                                     <!-- <div class="card-header">
                                         <h4 class="card-title">Input Excel</h4>
                                     </div> -->
                                     <div class="card-content">
                                         <div class="card-body">
-                                            <form class="form form-horizontal">
+                                            <!-- <form class="form form-horizontal"> -->
+                                            <?= form_open('input/import', ['class' => 'form form-horizontal', 'enctype' => 'multipart/form-data']); ?>
                                                 <div class="form-body">
                                                     <div class="row">
-                                                        <?= form_open('input/import', ['class' => 'form form-horizontal', 'enctype' => 'multipart/form-data']); ?>
-                                                        <!-- <div class="form-body"> -->
+                                                        
+                                                        
                                                             <div class="col-md-4">
-                                                                <label for="formFile">Choose Excel File to Import:</label>
+                                                                <label for="excel_file">Choose Excel File to Import:</label>
                                                             </div>
                                                             <div class="col-md-8 form-group">
-                                                                <input class="form-control" type="file" name="excel_file" id="formFile">
+                                                                <input class="form-control" type="file" name="excel_file" id="excel_file">
                                                             </div>
+                                                            <div class="col-md-4">
+                                                                <label for="file_category">File Category:</label>
+                                                            </div>
+                                                            <div class="col-md-8 form-group">
+                                                                <select id="file_category" class="form-select" name="file_category">
+                                                                    <option value="1">Immunization Coverage</option>
+                                                                    <option value="2">Stock Out at Health Facilities</option>
+                                                                    <option value="3">Supportive Supervision</option>
+                                                                    <option value="4">Private Facility Training</option>
+                                                                    <option value="5">District Funding</option>
+                                                                    <option value="6">District Policy</option>
+                                                                </select>
+                                                            </div>
+
+                                                            
                                                             <div class="col-sm-12 d-flex justify-content-end">
-                                                                <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                                                <!-- <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button> -->
+                                                                <?= form_submit('submit', 'Submit', 'class="btn btn-primary me-1 mb-1"'); ?>
                                                             </div>
-                                                        <!-- </div> -->
-                                                        <?= form_close(); ?>
+                                                        
 
                                                     </div>
                                                 </div>
-                                            </form>
+                                            <?= form_close(); ?>
+                                            <!-- </form> -->
                                         </div>
                                     </div>
                                 </div>

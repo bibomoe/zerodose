@@ -312,4 +312,16 @@ switch (ENVIRONMENT)
  *
  * And away we go...
  */
+
+ require_once __DIR__ . '/vendor/autoload.php';  // Memuat autoloader Composer
+// Cek apakah autoloader Composer berhasil dimuat
+// if (!class_exists('PhpOffice\PhpSpreadsheet\IOFactory')) {
+//     echo "Autoloader Composer gagal dimuat!";
+// } else {
+//     echo "Autoloader Composer berhasil dimuat!";
+// }
+
 require_once BASEPATH.'core/CodeIgniter.php';
+
+
+

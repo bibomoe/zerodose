@@ -1,6 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+// require_once(APPPATH . 'libraries/PhpSpreadsheet/IOFactory.php'); // Sesuaikan dengan path Anda
+// Include IOFactory library
+// require APPPATH . '/libraries/PhpSpreadsheet/IOFactory.php';
+
+use PhpOffice\PhpSpreadsheet\IOFactory;  // Pastikan menggunakan namespace yang benar
+
 class Input extends CI_Controller {
     // Constructor untuk memuat model Faskes_model
     public function __construct() {
@@ -830,8 +836,9 @@ class Input extends CI_Controller {
     }
 
     public function import() {
-        echo "hello";
-        exit;
+        // Get the file category selected from the form
+        $file_category = $this->input->post('file_category');
+
         // Configuration for file upload (we won't store the file)
         $config['upload_path'] = './uploads/';
         $config['allowed_types'] = 'xls|xlsx|csv';
@@ -849,40 +856,71 @@ class Input extends CI_Controller {
 
             // Get the uploaded file's content as a stream (we won't store it on the server)
             $file_path = './uploads/' . $file_data['file_name'];
-            $this->loadExcel($file_path); // Process file directly without saving permanently
+            // $this->loadExcel($file_path); // Process file directly without saving permanently
+            // Call appropriate function based on category
+            switch ($file_category) {
+                case '1':  // Immunization Coverage
+                    $this->loadImmunizationExcel($file_path);
+                    break;
+                case '2':  // Stock Out at Health Facilities
+                    $this->loadStockOutExcel($file_path);
+                    break;
+                case '3':  // Supportive Supervision
+                    $this->loadSupportiveSupervisionExcel($file_path);
+                    break;
+                case '4':  // Private Facility Training
+                    $this->loadPrivateFacilityTrainingExcel($file_path);
+                    break;
+                case '5':  // District Funding
+                    $this->loadDistrictFundingExcel($file_path);
+                    break;
+                case '6':  // District Policy
+                    $this->loadDistrictPolicyExcel($file_path);
+                    break;
+                default:
+                    $this->session->set_flashdata('error', 'Invalid category selected.');
+                    redirect('input/excel');
+                    break;
+            }
         }
     }
 
-    private function loadExcel($file_path) {
+    private function loadImmunizationExcel($file_path) {
         // Load PhpSpreadsheet library to process the Excel file directly from the uploaded file
         $spreadsheet = IOFactory::load($file_path); // Read file into memory without saving
-
+    
         // Get the first sheet
         $sheet = $spreadsheet->getActiveSheet();
-
-        // Loop through each row in the sheet
-        foreach ($sheet->getRowIterator() as $row) {
+    
+        // Loop through each row in the sheet, starting from row 2 (skip header row)
+        foreach ($sheet->getRowIterator(2) as $row) { // Start from row 2
             $row_data = [];
             $cellIterator = $row->getCellIterator();
             $cellIterator->setIterateOnlyExistingCells(false);
-
+    
             // Process each cell in the row
             foreach ($cellIterator as $cell) {
                 $row_data[] = $cell->getValue(); // Get the value of each cell
             }
-
-            // Process columns with code and name (Province, City, Subdistrict, Puskesmas)
-            $province = $this->Excel_model->splitCodeName($row_data[0]);  // Province
-            $city = $this->Excel_model->splitCodeName($row_data[1]);      // City
-            $subdistrict = $this->Excel_model->splitCodeName($row_data[2]); // Subdistrict
-            $puskesmas = $this->Excel_model->splitCodeName($row_data[3]);   // Puskesmas
-
-            // Prepare data for insertion
+    
+            // Prepare data for insertion and validation
+            $province = $row_data[0]; // Province (ID)
+            $city = $row_data[1];     // City (ID)
+            $subdistrict = $row_data[2]; // Subdistrict (ID)
+            $puskesmas = $row_data[3];   // Puskesmas (ID)
+    
+            // Validate and insert data into the respective master tables (if not exists)
+            $province_id = $this->Excel_model->validate_and_insert_province($province);
+            $city_id = $this->Excel_model->validate_and_insert_city($city, $province_id);
+            $subdistrict_id = $this->Excel_model->validate_and_insert_subdistrict($subdistrict, $city_id, $province_id);
+            $puskesmas_id = $this->Excel_model->validate_and_insert_puskesmas($puskesmas, $subdistrict_id, $city_id, $province_id);
+    
+            // Prepare the data for insertion into the immunization_data table
             $data = [
-                'province_id' => $province,       // Only store code
-                'city_id' => $city,               // Only store code
-                'subdistrict_id' => $subdistrict, // Only store code
-                'puskesmas_id' => $puskesmas,     // Only store code
+                'province_id' => $province_id,
+                'city_id' => $city_id,
+                'subdistrict_id' => $subdistrict_id,
+                'puskesmas_id' => $puskesmas_id,
                 'year' => $row_data[4],
                 'month' => $row_data[5],
                 'dpt_hb_hib_1' => $row_data[6],
@@ -890,15 +928,330 @@ class Input extends CI_Controller {
                 'dpt_hb_hib_3' => $row_data[8],
                 'mr_1' => $row_data[9]
             ];
-
-            // Insert data into the database
-            $this->Excel_model->insertData($data);
+    
+            // Check if the immunization data already exists based on puskesmas_id, year, and month
+            $this->load->database();
+            $existing_data = $this->db->get_where('immunization_data', [
+                'puskesmas_id' => $puskesmas_id,
+                'year' => $data['year'],
+                'month' => $data['month']
+            ])->row_array();
+    
+            if ($existing_data) {
+                // If the data exists, update the record
+                $this->db->where('id', $existing_data['id']);
+                if ($this->db->update('immunization_data', $data)) {
+                    log_message('info', 'Immunization data updated successfully for puskesmas_id: ' . $puskesmas_id);
+                } else {
+                    log_message('error', 'Failed to update immunization data for puskesmas_id: ' . $puskesmas_id);
+                }
+            } else {
+                // If the data doesn't exist, insert it as a new record
+                if ($this->db->insert('immunization_data', $data)) {
+                    log_message('info', 'Immunization data added successfully for puskesmas_id: ' . $puskesmas_id);
+                } else {
+                    log_message('error', 'Failed to add immunization data for puskesmas_id: ' . $puskesmas_id);
+                }
+            }
         }
-
+    
         // Redirect with success message
-        $this->session->set_flashdata('success', 'Data Imported Successfully');
+        $this->session->set_flashdata('success', 'Immunization Coverage Data Imported Successfully');
         redirect('input/excel');
     }
+
+    private function loadStockOutExcel($file_path) {
+        // Load PhpSpreadsheet library to process the Excel file directly from the uploaded file
+        $spreadsheet = IOFactory::load($file_path); // Read file into memory without saving
+    
+        // Get the first sheet
+        $sheet = $spreadsheet->getActiveSheet();
+    
+        // Loop through each row in the sheet, starting from row 2 (skip header row)
+        foreach ($sheet->getRowIterator(2) as $row) { // Start from row 2
+            $row_data = [];
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
+    
+            // Process each cell in the row
+            foreach ($cellIterator as $cell) {
+                $row_data[] = $cell->getValue(); // Get the value of each cell
+            }
+    
+            // Prepare data for insertion into the stock-out details table
+            $data = [
+                'year' => $row_data[4],  // Year
+                'month' => $row_data[5], // Month
+                'province_id' => $row_data[0], // Province (ID)
+                'city_id' => $row_data[1],     // City (ID)
+                'subdistrict_id' => $row_data[2], // Subdistrict (ID)
+                'puskesmas_id' => $row_data[3],   // Puskesmas (ID)
+                'status_stockout' => $row_data[6] // Stock Out status (assuming it's in column 7)
+            ];
+    
+            // Check if the combination of puskesmas_id, year, and month already exists
+            $this->load->database();
+            $existing_data = $this->db->get_where('puskesmas_stock_out_details', [
+                'puskesmas_id' => $data['puskesmas_id'],
+                'year' => $data['year'],
+                'month' => $data['month']
+            ])->row_array();
+    
+            if ($existing_data) {
+                // If the data exists, update the record
+                $this->db->where('id', $existing_data['id']);
+                if ($this->db->update('puskesmas_stock_out_details', $data)) {
+                    log_message('info', 'Stock Out data updated successfully for puskesmas_id: ' . $data['puskesmas_id']);
+                } else {
+                    log_message('error', 'Failed to update Stock Out data for puskesmas_id: ' . $data['puskesmas_id']);
+                }
+            } else {
+                // If the data doesn't exist, insert it as a new record
+                if ($this->db->insert('puskesmas_stock_out_details', $data)) {
+                    log_message('info', 'Stock Out data added successfully for puskesmas_id: ' . $data['puskesmas_id']);
+                } else {
+                    log_message('error', 'Failed to add Stock Out data for puskesmas_id: ' . $data['puskesmas_id']);
+                }
+            }
+        }
+    
+        // Redirect with success message
+        $this->session->set_flashdata('success', 'Stock Out Data Imported Successfully');
+        redirect('input/excel');
+    }
+    
+    private function loadSupportiveSupervisionExcel($file_path) {
+        // Load PhpSpreadsheet library to process the Excel file directly from the uploaded file
+        $spreadsheet = IOFactory::load($file_path); // Read file into memory without saving
+    
+        // Get the first sheet
+        $sheet = $spreadsheet->getActiveSheet();
+    
+        // Loop through each row in the sheet, starting from row 2 (skip header row)
+        foreach ($sheet->getRowIterator(2) as $row) { // Start from row 2
+            $row_data = [];
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
+    
+            // Process each cell in the row
+            foreach ($cellIterator as $cell) {
+                $row_data[] = $cell->getValue(); // Get the value of each cell
+            }
+    
+            // Prepare the data for insertion into the supportive_supervision table
+            $data = [
+                'province_id' => $row_data[0], // Province ID (column 1)
+                'city_id' => $row_data[1],     // City ID (column 2)
+                'year' => $row_data[2],  // Year (column 5)
+                'month' => $row_data[3], // Month (column 6)
+                'total_ss' => $row_data[4], // Month (column 6)
+                'good_category_puskesmas' => $row_data[5] // Good Category Puskesmas (column 7)
+            ];
+    
+            // Check if the combination of year, month, province_id, and city_id already exists
+            $this->load->database();
+            $existing_data = $this->db->get_where('supportive_supervision', [
+                'province_id' => $data['province_id'],
+                'city_id' => $data['city_id'],
+                'year' => $data['year'],
+                'month' => $data['month']
+            ])->row_array();
+    
+            if ($existing_data) {
+                // If data exists, update the record
+                $this->db->where('id', $existing_data['id']);
+                if ($this->db->update('supportive_supervision', $data)) {
+                    log_message('info', 'Supportive Supervision data updated successfully for province_id: ' . $data['province_id']);
+                } else {
+                    log_message('error', 'Failed to update Supportive Supervision data for province_id: ' . $data['province_id']);
+                }
+            } else {
+                // If the data doesn't exist, insert it as a new record
+                if ($this->db->insert('supportive_supervision', $data)) {
+                    log_message('info', 'Supportive Supervision data added successfully for province_id: ' . $data['province_id']);
+                } else {
+                    log_message('error', 'Failed to add Supportive Supervision data for province_id: ' . $data['province_id']);
+                }
+            }
+        }
+    
+        // Redirect with success message
+        $this->session->set_flashdata('success', 'Supportive Supervision Data Imported Successfully');
+        redirect('input/excel');
+    }
+    
+    private function loadPrivateFacilityTrainingExcel($file_path) {
+        // Load PhpSpreadsheet library to process the Excel file directly from the uploaded file
+        $spreadsheet = IOFactory::load($file_path); // Read file into memory without saving
+    
+        // Get the first sheet
+        $sheet = $spreadsheet->getActiveSheet();
+    
+        // Loop through each row in the sheet, starting from row 2 (skip header row)
+        foreach ($sheet->getRowIterator(2) as $row) { // Start from row 2
+            $row_data = [];
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
+    
+            // Process each cell in the row
+            foreach ($cellIterator as $cell) {
+                $row_data[] = $cell->getValue(); // Get the value of each cell
+            }
+    
+            // Prepare the data for insertion into the private_facility_training table
+            $data = [
+                'year' => $row_data[1],  // Year (column 2)
+                'month' => $row_data[2], // Month (column 3)
+                'province_id' => $row_data[0], // Province (ID) (column 1)
+                'total_private_facilities' => $row_data[3], // Total Private Facilities (column 4)
+                'trained_private_facilities' => $row_data[4] // Trained Private Facilities (column 5)
+            ];
+    
+            // Check if the combination of province_id, city_id, year, and month already exists
+            $this->load->database();
+            $existing_data = $this->db->get_where('private_facility_training', [
+                'province_id' => $data['province_id'],
+                'year' => $data['year'],
+                'month' => $data['month']
+            ])->row_array();
+    
+            if ($existing_data) {
+                // If data exists, update the record
+                $this->db->where('id', $existing_data['id']);
+                if ($this->db->update('private_facility_training', $data)) {
+                    log_message('info', 'Private Facility Training data updated successfully for province_id: ' . $data['province_id']);
+                } else {
+                    log_message('error', 'Failed to update Private Facility Training data for province_id: ' . $data['province_id']);
+                }
+            } else {
+                // If the data doesn't exist, insert it as a new record
+                if ($this->db->insert('private_facility_training', $data)) {
+                    log_message('info', 'Private Facility Training data added successfully for province_id: ' . $data['province_id']);
+                } else {
+                    log_message('error', 'Failed to add Private Facility Training data for province_id: ' . $data['province_id']);
+                }
+            }
+        }
+    
+        // Redirect with success message
+        $this->session->set_flashdata('success', 'Private Facility Training Data Imported Successfully');
+        redirect('input/excel');
+    }
+
+    private function loadDistrictFundingExcel($file_path) {
+        // Load PhpSpreadsheet library to process the Excel file directly from the uploaded file
+        $spreadsheet = IOFactory::load($file_path); // Read file into memory without saving
+    
+        // Get the first sheet
+        $sheet = $spreadsheet->getActiveSheet();
+    
+        // Loop through each row in the sheet, starting from row 2 (skip header row)
+        foreach ($sheet->getRowIterator(2) as $row) { // Start from row 2
+            $row_data = [];
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
+    
+            // Process each cell in the row
+            foreach ($cellIterator as $cell) {
+                $row_data[] = $cell->getValue(); // Get the value of each cell
+            }
+    
+            // Prepare the data for insertion into the district_funding table
+            $data = [
+                'province_id' => $row_data[0],  // Province (ID) (column 1)
+                'year' => $row_data[1],         // Year (column 2)
+                'month' => $row_data[2],        // Month (column 3)
+                'funded_districts' => $row_data[3] // Funded Districts (column 4)
+            ];
+    
+            // Check if the combination of province_id, year, and month already exists
+            $this->load->database();
+            $existing_data = $this->db->get_where('district_funding', [
+                'province_id' => $data['province_id'],
+                'year' => $data['year'],
+                'month' => $data['month']
+            ])->row_array();
+    
+            if ($existing_data) {
+                // If data exists, update the record
+                $this->db->where('id', $existing_data['id']);
+                if ($this->db->update('district_funding', $data)) {
+                    log_message('info', 'District Funding data updated successfully for province_id: ' . $data['province_id']);
+                } else {
+                    log_message('error', 'Failed to update District Funding data for province_id: ' . $data['province_id']);
+                }
+            } else {
+                // If the data doesn't exist, insert it as a new record
+                if ($this->db->insert('district_funding', $data)) {
+                    log_message('info', 'District Funding data added successfully for province_id: ' . $data['province_id']);
+                } else {
+                    log_message('error', 'Failed to add District Funding data for province_id: ' . $data['province_id']);
+                }
+            }
+        }
+    
+        // Redirect with success message
+        $this->session->set_flashdata('success', 'District Funding Data Imported Successfully');
+        redirect('input/excel');
+    }
+    
+    private function loadDistrictPolicyExcel($file_path) {
+        // Load PhpSpreadsheet library to process the Excel file directly from the uploaded file
+        $spreadsheet = IOFactory::load($file_path); // Read file into memory without saving
+    
+        // Get the first sheet
+        $sheet = $spreadsheet->getActiveSheet();
+    
+        // Loop through each row in the sheet, starting from row 2 (skip header row)
+        foreach ($sheet->getRowIterator(2) as $row) { // Start from row 2
+            $row_data = [];
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
+    
+            // Process each cell in the row
+            foreach ($cellIterator as $cell) {
+                $row_data[] = $cell->getValue(); // Get the value of each cell
+            }
+    
+            // Prepare the data for insertion into the district_policy table
+            $data = [
+                'province_id' => $row_data[0],  // Province (ID) (column 1)
+                'year' => $row_data[1],         // Year (column 2)
+                'month' => $row_data[2],        // Month (column 3)
+                'policy_districts' => $row_data[3] // Policy Districts (column 4)
+            ];
+    
+            // Check if the combination of province_id, year, and month already exists
+            $this->load->database();
+            $existing_data = $this->db->get_where('district_policy', [
+                'province_id' => $data['province_id'],
+                'year' => $data['year'],
+                'month' => $data['month']
+            ])->row_array();
+    
+            if ($existing_data) {
+                // If data exists, update the record
+                $this->db->where('id', $existing_data['id']);
+                if ($this->db->update('district_policy', $data)) {
+                    log_message('info', 'District Policy data updated successfully for province_id: ' . $data['province_id']);
+                } else {
+                    log_message('error', 'Failed to update District Policy data for province_id: ' . $data['province_id']);
+                }
+            } else {
+                // If the data doesn't exist, insert it as a new record
+                if ($this->db->insert('district_policy', $data)) {
+                    log_message('info', 'District Policy data added successfully for province_id: ' . $data['province_id']);
+                } else {
+                    log_message('error', 'Failed to add District Policy data for province_id: ' . $data['province_id']);
+                }
+            }
+        }
+    
+        // Redirect with success message
+        $this->session->set_flashdata('success', 'District Policy Data Imported Successfully');
+        redirect('input/excel');
+    }
+    
 
 
 }
