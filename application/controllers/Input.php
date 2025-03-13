@@ -1252,6 +1252,14 @@ class Input extends CI_Controller {
         redirect('input/excel');
     }
     
+    private function tes_folder_upload(){
+        $test_file = '/home/zdstaging.shop/public_html/zerodose/uploads/testfile.txt';
+        if (file_put_contents($test_file, 'Test content')) {
+            echo 'File created successfully.';
+        } else {
+            echo 'Failed to create file.';
+        }
+    }
 
 
 }
