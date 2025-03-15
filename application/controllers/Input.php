@@ -142,8 +142,8 @@ class Input extends CI_Controller {
         $this->data['partners'] = $this->Partner_model->get_all_partners();
         $this->data['transactions'] = null;  // Awal tidak ada data transaksi
         $this->data['selected_partner'] = '';
-        $this->data['selected_year'] = '';
-        $this->data['selected_month'] = '';
+        $this->data['selected_year'] = date("Y");
+        $this->data['selected_month'] = date("n");
     
         // Load template menggunakan $this->data
         load_template('input/activity-tracker', $this->data);
