@@ -59,7 +59,7 @@
                                                         <?php endif; ?>
                                                         <?= form_dropdown(
                                                             'year', 
-                                                            [2025 => '2025', 2024 => '2024'], 
+                                                            [2024 => '2024', 2025 => '2025', 2026 => '2026'], 
                                                             set_value('year', $selected_year ?? 2025), 
                                                             'class="form-select" style="width: 100%; max-width: 150px; height: 48px; font-size: 1rem;" required'
                                                         ); ?>
@@ -83,11 +83,23 @@
                                                 <div class="col-md-12 text-center">
                                                     <h5 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">Total Target Budget</h5>
                                                     <p style="font-size: 1.2rem;">
-                                                        <strong style="color: <?= ($selected_year == 2024) ? '#0056b3' : '#00b359'; ?>;">
-                                                            <?= $selected_year; ?>:
-                                                        </strong> 
-                                                        <?= number_format(($selected_year == 2024) ? $total_target_budget_2024 : $total_target_budget_2025, 0, ',', '.'); ?> USD | 
-                                                        <?= number_format(($selected_year == 2024) ? $total_target_budget_2024_idr : $total_target_budget_2025_idr, 0, ',', '.'); ?> IDR
+                                                    <strong style="color: <?= ($selected_year == 2024) ? '#0056b3' : (($selected_year == 2025) ? '#00b359' : '#ff9900'); ?>;">
+                                                        <?= $selected_year; ?>:
+                                                    </strong> 
+                                                    <?= number_format(
+                                                        ($selected_year == 2024) 
+                                                            ? $total_target_budget_2024 
+                                                            : (($selected_year == 2025) 
+                                                                ? $total_target_budget_2025 
+                                                                : $total_target_budget_2026), 
+                                                        0, ',', '.'); ?> USD | 
+                                                    <?= number_format(
+                                                        ($selected_year == 2024) 
+                                                            ? $total_target_budget_2024_idr 
+                                                            : (($selected_year == 2025) 
+                                                                ? $total_target_budget_2025_idr 
+                                                                : $total_target_budget_2026_idr), 
+                                                        0, ',', '.'); ?> IDR
                                                     </p>
                                                 </div>
                                                 <div id="chartWrapper" class="d-flex justify-content-center">
@@ -115,110 +127,6 @@
                                 </div>
                                 
                             </div>
-                            <!-- <div class="row">
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4 class="card-title">Budget Code: GAVI-INDOVAC1</h4>
-                                            <h4 class="card-title">Total Budget: 1500000 $</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <table class="table table-striped" id="table1">
-                                            <thead>
-                                                <tr>
-                                                    <th>Month</th>
-                                                    <th>Cumulative Budget</th>
-                                                    <th>%</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>January</td>
-                                                    <td>73649 $</td>
-                                                    <td>5%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>February</td>
-                                                    <td>78274 $</td>
-                                                    <td>5%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>March</td>
-                                                    <td>91837 $</td>
-                                                    <td>6%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>April</td>
-                                                    <td>182748 $</td>
-                                                    <td>12%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>May</td>
-                                                    <td>404573 $</td>
-                                                    <td>27%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>June</td>
-                                                    <td>696847 $</td>
-                                                    <td>46%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>July</td>
-                                                    <td>706968 $</td>
-                                                    <td>47%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>August</td>
-                                                    <td>903358 $</td>
-                                                    <td>60%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>September</td>
-                                                    <td>1029485 $</td>
-                                                    <td>69%</td>
-                                                </tr>
-                                            </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4 class="card-title">Activities delivered</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <table class="table table-striped" id="table1">
-                                            <thead>
-                                                <tr>
-                                                    <th>Activity</th>
-                                                    <th>Activities delivered</th>
-                                                    <th>Total activities</th>
-                                                </tr>
-                                            </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>NVI</td>
-                                                    <td>34</td>
-                                                    <td>100</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>ZD</td>
-                                                    <td>23</td>
-                                                    <td>100</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>MSC</td>
-                                                    <td>43</td>
-                                                    <td>100</td>
-                                                </tr>
-                                            </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                            </div> -->
                         </div>
                     </section>
                 </div>
@@ -247,79 +155,12 @@
         const months = <?= json_encode($months); ?>;
         const budget2024 = <?= json_encode(!empty($budget_2024) ? $budget_2024 : array_fill(0, 12, 0)); ?>;
         const budget2025 = <?= json_encode(!empty($budget_2025) ? $budget_2025 : array_fill(0, 12, 0)); ?>;
+        const budget2026 = <?= json_encode(!empty($budget_2026) ? $budget_2026 : array_fill(0, 12, 0)); ?>;
+
         const percentage2024 = <?= json_encode(!empty($percentage_2024) ? $percentage_2024 : array_fill(0, 12, 0)); ?>;
         const percentage2025 = <?= json_encode(!empty($percentage_2025) ? $percentage_2025 : array_fill(0, 12, 0)); ?>;
-
-        // Inisialisasi Chart.js lama
-        // const ctx = document.getElementById('budgetAbsorptionChart').getContext('2d');
-        // const budgetAbsorptionChart = new Chart(ctx, {
-        //     type: 'line',
-        //     data: {
-        //         labels: <?= json_encode($months); ?>, // Labels bulan
-        //         datasets: [
-        //             {
-        //                 label: '2024 Budget Absorption (%)',
-        //                 data: <?= json_encode($percentage_2024); ?>, // Data persentase 2024
-        //                 borderColor: 'rgba(0, 86, 179, 1)',
-        //                 borderWidth: 2,
-        //                 fill: false,
-        //                 tension: 0.4
-        //             },
-        //             {
-        //                 label: '2025 Budget Absorption (%)',
-        //                 data: <?= json_encode($percentage_2025); ?>, // Data persentase 2025
-        //                 borderColor: 'rgba(0, 179, 89, 1)',
-        //                 borderWidth: 2,
-        //                 fill: false,
-        //                 tension: 0.4
-        //             }
-        //         ]
-        //     },
-        //     options: {
-        //         responsive: true,
-        //         plugins: {
-        //             tooltip: {
-        //                 callbacks: {
-        //                     label: function(context) {
-        //                         const label = context.dataset.label || '';
-        //                         const value = context.parsed.y.toFixed(2) + '%'; // Tambahkan persen
-                                
-        //                         // Total budget absorption tambahan (custom tooltip data)
-        //                         const totalBudget = <?= json_encode($budget_2024); ?>; // Total untuk tahun 2024
-        //                         const totalBudget2025 = <?= json_encode($budget_2025); ?>; // Total untuk tahun 2025
-
-        //                         let totalValue = '';
-        //                         if (context.dataset.label.includes('2024')) {
-        //                             totalValue = ` (Absorption: ${totalBudget[context.dataIndex].toLocaleString()} IDR)`;
-        //                         } else if (context.dataset.label.includes('2025')) {
-        //                             totalValue = ` (Absorption: ${totalBudget2025[context.dataIndex].toLocaleString()} IDR)`;
-        //                         }
-
-        //                         return `${label}: ${value}${totalValue}`;
-        //                     }
-        //                 }
-        //             },
-        //             legend: {
-        //                 display: true
-        //             }
-        //         },
-        //         scales: {
-        //             x: {
-        //                 title: { display: true, text: 'Month' }
-        //             },
-        //             y: {
-        //                 title: { display: true, text: 'Percentage (%)' },
-        //                 beginAtZero: true,
-        //                 max: 100,
-        //                 ticks: {
-        //                     callback: function(value) {
-        //                         return value + '%';
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // });
+        const percentage2026 = <?= json_encode(!empty($percentage_2026) ? $percentage_2026 : array_fill(0, 12, 0)); ?>;
+        
 
         // Inisialisasi Chart.js
         const ctx = document.getElementById('budgetAbsorptionChart').getContext('2d');
@@ -330,8 +171,8 @@
                 datasets: [
                     {
                         label: selectedYear + ' Budget Absorption (%)',
-                        data: selectedYear == 2024 ? <?= json_encode($percentage_2024); ?> : <?= json_encode($percentage_2025); ?>,
-                        borderColor: selectedYear == 2024 ? 'rgba(0, 86, 179, 1)' : 'rgba(0, 179, 89, 1)',
+                        data: selectedYear == 2024 ? percentage2024 : (selectedYear == 2025 ? percentage2025 : percentage2026),
+                        borderColor: selectedYear == 2024 ? 'rgba(0, 86, 179, 1)' : (selectedYear == 2025 ? 'rgba(0, 179, 89, 1)' : 'rgba(255, 153, 0, 1)'),
                         borderWidth: 2,
                         fill: false,
                         tension: 0.4
@@ -356,7 +197,7 @@
                                 const value = context.parsed.y.toFixed(2) + '%';
                                 
                                 // Menambahkan nilai IDR pada tooltip
-                                const totalBudget = selectedYear == 2024 ? <?= json_encode($budget_2024); ?> : <?= json_encode($budget_2025); ?>;
+                                const totalBudget = selectedYear == 2024 ? budget2024 : (selectedYear == 2025 ? budget2025 : budget2026);
                                 const totalValue = totalBudget[context.dataIndex].toLocaleString();
 
                                 // Konversi ke IDR
@@ -415,7 +256,7 @@
         function downloadBudgetAbsorptionCSV() {
             const selectedDataset = budgetAbsorptionChart.data.datasets[0]; // Ambil dataset aktif
             const selectedYear = selectedDataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label
-            const selectedBudget = selectedYear == 2024 ? budget2024 : budget2025; // Ambil data sesuai tahun
+            const selectedBudget = selectedYear == 2024 ? budget2024 : (selectedYear == 2025 ? budget2025 : budget2026); // Ambil data sesuai tahun
             const conversionRate = 14500; // Kurs IDR per USD
 
             let csvContent = "data:text/csv;charset=utf-8,";
@@ -439,7 +280,7 @@
         function downloadBudgetAbsorptionExcel() {
             const selectedDataset = budgetAbsorptionChart.data.datasets[0]; // Ambil dataset aktif
             const selectedYear = selectedDataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label
-            const selectedBudget = selectedYear == 2024 ? budget2024 : budget2025; // Ambil data sesuai tahun
+            const selectedBudget = selectedYear == 2024 ? budget2024 : (selectedYear == 2025 ? budget2025 : budget2026); // Ambil data sesuai tahun
             const conversionRate = 14500; // Kurs IDR per USD
 
             // Buat worksheet
@@ -472,83 +313,17 @@
             <?php endforeach; ?>
         ];
 
+        
+
+</script>
+
+<script>
+
         // Data untuk grafik bar
         const totalActivities = <?= json_encode($total_activities); ?>;
         const completedActivities2024 = <?= json_encode($completed_activities_2024); ?>;
         const completedActivities2025 = <?= json_encode($completed_activities_2025); ?>;
-
-        // Inisialisasi grafik bar Chart.js lama
-        // const ctxActivities = document.getElementById('activitiesChart').getContext('2d');
-        // const activitiesChart = new Chart(ctxActivities, {
-        //     type: 'bar',
-        //     data: {
-        //         labels: objectivesLabels, // Labels untuk Objectives
-        //         datasets: [
-        //             {
-        //                 label: 'Total Activities',
-        //                 data: totalActivities,
-        //                 backgroundColor: 'rgba(54, 162, 235, 0.8)', // Warna biru
-        //                 borderColor: 'rgba(54, 162, 235, 1)',
-        //                 borderWidth: 1
-        //             },
-        //             {
-        //                 label: 'Completed Activities (2024)',
-        //                 data: completedActivities2024,
-        //                 backgroundColor: 'rgba(75, 192, 192, 0.8)', // Warna hijau
-        //                 borderColor: 'rgba(75, 192, 192, 1)',
-        //                 borderWidth: 1
-        //             },
-        //             {
-        //                 label: 'Completed Activities (2025)',
-        //                 data: completedActivities2025,
-        //                 backgroundColor: 'rgba(255, 99, 132, 0.8)', // Warna merah
-        //                 borderColor: 'rgba(255, 99, 132, 1)',
-        //                 borderWidth: 1
-        //             }
-        //         ]
-        //     },
-        //     options: {
-        //         responsive: true,
-        //         plugins: {
-        //             legend: {
-        //                 display: true,
-        //                 position: 'top'
-        //             },
-        //             tooltip: {
-        //                 callbacks: {
-        //                     label: function(context) {
-        //                         let label = context.dataset.label || '';
-        //                         if (label) {
-        //                             label += ': ';
-        //                         }
-        //                         label += context.raw; // Menampilkan nilai data
-        //                         return label;
-        //                     }
-        //                 }
-        //             }
-        //         },
-        //         scales: {
-        //             x: {
-        //                 title: {
-        //                     display: true,
-        //                     text: 'Objectives'
-        //                 }
-        //             },
-        //             y: {
-        //                 beginAtZero: true,
-        //                 title: {
-        //                     display: true,
-        //                     text: 'Number of Activities'
-        //                 },
-        //                 ticks: {
-        //                     stepSize: 1 // Interval
-        //                 }
-        //             }
-        //         }
-        //     }
-        // });
-</script>
-<script>
+        const completedActivities2026 = <?= json_encode($completed_activities_2026); ?>;
 
         // Inisialisasi grafik bar Chart.js 
         const ctxActivities = document.getElementById('activitiesChart').getContext('2d');
@@ -566,7 +341,7 @@
                     },
                     {
                         label: 'Completed Activities (' + selectedYear + ')',
-                        data: selectedYear == 2024 ? <?= json_encode($completed_activities_2024); ?> : <?= json_encode($completed_activities_2025); ?>,
+                        data: selectedYear == 2024 ? <?= json_encode($completed_activities_2024); ?> : (selectedYear == 2025 ? <?= json_encode($completed_activities_2025); ?> : <?= json_encode($completed_activities_2026); ?>),
                         backgroundColor: 'rgba(255, 99, 132, 0.8)',
                         borderColor: 'rgba(255, 99, 132, 1)',
                         borderWidth: 1
@@ -601,7 +376,11 @@
         function downloadActivitiesCSV() {
             const selectedDataset = activitiesChart.data.datasets[1]; // Ambil dataset aktif
             const selectedYear = selectedDataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label
-            const selectedCompletedActivities = selectedYear == 2024 ? completedActivities2024 : completedActivities2025;
+            const selectedCompletedActivities = selectedYear == 2024 
+            ? completedActivities2024 
+            : (selectedYear == 2025 
+                ? completedActivities2025 
+                : completedActivities2026);
 
             let csvContent = "data:text/csv;charset=utf-8,";
             csvContent += `Objective,Total Activities,Completed Activities (${selectedYear})\n`; // Header
@@ -623,7 +402,11 @@
         function downloadActivitiesExcel() {
             const selectedDataset = activitiesChart.data.datasets[1]; // Ambil dataset aktif
             const selectedYear = selectedDataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label
-            const selectedCompletedActivities = selectedYear == 2024 ? completedActivities2024 : completedActivities2025;
+            const selectedCompletedActivities = selectedYear == 2024 
+            ? completedActivities2024 
+            : (selectedYear == 2025 
+                ? completedActivities2025 
+                : completedActivities2026);
 
             // Buat worksheet
             const worksheetData = [
