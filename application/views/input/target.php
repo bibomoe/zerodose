@@ -159,14 +159,16 @@
                                                                                 <tr>
                                                                                     <th rowspan="2" style="width: 5%;">Activity Code</th>
                                                                                     <th rowspan="2" style="width: 30%;">Description</th>
-                                                                                    <th colspan="2" style="width: 65%;">Target (USD)</th>
-                                                                                    <th colspan="2" style="width: 65%;">Target (IDR)</th> <!-- New columns for IDR -->
+                                                                                    <th colspan="3" style="width: 65%;">Target (USD)</th>
+                                                                                    <th colspan="3" style="width: 65%;">Target (IDR)</th> <!-- New columns for IDR -->
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <th>Y1 (2024 USD)</th>
                                                                                     <th>Y2 (2025 USD)</th>
+                                                                                    <th>Y3 (2026 USD)</th>
                                                                                     <th>Y1 (2024 IDR)</th> <!-- New column for IDR -->
                                                                                     <th>Y2 (2025 IDR)</th> <!-- New column for IDR -->
+                                                                                    <th>Y3 (2026 IDR)</th> <!-- New column for IDR -->
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>
@@ -189,10 +191,20 @@
                                                                                                 min="0" required>
                                                                                         </td>
                                                                                         <td>
+                                                                                            <input type="number" 
+                                                                                                name="activities[<?= $activity['id']; ?>][target_budget_2026]" 
+                                                                                                value="<?= $activity['target_budget_2026_usd']; ?>" 
+                                                                                                class="form-control target_budget_2026" 
+                                                                                                min="0" required>
+                                                                                        </td>
+                                                                                        <td>
                                                                                             <label id="target_budget_2024_idr"><?= number_format($activity['target_budget_2024_idr'], 0, ',', '.'); ?></label> <!-- Convert USD to IDR -->
                                                                                         </td>
                                                                                         <td>
                                                                                             <label id="target_budget_2025_idr"><?= number_format($activity['target_budget_2025_idr'], 0, ',', '.'); ?></label> <!-- Convert USD to IDR -->
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <label id="target_budget_2026_idr"><?= number_format($activity['target_budget_2026_idr'], 0, ',', '.'); ?></label> <!-- Convert USD to IDR -->
                                                                                         </td>
                                                                                     </tr>
                                                                                 <?php endforeach; ?>
@@ -210,6 +222,11 @@
                                                                                         </strong>
                                                                                     </td>
                                                                                     <td>
+                                                                                        <strong id="total_budget_2026">
+                                                                                            <?= number_format($total_budget_2026_usd, 0, ',', '.'); ?>
+                                                                                        </strong>
+                                                                                    </td>
+                                                                                    <td>
                                                                                         <strong id="total_budget_2024_idr">
                                                                                             <?= number_format($total_budget_2024_idr, 0, ',', '.'); ?>
                                                                                         </strong>
@@ -219,14 +236,20 @@
                                                                                             <?= number_format($total_budget_2025_idr, 0, ',', '.'); ?>
                                                                                         </strong>
                                                                                     </td>
+                                                                                    <td>
+                                                                                        <strong id="total_budget_2026_idr">
+                                                                                            <?= number_format($total_budget_2026_idr, 0, ',', '.'); ?>
+                                                                                        </strong>
+                                                                                    </td>
                                                                                 </tr>
 
                                                                             </tbody>
                                                                         </table>
                                                                     </div>
 
-                                                                    <input type="hidden" id="hidden_total_budget_2024" name="total_budget_2024" value="<?= $total_budget_2024_idr; ?>">
-                                                                    <input type="hidden" id="hidden_total_budget_2025" name="total_budget_2025" value="<?= $total_budget_2025_idr; ?>">
+                                                                    <input type="hidden" id="hidden_total_budget_2024" name="total_budget_2024" value="<?= $total_budget_2024_usd; ?>">
+                                                                    <input type="hidden" id="hidden_total_budget_2025" name="total_budget_2025" value="<?= $total_budget_2025_usd; ?>">
+                                                                    <input type="hidden" id="hidden_total_budget_2026" name="total_budget_2026" value="<?= $total_budget_2026_usd; ?>">
                                                                     <div class="col-sm-12 d-flex justify-content-end">
                                                                         <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
                                                                         <button type="reset"
@@ -488,6 +511,7 @@
         function calculateTotals() {
             let total2024 = 0;
             let total2025 = 0;
+            let total2026 = 0;
 
             // Menghitung total untuk tahun 2024
             document.querySelectorAll('.target_budget_2024').forEach(input => {
@@ -499,20 +523,27 @@
                 total2025 += parseFloat(input.value) || 0;
             });
 
+            // Menghitung total untuk tahun 2025
+            document.querySelectorAll('.target_budget_2026').forEach(input => {
+                total2026 += parseFloat(input.value) || 0;
+            });
+
             // Update total USD
             document.getElementById('total_budget_2024').textContent = total2024.toLocaleString();
             document.getElementById('total_budget_2025').textContent = total2025.toLocaleString();
+            document.getElementById('total_budget_2026').textContent = total2026.toLocaleString();
 
             // Update hidden total values for form submission
             document.getElementById('hidden_total_budget_2024').value = total2024;
             document.getElementById('hidden_total_budget_2025').value = total2025;
+            document.getElementById('hidden_total_budget_2026').value = total2026;
 
             // Update IDR labels based on USD inputs
-            updateIDRLabels(total2024, total2025); // Passing total2024 and total2025 as parameters
+            updateIDRLabels(total2024, total2025, total2026); // Passing total2024 and total2025 as parameters
         }
 
         // Fungsi untuk mengupdate label IDR
-        function updateIDRLabels(total2024, total2025) {
+        function updateIDRLabels(total2024, total2025, total2026) {
             const conversionRate = 14500; // Rp14.500 per USD
 
             // Update IDR for 2024
@@ -531,13 +562,23 @@
                 input.closest('tr').querySelector('label[id="target_budget_2025_idr"]').textContent = idrValue.toLocaleString();
             });
 
+            // Update IDR for 2026
+            document.querySelectorAll('.target_budget_2026').forEach(input => {
+                const usdValue = parseFloat(input.value) || 0;
+                const idrValue = usdValue * conversionRate;
+                // Update the corresponding IDR label
+                input.closest('tr').querySelector('label[id="target_budget_2026_idr"]').textContent = idrValue.toLocaleString();
+            });
+
             // Update total IDR in the last row based on USD totals
             const total2024IDR = total2024 * conversionRate;
             const total2025IDR = total2025 * conversionRate;
+            const total2026IDR = total2026 * conversionRate;
 
             // Update the total IDR labels in the footer
             document.getElementById('total_budget_2024_idr').textContent = total2024IDR.toLocaleString();
             document.getElementById('total_budget_2025_idr').textContent = total2025IDR.toLocaleString();
+            document.getElementById('total_budget_2026_idr').textContent = total2026IDR.toLocaleString();
         }
 
         // Recalculate totals and update labels whenever an input changes

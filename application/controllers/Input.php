@@ -244,7 +244,8 @@ class Input extends CI_Controller {
         // Ambil tahun dan bulan dalam bentuk array
         $this->data['year_options'] = [
             '2024' => '2024',
-            '2025' => '2025'
+            '2025' => '2025',
+            '2026' => '2026'
         ];
 
         // Inisialisasi data awal (belum ada filter yang diterapkan)
@@ -277,7 +278,8 @@ class Input extends CI_Controller {
         // Ambil tahun dan bulan dalam bentuk array
         $this->data['year_options'] = [
             '2024' => '2024',
-            '2025' => '2025'
+            '2025' => '2025',
+            '2026' => '2026'
         ];
 
         // Ambil target budgets dari tabel partners_activities
@@ -295,12 +297,15 @@ class Input extends CI_Controller {
         // Siapkan variabel untuk menyimpan total budget per tahun
         $total_budget_2024 = 0;
         $total_budget_2025 = 0;
+        $total_budget_2026 = 0;
     
         foreach ($total_budgets as $budget) {
             if ($budget->year == 2024) {
                 $total_budget_2024 = $budget->total_budget;
             } elseif ($budget->year == 2025) {
                 $total_budget_2025 = $budget->total_budget;
+            } elseif ($budget->year == 2026) {
+                $total_budget_2026 = $budget->total_budget;
             }
         }
     
@@ -319,6 +324,7 @@ class Input extends CI_Controller {
             // Tambahkan data target budget ke setiap activity (termasuk IDR)
             $target_budget_2024_idr = $matched_budget ? $matched_budget->target_budget_2024 * $conversion_rate : 0;
             $target_budget_2025_idr = $matched_budget ? $matched_budget->target_budget_2025 * $conversion_rate : 0;
+            $target_budget_2026_idr = $matched_budget ? $matched_budget->target_budget_2026 * $conversion_rate : 0;
 
     
             // Tambahkan data target budget ke setiap activity
@@ -328,8 +334,10 @@ class Input extends CI_Controller {
                 'description' => $activity->description,
                 'target_budget_2024_usd' => $matched_budget ? $matched_budget->target_budget_2024 : 0,
                 'target_budget_2025_usd' => $matched_budget ? $matched_budget->target_budget_2025 : 0,
+                'target_budget_2026_usd' => $matched_budget ? $matched_budget->target_budget_2026 : 0,
                 'target_budget_2024_idr' => $target_budget_2024_idr,
                 'target_budget_2025_idr' => $target_budget_2025_idr,
+                'target_budget_2026_idr' => $target_budget_2026_idr
             ];
         }
 
@@ -345,9 +353,11 @@ class Input extends CI_Controller {
         $this->data['selected_partner'] = $partner_id;
         $this->data['total_budget_2024_idr'] = $total_budget_2024 * $conversion_rate;
         $this->data['total_budget_2025_idr'] = $total_budget_2025 * $conversion_rate;
+        $this->data['total_budget_2026_idr'] = $total_budget_2026 * $conversion_rate;
         $this->data['total_budget_2024_usd'] = $total_budget_2024;
         $this->data['total_budget_2025_usd'] = $total_budget_2025;
-        $this->data['title'] = 'Set Target Budget for 2024 and 2025';
+        $this->data['total_budget_2026_usd'] = $total_budget_2026;
+        $this->data['title'] = 'Set Target Budget for 2024, 2025 and 2026';
     
         // Load view
         load_template('input/target', $this->data);
@@ -358,28 +368,106 @@ class Input extends CI_Controller {
         $activities = $this->input->post('activities'); // Data target budget untuk setiap activity
         $total_budget_2024 = $this->input->post('total_budget_2024'); // Total 2024
         $total_budget_2025 = $this->input->post('total_budget_2025'); // Total 2025
+        $total_budget_2026 = $this->input->post('total_budget_2026'); // Total 2025
 
         // Simpan target budget untuk setiap activity
         foreach ($activities as $activity_id => $values) {
             $this->PartnersActivities_model->update_target_budget($partner_id, $activity_id, [
                 'target_budget_2024' => $values['target_budget_2024'],
                 'target_budget_2025' => $values['target_budget_2025'],
+                'target_budget_2026' => $values['target_budget_2026']
             ]);
         }
 
-        // Simpan atau update total budget untuk tahun 2024
-        $this->db->replace('total_target_budgets', [
-            'partner_id' => $partner_id,
-            'year' => 2024,
-            'total_budget' => $total_budget_2024,
-        ]);
+        // // Simpan atau update total budget untuk tahun 2024
+        // $this->db->replace('total_target_budgets', [
+        //     'partner_id' => $partner_id,
+        //     'year' => 2024,
+        //     'total_budget' => $total_budget_2024,
+        // ]);
 
-        // Simpan atau update total budget untuk tahun 2025
-        $this->db->replace('total_target_budgets', [
-            'partner_id' => $partner_id,
-            'year' => 2025,
-            'total_budget' => $total_budget_2025,
-        ]);
+        // // Simpan atau update total budget untuk tahun 2025
+        // $this->db->replace('total_target_budgets', [
+        //     'partner_id' => $partner_id,
+        //     'year' => 2025,
+        //     'total_budget' => $total_budget_2025,
+        // ]);
+
+        // Cek apakah data untuk tahun 2024 sudah ada
+        $this->db->where('partner_id', $partner_id);
+        $this->db->where('year', 2024);
+        $query = $this->db->get('total_target_budgets');
+
+        // Jika data sudah ada, lakukan update
+        if ($query->num_rows() > 0) {
+            // Data sudah ada, lakukan update untuk tahun 2024
+            $this->db->where('partner_id', $partner_id);
+            $this->db->where('year', 2024);
+            $this->db->update('total_target_budgets', [
+                'total_budget' => $total_budget_2024,
+                'updated_at' => date('Y-m-d H:i:s')  // Jangan lupa untuk memperbarui updated_at
+            ]);
+        } else {
+            // Data belum ada, lakukan insert untuk tahun 2024
+            $this->db->insert('total_target_budgets', [
+                'partner_id' => $partner_id,
+                'year' => 2024,
+                'total_budget' => $total_budget_2024,
+                'created_at' => date('Y-m-d H:i:s'),  // Tentukan waktu created_at
+                'updated_at' => date('Y-m-d H:i:s')   // Tentukan waktu updated_at
+            ]);
+        }
+
+        // Cek apakah data untuk tahun 2025 sudah ada
+        $this->db->where('partner_id', $partner_id);
+        $this->db->where('year', 2025);
+        $query = $this->db->get('total_target_budgets');
+
+        // Jika data sudah ada, lakukan update
+        if ($query->num_rows() > 0) {
+            // Data sudah ada, lakukan update untuk tahun 2025
+            $this->db->where('partner_id', $partner_id);
+            $this->db->where('year', 2025);
+            $this->db->update('total_target_budgets', [
+                'total_budget' => $total_budget_2025,
+                'updated_at' => date('Y-m-d H:i:s')  // Jangan lupa untuk memperbarui updated_at
+            ]);
+        } else {
+            // Data belum ada, lakukan insert untuk tahun 2025
+            $this->db->insert('total_target_budgets', [
+                'partner_id' => $partner_id,
+                'year' => 2025,
+                'total_budget' => $total_budget_2025,
+                'created_at' => date('Y-m-d H:i:s'),  // Tentukan waktu created_at
+                'updated_at' => date('Y-m-d H:i:s')   // Tentukan waktu updated_at
+            ]);
+        }
+
+        // Cek apakah data untuk tahun 2026 sudah ada
+        $this->db->where('partner_id', $partner_id);
+        $this->db->where('year', 2026);
+        $query = $this->db->get('total_target_budgets');
+
+        // Jika data sudah ada, lakukan update
+        if ($query->num_rows() > 0) {
+            // Data sudah ada, lakukan update untuk tahun 2026
+            $this->db->where('partner_id', $partner_id);
+            $this->db->where('year', 2026);
+            $this->db->update('total_target_budgets', [
+                'total_budget' => $total_budget_2026,
+                'updated_at' => date('Y-m-d H:i:s')  // Jangan lupa untuk memperbarui updated_at
+            ]);
+        } else {
+            // Data belum ada, lakukan insert untuk tahun 2026
+            $this->db->insert('total_target_budgets', [
+                'partner_id' => $partner_id,
+                'year' => 2026,
+                'total_budget' => $total_budget_2026,
+                'created_at' => date('Y-m-d H:i:s'),  // Tentukan waktu created_at
+                'updated_at' => date('Y-m-d H:i:s')   // Tentukan waktu updated_at
+            ]);
+        }
+
 
         // Flashdata untuk notifikasi sukses
         $this->session->set_flashdata('success', 'Target budgets and totals saved successfully!');
