@@ -108,6 +108,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Grafik Bar -->
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
@@ -126,6 +127,19 @@
                                     </div>
                                 </div>
                                 
+                                <!-- Grafik Bar for Comparison -->
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Comparison of Completed Activities for Each Partner per Objective</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="chartWrapper" class="d-flex justify-content-center">
+                                                <canvas id="activitiesComparisonChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -306,19 +320,20 @@
         // Tambahkan tombol download saat halaman dimuat
         document.addEventListener('DOMContentLoaded', addBudgetAbsorptionDownloadButtons);
 
-        // Labels untuk grafik bar (Objectives)
-        const objectivesLabels = [
-            <?php foreach ($objectives as $index => $objective): ?>
-                'Objective <?= $index + 1; ?>'<?= $index < count($objectives) - 1 ? ',' : '' ?>
-            <?php endforeach; ?>
-        ];
+        
 
         
 
 </script>
 
 <script>
-
+        // Labels untuk grafik bar (Objectives)
+        const objectivesLabels = [
+                <?php foreach ($objectives as $index => $objective): ?>
+                    'Objective <?= $index + 1; ?>'<?= $index < count($objectives) - 1 ? ',' : '' ?>
+                <?php endforeach; ?>
+            ];
+        
         // Data untuk grafik bar
         const totalActivities = <?= json_encode($total_activities); ?>;
         const completedActivities2024 = <?= json_encode($completed_activities_2024); ?>;
@@ -459,4 +474,170 @@
         // document.getElementById("year").addEventListener("change", function() {
         //     document.getElementById("filter-form").submit();
         // });
+</script>
+
+
+<!-- SCRIPT FOR BAR COMPARISON -->
+<script>
+
+    const totalActivitiesForComparison = <?= json_encode($total_activities_for_comparison); ?>;
+    const completedActivitiesForComparison2024 = <?= json_encode($completed_activities_2024_for_comparison); ?>;
+    const completedActivitiesForComparison2025 = <?= json_encode($completed_activities_2025_for_comparison); ?>;
+    const completedActivitiesForComparison2026 = <?= json_encode($completed_activities_2026_for_comparison); ?>;
+    const partnersForComparison = <?= json_encode($partners_for_comparison); ?>;
+    const objectivesForComparison = <?= json_encode($objectives_for_comparison); ?>;
+
+    // Fungsi untuk mendapatkan data completed activities berdasarkan tahun yang dipilih
+    function getCompletedActivitiesByYear(year) {
+        if (year == 2024) {
+            return completedActivitiesForComparison2024;
+        } else if (year == 2025) {
+            return completedActivitiesForComparison2025;
+        } else if (year == 2026) {
+            return completedActivitiesForComparison2026;
+        }
+        return []; // Default return empty array if no matching year
+    }
+
+    // Fungsi untuk memilih warna berdasarkan indeks
+    function getPartnerColor(index) {
+        const colors = [
+            '#33FF57', // Green
+            '#3357FF', // Blue
+            '#FF33A1', // Pink
+            '#1ABC9C', // Teal
+            '#FF5733', // Red
+            '#33FFF2', // Light Cyan
+            '#FF6F00', // Amber
+            '#8E44AD', // Purple
+            '#F39C12', // Orange
+            '#3498DB'  // Light Blue
+        ];
+        return colors[index % colors.length];  // Memastikan jika lebih dari jumlah warna, warna akan diulang
+    }
+
+        // Inisialisasi grafik bar Chart.js 
+        const ctxActivitiesComparison = document.getElementById('activitiesComparisonChart').getContext('2d');
+        const activitiesComparisonChart = new Chart(ctxActivitiesComparison, {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode(array_map(fn($o) => 'Obj ' . $o['id'], $objectives)); ?>, // Labels lebih pendek
+                datasets: [
+                    {
+                        label: 'Total Activities (All Partners)',
+                        data: totalActivitiesForComparison,
+                        backgroundColor: 'rgba(54, 162, 235, 0.8)', // Warna biru
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    ...partnersForComparison.map((partner, index) => ({
+                        label: partner.name,
+                        data: getCompletedActivitiesByYear(selectedYear)[partner.id], // Ambil data completed activities per partner untuk tahun yang dipilih
+                        backgroundColor: getPartnerColor(index), // Warna dinamis per partner
+                        borderColor: getPartnerColor(index), // Warna border dinamis per partner
+                        borderWidth: 1
+                    }))
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Objectives' } },
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Number of Activities' },
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+
+    // Fungsi untuk download CSV untuk bar comparison
+    function downloadComparisonCSV() {
+        const selectedYear = <?= json_encode($selected_year); ?>;
+        const selectedCompletedActivities = getCompletedActivitiesByYear(selectedYear);
+
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += `Objective,Total Activities,${partnersForComparison.map(partner => partner.name).join(',')}\n`;
+
+        objectivesLabels.forEach((label, index) => {
+            let row = `${label},${totalActivitiesForComparison[index]}`;
+            partnersForComparison.forEach(partner => {
+                row += `,${selectedCompletedActivities[partner.id][index]}`;
+            });
+            csvContent += row + "\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `activities_comparison_chart_${selectedYear}.csv`);
+        document.body.appendChild(link);
+        link.click();
+    }
+
+
+    function downloadComparisonExcel() {
+        const selectedYear = <?= json_encode($selected_year); ?>;
+        const selectedCompletedActivities = getCompletedActivitiesByYear(selectedYear);
+
+        const worksheetData = [
+            ["Objective", "Total Activities", ...partnersForComparison.map(partner => partner.name)],
+            ...objectivesLabels.map((label, index) => [
+                label,
+                totalActivitiesForComparison[index],
+                ...partnersForComparison.map(partner => selectedCompletedActivities[partner.id][index])
+            ])
+        ];
+
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Comparison Data");
+        XLSX.writeFile(workbook, `activities_comparison_chart_${selectedYear}.xlsx`);
+    }
+
+    // Fungsi untuk menambahkan tombol download CSV dan Excel di bawah grafik comparison
+    function addComparisonDownloadButtons() {
+        // Ambil parent dari grafik
+        const container = document.getElementById('activitiesComparisonChart').parentNode;
+
+        // Buat wrapper untuk tombol
+        const buttonWrapper = document.createElement('div');
+        buttonWrapper.className = 'd-flex justify-content-center mt-3'; // Pusatkan tombol dengan margin ke atas
+
+        // Tombol download CSV
+        const csvButton = document.createElement('button');
+        csvButton.textContent = 'Download CSV';
+        csvButton.className = 'btn btn-primary btn-sm mx-2'; // Tambahkan margin antar tombol
+        csvButton.addEventListener('click', () => downloadComparisonCSV());
+
+        // Tombol download Excel
+        const excelButton = document.createElement('button');
+        excelButton.textContent = 'Download Excel';
+        excelButton.className = 'btn btn-success btn-sm mx-2';
+        excelButton.addEventListener('click', () => downloadComparisonExcel());
+
+        // Tambahkan tombol ke wrapper
+        buttonWrapper.appendChild(csvButton);
+        buttonWrapper.appendChild(excelButton);
+
+        // Tambahkan wrapper tombol di bawah grafik
+        container.parentNode.insertBefore(buttonWrapper, container.nextSibling);
+    }
+
+    // Tambahkan tombol download saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', addComparisonDownloadButtons);
+
+
+
 </script>

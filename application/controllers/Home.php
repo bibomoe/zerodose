@@ -1203,6 +1203,69 @@ class Home extends CI_Controller {
             $completed_activities_2026_data[$index] = (int) $activity['completed'];
         }
 
+        // Chart Comparison
+        // Ambil partner yang ada
+        $partners = $this->Partner_model->get_all_partners();
+
+        // Ambil data total activities dan completed activities untuk setiap objective
+        $total_activities_for_comparison = $this->Activity_model->get_total_activities_by_objectives(); // Ambil total activities untuk semua partner per objective
+
+        // Ambil completed activities untuk setiap partner berdasarkan tahun
+        $completed_activities_for_comparison_2024 = [];
+        $completed_activities_for_comparison_2025 = [];
+        $completed_activities_for_comparison_2026 = [];
+        foreach ($partners as $partner) {
+            $completed_activities_for_comparison_2024[$partner->id] = $this->Activity_model->get_completed_activities_by_objectives_and_year(2024, $partner->id);
+            $completed_activities_for_comparison_2025[$partner->id] = $this->Activity_model->get_completed_activities_by_objectives_and_year(2025, $partner->id);
+            $completed_activities_for_comparison_2026[$partner->id] = $this->Activity_model->get_completed_activities_by_objectives_and_year(2026, $partner->id);
+        }
+
+        // Ambil daftar country objectives
+        $objectives_for_comparison = $this->CountryObjective_model->get_all_objectives();
+
+        // Format data untuk grafik baru (total activities dan completed activities per partner per objective)
+        $total_activities_for_comparison_data = array_fill(0, count($objectives_for_comparison), 0);
+        foreach ($total_activities_for_comparison as $activity) {
+            $index = $activity['objective_id'] - 1;
+            $total_activities_for_comparison_data[$index] = (int) $activity['total'];
+        }
+
+        // Format completed activities untuk setiap partner
+        $completed_activities_data_2024_for_comparison = [];
+        $completed_activities_data_2025_for_comparison = [];
+        $completed_activities_data_2026_for_comparison = [];
+        
+        foreach ($objectives_for_comparison as $index => $objective) {
+            foreach ($partners as $partner) {
+                $completed_activities_data_2024_for_comparison[$partner->id][$index] = 0;
+                $completed_activities_data_2025_for_comparison[$partner->id][$index] = 0;
+                $completed_activities_data_2026_for_comparison[$partner->id][$index] = 0;
+            }
+        }
+
+        // Isi completed activities untuk setiap partner dan setiap objective
+        foreach ($completed_activities_for_comparison_2024 as $partner_id => $activities) {
+            foreach ($activities as $activity) {
+                $index = $activity['objective_id'] - 1;
+                $completed_activities_data_2024_for_comparison[$partner_id][$index] = (int) $activity['completed'];
+            }
+        }
+
+        foreach ($completed_activities_for_comparison_2025 as $partner_id => $activities) {
+            foreach ($activities as $activity) {
+                $index = $activity['objective_id'] - 1;
+                $completed_activities_data_2025_for_comparison[$partner_id][$index] = (int) $activity['completed'];
+            }
+        }
+
+        foreach ($completed_activities_for_comparison_2026 as $partner_id => $activities) {
+            foreach ($activities as $activity) {
+                $index = $activity['objective_id'] - 1;
+                $completed_activities_data_2026_for_comparison[$partner_id][$index] = (int) $activity['completed'];
+            }
+        }
+        // Chart Comparison
+
         // Kirim data ke view
         $this->data['months'] = $months;
         $this->data['budget_2024'] = $budget_2024;
@@ -1230,6 +1293,14 @@ class Home extends CI_Controller {
         $selected_year = $this->input->get('year') ?? date("Y");
 
         $this->data['selected_year'] = $selected_year;
+
+        // Kirim data untuk grafik baru ke view
+        $this->data['partners_for_comparison'] = $partners;
+        $this->data['total_activities_for_comparison'] = $total_activities_for_comparison_data;
+        $this->data['completed_activities_2024_for_comparison'] = $completed_activities_data_2024_for_comparison;
+        $this->data['completed_activities_2025_for_comparison'] = $completed_activities_data_2025_for_comparison;
+        $this->data['completed_activities_2026_for_comparison'] = $completed_activities_data_2026_for_comparison;
+        $this->data['objectives_for_comparison'] = $objectives_for_comparison;
 
         $this->data['title'] = 'Grants Implementation and Budget Disbursement';
         load_template('grant-implementation', $this->data);
