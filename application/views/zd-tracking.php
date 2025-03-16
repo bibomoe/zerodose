@@ -23,7 +23,7 @@
                 <div class="page-content"> 
                     <section class="row">
                         <div class="col-12 col-lg-12">
-                        <div class="row">
+                            <div class="row">
                                 <div class="col-12" style="margin-bottom: 20px;">
                                     <!-- <div class="card">
                                         <div class="card-header"></div>
@@ -236,8 +236,13 @@
                                             <table class="table table-striped" id="table1">
                                                 <thead>
                                                     <tr>
-                                                        <th><?= $translations['tabelcoloumn1'] ?></th>
-                                                        <th><?= $translations['tabelcoloumn2'] ?></th>
+                                                        <?php if ($selected_province === 'all' || $selected_province === 'targeted') : ?>
+                                                            <th><?= $translations['tabelcoloumn1'] ?></th> <!-- Province Name -->
+                                                            <th class="d-none"><?= $translations['tabelcoloumn2'] ?></th> <!-- City Name (hidden) -->
+                                                        <?php elseif ($selected_province !== 'all' && $selected_province !== 'targeted') : ?>
+                                                            <th class="d-none"><?= $translations['tabelcoloumn1'] ?></th> <!-- Province Name (hidden) -->
+                                                            <th><?= $translations['tabelcoloumn2'] ?></th> <!-- City Name -->
+                                                        <?php endif; ?>
                                                         <th><?= $translations['tabelcoloumn3'] ?></th>
                                                         <th><?= $translations['tabelcoloumn6'] ?></th>
                                                         <th><?= $translations['tabelcoloumn4'] ?></th>
@@ -248,8 +253,13 @@
                                                     <?php if (!empty($supportive_supervision_table)) : ?>
                                                         <?php foreach ($supportive_supervision_table as $row) : ?>
                                                             <tr>
-                                                                <td><?= $row['province_name']; ?></td>
-                                                                <td><?= $row['city_name']; ?></td>
+                                                                <?php if ($selected_province === 'all' || $selected_province === 'targeted') : ?>
+                                                                    <td><?= $row['province_name']; ?></td> <!-- Province Name -->
+                                                                    <td class="d-none"><?= $row['city_name']; ?></td> <!-- City Name (hidden) -->
+                                                                <?php elseif ($selected_province !== 'all' && $selected_province !== 'targeted') : ?>
+                                                                    <td class="d-none"><?= $row['province_name']; ?></td> <!-- Province Name (hidden) -->
+                                                                    <td><?= $row['city_name']; ?></td> <!-- City Name -->
+                                                                <?php endif; ?>
                                                                 <td><?= $row['total_puskesmas']; ?></td>
                                                                 <td><?= $row['total_ss']; ?></td>
                                                                 <td><?= $row['good_category_puskesmas']; ?></td>

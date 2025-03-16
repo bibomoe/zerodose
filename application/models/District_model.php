@@ -14,8 +14,10 @@ class District_model extends CI_Model {
         $this->db->select("
             p.name_id AS province_name,
             c.name_id AS city_name,
-            SUM(ss.total_ss) AS total_ss,
-            (SELECT COUNT(id) FROM puskesmas WHERE city_id = ss.city_id) AS total_puskesmas, 
+            (SELECT COUNT(id) FROM puskesmas 
+                    WHERE " . ($province_id === 'all' || $province_id === 'targeted' ? "province_id = ss.province_id" : "city_id = ss.city_id") . " 
+                ) AS total_puskesmas,
+            SUM(ss.total_ss) AS total_ss, 
             SUM(ss.good_category_puskesmas) AS good_category_puskesmas
         ");
         $this->db->from('supportive_supervision ss');
