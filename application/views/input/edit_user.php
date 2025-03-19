@@ -1,0 +1,147 @@
+
+<div id="main-content">
+                <div class="page-heading">
+                    <div class="page-title">
+                        <div class="row">
+                            <div class="col-12 col-md-6 order-md-1 order-last">
+                                <h3>User Management</h3>
+                                <!-- <p class="text-subtitle text-muted">Vaccine coverage in targeted areas​​​</p> -->
+                            </div>
+                            <div class="col-12 col-md-6 order-md-2 order-first">
+                                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                                    <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="<?= base_url('home'); ?>">Dashboard</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">User Management</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="page-content"> 
+                    <!-- Basic Horizontal form layout section start -->
+                    <section id="basic-horizontal-layouts">
+                        <?php if ($this->session->flashdata('success')): ?>
+                            <div class="alert alert-success">
+                                <?= $this->session->flashdata('success'); ?>
+                            </div>
+                        <?php endif; ?>
+                        <!-- Immunization Coverage -->
+                        <div class="row match-height">
+                            <div class="col-md-12 col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">List User</h4>
+                                        <button class="btn btn-primary ms-auto floating-button bg-white border-white" type="button" style="margin-right: 20px;"
+                                                data-bs-toggle="collapse" data-bs-target="#cardContent" aria-expanded="false" aria-controls="cardContent">
+                                                <i class="bi bi-arrows-collapse" style="color: gray;"></i> 
+                                        </button>
+                                    </div>
+                                    <div id="cardContent" class="collapse show">
+                                        <div class="card-body">
+                                            <!-- <div class="form form-horizontal"> -->
+                                                <?= form_open('user/update_user/'.$this->User_model->encrypt_id($user->id), ['class' => 'form form-horizontal']); ?>
+                                                <div class="form-body">
+                                                    <div class="row">
+                                                            
+                                                        <div class="form-group">
+                                                            <?= form_label('Email', 'email'); ?>
+                                                            <?= form_input('email', $user->email, 'class="form-control" required'); ?>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <?= form_label('Password', 'password'); ?>
+                                                            <?= form_password('password', '', 'class="form-control"'); ?> <!-- Password kosong jika tidak diubah -->
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <?= form_label('Name', 'name'); ?>
+                                                            <?= form_input('name', $user->name, 'class="form-control" required'); ?>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <?= form_label('Category', 'category'); ?>
+                                                            <?= form_dropdown('category', $category_options, $user->category, 'class="form-control" id="category"'); ?>
+                                                        </div>
+
+                                                        <!-- Dropdown untuk send_auto_email (Yes/No) -->
+                                                        <div class="form-group">
+                                                            <?= form_label('Send Auto Email?', 'send_auto_email'); ?>
+                                                            <?= form_dropdown('send_auto_email', [1 => 'Yes', 0 => 'No'], $user->send_auto_email, 'class="form-control"'); ?>
+                                                        </div>
+
+                                                        <!-- Dropdown untuk memilih province dan city (untuk kategori 7 dan 8) -->
+                                                        <div class="form-group" id="province-city-group" style="display:<?= ($user->category == 7 || $user->category == 8) ? 'block' : 'none'; ?>;">
+                                                            <?= form_label('Province', 'province_id'); ?>
+                                                            <?= form_dropdown('province_id', $province_options, $user->province_id, 'class="form-control" id="province_id"'); ?>
+
+                                                            <?= form_label('City', 'city_id'); ?>
+                                                            <?= form_dropdown('city_id', [], $user->city_id, 'class="form-control" id="city_id"'); ?>
+                                                        </div>
+
+                                                        <div class="col-sm-12 d-flex justify-content-end">
+                                                            <?= form_submit('submit', 'Submit', 'class="btn btn-primary me-1 mb-1"'); ?>
+                                                            <?= form_reset('reset', 'Reset', 'class="btn btn-light-secondary me-1 mb-1"'); ?>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <?= form_close(); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+                    <!-- Basic Horizontal form layout section end -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    
+
+    <script>
+        $(document).ready(function () {
+            // Ketika province dipilih, load district
+            $('#province_id').change(function () {
+                var province_id = $(this).val();
+                if (province_id) {
+                    $.ajax({
+                        url: "<?= base_url('input/get_cities_by_province') ?>",
+                        type: "GET",
+                        data: { province_id: province_id },
+                        dataType: "json",
+                        success: function (data) {
+                            $('#city_id').html('<option value="">-- Select District --</option>');
+                            $.each(data, function (key, value) {
+                                $('#city_id').append('<option value="' + value.id + '">' + value.name_id + '</option>');
+                            });
+                        }
+                    });
+                }
+            });
+
+            // Menampilkan dropdown provinsi dan kota jika kategori adalah PHO atau DHO
+            $('#category').change(function() {
+                var category = $(this).val();
+                if (category == 7 || category == 8) {
+                    $('#province-city-group').show();
+                } else {
+                    $('#province-city-group').hide();
+                }
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+

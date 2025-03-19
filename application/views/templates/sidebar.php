@@ -487,13 +487,27 @@
                         <?php
                             }
                         ?>
-                        <li
+                            <li
                                 class="sidebar-item">
                                 <a href="<?= base_url('report'); ?>" class='sidebar-link'>
                                     <i class="bi bi-file-earmark-fill"></i>
                                     <span>Report</span>
                                 </a>
                             </li>
+                            <?php
+                                    $user_category = $this->session->userdata('user_category');
+                                    if ($user_category == 1 || $user_category == 2 || $user_category == 9) { 
+                                ?>
+                                <li
+                                    class="sidebar-item">
+                                    <a href="<?= base_url('user'); ?>" class='sidebar-link'>
+                                        <i class="bi bi-person-dash-fill"></i>
+                                        <span>User Management</span>
+                                    </a>
+                                </li>
+                            <?php
+                                }
+                            ?>
                     </ul>
                     
                 </div>
