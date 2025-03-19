@@ -474,7 +474,7 @@
             const translations = {
                 en: {
                     title: 'Zero Dose',
-                    description: 'Web Dashboard for Monitoring the Performance of Zero-Dose Strategy Implementation in Indonesia 2024-2025.',
+                    description: 'Web Dashboard for Monitoring the Performance of Zero-Dose Strategy Implementation in Indonesia 2024-2026.',
                     downloadBtn: 'Download Guide',
                     publicDashboardTitle: 'Public Dashboard',
                     publicDashboardDescription: 'Explore real-time insights about vaccination coverage on our public dashboard.',
@@ -482,7 +482,7 @@
                 },
                 id: {
                     title: 'Zero Dose',
-                    description: 'Web Dashboard Monitoring Kinerja Implementasi Strategi Zero Dose di Indonesia 2024-2025.',
+                    description: 'Web Dashboard Monitoring Kinerja Implementasi Strategi Zero Dose di Indonesia 2024-2026.',
                     downloadBtn: 'Download Panduan',
                     publicDashboardTitle: 'Dashboard Publik',
                     publicDashboardDescription: 'Temukan wawasan real-time tentang cakupan vaksinasi di dashboard publik kami.',

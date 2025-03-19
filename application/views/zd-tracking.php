@@ -42,7 +42,7 @@
                                                     ); ?>
                                                     <?= form_dropdown(
                                                             'year', 
-                                                            [2025 => '2025', 2024 => '2024'], 
+                                                            [2025 => '2025', 2026 => '2026'], 
                                                             set_value('year', $selected_year ?? 2025), 
                                                             'class="form-select" style="width: 100%; max-width: 200px; height: 48px; font-size: 1rem;" required'
                                                         ); ?>
@@ -177,28 +177,6 @@
                             </style>
                             <!-- SS Card-->
                             <div class="row">
-                                <!-- Card 2024 -->
-                                <div class="col-12 col-lg-6 col-md-6">
-                                    <div class="card">
-                                        <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold"><?= $translations['text5'] ?> 2024</h6>
-                                            <div class="card-number font-extrabold mb-3">
-                                                <?= number_format($supportive_supervision_2024['total_good_puskesmas'] ?? 0); ?>
-                                            </div>
-                                            <div class="card-subtext mb-1">
-                                                <?= number_format($supportive_supervision_2024['percentage_good'] ?? 0,2); ?> <?= $translations['text6'] ?>
-                                            </div>
-                                            <div class="progress" style="height: 20px;">
-                                                <div class="progress-bar" role="progressbar" 
-                                                    style="width: <?= $supportive_supervision_2024['percentage_good'] ?? 0; ?>%;" 
-                                                    aria-valuenow="<?= $supportive_supervision_2024['percentage_good'] ?? 0; ?>" 
-                                                    aria-valuemin="0" aria-valuemax="100">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <!-- Card 2025 -->
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
@@ -214,6 +192,28 @@
                                                 <div class="progress-bar" role="progressbar" 
                                                     style="width: <?= $supportive_supervision_2025['percentage_good'] ?? 0; ?>%;" 
                                                     aria-valuenow="<?= $supportive_supervision_2025['percentage_good'] ?? 0; ?>" 
+                                                    aria-valuemin="0" aria-valuemax="100">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 2026 -->
+                                <div class="col-12 col-lg-6 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5">
+                                            <h6 class="text-muted font-semibold"><?= $translations['text5'] ?> 2026</h6>
+                                            <div class="card-number font-extrabold mb-3">
+                                                <?= number_format($supportive_supervision_2026['total_good_puskesmas'] ?? 0); ?>
+                                            </div>
+                                            <div class="card-subtext mb-1">
+                                                <?= number_format($supportive_supervision_2026['percentage_good'] ?? 0,2); ?> <?= $translations['text6'] ?>
+                                            </div>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar" role="progressbar" 
+                                                    style="width: <?= $supportive_supervision_2026['percentage_good'] ?? 0; ?>%;" 
+                                                    aria-valuenow="<?= $supportive_supervision_2026['percentage_good'] ?? 0; ?>" 
                                                     aria-valuemin="0" aria-valuemax="100">
                                                 </div>
                                             </div>

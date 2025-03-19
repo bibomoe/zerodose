@@ -36,7 +36,7 @@
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?= form_dropdown(
                                                             'year', 
-                                                            [2025 => '2025', 2024 => '2024'], 
+                                                            [2025 => '2025', 2026 => '2026'], 
                                                             set_value('year', $selected_year ?? 2025), 
                                                             'class="form-select" style="width: 100%; max-width: 200px; height: 48px; font-size: 1rem;" required'
                                                         ); ?>
@@ -79,65 +79,9 @@
                                     text-align: center;
                                 }
                             </style>
-                            <!-- SS Card-->
-                            <!-- <div class="row">
-                                <div class="col-12 col-lg-6 col-md-6">
-                                    <div class="card">
-                                        <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold">Number of Health Facilities manage immunization program as per national guidance in 10 targeted provinces Year 2024</h6>
-                                            <div class="card-number font-extrabold mb-3">
-                                                <?= number_format($supportive_supervision_2024['total_good_puskesmas'] ?? 0); ?>
-                                            </div>
-                                            <div class="card-subtext mb-1">
-                                                <?= number_format($supportive_supervision_2024['percentage_good'] ?? 0,2); ?>% of Total Puskesmas
-                                            </div>
-                                            <div class="progress" style="height: 20px;">
-                                                <div class="progress-bar" role="progressbar" 
-                                                    style="width: <?= $supportive_supervision_2024['percentage_good'] ?? 0; ?>%;" 
-                                                    aria-valuenow="<?= $supportive_supervision_2024['percentage_good'] ?? 0; ?>" 
-                                                    aria-valuemin="0" aria-valuemax="100">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-lg-6 col-md-6">
-                                    <div class="card">
-                                        <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold">Number of Health Facilities manage immunization program as per national guidance in 10 targeted provinces Year 2025</h6>
-                                            <div class="card-number font-extrabold mb-3">
-                                                <?= number_format($supportive_supervision_2025['total_good_puskesmas'] ?? 0); ?>
-                                            </div>
-                                            <div class="card-subtext mb-1">
-                                                <?= number_format($supportive_supervision_2025['percentage_good'] ?? 0,2); ?>% of Total Puskesmas
-                                            </div>
-                                            <div class="progress" style="height: 20px;">
-                                                <div class="progress-bar" role="progressbar" 
-                                                    style="width: <?= $supportive_supervision_2025['percentage_good'] ?? 0; ?>%;" 
-                                                    aria-valuenow="<?= $supportive_supervision_2025['percentage_good'] ?? 0; ?>" 
-                                                    aria-valuemin="0" aria-valuemax="100">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> -->
 
                             <!-- Private Facility Trained Card-->
                             <div class="row">
-                                <!-- Card 2024 -->
-                                <div class="col-12 col-lg-6 col-md-6">
-                                    <div class="card">
-                                        <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> 2024</h6>
-                                            <div class="card-number font-extrabold mb-3">
-                                                <?= number_format($private_facility_training_2024) ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <!-- Card 2025 -->
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
@@ -149,48 +93,19 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- SS Tabel -->
-                            <!-- <div class="row">
-                                <div class="col-12">
+                                <!-- Card 2026 -->
+                                <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
-                                        <div class="card-header">
-                                            <h4>Number of Health Facilities manage immunization program as per national guidance in 10 targeted provinces</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <table class="table table-striped" id="table1">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Province</th>
-                                                        <th>District</th>
-                                                        <th>Total number of Puskesmas</th>
-                                                        <th>Number of Puskesmas that Have Undergone Supportive Supervision with "Good" Category</th>
-                                                        <th>Percentage of "Good" Category</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php if (!empty($supportive_supervision_table)) : ?>
-                                                        <?php foreach ($supportive_supervision_table as $row) : ?>
-                                                            <tr>
-                                                                <td><?= $row['province_name']; ?></td>
-                                                                <td><?= $row['city_name']; ?></td>
-                                                                <td><?= $row['total_puskesmas']; ?></td>
-                                                                <td><?= $row['good_category_puskesmas']; ?></td>
-                                                                <td><?= $row['percentage_good_category']; ?>%</td>
-                                                            </tr>
-                                                        <?php endforeach; ?>
-                                                    <?php else : ?>
-                                                        <tr>
-                                                            <td colspan="5" class="text-center">No data available</td>
-                                                        </tr>
-                                                    <?php endif; ?>
-                                                </tbody>
-                                            </table>
+                                        <div class="card-body px-4 py-4-5">
+                                            <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> 2026</h6>
+                                            <div class="card-number font-extrabold mb-3">
+                                                <?= number_format($private_facility_training_2026) ?>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div> -->
+                            </div>
 
                             <!-- Private Facilities Trained -->
                             <div class="row">

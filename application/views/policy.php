@@ -36,7 +36,7 @@
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?= form_dropdown(
                                                             'year', 
-                                                            [2025 => '2025', 2024 => '2024'], 
+                                                            [2025 => '2025', 2026 => '2026'], 
                                                             set_value('year', $selected_year ?? 2025), 
                                                             'class="form-select" style="width: 100%; max-width: 200px; height: 48px; font-size: 1rem;" required'
                                                         ); ?>
@@ -83,28 +83,6 @@
 
                             <!-- Funding Card-->
                             <div class="row">
-                                <!-- Card 2024 -->
-                                <div class="col-12 col-lg-6 col-md-6">
-                                    <div class="card">
-                                        <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> 2024</h6>
-                                            <div class="card-number font-extrabold mb-3">
-                                                <?= number_format($district_funding_2024['total_funded_districts']); ?>
-                                            </div>
-                                            <div class="card-subtext mb-1">
-                                                <?= $district_funding_2024['percentage_funded']; ?><?= $translations['text2'] ?>
-                                            </div>
-                                            <div class="progress" style="height: 20px;">
-                                                <div class="progress-bar" role="progressbar" 
-                                                    style="width: <?= $district_funding_2024['percentage_funded']; ?>%;" 
-                                                    aria-valuenow="<?= $district_funding_2024['percentage_funded']; ?>" 
-                                                    aria-valuemin="0" aria-valuemax="100">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <!-- Card 2025 -->
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
@@ -126,32 +104,32 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Policy Card -->
-                            <div class="row">
-                                <!-- Card 2024 -->
+                                <!-- Card 2026 -->
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
-                                            <h6 class="text-muted font-semibold"><?= $translations['text3'] ?> 2024</h6>
+                                            <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> 2026</h6>
                                             <div class="card-number font-extrabold mb-3">
-                                                <?= $district_policy_2024['policy_districts']; ?>
+                                                <?= number_format($district_funding_2026['total_funded_districts']); ?>
                                             </div>
                                             <div class="card-subtext mb-1">
-                                                <?= $district_policy_2024['percentage_policy']; ?> <?= $translations['text4'] ?>
+                                                <?= $district_funding_2026['percentage_funded']; ?><?= $translations['text2'] ?>
                                             </div>
                                             <div class="progress" style="height: 20px;">
                                                 <div class="progress-bar" role="progressbar" 
-                                                    style="width: <?= $district_policy_2024['percentage_policy']; ?>;" 
-                                                    aria-valuenow="<?= $district_policy_2024['percentage_policy']; ?>" 
+                                                    style="width: <?= $district_funding_2026['percentage_funded']; ?>%;" 
+                                                    aria-valuenow="<?= $district_funding_2026['percentage_funded']; ?>" 
                                                     aria-valuemin="0" aria-valuemax="100">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
+                            <!-- Policy Card -->
+                            <div class="row">
                                 <!-- Card 2025 -->
                                 <div class="col-12 col-lg-6 col-md-6">
                                     <div class="card">
@@ -167,6 +145,28 @@
                                                 <div class="progress-bar" role="progressbar" 
                                                     style="width: <?= $district_policy_2025['percentage_policy']; ?>;" 
                                                     aria-valuenow="<?= $district_policy_2025['percentage_policy']; ?>" 
+                                                    aria-valuemin="0" aria-valuemax="100">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 2026 -->
+                                <div class="col-12 col-lg-6 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5">
+                                            <h6 class="text-muted font-semibold"><?= $translations['text3'] ?> 2026</h6>
+                                            <div class="card-number font-extrabold mb-3">
+                                                <?= $district_policy_2026['policy_districts']; ?>
+                                            </div>
+                                            <div class="card-subtext mb-1">
+                                                <?= $district_policy_2026['percentage_policy']; ?> <?= $translations['text4'] ?>
+                                            </div>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar" role="progressbar" 
+                                                    style="width: <?= $district_policy_2026['percentage_policy']; ?>;" 
+                                                    aria-valuenow="<?= $district_policy_2026['percentage_policy']; ?>" 
                                                     aria-valuemin="0" aria-valuemax="100">
                                                 </div>
                                             </div>

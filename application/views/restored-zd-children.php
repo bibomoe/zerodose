@@ -43,7 +43,7 @@
                                                     ); ?>
                                                     <?= form_dropdown(
                                                             'year', 
-                                                            [2025 => '2025', 2024 => '2024'], 
+                                                            [2025 => '2025', 2026 => '2026'], 
                                                             set_value('year', $selected_year ?? 2025), 
                                                             'class="form-select" style="width: 100%; max-width: 150px; height: 48px; font-size: 1rem;" required'
                                                         ); ?>
@@ -112,7 +112,7 @@
                                     </div>
                                 </div>
 
-                                <?php foreach ([2024, 2025] as $year): ?>
+                                <?php foreach ([2025, 2026] as $year): ?>
                                     <!-- Target Year -->
                                     <div class="col-6 col-lg-4 col-md-6">
                                         <div class="card">
@@ -187,7 +187,7 @@
                                 <?php
                                     //  var_dump(number_format($total_dpt_3_2025));
                                     ?>
-                                <?php foreach ([2024, 2025] as $year): ?>
+                                <?php foreach ([2025, 2026] as $year): ?>
                                     <!-- DPT-3 Coverage -->
                                     
                                     <div class="col-12 col-lg-6 col-md-6">
@@ -208,7 +208,7 @@
                                                 <!-- Baseline and Target Coverage -->
                                                 <div class="mt-1">
                                                     <p><strong>Baseline: </strong><?= number_format(${"total_target_dpt_3_$year"}); ?> <?= $translations['children'] ?></p>
-                                                    <p><strong><?= $translations['text13'] ?> <?= ($year == 2024) ? '90%' : '95%'; ?> </strong></p>
+                                                    <p><strong><?= $translations['text13'] ?> <?= ($year == 2025) ? '90%' : '95%'; ?> </strong></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -233,7 +233,7 @@
                                                 <!-- Baseline and Target Coverage -->
                                                 <div class="mt-1">
                                                     <p><strong>Baseline: </strong><?= number_format(${"total_target_mr_1_$year"}); ?> <?= $translations['children'] ?></p>
-                                                    <p><strong><?= $translations['text13'] ?> <?= ($year == 2024) ? '90%' : '95%'; ?> </strong></p>
+                                                    <p><strong><?= $translations['text13'] ?> <?= ($year == 2025) ? '90%' : '95%'; ?> </strong></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -472,7 +472,7 @@
                                                                 <label for="yearFilter" class="form-label mt-3">Select Year:</label>
                                                                 <select id="yearFilter" class="form-select">
                                                                     <option value="2025" selected>2025</option>
-                                                                    <option value="2024">2024</option>
+                                                                    <option value="2026">2026</option>
                                                                 </select>
                                                             </div>
                                                             <div class="modal-footer">
@@ -536,14 +536,14 @@
             "July", "August", "September", "October", "November", "December"
         ];
 
-        let zdCases2024 = Array(12).fill(null);
         let zdCases2025 = Array(12).fill(null);
+        let zdCases2026 = Array(12).fill(null);
 
         zeroDoseData.forEach(item => {
-            if (item.year === 2024) {
-                zdCases2024[item.month - 1] = item.zd_cases;
-            } else if (item.year === 2025) {
+            if (item.year === 2025) {
                 zdCases2025[item.month - 1] = item.zd_cases;
+            } else if (item.year === 2026) {
+                zdCases2026[item.month - 1] = item.zd_cases;
             }
         });
 
@@ -585,7 +585,7 @@
                 labels: months,
                 datasets: [{
                     label: titleLineChart,
-                    data: year === 2024 ? zdCases2024 : zdCases2025,
+                    data: year === 2025 ? zdCases2025 : zdCases2026,
                     backgroundColor: 'rgba(0, 86, 179, 0.2)',
                     borderColor: 'rgba(0, 86, 179, 1)',
                     borderWidth: 2,
@@ -632,8 +632,8 @@
                                     zdChart.data.datasets = [{
                                         label: `ZD Cases ${selectedYear}`,
                                         data: filteredData.map(item => item.zd_cases),
-                                        backgroundColor: selectedYear == 2024 ? 'rgba(0, 86, 179, 0.2)' : 'rgba(255, 99, 132, 0.2)',
-                                        borderColor: selectedYear == 2024 ? 'rgba(0, 86, 179, 1)' : 'rgba(255, 99, 132, 1)',
+                                        backgroundColor: selectedYear == 2025 ? 'rgba(0, 86, 179, 0.2)' : 'rgba(255, 99, 132, 0.2)',
+                                        borderColor: selectedYear == 2025 ? 'rgba(0, 86, 179, 1)' : 'rgba(255, 99, 132, 1)',
                                         borderWidth: 2,
                                         tension: 0.4
                                     }];

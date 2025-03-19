@@ -76,7 +76,8 @@ class Input extends CI_Controller {
         // Ambil tahun dan bulan dalam bentuk array
         $this->data['year_options'] = [
             '2024' => '2024',
-            '2025' => '2025'
+            '2025' => '2025',
+            '2026' => '2026'
         ];
         
         $this->data['month_options'] = [

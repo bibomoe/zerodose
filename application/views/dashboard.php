@@ -124,8 +124,8 @@
                                                                         <!-- <th rowspan="2">Data Source</th>
                                                                         <th rowspan="2">Frequency of Reporting</th> -->
                                                                         <th>Baseline</th>
-                                                                        <th>2024</th>
                                                                         <th>2025</th>
+                                                                        <th>2026</th>
                                                                     </tr>
                                                                     <!-- <tr>
                                                                         <th>Baseline</th>
@@ -222,8 +222,8 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Baseline</th>
-                                                                    <th>2024</th>
                                                                     <th>2025</th>
+                                                                    <th>2026</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -237,8 +237,8 @@
                                                                     <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning"><?= number_format($percent_puskesmas_immunized_2024, 2) . '%' ?></td>
                                                                     <td class="table-warning"><?= number_format($percent_puskesmas_immunized_2025, 2) . '%' ?></td>
+                                                                    <td class="table-warning"><?= number_format($percent_puskesmas_immunized_2026, 2) . '%' ?></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td rowspan="2"><?= $translations['table2text5'] ?></td>
@@ -250,8 +250,8 @@
                                                                     <td rowspan="2">Quarterly</td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning"><?= number_format($percent_dpt1_coverage_2024, 2) ?>%</td>
                                                                     <td class="table-warning"><?= number_format($percent_dpt1_coverage_2025, 2) ?>%</td>
+                                                                    <td class="table-warning"><?= number_format($percent_dpt1_coverage_2026, 2) ?>%</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td rowspan="2"><?= $translations['table2text8'] ?></td>
@@ -263,8 +263,8 @@
                                                                     <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning"><?= number_format($percent_districts_under_5_2024, 0) ?>%</td>
                                                                     <td class="table-warning"><?= number_format($percent_districts_under_5_2025, 0) ?>%</td>
+                                                                    <td class="table-warning"><?= number_format($percent_districts_under_5_2026, 0) ?>%</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td rowspan="6"><?= $translations['table2text10'] ?></td>
@@ -277,10 +277,10 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning">
-                                                                        <?= number_format($percent_health_facilities_2024, 2) . '%'; ?>
+                                                                        <?= number_format($percent_health_facilities_2025, 2) . '%'; ?>
                                                                     </td>
                                                                     <td class="table-warning">
-                                                                        <?= number_format($percent_health_facilities_2025, 2) . '%'; ?>
+                                                                        <?= number_format($percent_health_facilities_2026, 2) . '%'; ?>
                                                                     </td>
                                                                 </tr>
 
@@ -293,8 +293,8 @@
                                                                     <td rowspan="2"></td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning"><?= number_format($total_dpt_stockout_2024); ?></td>
                                                                     <td class="table-warning"><?= number_format($total_dpt_stockout_2025); ?></td>
+                                                                    <td class="table-warning"><?= number_format($total_dpt_stockout_2026); ?></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td rowspan="2"><?= $translations['table2text16'] ?></td>
@@ -306,10 +306,10 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td class="table-warning">
-                                                                        <?= number_format($private_facility_trained_2024) ?>
+                                                                        <?= number_format($private_facility_trained_2025) ?>
                                                                     </td>
                                                                     <td class="table-warning">
-                                                                        <?= number_format($private_facility_trained_2025) ?>
+                                                                        <?= number_format($private_facility_trained_2026) ?>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -322,8 +322,8 @@
                                                                     <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning"><?= $percent_district_funding_2024; ?>%</td>
                                                                     <td class="table-warning"><?= $percent_district_funding_2025; ?>%</td>
+                                                                    <td class="table-warning"><?= $percent_district_funding_2026; ?>%</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td rowspan="2"><?= $translations['table2text21'] ?></td>
@@ -335,8 +335,8 @@
                                                                     <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning"><?= $percent_district_policy_2024; ?></td>
                                                                     <td class="table-warning"><?= $percent_district_policy_2025; ?></td>
+                                                                    <td class="table-warning"><?= $percent_district_policy_2026; ?></td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>
@@ -412,18 +412,20 @@
                                                             <thead >
                                                                 <tr>
                                                                     <th rowspan="2"><?= $translations['text8'] ?></th>
-                                                                    <th colspan="2"><?= $translations['text9'] ?></th>
+                                                                    <th colspan="3"><?= $translations['text9'] ?></th>
                                                                     <!-- <th rowspan="2">Data Source</th>
                                                                     <th rowspan="2">Frequency of Reporting</th> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <th>2024</th>
                                                                     <th>2025</th>
+                                                                    <th>2026</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 <tr>
                                                                     <td rowspan="2"><?= $translations['table3text1'] ?></td>
+                                                                    <td class="table-success">90%</td>
                                                                     <td class="table-success">90%</td>
                                                                     <td class="table-success">90%</td>
                                                                     <!-- <td rowspan="2">Costed Workplan</td>
@@ -432,6 +434,7 @@
                                                                 <tr>
                                                                     <td class="table-warning"><?= $budget_absorption_2024; ?>%</td>
                                                                     <td class="table-warning"><?= $budget_absorption_2025; ?>%</td>
+                                                                    <td class="table-warning"><?= $budget_absorption_2026; ?>%</td>
                                                                 </tr>
                                                                 <!-- 
                                                                 <tr>
@@ -511,13 +514,14 @@
                                                                 <tr>
                                                                     <th rowspan="2"><?= $translations['table4text1'] ?></th>
                                                                     <th rowspan="2"><?= $translations['text8'] ?></th>
-                                                                    <th colspan="2"><?= $translations['text9'] ?></th>
+                                                                    <th colspan="3"><?= $translations['text9'] ?></th>
                                                                     <!-- <th rowspan="2">Data Source</th>
                                                                     <th rowspan="2">Frequency of Reporting</th> -->
                                                                 </tr>
                                                                 <tr>
                                                                     <th>2024</th>
                                                                     <th>2025</th>
+                                                                    <th>2026</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -527,12 +531,14 @@
                                                                         <td rowspan="2"><?= $translations['table4text2'] ?></td>
                                                                         <td class="table-success">90%</td>
                                                                         <td class="table-success">100%</td>
+                                                                        <td class="table-success">100%</td>
                                                                         <!-- <td rowspan="2">Costed Workplan</td>
                                                                         <td rowspan="2">Annually</td> -->
                                                                     </tr>
                                                                     <tr>
                                                                         <td class="table-warning"><?= $completed_activities_2024[$objective['id']] ?? '100'; ?>%</td>
                                                                         <td class="table-warning"><?= $completed_activities_2025[$objective['id']] ?? '100'; ?>%</td>
+                                                                        <td class="table-warning"><?= $completed_activities_2026[$objective['id']] ?? '100'; ?>%</td>
                                                                     </tr>
                                                                 <?php endforeach; ?>
                                                             </tbody>

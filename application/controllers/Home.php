@@ -59,6 +59,7 @@ class Home extends CI_Controller {
         // Ambil data budget absorption
         $this->data['budget_absorption_2024'] = $this->Dashboard_model->get_total_budget_absorption_percentage(2024, $selected_partner);
         $this->data['budget_absorption_2025'] = $this->Dashboard_model->get_total_budget_absorption_percentage(2025, $selected_partner);
+        $this->data['budget_absorption_2026'] = $this->Dashboard_model->get_total_budget_absorption_percentage(2026, $selected_partner);
 
         // Ambil semua country objectives
         $this->data['objectives'] = $this->Dashboard_model->get_all_objectives();
@@ -66,39 +67,40 @@ class Home extends CI_Controller {
         // Ambil aktivitas yang sudah selesai
         $this->data['completed_activities_2024'] = $this->Dashboard_model->get_completed_activities_percentage_by_year(2024, $selected_partner);
         $this->data['completed_activities_2025'] = $this->Dashboard_model->get_completed_activities_percentage_by_year(2025, $selected_partner);
+        $this->data['completed_activities_2026'] = $this->Dashboard_model->get_completed_activities_percentage_by_year(2026, $selected_partner);
 
         // Ambil data long term outcomes
         $this->data['long_term_outcomes'] = $this->Dashboard_model->get_long_term_outcomes();
 
         // ✅ Ambil nilai DPT1 Coverage dan Dropout Rate untuk 2024 & 2025
-        $this->data['percent_dpt1_coverage_2024'] = $this->Dashboard_model->get_dpt1_coverage_percentage(2024);
         $this->data['percent_dpt1_coverage_2025'] = $this->Dashboard_model->get_dpt1_coverage_percentage(2025);
+        $this->data['percent_dpt1_coverage_2026'] = $this->Dashboard_model->get_dpt1_coverage_percentage(2026);
 
-        $this->data['percent_districts_under_5_2024'] = $this->Dashboard_model->get_districts_under_5_percentage(2024);
         $this->data['percent_districts_under_5_2025'] = $this->Dashboard_model->get_districts_under_5_percentage(2025);
+        $this->data['percent_districts_under_5_2026'] = $this->Dashboard_model->get_districts_under_5_percentage(2026);
 
         // ✅ Ambil persentase Puskesmas yang telah melakukan imunisasi
-        $this->data['percent_puskesmas_immunized_2024'] = $this->Dashboard_model->get_puskesmas_immunization_percentage(2024);
         $this->data['percent_puskesmas_immunized_2025'] = $this->Dashboard_model->get_puskesmas_immunization_percentage(2025);
+        $this->data['percent_puskesmas_immunized_2026'] = $this->Dashboard_model->get_puskesmas_immunization_percentage(2026);
 
-        $this->data['total_dpt_stockout_2024'] = $this->Dashboard_model->get_total_dpt_stock_out(2024);
         $this->data['total_dpt_stockout_2025'] = $this->Dashboard_model->get_total_dpt_stock_out(2025);
+        $this->data['total_dpt_stockout_2026'] = $this->Dashboard_model->get_total_dpt_stock_out(2026);
 
         // ✅ Ambil persentase fasilitas kesehatan yang menjalankan program imunisasi (10 targeted provinces)
-        $this->data['percent_health_facilities_2024'] = $this->Dashboard_model->get_health_facilities_percentage(2024);
         $this->data['percent_health_facilities_2025'] = $this->Dashboard_model->get_health_facilities_percentage(2025);
+        $this->data['percent_health_facilities_2026'] = $this->Dashboard_model->get_health_facilities_percentage(2026);
 
         // ✅ Ambil total fasilitas kesehatan swasta yang telah dilatih (hanya untuk provinsi ID 31, 33, 35)
-        $this->data['private_facility_trained_2024'] = $this->Dashboard_model->get_private_facility_trained_specific(2024);
         $this->data['private_facility_trained_2025'] = $this->Dashboard_model->get_private_facility_trained_specific(2025);
+        $this->data['private_facility_trained_2026'] = $this->Dashboard_model->get_private_facility_trained_specific(2026);
 
         // ✅ Ambil persentase distrik yang mengalokasikan pendanaan domestik (10 targeted provinces)
-        $this->data['percent_district_funding_2024'] = $this->Dashboard_model->get_district_funding_percentage(2024);
         $this->data['percent_district_funding_2025'] = $this->Dashboard_model->get_district_funding_percentage(2025);
+        $this->data['percent_district_funding_2026'] = $this->Dashboard_model->get_district_funding_percentage(2026);
 
         // ✅ Ambil persentase distrik yang memiliki kebijakan imunisasi
-        $this->data['percent_district_policy_2024'] = $this->Dashboard_model->get_district_policy_percentage(2024);
         $this->data['percent_district_policy_2025'] = $this->Dashboard_model->get_district_policy_percentage(2025);
+        $this->data['percent_district_policy_2026'] = $this->Dashboard_model->get_district_policy_percentage(2026);
 
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
@@ -132,10 +134,10 @@ class Home extends CI_Controller {
                 'table1text3' => 'MR-1 Coverage',
                 'table1text4' => 'Reduction in zero-dose',
                 'table1text5' => ' of ',
-                'table1text6' => 'Target reduction by end of 2024 (15%)',
-                'table1text7' => 'Target reduction by end of 2025 (25%)',
-                'table1text8' => 'Target reduction by end of 2024 (5%)',
-                'table1text9' => 'Target reduction by end of 2025 (10%)',
+                'table1text6' => 'Target reduction by end of 2025 (15%)',
+                'table1text7' => 'Target reduction by end of 2026 (25%)',
+                'table1text8' => 'Target reduction by end of 2025 (5%)',
+                'table1text9' => 'Target reduction by end of 2026 (10%)',
 
                 'table2text1' => 'Routine immunization services restored and reinforced to catch up missed children',
                 'table2text2' => 'Percent of primary health facility to conduct immunization service as planned',
@@ -188,10 +190,10 @@ class Home extends CI_Controller {
                 'table1text3' => 'Cakupan MR-1',
                 'table1text4' => 'Penurunan Zero Dose',
                 'table1text5' => ' dari ',
-                'table1text6' => 'Target penurunan pada akhir 2024 (15%)',
-                'table1text7' => 'Target penurunan pada akhir 2025 (25%)',
-                'table1text8' => 'Target penurunan pada akhir 2024 (5%)',
-                'table1text9' => 'Target penurunan pada akhir 2025 (10%)',
+                'table1text6' => 'Target penurunan pada akhir 2025 (15%)',
+                'table1text7' => 'Target penurunan pada akhir 2026 (25%)',
+                'table1text8' => 'Target penurunan pada akhir 2025 (5%)',
+                'table1text9' => 'Target penurunan pada akhir 2026 (10%)',
 
                 'table2text1' => 'Penguatan layanan imunisasi untuk menjangkau anak anak Zero Dose',
                 'table2text2' => '% puskesmas yang melakukan pelayanan imunisasi ',
@@ -277,7 +279,7 @@ class Home extends CI_Controller {
         // Ambil filter provinsi dari dropdown (default: all)
         $selected_province = $this->input->get('province') ?? 'all';
         $selected_district = $this->input->get('district') ?? 'all';
-        $selected_year = $this->input->get('year') ?? 2025; // Default tahun 2025
+        $selected_year = $this->input->get('year') ?? date("Y"); // Default tahun 2025
 
         // Ambil parameter dari URL
         $get_detail = $this->input->get('get_detail') ?? 0; // Default 0 jika tidak ada parameter
@@ -317,7 +319,7 @@ class Home extends CI_Controller {
         // Menentukan baseline ZD
         if ($selected_province == 'all') {
             // Ambil baseline ZD 2023 dari tabel target_baseline
-            $this->data['national_baseline_zd'] = $this->Immunization_model->get_baseline_zd(2023);
+            $this->data['national_baseline_zd'] = $this->Immunization_model->get_baseline_zd(2024);
         } else {
             // Ambil total ZD dari tabel zd_cases_2023 berdasarkan provinsi yang dipilih
             $this->data['national_baseline_zd'] = $this->Immunization_model->get_zero_dose_by_province($selected_province);
@@ -327,7 +329,7 @@ class Home extends CI_Controller {
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
 
         // Ambil data untuk tahun 2024 & 2025
-        foreach ([2024, 2025] as $year) {
+        foreach ([2025, 2026] as $year) {
             // Hitung target dpt1 pertahun
             // if ($selected_province === 'all') {
             //     // Ambil target dari target_coverage untuk semua provinsi
@@ -354,20 +356,20 @@ class Home extends CI_Controller {
             if($this->session->userdata('language') == 'en'){
                 // Hitung persentase ZD dari baseline 2023
                 if ($this->data["zero_dose_$year"] <= $this->data['national_baseline_zd']) {
-                    $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% reduction from 2023 national baseline for $year";
+                    $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% reduction from 2024 national baseline for $year";
                 // } elseif ($this->data["zero_dose_$year"] > 2 * $this->data['national_baseline_zd']) {
                 } else {
-                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% increase from 2023 national baseline for $year";
+                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% increase from 2024 national baseline for $year";
                 // } else {
                 //     $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% change from 2023 national baseline for $year";
                 }
             } else {
                 // Hitung persentase ZD dari baseline 2023
                 if ($this->data["zero_dose_$year"] <= $this->data['national_baseline_zd']) {
-                    $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% penurunan dari baseline nasional 2023 untuk tahun $year";
+                    $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% penurunan dari baseline nasional 2024 untuk tahun $year";
                 // } elseif ($this->data["zero_dose_$year"] > 2 * $this->data['national_baseline_zd']) {
                 } else {
-                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% peningkatan dari baseline nasional 2023 untuk tahun $year";
+                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% peningkatan dari baseline nasional 2024 untuk tahun $year";
                 // } else {
                 //     $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% perubahan dari baseline nasional 2023 untuk tahun $year";
                 }
@@ -459,14 +461,14 @@ class Home extends CI_Controller {
                 'page_title' => 'Mitigate',
                 'page_subtitle' => 'Coverage rates restored, including by reaching zero-dose children',
                 'filter_label' => 'Select Province',
-                'text_baseline' => 'Children Zero Dose Year 2023 (National Baseline)',
+                'text_baseline' => 'Children Zero Dose Year 2024 (National Baseline)',
                 'children' => ' children',
                 'text1' => 'Target Year ',
                 'text2' => 'Based on the Population Census Survey (SUPAS) Year',
                 'text3' => 'DPT-1 Coverage Year ',
                 'text4' => '% of the target',
                 'text5' => 'Zero Dose Year ',
-                'text6' => 'from 2023 national baseline for 2024',
+                'text6' => 'from 2024 national baseline for 2025',
                 // 'text7' => 'Target Year 2025',
                 // 'text8' => 'DPT-1 Coverage Year 2025',
                 // 'text9' => 'Zero Dose Year 2025',
@@ -495,14 +497,14 @@ class Home extends CI_Controller {
                 'page_title' => 'Mitigasi',
                 'page_subtitle' => 'Tingkat cakupan yang dipulihkan, termasuk mencapai anak zero-dose',
                 'filter_label' => 'Pilih Provinsi',
-                'text_baseline' => 'Jumlah Anak Zero Dose Tahun 2023 (National Baseline)',
+                'text_baseline' => 'Jumlah Anak Zero Dose Tahun 2024 (National Baseline)',
                 'children' => ' anak',
                 'text1' => 'Sasaran Tahun ',
                 'text2' => 'Survei Penduduk Antar Sensus Tahun',
                 'text3' => 'Cakupan DPT-1 Tahun ',
                 'text4' => '% dari sasaran',
                 'text5' => 'Jumlah Anak Zero Dose Tahun ',
-                'text6' => 'dari baseline nasional 2023 untuk 2024',
+                'text6' => 'dari baseline nasional 2024 untuk 2025',
                 // 'text7' => 'Target Tahun 2025',
                 // 'text8' => 'Cakupan DPT-1 Tahun 2025',
                 // 'text9' => 'Zero Dose Tahun 2025',
@@ -549,7 +551,7 @@ class Home extends CI_Controller {
         // Ambil filter provinsi dari dropdown (default: all)
         $selected_province = $this->input->get('province') ?? 'all';
         $selected_district = $this->input->get('district') ?? 'all';
-        $selected_year = $this->input->get('year') ?? 2025; // Default tahun 2025
+        $selected_year = $this->input->get('year') ?? date("Y"); // Default tahun 2025
 
         // Ambil parameter dari URL
         $get_detail = $this->input->get('get_detail') ?? 0; // Default 0 jika tidak ada parameter
@@ -762,7 +764,7 @@ class Home extends CI_Controller {
         // Ambil filter dari dropdown
         $selected_province = $this->input->get('province') ?? 'all';
         $selected_district = $this->input->get('district') ?? 'all';
-        $selected_year = $this->input->get('year') ?? 2025;
+        $selected_year = $this->input->get('year') ?? date("Y");
 
         // Ambil parameter dari URL
         $get_detail = $this->input->get('get_detail') ?? 0; // Default 0 jika tidak ada parameter
@@ -815,8 +817,8 @@ class Home extends CI_Controller {
         $this->data['supportive_supervision_table'] = $this->District_model->get_supportive_supervision_targeted_table($selected_province, $selected_year);
     
         // ✅ Data untuk card (summary seluruh 10 targeted provinces)
-        $this->data['supportive_supervision_2024'] = $this->District_model->get_supportive_supervision_targeted_summary(2024);
         $this->data['supportive_supervision_2025'] = $this->District_model->get_supportive_supervision_targeted_summary(2025);
+        $this->data['supportive_supervision_2026'] = $this->District_model->get_supportive_supervision_targeted_summary(2026);
 
         // Ambil data Puskesmas yang melakukan RCA
         $rca_puskesmas_data = $this->Puskesmas_model->get_puskesmas_rca_data($selected_province, $selected_year);
@@ -877,9 +879,9 @@ class Home extends CI_Controller {
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Kab/Kota',
                 'tabelcoloumn3' => 'Jumlah Puskesmas',
-                'tabelcoloumn4' => 'Jumlah Puskesmas yang telah mengikuti Supervisi Dukungan dengan Kategori "Baik"',
+                'tabelcoloumn4' => 'Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik',
                 'tabelcoloumn5' => 'Persentase Kategori "Baik"',
-                'tabelcoloumn6' => 'Jumlah Supervisi Dukungan'
+                'tabelcoloumn6' => 'Jumlah Puskesmas yang di supervisi suportif'
             ]
         ];
     
@@ -892,7 +894,7 @@ class Home extends CI_Controller {
         $this->load->model('StockOut_model'); // Pastikan model dipanggil
 
         $selected_province = $this->input->get('province') ?? 'all';
-        $selected_year = $this->input->get('year') ?? 2025;
+        $selected_year = $this->input->get('year') ?? date("Y");
 
         // Ambil daftar provinsi untuk dropdown + targeted provinces
         $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
@@ -953,7 +955,7 @@ class Home extends CI_Controller {
         $this->load->model('District_model'); // Load model
     
         // Ambil tahun dari filter (default: 2025)
-        $selected_year = $this->input->get('year') ?? 2025;
+        $selected_year = $this->input->get('year') ?? date("Y");
         $this->data['selected_year'] = $selected_year;
     
         // // ✅ Data untuk tabel (per district)
@@ -968,8 +970,8 @@ class Home extends CI_Controller {
         $this->data['private_facility_training'] = $this->District_model->get_private_facility_training($selected_year);
 
          // ✅ Data untuk Card (Summary Total)
-        $this->data['private_facility_training_2024'] = $this->District_model->get_private_facility_training_summary(2024);
         $this->data['private_facility_training_2025'] = $this->District_model->get_private_facility_training_summary(2025);
+        $this->data['private_facility_training_2026'] = $this->District_model->get_private_facility_training_summary(2026);
 
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
@@ -1024,15 +1026,15 @@ class Home extends CI_Controller {
         $this->data['district_funding'] = $this->Policy_model->get_district_funding($selected_year);
 
         // ✅ Data untuk card (summary seluruh 10 targeted provinces)
-        $this->data['district_funding_2024'] = $this->Policy_model->get_district_funding_summary(2024);
         $this->data['district_funding_2025'] = $this->Policy_model->get_district_funding_summary(2025);
+        $this->data['district_funding_2026'] = $this->Policy_model->get_district_funding_summary(2026);
 
         // ✅ Ambil data kebijakan distrik dari model
         $this->data['district_policies'] = $this->Policy_model->get_district_policies($selected_year);
 
         // ✅ Data untuk card (summary seluruh 10 targeted provinces)
-        $this->data['district_policy_2024'] = $this->Policy_model->get_policy_summary(2024);
         $this->data['district_policy_2025'] = $this->Policy_model->get_policy_summary(2025);
+        $this->data['district_policy_2026'] = $this->Policy_model->get_policy_summary(2026);
 
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
