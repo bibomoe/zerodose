@@ -205,7 +205,7 @@ class Home extends CI_Controller {
                 'table2text8' => 'Peningkatan kepercayaan dan permintaan masyarakat terhadap layanan imunisasi, termasuk pada komunitas yang belum terjangkau',
                 'table2text9' => 'Jumlah Kab/Kota dengan %DO dibawah 5% ',
                 'table2text10' => 'Penguatan kapasitas puskesmas untuk merencanakan dan memberikan layanan imunisasi yang sustainable dan equitable',
-                'table2text11' => 'Jumlah puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional pada 10 provinsi dampingan (data diambil dari dashboard supervisi suportif)',
+                'table2text11' => 'Jumlah puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional pada 10 provinsi target (data diambil dari dashboard supervisi suportif)',
                 'table2text12' => 'Tanpa baseline',
                 'table2text13' => 'Jumlah puskesmas dengan status DPT stock out',
                 'table2text14' => 'Tidak ada puskesmas dengan status DPT stock out stock out di tahun  2022',
@@ -213,7 +213,7 @@ class Home extends CI_Controller {
                 'table2text16' => 'Jumlah layanan swasta yang dilatih mengenai SOP manajemen program imunisasi untuk layanan swasta',
                 'table2text17' => '248 (DKI Jakarta,  Jawa Timur dan Jawa Tengah ) - Laporan HSS',
                 'table2text18' => 'Penyediaan sumber daya yang cukup, berkelanjutan dan handal untuk program imunisasi',
-                'table2text19' => 'Jumlah Kab/Kota yang mengalokasikan pendanaan domestik untuk kegiatan imunisasi dan kegiatan lainnya yang mendukung program imunisasi pada 10 provinsi dampingan',
+                'table2text19' => 'Jumlah Kab/Kota yang mengalokasikan pendanaan domestik untuk kegiatan imunisasi dan kegiatan lainnya yang mendukung program imunisasi pada 10 provinsi target',
                 'table2text20' => 'Tanpa baseline',
                 'table2text21' => 'Komitmen politis dan akuntabilitas untuk pemerataan layanan imunisasi di tingkat nasional dan daerah',
                 'table2text22' => 'Jumlah Kab/Kota yang mengembangkan dan memberlakukan kebijakan yang relevant dengan penjangkauan anak ZD secara spesifik atau imunisasi secara umum',
@@ -462,12 +462,14 @@ class Home extends CI_Controller {
                 'page_subtitle' => 'Coverage rates restored, including by reaching zero-dose children',
                 'filter_label' => 'Select Province',
                 'text_baseline' => 'Children Zero Dose Year 2024 (National Baseline)',
+                'text_baseline2' => 'Children Zero Dose Year 2024 who have already received catch-up immunization',
                 'children' => ' children',
                 'text1' => 'Target Year ',
                 'text2' => 'Based on the Population Census Survey (SUPAS) Year',
                 'text3' => 'DPT-1 Coverage Year ',
                 'text4' => '% of the target',
-                'text5' => 'Zero Dose Year ',
+                'text5' => 'Not Immunized with DPT-1 Year ',
+                'text5_2' => 'Reduction Target ',
                 'text6' => 'from 2024 national baseline for 2025',
                 // 'text7' => 'Target Year 2025',
                 // 'text8' => 'DPT-1 Coverage Year 2025',
@@ -479,7 +481,7 @@ class Home extends CI_Controller {
                 'text14' => 'MR-1 Coverage Year ',
                 // 'text15' => 'DPT-3 Coverage Year 2025',
                 // 'text16' => 'MR-1 Coverage Year 2025',
-                'text17' => 'District with the highest number of zero dose children',
+                'text17' => 'District with the highest number of not immunized DPT-1 children Year ',
                 'tabelcoloumn1' => 'District',
                 'tabelcoloumn6' => 'Target District',
                 'tabelcoloumn2' => 'Total Coverage DPT1',
@@ -490,7 +492,7 @@ class Home extends CI_Controller {
                 'text19' => 'Zero-Dose Children Trend by Month',
                 'text20' => 'Zero Dose Children by Region Type',
                 'text21' => 'Data is sourced from the 2023 Combined Data of the Ministry of Health (Kemenkes)',
-                'text22' => 'Data is sourced from WUENIC',
+                'text22' => 'Data is sourced from Ministry of Health Combination Data',
                 'text23' => 'Data is sourced from ASIK, last updated on '
             ],
             'id' => [
@@ -498,12 +500,14 @@ class Home extends CI_Controller {
                 'page_subtitle' => 'Tingkat cakupan yang dipulihkan, termasuk mencapai anak zero-dose',
                 'filter_label' => 'Pilih Provinsi',
                 'text_baseline' => 'Jumlah Anak Zero Dose Tahun 2024 (National Baseline)',
+                'text_baseline2' => 'Jumlah Anak Zero Dose Tahun 2024 yang sudah diberikan imunisasi kejar',
                 'children' => ' anak',
                 'text1' => 'Sasaran Tahun ',
                 'text2' => 'Survei Penduduk Antar Sensus Tahun',
                 'text3' => 'Cakupan DPT-1 Tahun ',
                 'text4' => '% dari sasaran',
-                'text5' => 'Jumlah Anak Zero Dose Tahun ',
+                'text5' => 'Jumlah Anak Belum di Imunisasi DPT-1 Tahun ',
+                'text5_2' => 'Target Penurunan ',
                 'text6' => 'dari baseline nasional 2024 untuk 2025',
                 // 'text7' => 'Target Tahun 2025',
                 // 'text8' => 'Cakupan DPT-1 Tahun 2025',
@@ -515,7 +519,7 @@ class Home extends CI_Controller {
                 'text14' => 'Cakupan MR-1 Tahun ',
                 // 'text15' => 'Cakupan DPT-3 Tahun 2025',
                 // 'text16' => 'Cakupan MR-1 Tahun 2025',
-                'text17' => 'Kab/Kota dengan jumlah anak zero dose terbanyak',
+                'text17' => 'Kab/Kota dengan jumlah anak belum diimunisasi DPT-1 Tahun ',
                 'tabelcoloumn1' => 'Kab/Kota',
                 'tabelcoloumn6' => 'Sasaran Kab/Kota',
                 'tabelcoloumn2' => 'Total Cakupan DPT1',
@@ -526,7 +530,7 @@ class Home extends CI_Controller {
                 'text19' => 'Tren Anak Zero-Dose per Bulan',
                 'text20' => 'Jumlah Anak Zero Dose Berdasarkan Jenis Wilayah',
                 'text21' => 'Data bersumber dari Data Kombinasi Kemenkes tahun 2023',
-                'text22' => 'Data bersumber dari WUENIC',
+                'text22' => 'Data bersumber dari Data Kombinasi Kemenkes',
                 'text23' => 'Data bersumber dari ASIK terakhir diperbaharui pada '
             ]
         ];
@@ -731,7 +735,7 @@ class Home extends CI_Controller {
             ],
             'id' => [
                 'page_title' => 'Cakupan DPT-1 dan % Dropout',
-                'page_subtitle' => 'Cakupan DPT-1 dan % drop out pada 10 provinsi dampingan ',
+                'page_subtitle' => 'Cakupan DPT-1 dan % drop out pada 10 provinsi target ',
                 'filter_label' => 'Pilih Provinsi',
                 'text1' => 'Cakupan DPT-1',
                 'text2' => '% drop out wilayah',
@@ -873,9 +877,9 @@ class Home extends CI_Controller {
                 'text2' => 'Jumlah Puskesmas yang telah melaksanakan imunisasi',
                 'text3' => 'Persentase Puskesmas yang telah melaksanakan imunisasi',
                 'text4' => 'Jumlah Puskesmas yang telah melakukan Rapid Community Assessment (RCA)',
-                'text5' => 'Jumlah puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional pada 10 provinsi dampingan Tahun ',
+                'text5' => 'Jumlah puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional pada 10 provinsi target Tahun ',
                 'text6' => ' % dari Total Puskesmas',
-                'text7' => 'Jumlah puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional pada 10 provinsi dampingan',
+                'text7' => 'Jumlah puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional pada 10 provinsi target',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Kab/Kota',
                 'tabelcoloumn3' => 'Jumlah Puskesmas',
@@ -926,7 +930,7 @@ class Home extends CI_Controller {
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
 
-        $this->data['title'] = 'Number of DTP Stock Out at Health Facilities';
+        $this->data['title'] = 'Number of DPT Stock Out at Health Facilities';
         load_template('dpt-stock', $this->data);
     }
 
@@ -1073,11 +1077,11 @@ class Home extends CI_Controller {
                 'page_title' => 'Kebijakan dan Pendanaan Kab/Kota',
                 'page_subtitle' => '', // Subtitle can be added if required
                 'filter_label' => 'Pilih Tahun',
-                'text1' => 'Jumlah Kab/Kota yang mengalokasikan pendanaan domestik untuk kegiatan imunisasi dan kegiatan lainnya yang mendukung program imunisasi pada 10 provinsi dampingan Tahun ',
+                'text1' => 'Jumlah Kab/Kota yang mengalokasikan pendanaan domestik untuk kegiatan imunisasi dan kegiatan lainnya yang mendukung program imunisasi pada 10 provinsi target Tahun ',
                 'text2' => '% dari Total Kab/Kota',
                 'text3' => 'Jumlah Kab/Kota yang mengembangkan dan memberlakukan kebijakan yang relevant dengan penjangkauan anak ZD secara spesifik atau imunisasi secara umum Tahun ',
                 'text4' => 'dari Total Kab/Kota',
-                'text5' => 'yang mengalokasikan pendanaan domestik untuk kegiatan imunisasi dan kegiatan lainnya yang mendukung program imunisasi pada 10 provinsi dampingan',
+                'text5' => 'yang mengalokasikan pendanaan domestik untuk kegiatan imunisasi dan kegiatan lainnya yang mendukung program imunisasi pada 10 provinsi target',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Jumlah Total Kab/Kota',
                 'tabelcoloumn3' => 'Jumlah Kab/Kota yang mengalokasikan Pendanaan Domestik',

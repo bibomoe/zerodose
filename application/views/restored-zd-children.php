@@ -91,7 +91,18 @@
                             <!-- DPT1 dan ZD -->
                             <div class="row">
                                 <!-- National Baseline -->
+                                <?php
+                                    if($selected_province == 'all'){
+                                ?>
+                                <div class="col-12 col-lg-6 col-md-12">
+                                <?php
+                                    } else {
+                                ?>
                                 <div class="col-12 col-lg-12 col-md-12">
+                                <?php
+                                    }
+                                ?>
+                                
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5 text-center">
                                             <h6 class="text-muted font-semibold"><?= $translations['text_baseline'] ?></h6>
@@ -112,7 +123,26 @@
                                     </div>
                                 </div>
 
-                                <?php foreach ([2025, 2026] as $year): ?>
+                                <?php
+                                    if($selected_province == 'all'){
+                                ?>
+                                <!-- National Baseline -->
+                                <div class="col-12 col-lg-6 col-md-12">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5 text-center">
+                                            <h6 class="text-muted font-semibold"><?= $translations['text_baseline2'] ?></h6>
+                                            <h6 class="font-extrabold mb-0 highlight"><?= number_format(1000) ?> <?= $translations['children'] ?></h6>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                                    }
+                                ?>
+                            </div>
+                            <div class="row">
+                                <!-- <?php //foreach ([2025, 2026] as $year): ?> -->
+                                <?php foreach ([$selected_year] as $year): ?>
                                     <!-- Target Year -->
                                     <div class="col-6 col-lg-4 col-md-6">
                                         <div class="card">
@@ -172,7 +202,20 @@
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
                                                         <h6 class="text-muted font-semibold"><?= $translations['text5'] ?> <?= $year; ?></h6>
                                                         <div class="card-number font-extrabold mb-0"><?= number_format(${"zero_dose_$year"}); ?></div>
-                                                        <div class="card-subtext"><?= ${"zd_narrative_$year"}; ?></div>
+                                                        <!-- <div class="card-subtext"><?= ${"zd_narrative_$year"}; ?></div> -->
+                                                        
+                                                        <div class="card-subtext">
+                                                        <?= $translations['text5_2'] ?>
+                                                            <?php if ($year == 2025): ?>
+                                                                <?= number_format($national_baseline_zd * 0.85) ?>
+                                                            <?php elseif ($year == 2026): ?>
+                                                                <?= number_format($national_baseline_zd * 0.75) ?>
+                                                            <?php else: ?>
+                                                                <!-- You can put a default value here if needed -->
+                                                                <?= number_format($national_baseline_zd) ?>
+                                                            <?php endif; ?>
+                                                        </div>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -187,7 +230,8 @@
                                 <?php
                                     //  var_dump(number_format($total_dpt_3_2025));
                                     ?>
-                                <?php foreach ([2025, 2026] as $year): ?>
+                                <?php // foreach ([2025, 2026] as $year): ?>
+                                <?php foreach ([$selected_year] as $year): ?>
                                     <!-- DPT-3 Coverage -->
                                     
                                     <div class="col-12 col-lg-6 col-md-6">
@@ -333,7 +377,7 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4><?= $translations['text17']; ?></h4>
+                                            <h4><?= $translations['text17']; ?> <?= $year; ?></h4>
                                         </div>
                                         <!-- <div class="card-body">
                                             <div id="chart-profile-visit"></div>
