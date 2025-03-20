@@ -492,7 +492,7 @@ class Home extends CI_Controller {
                 'text19' => 'Zero-Dose Children Trend by Month',
                 'text20' => 'Zero Dose Children by Region Type',
                 'text21' => 'Data is sourced from the 2023 Combined Data of the Ministry of Health (Kemenkes)',
-                'text22' => 'Data is sourced from Ministry of Health Combination Data',
+                'text22' => 'Data is sourced from Ministry of Health Administration Data',
                 'text23' => 'Data is sourced from ASIK, last updated on '
             ],
             'id' => [
@@ -530,7 +530,7 @@ class Home extends CI_Controller {
                 'text19' => 'Tren Anak Zero-Dose per Bulan',
                 'text20' => 'Jumlah Anak Zero Dose Berdasarkan Jenis Wilayah',
                 'text21' => 'Data bersumber dari Data Kombinasi Kemenkes tahun 2023',
-                'text22' => 'Data bersumber dari Data Kombinasi Kemenkes',
+                'text22' => 'Data bersumber dari Data Administrasi Kemenkes',
                 'text23' => 'Data bersumber dari ASIK terakhir diperbaharui pada '
             ]
         ];
