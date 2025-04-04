@@ -13,6 +13,19 @@ class Immunization_model extends CI_Model {
         return $query->row()->zd ?? 0;
     }
 
+    //Ambil data quarter saat ini
+    public function get_max_quarter($year) {
+        // Select the maximum quarter for the given year
+        $query = $this->db->select('MAX(quarter) as max_quarter')
+                          ->where('year', $year)
+                          ->get('quarter_immunization_data');
+    
+        // Return the maximum quarter value, or 0 if no data is found
+        return $query->row()->max_quarter ?? 1;
+    }
+    
+    
+
     // Ambil Zero Dose (ZD) berdasarkan provinsi atau seluruh provinsi
     public function get_zero_dose_by_province($province_id) {
         $province_ids = $this->get_targeted_province_ids();  // Ambil provinsi yang ditargetkan
@@ -93,6 +106,50 @@ class Immunization_model extends CI_Model {
         $query = $this->db->get()->row();
         return $query->total ?? 0;
     }
+
+    // Total imunisasi berdasarkan jenis vaksin, filter provinsi, tahun, dan triwulan
+    public function get_total_vaccine_by_quarter($vaccine_column, $province_id, $year, $quarter) {
+        // Get the targeted provinces if needed
+        $province_ids = $this->get_targeted_province_ids();
+
+        // Start building the query
+        $this->db->select("SUM($vaccine_column) AS total");
+        $this->db->from('immunization_data');
+        $this->db->where('year', $year);  // Ensure year filter is included
+
+        // Adjust the month filter for each quarter
+        if ($quarter == 1) {
+            // Sum from January to March (quarter 1)
+            $this->db->where('month <=', 3);  
+        } elseif ($quarter == 2) {
+            // Sum from January to June (quarter 2)
+            $this->db->where('month <=', 6);
+        } elseif ($quarter == 3) {
+            // Sum from January to September (quarter 3)
+            $this->db->where('month <=', 9);
+        } elseif ($quarter == 4) {
+            // Sum from January to December (quarter 4)
+            $this->db->where('month <=', 12);
+        }
+
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
+        // Execute the query
+        $query = $this->db->get()->row();
+
+        // Return the total vaccine coverage for that quarter, or 0 if none
+        return $query->total ?? 0;
+    }
+
 
     // Data total DPT-1 per distrik berdasarkan provinsi
     public function get_dpt1_by_district($province_id = 'all', $year = 2025) {

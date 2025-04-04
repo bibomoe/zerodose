@@ -325,6 +325,9 @@ class Home extends CI_Controller {
             $this->data['national_baseline_zd'] = $this->Immunization_model->get_zero_dose_by_province($selected_province);
         }
 
+        // Menentukan quarter
+        $this->data['quarter'] = $this->Immunization_model->get_max_quarter($selected_year);
+
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
 
@@ -426,6 +429,41 @@ class Home extends CI_Controller {
         // $this->data['zero_dose_labels'] = array_map(fn($d) => $d['year'] . '-' . str_pad($d['month'], 2, '0', STR_PAD_LEFT), $zero_dose_cases);
         // $this->data['zero_dose_data'] = array_column($zero_dose_cases, 'zd_cases');
 
+        // Initialize arrays to store data for the target and DPT-1 coverage per quarter
+        $quarters = [1, 2, 3, 4];
+        $target_data = [];
+        $coverage_data = [];
+
+        // Calculate the target and coverage for each quarter
+        foreach ($quarters as $quarter) {
+            // Fetch total target for DPT-1
+            $total_target = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province, $selected_year);
+            
+            // Calculate target for the quarter
+            $quarter_target = 0;
+            if ($quarter == 1) {
+                $quarter_target = $total_target / 4;
+            } elseif ($quarter == 2) {
+                $quarter_target = 2 * $total_target / 4;
+            } elseif ($quarter == 3) {
+                $quarter_target = 3 * $total_target / 4;
+            } elseif ($quarter == 4) {
+                $quarter_target = $total_target;
+            }
+
+            // Fetch total DPT-1 coverage for the selected quarter
+            $dpt_coverage = $this->Immunization_model->get_total_vaccine_by_quarter('dpt_hb_hib_1', $selected_province, $selected_year, $quarter);
+
+            // Store the values
+            $target_data[] = $quarter_target;
+            $coverage_data[] = $dpt_coverage;
+        }
+
+        // Pass the data to the view
+        $this->data['target_data'] = $target_data;
+        $this->data['coverage_data'] = $coverage_data;
+        $this->data['quarters'] = $quarters;
+
         // **Fix: Pastikan ini ada**
         $this->data['zero_dose_cases'] = $this->Immunization_model->get_zero_dose_cases($selected_province, $selected_district);
 
@@ -462,14 +500,15 @@ class Home extends CI_Controller {
                 'page_subtitle' => 'Coverage rates restored, including by reaching zero-dose children',
                 'filter_label' => 'Select Province',
                 'text_baseline' => 'Children Zero Dose Year 2024 (National Baseline)',
-                'text_baseline2' => 'Children Zero Dose Year 2024 who have already received catch-up immunization',
+                'text_baseline2' => 'Children Zero Dose Year 2024 who are chased (ASIK)',
                 'children' => ' children',
                 'text1' => 'Target Year ',
+                'text1_quarter' => ' Quarter ',
                 'text2' => 'Based on the Population Census Survey (SUPAS) Year',
                 'text3' => 'DPT-1 Coverage Year ',
                 'text4' => '% of the target',
                 'text5' => 'Not Immunized with DPT-1 Year ',
-                'text5_2' => 'Reduction Target ',
+                'text5_2' => 'Target ',
                 'text6' => 'from 2024 national baseline for 2025',
                 // 'text7' => 'Target Year 2025',
                 // 'text8' => 'DPT-1 Coverage Year 2025',
@@ -486,28 +525,30 @@ class Home extends CI_Controller {
                 'tabelcoloumn6' => 'Target District',
                 'tabelcoloumn2' => 'Total Coverage DPT1',
                 'tabelcoloumn3' => '% of Total Target',
-                'tabelcoloumn4' => 'Number of ZD Children',
-                'tabelcoloumn5' => '% of Zero Dose',
+                'tabelcoloumn4' => 'Number of Children Not Immunized with DPT-1',
+                'tabelcoloumn5' => '% of Children Not Immunized with DPT-1',
                 'text18' => 'Zero Dose Children Mapping',
-                'text19' => 'Zero-Dose Children Trend by Month',
+                'text19' => 'Zero-Dose Children Outreach Trend',
                 'text20' => 'Zero Dose Children by Region Type',
-                'text21' => 'Data is sourced from the 2023 Combined Data of the Ministry of Health (Kemenkes)',
+                'text21' => 'Data is sourced from Ministry of Health Administration Data',
                 'text22' => 'Data is sourced from Ministry of Health Administration Data',
-                'text23' => 'Data is sourced from ASIK, last updated on '
+                'text23' => 'Data is sourced from Ministry of Health Administration Data, last updated on ',
+                'text24' => 'DPT-1 Target and Coverage Trend per Quarter'
             ],
             'id' => [
                 'page_title' => 'Mitigasi',
                 'page_subtitle' => 'Tingkat cakupan yang dipulihkan, termasuk mencapai anak zero-dose',
                 'filter_label' => 'Pilih Provinsi',
                 'text_baseline' => 'Jumlah Anak Zero Dose Tahun 2024 (National Baseline)',
-                'text_baseline2' => 'Jumlah Anak Zero Dose Tahun 2024 yang sudah diberikan imunisasi kejar',
+                'text_baseline2' => 'Jumlah Anak Zero Dose Tahun 2024 yang dikejar (ASIK)',
                 'children' => ' anak',
                 'text1' => 'Sasaran Tahun ',
+                'text1_quarter' => ' Triwulan ',
                 'text2' => 'Survei Penduduk Antar Sensus Tahun',
                 'text3' => 'Cakupan DPT-1 Tahun ',
                 'text4' => '% dari sasaran',
                 'text5' => 'Jumlah Anak Belum di Imunisasi DPT-1 Tahun ',
-                'text5_2' => 'Target Penurunan ',
+                'text5_2' => 'Target ',
                 'text6' => 'dari baseline nasional 2024 untuk 2025',
                 // 'text7' => 'Target Tahun 2025',
                 // 'text8' => 'Cakupan DPT-1 Tahun 2025',
@@ -524,14 +565,15 @@ class Home extends CI_Controller {
                 'tabelcoloumn6' => 'Sasaran Kab/Kota',
                 'tabelcoloumn2' => 'Total Cakupan DPT1',
                 'tabelcoloumn3' => '% dari Total Sasaran',
-                'tabelcoloumn4' => 'Jumlah Anak ZD',
-                'tabelcoloumn5' => '% dari Zero Dose',
+                'tabelcoloumn4' => 'Jumlah Anak Belum di Imunisasi DPT-1',
+                'tabelcoloumn5' => '% dari Anak Belum di Imunisasi DPT-1',
                 'text18' => 'Pemetaan Anak Zero Dose',
-                'text19' => 'Tren Anak Zero-Dose per Bulan',
+                'text19' => 'Tren Penjangkauan Anak Zero-Dose',
                 'text20' => 'Jumlah Anak Zero Dose Berdasarkan Jenis Wilayah',
-                'text21' => 'Data bersumber dari Data Kombinasi Kemenkes tahun 2023',
+                'text21' => 'Data bersumber dari Data Administrasi Kemenkes',
                 'text22' => 'Data bersumber dari Data Administrasi Kemenkes',
-                'text23' => 'Data bersumber dari ASIK terakhir diperbaharui pada '
+                'text23' => 'Data bersumber dari Data Administrasi Kemenkes terakhir diperbaharui pada ',
+                'text24' => 'Tren Sasaran dan Cakupan DPT-1 per Triwulan'
             ]
         ];
     

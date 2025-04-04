@@ -140,6 +140,22 @@
                                     }
                                 ?>
                             </div>
+
+                            <!-- LAST UPDATE -->
+                            <div class="row">
+                                <div class="col-12" style="margin-bottom: 20px; text-align: left;">
+                                    <!-- <div class="card">
+                                        <div class="card-header"></div>
+                                        <div class="card-body"> -->
+                                            
+                                                <span  class="form-label" style="font-size: 14px;"><?= $translations['text23'] ?>​ <?= $last_update_date;?></span>
+                                                
+                                        <!-- </div>
+                                    </div> -->
+                                </div>
+                            </div>
+
+                            <!-- CARD  -->
                             <div class="row">
                                 <!-- <?php //foreach ([2025, 2026] as $year): ?> -->
                                 <?php foreach ([$selected_year] as $year): ?>
@@ -154,8 +170,32 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                        <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> <?= $year; ?></h6>
-                                                        <div class="card-number font-extrabold mb-0"><?= number_format(${"total_target_dpt_1_$year"}); ?></div>
+                                                        <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> <?= $year; ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></h6>
+                                                        <?php
+                                                            // Get the total target for the given year
+                                                            $total_target = ${"total_target_dpt_1_$year"};  // We assume the variable already contains a valid value
+
+                                                            // Calculate the quarter portion of the total target based on the quarter
+                                                            $quarter_target = 0;
+
+                                                            // Check if total target is 0, then set the quarter target to 0 as well
+                                                            if ($total_target == 0) {
+                                                                $quarter_target = 0;
+                                                            } else {
+                                                                // Calculate based on the quarter if total target is not zero
+                                                                if ($quarter == 1) {
+                                                                    $quarter_target = $total_target / 4; // Quarter 1: 1/4 of total target
+                                                                } elseif ($quarter == 2) {
+                                                                    $quarter_target = 2 * $total_target / 4; // Quarter 2: 2/4 of total target
+                                                                } elseif ($quarter == 3) {
+                                                                    $quarter_target = 3 * $total_target / 4; // Quarter 3: 3/4 of total target
+                                                                } elseif ($quarter == 4) {
+                                                                    $quarter_target = $total_target; // Quarter 4: Full total target
+                                                                }
+                                                            }
+                                                        ?>
+                                                        <div class="card-number font-extrabold mb-0"><?= number_format($quarter_target); ?></div>
+                                                        
                                                         <div class="card-subtext"><?= $translations['text2'] ?> <?= $year; ?></div>
                                                     </div>
                                                 </div>
@@ -207,8 +247,10 @@
                                                         <div class="card-subtext">
                                                         <?= $translations['text5_2'] ?>
                                                             <?php if ($year == 2025): ?>
+                                                                <?php echo "(15%) "; ?>
                                                                 <?= number_format($national_baseline_zd * 0.85) ?>
                                                             <?php elseif ($year == 2026): ?>
+                                                                <?php echo "(25%) "; ?>
                                                                 <?= number_format($national_baseline_zd * 0.75) ?>
                                                             <?php else: ?>
                                                                 <!-- You can put a default value here if needed -->
@@ -283,20 +325,6 @@
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
-                            </div>
-
-                            <!-- LAST UPDATE -->
-                            <div class="row">
-                                <div class="col-12" style="margin-bottom: 20px; text-align: left;">
-                                    <!-- <div class="card">
-                                        <div class="card-header"></div>
-                                        <div class="card-body"> -->
-                                            
-                                                <span  class="form-label" style="font-size: 14px;"><?= $translations['text23'] ?>​ <?= $last_update_date;?></span>
-                                                
-                                        <!-- </div>
-                                    </div> -->
-                                </div>
                             </div>
 
                             <!-- <div class="row">
@@ -482,6 +510,18 @@
 
                             <!-- Grafik -->
                             <div class="row">
+                                <!-- DPT Coverage per quarter -->
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title"><?= $translations['text24'] ?></h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="dptChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ZD Trend -->
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
@@ -535,6 +575,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- ZD Region Type -->
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
@@ -567,8 +608,8 @@
             </footer>
         </div>
     </div>
-    
-<!-- Grafik Line -->
+
+<!-- Grafik Line ZD Trend-->
 <script>
         // console.log("Zero Dose Data:", <?= json_encode($zero_dose_cases); ?>);
 
@@ -778,6 +819,146 @@
             addZdDownloadButtons();
 
 </script>
+
+<!-- Grafik Line DPT Coverage per quarter -->
+<script>
+    const quarters = <?= json_encode($quarters); ?>;
+    const targetData = <?= json_encode($target_data); ?>;
+    const coverageData = <?= json_encode($coverage_data); ?>;
+    
+    const quarter = ["Q1", "Q2", "Q3", "Q4"];
+    
+    // Object for chart translations (you can adapt this based on your selected language)
+    const translationsCoverageLineChart = {
+        en: {
+            title: 'DPT-1 Target and Coverage per Quarter',
+            scaleX: 'Quarters',
+            scaleY: 'Target / Coverage'
+        },
+        id: {
+            title: 'Sasaran dan Cakupan DPT-1 per Triwulan',
+            scaleX: 'Triwulan',
+            scaleY: 'Sasaran / Cakupan'
+        }
+    };
+
+    let titleCoverageLineChart = translationsCoverageLineChart['en'].title;
+    let scaleXlabel3 = translationsCoverageLineChart['en'].scaleX;
+    let scaleYlabel3 = translationsCoverageLineChart['en'].scaleY;
+
+    // Create the chart
+    const ctx = document.getElementById('dptChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: quarter,
+            datasets: [{
+                label: 'Target DPT-1',
+                data: targetData,
+                backgroundColor: 'rgba(0, 86, 179, 0.2)',
+                borderColor: 'rgba(0, 86, 179, 1)',
+                borderWidth: 2,
+                tension: 0.4
+            }, {
+                label: 'DPT-1 Coverage',
+                data: coverageData,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true, position: 'top' }
+            },
+            scales: {
+                x: { title: { display: true, text: scaleXlabel3 } },
+                y: { title: { display: true, text: scaleYlabel3 } }
+            }
+        }
+    });
+
+    // **Fungsi untuk menambahkan tombol download secara dinamis**
+    function addCoverageDownloadButtons() {
+        const container = ctx.canvas.parentNode;
+
+        // Buat wrapper untuk tombol
+        const buttonWrapper = document.createElement('div');
+        buttonWrapper.className = 'd-flex mb-3 gap-2'; // Bootstrap classes
+
+        // Tombol Download CSV
+        const csvButton = document.createElement('button');
+        csvButton.textContent = 'Download CSV';
+        csvButton.className = 'btn btn-primary btn-sm'; // Ukuran kecil
+        csvButton.addEventListener('click', () => downloadCoverageCSV());
+
+        // Tombol Download Excel
+        const excelButton = document.createElement('button');
+        excelButton.textContent = 'Download Excel';
+        excelButton.className = 'btn btn-success btn-sm'; // Ukuran kecil
+        excelButton.addEventListener('click', () => downloadCoverageExcel());
+
+        // Tambahkan tombol ke dalam wrapper
+        buttonWrapper.appendChild(csvButton);
+        buttonWrapper.appendChild(excelButton);
+
+        // Sisipkan wrapper di atas grafik
+        container.insertBefore(buttonWrapper, ctx.canvas);
+    }
+
+    // **Fungsi untuk download CSV**
+    function downloadCoverageCSV() {
+        const labels = ["Q1", "Q2", "Q3", "Q4"];
+        
+        // Ambil dataset yang sedang digunakan di chart
+        let dataset = zdChart.data.datasets[0]; // Ambil dataset aktif
+        let year = dataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label dataset
+
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += `Quarter,Target DPT-1, DPT-1 Coverage\n`; // Header CSV
+
+        labels.forEach((label, index) => {
+            let target = targetData[index] ?? ""; // Ambil data target bulan tertentu, jika tidak ada kosongkan
+            let coverage = coverageData[index] ?? ""; // Ambil data cakupan bulan tertentu, jika tidak ada kosongkan
+            csvContent += `${label},${target},${coverage}\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `dpt_coverage_data.csv`);
+        document.body.appendChild(link);
+        link.click();
+    }
+
+    // **Fungsi untuk download Excel**
+    function downloadCoverageExcel() {
+        const labels = ["Q1", "Q2", "Q3", "Q4"];
+
+        // Ambil dataset yang sedang digunakan
+        let dataset = zdChart.data.datasets[0];
+        let year = dataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label dataset
+
+        // Buat workbook Excel
+        const workbook = XLSX.utils.book_new();
+        const worksheetData = [["Quarter", "Target DPT-1", "DPT-1 Coverage"], 
+            ...labels.map((label, index) => [label, targetData[index] ?? "", coverageData[index] ?? ""])
+        ];
+        const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+        XLSX.utils.book_append_sheet(workbook, worksheet, "DPT-1 Coverage");
+
+        // Generate file Excel dan unduh
+        XLSX.writeFile(workbook, `dpt_coverage_data_${year}.xlsx`);
+    }
+
+    // **Tambahkan tombol download ke DOM**
+    addCoverageDownloadButtons();
+</script>
+
+
+
 
 <!-- Grafik Bar -->
 <script>
@@ -1020,154 +1201,151 @@
 </script> -->
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const map = L.map('map').setView([-7.250445, 112.768845], 7);
+    document.addEventListener("DOMContentLoaded", function () {
+        const map = L.map('map').setView([-7.250445, 112.768845], 7);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    let immunizationData = <?= json_encode($immunization_data, JSON_NUMERIC_CHECK); ?>;
-    // console.log(immunizationData);
-    
-    function cleanCityCode(code) { 
-        if (!code) return ""; 
-        return String(code).replace(/\./g, ''); 
-    }
-
-    function formatValue(value, isPercentage = false) {
-        if (isNaN(value) || value === null || value === undefined) {
-            return isPercentage ? "0%" : "0";
-        }
-        return isPercentage ? value.toFixed(1) + "%" : value;
-    }
-
-    function getColor(percentReductionZD) {
-        // let threshold = isProvince ? 10000 : 1000;
-        // return dpt1 > threshold ? '#1A9850' : '#D73027';
-        return percentReductionZD > 85 ? '#1A9850' : '#D73027';
-    }
-
-    let isProvinceLevel = ["all", "targeted"].includes("<?= $selected_province ?>");
-
-    fetch("<?= $geojson_file; ?>")
-    .then(response => response.json())
-    .then(data => {
-        let geojsonLayer = L.geoJSON(data, {
-            style: function (feature) {
-                let rawCode = isProvinceLevel 
-                    ? feature.properties.KDPPUM  
-                    : feature.properties.KDPKAB; 
-
-                let regionId = cleanCityCode(rawCode);
-                let regionData = immunizationData[regionId] || {}; 
-
-                let dpt1 = formatValue(regionData.dpt1);
-                let percentReductionZD  = formatValue(regionData.percent_reduction);
-                console.log(percentReductionZD);
-
-                return {
-                    fillColor: getColor(percentReductionZD),
-                    weight: 1.5,
-                    opacity: 1,
-                    color: '#ffffff',
-                    fillOpacity: 0.8
-                };
-            },
-            onEachFeature: function (feature, layer) {
-                let rawCode = isProvinceLevel 
-                    ? feature.properties.KDPPUM  
-                    : feature.properties.KDPKAB;  
-
-                let regionId = cleanCityCode(rawCode);
-                let regionData = immunizationData[regionId] || {}; 
-                // console.log(regionData);
-
-                let dpt1 = formatValue(regionData.dpt1);
-                let dpt2 = formatValue(regionData.dpt2);
-                let dpt3 = formatValue(regionData.dpt3);
-                let mr1  = formatValue(regionData.mr1);
-                let zeroDoseChildren = formatValue(regionData.zero_dose_children);
-                let percentZD = formatValue(regionData.percent_zero_dose, true);
-
-                let dpt1Coverage = formatValue(regionData.percentage_target_dpt1, true);
-                let dpt3Coverage = formatValue(regionData.percentage_target_dpt3, true);
-                let mr1Coverage  = formatValue(regionData.percentage_target_mr1, true);
-
-                let zd2023 = formatValue(regionData.zd_children_2023);
-                let percentReductionZD  = formatValue(regionData.percent_reduction, true);
-
-                let name = isProvinceLevel 
-                    ? feature.properties.WADMPR  
-                    : feature.properties.NAMOBJ;  
-
-                // let popupContent = `<b>${name}</b><br>
-                //                     DPT1 Coverage: ${dpt1}<br>
-                //                     DPT2 Coverage: ${dpt2}<br>
-                //                     DPT3 Coverage: ${dpt3} (Coverage: ${dpt3Coverage})<br>
-                //                     MR1 Coverage: ${mr1} (Coverage: ${mr1Coverage})<br>
-                //                     Zero Dose Children: ${zeroDoseChildren}<br>
-                //                     % Zero Dose: ${percentZD}`;
-
-                let popupContent = `<b>${name}</b><br>
-                                    DPT1 Coverage: ${dpt1} (Coverage: ${dpt1Coverage})<br>
-                                    DPT3 Coverage: ${dpt3} (Coverage: ${dpt3Coverage})<br>
-                                    MR1 Coverage: ${mr1} (Coverage: ${mr1Coverage})<br>
-                                    Zero Dose Children: ${zeroDoseChildren}<br>
-                                    % Zero Dose: ${percentZD}<br>
-                                    Zero Dose Children 2023: ${zd2023}<br>
-                                    % Reduction From ZD 2023: ${percentReductionZD}`;
-                                    
-                
-                // Jika ini level provinsi, tambahkan tombol
-                if (isProvinceLevel) {
-                    let selectedYear = "<?= $selected_year ?>"; // Ambil dari PHP
-
-                    popupContent += `<br><br>
-                        <a href="<?= base_url('home/restored'); ?>?year=${selectedYear}&province=${regionId}&get_detail=1" target="">
-                            <button class="btn btn-primary btn-sm">View Details</button>
-                        </a>`;
-                }
-
-                layer.bindPopup(popupContent);
-
-                if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
-                    try {
-                        let labelPoint = turf.pointOnFeature(feature);
-                        let latlng = [labelPoint.geometry.coordinates[1], labelPoint.geometry.coordinates[0]];
-                        
-                        // let labelSize = adjustLabelSize(map.getZoom()); // Adjust size based on current zoom level
-
-                        if (feature.properties.NAMOBJ) {
-                            let label = L.divIcon({
-                                className: 'label-class',
-                                html: `<strong style="font-size: 9px;">${feature.properties.NAMOBJ}</strong>`,
-                                iconSize: [100, 20]
-                            });
-                            L.marker(latlng, { icon: label }).addTo(map);
-                        } else if (feature.properties.WADMPR) { 
-                            let label = L.divIcon({
-                                className: 'label-class',
-                                html: `<strong style="font-size: 8px;">${feature.properties.WADMPR}</strong>`,
-                                iconSize: [50, 15]
-                            });
-                            L.marker(latlng, { icon: label }).addTo(map);
-                        }
-                    } catch (error) {
-                        console.warn("Turf.js error while generating label:", error, feature);
-                    }
-                }
-            }
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        map.fitBounds(geojsonLayer.getBounds());
-    })
-    .catch(error => console.error("Error loading GeoJSON:", error));
-});
+        let immunizationData = <?= json_encode($immunization_data, JSON_NUMERIC_CHECK); ?>;
+        // console.log(immunizationData);
+        
+        function cleanCityCode(code) { 
+            if (!code) return ""; 
+            return String(code).replace(/\./g, ''); 
+        }
 
+        function formatValue(value, isPercentage = false) {
+            if (isNaN(value) || value === null || value === undefined) {
+                return isPercentage ? "0%" : "0";
+            }
+            return isPercentage ? value.toFixed(1) + "%" : value;
+        }
 
+        function getColor(percentReductionZD) {
+            // let threshold = isProvince ? 10000 : 1000;
+            // return dpt1 > threshold ? '#1A9850' : '#D73027';
+            return percentReductionZD > 85 ? '#1A9850' : '#D73027';
+        }
 
+        let isProvinceLevel = ["all", "targeted"].includes("<?= $selected_province ?>");
+
+        fetch("<?= $geojson_file; ?>")
+        .then(response => response.json())
+        .then(data => {
+            let geojsonLayer = L.geoJSON(data, {
+                style: function (feature) {
+                    let rawCode = isProvinceLevel 
+                        ? feature.properties.KDPPUM  
+                        : feature.properties.KDPKAB; 
+
+                    let regionId = cleanCityCode(rawCode);
+                    let regionData = immunizationData[regionId] || {}; 
+
+                    let dpt1 = formatValue(regionData.dpt1);
+                    let percentReductionZD  = formatValue(regionData.percent_reduction);
+                    console.log(percentReductionZD);
+
+                    return {
+                        fillColor: getColor(percentReductionZD),
+                        weight: 1.5,
+                        opacity: 1,
+                        color: '#ffffff',
+                        fillOpacity: 0.8
+                    };
+                },
+                onEachFeature: function (feature, layer) {
+                    let rawCode = isProvinceLevel 
+                        ? feature.properties.KDPPUM  
+                        : feature.properties.KDPKAB;  
+
+                    let regionId = cleanCityCode(rawCode);
+                    let regionData = immunizationData[regionId] || {}; 
+                    // console.log(regionData);
+
+                    let dpt1 = formatValue(regionData.dpt1);
+                    let dpt2 = formatValue(regionData.dpt2);
+                    let dpt3 = formatValue(regionData.dpt3);
+                    let mr1  = formatValue(regionData.mr1);
+                    let zeroDoseChildren = formatValue(regionData.zero_dose_children);
+                    let percentZD = formatValue(regionData.percent_zero_dose, true);
+
+                    let dpt1Coverage = formatValue(regionData.percentage_target_dpt1, true);
+                    let dpt3Coverage = formatValue(regionData.percentage_target_dpt3, true);
+                    let mr1Coverage  = formatValue(regionData.percentage_target_mr1, true);
+
+                    let zd2023 = formatValue(regionData.zd_children_2023);
+                    let percentReductionZD  = formatValue(regionData.percent_reduction, true);
+
+                    let name = isProvinceLevel 
+                        ? feature.properties.WADMPR  
+                        : feature.properties.NAMOBJ;  
+
+                    // let popupContent = `<b>${name}</b><br>
+                    //                     DPT1 Coverage: ${dpt1}<br>
+                    //                     DPT2 Coverage: ${dpt2}<br>
+                    //                     DPT3 Coverage: ${dpt3} (Coverage: ${dpt3Coverage})<br>
+                    //                     MR1 Coverage: ${mr1} (Coverage: ${mr1Coverage})<br>
+                    //                     Zero Dose Children: ${zeroDoseChildren}<br>
+                    //                     % Zero Dose: ${percentZD}`;
+
+                    let popupContent = `<b>${name}</b><br>
+                                        DPT1 Coverage: ${dpt1} (Coverage: ${dpt1Coverage})<br>
+                                        DPT3 Coverage: ${dpt3} (Coverage: ${dpt3Coverage})<br>
+                                        MR1 Coverage: ${mr1} (Coverage: ${mr1Coverage})<br>
+                                        Zero Dose Children: ${zeroDoseChildren}<br>
+                                        % Zero Dose: ${percentZD}<br>
+                                        Zero Dose Children 2023: ${zd2023}<br>
+                                        % Reduction From ZD 2023: ${percentReductionZD}`;
+                                        
+                    
+                    // Jika ini level provinsi, tambahkan tombol
+                    if (isProvinceLevel) {
+                        let selectedYear = "<?= $selected_year ?>"; // Ambil dari PHP
+
+                        popupContent += `<br><br>
+                            <a href="<?= base_url('home/restored'); ?>?year=${selectedYear}&province=${regionId}&get_detail=1" target="">
+                                <button class="btn btn-primary btn-sm">View Details</button>
+                            </a>`;
+                    }
+
+                    layer.bindPopup(popupContent);
+
+                    if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
+                        try {
+                            let labelPoint = turf.pointOnFeature(feature);
+                            let latlng = [labelPoint.geometry.coordinates[1], labelPoint.geometry.coordinates[0]];
+                            
+                            // let labelSize = adjustLabelSize(map.getZoom()); // Adjust size based on current zoom level
+
+                            if (feature.properties.NAMOBJ) {
+                                let label = L.divIcon({
+                                    className: 'label-class',
+                                    html: `<strong style="font-size: 9px;">${feature.properties.NAMOBJ}</strong>`,
+                                    iconSize: [100, 20]
+                                });
+                                L.marker(latlng, { icon: label }).addTo(map);
+                            } else if (feature.properties.WADMPR) { 
+                                let label = L.divIcon({
+                                    className: 'label-class',
+                                    html: `<strong style="font-size: 8px;">${feature.properties.WADMPR}</strong>`,
+                                    iconSize: [50, 15]
+                                });
+                                L.marker(latlng, { icon: label }).addTo(map);
+                            }
+                        } catch (error) {
+                            console.warn("Turf.js error while generating label:", error, feature);
+                        }
+                    }
+                }
+            }).addTo(map);
+
+            map.fitBounds(geojsonLayer.getBounds());
+        })
+        .catch(error => console.error("Error loading GeoJSON:", error));
+    });
 </script>
 
 <script>
