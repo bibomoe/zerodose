@@ -628,7 +628,7 @@ class Home extends CI_Controller {
         $province_ids = $this->Immunization_model->get_targeted_province_ids(); // Ambil province_id yang priority = 1
         
         // Mendapatkan dropout rates per provinsi
-        $dropout_rates = $this->Dpt1_model->get_districts_under_5_percent($selected_year);
+        $dropout_rates = $this->Dpt1_model->get_districts_under_5_percent($selected_year, $selected_province);
         
         // Menjumlahkan semua nilai dropout rate per provinsi
         $total_dropout_rate = array_sum($dropout_rates);
@@ -637,7 +637,7 @@ class Home extends CI_Controller {
         $this->data['total_dropout_rate'] = $total_dropout_rate;
 
         // Ambil dropout rates per provinsi
-        $dropout_rates_per_province = $this->Dpt1_model->get_dropout_rates_per_province($selected_year);
+        $dropout_rates_per_province = $this->Dpt1_model->get_dropout_rates_per_province($selected_year, $selected_province);
 
         // Hitung total dan jumlah provinsi untuk perhitungan rata-rata
         $total_dropout_rate = 0;
@@ -657,10 +657,10 @@ class Home extends CI_Controller {
         $this->data['dropout_rate_all_provinces'] = round($average_dropout_rate_all_provinces, 2);
 
 
-        $this->data['total_dpt1_coverage'] = $this->Dpt1_model->get_total_dpt1_coverage($selected_year);
-        $this->data['total_dpt1_target'] = $this->Dpt1_model->get_total_dpt1_target($selected_year);
+        $this->data['total_dpt1_coverage'] = $this->Dpt1_model->get_total_dpt1_coverage($selected_year, $selected_province);
+        $this->data['total_dpt1_target'] = $this->Dpt1_model->get_total_dpt1_target($selected_year, $selected_province);
         // $this->data['districts_under_5'] = $this->Dpt1_model->get_districts_under_5_percent();
-        $this->data['total_regencies_cities'] = $this->Dpt1_model->get_total_regencies_cities();
+        $this->data['total_regencies_cities'] = $this->Dpt1_model->get_total_regencies_cities($selected_province);
 
         // Hitung persentase DPT1 Coverage
         $this->data['percent_dpt1_coverage'] = ($this->data['total_dpt1_target'] > 0) 
@@ -674,12 +674,12 @@ class Home extends CI_Controller {
 
         // Mengambil data cakupan DPT untuk provinsi yang telah dipilih
         // $dpt_under_5_data = $this->Dpt1_model->get_dpt_under_5_percent_cities($province_ids);
-        $dpt_under_5_data = $this->Dpt1_model->get_districts_under_5_percent($selected_year);
+        $dpt_under_5_data = $this->Dpt1_model->get_districts_under_5_percent($selected_year, $selected_province);
 
-        $this->data['total_dpt1_coverage_per_province'] = $this->Dpt1_model->get_dpt1_coverage_per_province($province_ids, $selected_year);
-        $this->data['total_dpt1_target_per_province'] = $this->Dpt1_model->get_dpt1_target_per_province($province_ids, $selected_year);
+        $this->data['total_dpt1_coverage_per_province'] = $this->Dpt1_model->get_dpt1_coverage_per_province($selected_province, $selected_year);
+        $this->data['total_dpt1_target_per_province'] = $this->Dpt1_model->get_dpt1_target_per_province($selected_province, $selected_year);
         // Mengambil data total cities per provinsi
-        $this->data['total_cities_per_province'] = $this->Dpt1_model->get_total_cities_per_province($province_ids);
+        $this->data['total_cities_per_province'] = $this->Dpt1_model->get_total_cities_per_province($selected_province);
 
         // Kirim data ke view dalam format array
         $this->data['dpt_under_5_data'] = $dpt_under_5_data;
@@ -734,10 +734,25 @@ class Home extends CI_Controller {
         //DO per Provinces untuk peta
         $this->data['dropout_rate_per_provinces'] = $dropout_rates_per_province;
 
-        $this->data['geojson_file'] = base_url('assets/geojson/targeted.geojson');  // File GeoJSON untuk targeted provinces
+        // $this->data['geojson_file'] = base_url('assets/geojson/targeted.geojson');  // File GeoJSON untuk targeted provinces
+        // Ambil file GeoJSON berdasarkan provinsi
+        if ($selected_province !== 'all' && $selected_province !== 'targeted') {
+            $geojson = $this->db->select('geojson_file')
+                                ->where('id', $selected_province)
+                                ->get('provinces')
+                                ->row();
+            $this->data['geojson_file'] = base_url('assets/geojson/' . $geojson->geojson_file);
+        } else if ($selected_province == 'all'){
+            $this->data['geojson_file'] = base_url('assets/geojson/provinces.geojson');
+        } else if ($selected_province == 'targeted'){
+            $this->data['geojson_file'] = base_url('assets/geojson/targeted.geojson');
+        }
+
+        // Menentukan quarter
+        $this->data['quarter'] = $this->Immunization_model->get_max_quarter($selected_year);
 
         // Ambil data distrik dan cakupan DPT
-        $this->data['district_details'] = $this->Dpt1_model->get_district_details($province_ids, $selected_year);
+        $this->data['district_details'] = $this->Dpt1_model->get_district_details($selected_province, $selected_year, $this->data['quarter']);
 
         // echo "Total districts from model: " . count($this->data['district_details']);
         // print_r($this->data['district_details']);
@@ -766,6 +781,7 @@ class Home extends CI_Controller {
                 'text2' => 'Dropout Rate',
                 'text3' => 'Number of districts with DO (DPT1-DPT3) less than 5%',
                 'text4' => 'Total Districts',
+                'text5' => ' Quarter ',
                 'tabelcoloumn1' => 'Province',
                 'tabelcoloumn2' => 'District',
                 'tabelcoloumn3' => 'Target',
@@ -783,6 +799,7 @@ class Home extends CI_Controller {
                 'text2' => '% drop out wilayah',
                 'text3' => 'Jumlah Kab/Kota dengan % DO (DPT1-DPT3) kurang dari 5%',
                 'text4' => 'Jumlah Kab/Kota',
+                'text5' => ' Triwulan ',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Kab/Kota',
                 'tabelcoloumn3' => 'Target',

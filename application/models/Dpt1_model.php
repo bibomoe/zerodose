@@ -14,33 +14,57 @@ class Dpt1_model extends CI_Model {
     }
 
     // Mengambil total DPT1 coverage untuk 10 provinsi priority
-    public function get_total_dpt1_coverage($year) {
+    public function get_total_dpt1_coverage($year, $province_id) {
         $provinces = $this->get_targeted_provinces();
         $province_ids = array_column($provinces, 'id');
 
         $this->db->select('SUM(dpt_hb_hib_1) AS total_dpt1');
         $this->db->from('immunization_data');
-        $this->db->where_in('province_id', $province_ids);
         $this->db->where('immunization_data.year', $year); // Filter berdasarkan tahun
+        // $this->db->where_in('province_id', $province_ids);
+
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
         $query = $this->db->get();
         return $query->row()->total_dpt1 ?? 0;
     }
 
     // Mengambil total DPT1 target untuk 10 provinsi priority
-    public function get_total_dpt1_target($year) {
+    public function get_total_dpt1_target($year, $province_id) {
         $provinces = $this->get_targeted_provinces();
         $province_ids = array_column($provinces, 'id');
 
         $this->db->select('SUM(dpt_hb_hib_1_target) AS total_target');
         $this->db->from('target_immunization');
-        $this->db->where_in('province_id', $province_ids);
+        // $this->db->where_in('province_id', $province_ids);
+
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
         $this->db->where('target_immunization.year', $year); // Filter berdasarkan tahun
         $query = $this->db->get();
         return $query->row()->total_target ?? 0;
     }
 
     // Mengambil jumlah distrik dengan coverage (DPT1-DPT3) kurang dari 5% 
-    public function get_districts_under_5_percent($year) {
+    public function get_districts_under_5_percent($year, $province_id) {
         // Mengambil 10 provinsi dengan priority = 1
         $provinces = $this->get_targeted_provinces();
         $province_ids = array_column($provinces, 'id'); // Ambil array ID provinsi
@@ -58,7 +82,19 @@ class Dpt1_model extends CI_Model {
         $this->db->from('cities');
         $this->db->join('immunization_data', 'immunization_data.city_id = cities.id', 'left');
         $this->db->join('target_immunization', 'target_immunization.city_id = cities.id', 'left');
-        $this->db->where_in('cities.province_id', $province_ids); // Hanya untuk provinsi dengan priority = 1
+        // $this->db->where_in('cities.province_id', $province_ids); // Hanya untuk provinsi dengan priority = 1
+
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('cities.province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('cities.province_id', $province_id);
+        }
+
         $this->db->where('immunization_data.year', $year); // Filter berdasarkan tahun
         $this->db->group_by('cities.id'); // Group by city_id untuk perhitungan tiap kota/distrik
     
@@ -112,7 +148,7 @@ class Dpt1_model extends CI_Model {
     }
 
     // Menghitung dropout rate untuk tiap provinsi
-    public function get_dropout_rates_per_province($year) {
+    public function get_dropout_rates_per_province($year, $province_id) {
         // Ambil 10 provinsi dengan priority = 1
         $provinces = $this->get_targeted_provinces();
         $province_ids = array_column($provinces, 'id'); // Ambil array ID provinsi
@@ -125,7 +161,19 @@ class Dpt1_model extends CI_Model {
         ");
         $this->db->from('cities');
         $this->db->join('immunization_data', 'immunization_data.city_id = cities.id', 'left');
-        $this->db->where_in('cities.province_id', $province_ids); // Hanya untuk provinsi dengan priority = 1
+        // $this->db->where_in('cities.province_id', $province_ids); // Hanya untuk provinsi dengan priority = 1
+
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('cities.province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('cities.province_id', $province_id);
+        }
+
         $this->db->where('immunization_data.year', $year); // Filter berdasarkan tahun
         $this->db->group_by('cities.id'); // Group by city_id untuk perhitungan tiap kota/distrik
 
@@ -192,18 +240,30 @@ class Dpt1_model extends CI_Model {
     }
 
     // Mengambil total jumlah regencies/cities untuk 10 provinsi priority
-    public function get_total_regencies_cities() {
+    public function get_total_regencies_cities($province_id) {
         $provinces = $this->get_targeted_provinces();
         $province_ids = array_column($provinces, 'id');
 
         $this->db->select('COUNT(DISTINCT id) AS total_cities');
         $this->db->from('cities');
-        $this->db->where_in('province_id', $province_ids);
+        // $this->db->where_in('province_id', $province_ids);
+
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
         $query = $this->db->get();
         return $query->row()->total_cities ?? 0;
     }
 
-    public function get_dpt_under_5_percent_cities($province_ids) {
+    public function get_dpt_under_5_percent_cities($province_id) {
         // Query untuk mendapatkan cakupan DPT1, DPT2, DPT3 dan target masing-masing untuk setiap distrik
         $this->db->select("
             cities.province_id,
@@ -217,7 +277,19 @@ class Dpt1_model extends CI_Model {
         $this->db->from('cities');
         $this->db->join('immunization_data', 'immunization_data.city_id = cities.id', 'left');
         $this->db->join('target_immunization', 'target_immunization.city_id = cities.id', 'left');
-        $this->db->where_in('cities.province_id', $province_ids); // Hanya untuk provinsi dengan priority = 1
+        // $this->db->where_in('cities.province_id', $province_ids); // Hanya untuk provinsi dengan priority = 1
+
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('cities.province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('cities.province_id', $province_id);
+        }
+
         $this->db->group_by('cities.id'); // Group by city_id untuk perhitungan tiap kota/distrik
         
         // Ambil hasil query
@@ -257,10 +329,25 @@ class Dpt1_model extends CI_Model {
     }
     
     // Mengambil total DPT1 coverage untuk tiap provinsi
-    public function get_dpt1_coverage_per_province($province_ids, $year) {
+    public function get_dpt1_coverage_per_province($province_id, $year) {
+        $provinces = $this->get_targeted_provinces();
+        $province_ids = array_column($provinces, 'id');
+
         $this->db->select('province_id, SUM(dpt_hb_hib_1) AS dpt1_coverage');
         $this->db->from('immunization_data');
-        $this->db->where_in('province_id', $province_ids);
+        // $this->db->where_in('province_id', $province_ids);
+
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
         $this->db->where('immunization_data.year', $year); // Filter berdasarkan tahun
         $this->db->group_by('province_id');
         $query = $this->db->get();
@@ -268,10 +355,25 @@ class Dpt1_model extends CI_Model {
     }
 
     // Mengambil total DPT1 target untuk tiap provinsi
-    public function get_dpt1_target_per_province($province_ids, $year) {
+    public function get_dpt1_target_per_province($province_id, $year) {
+        $provinces = $this->get_targeted_provinces();
+        $province_ids = array_column($provinces, 'id');
+
         $this->db->select('province_id, SUM(dpt_hb_hib_1_target) AS dpt1_target');
         $this->db->from('target_immunization');
-        $this->db->where_in('province_id', $province_ids);
+        // $this->db->where_in('province_id', $province_ids);
+
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
         $this->db->where('target_immunization.year', $year); // Filter berdasarkan tahun
         $this->db->group_by('province_id');
         $query = $this->db->get();
@@ -279,16 +381,34 @@ class Dpt1_model extends CI_Model {
     }
 
     // Mengambil total jumlah cities per provinsi
-    public function get_total_cities_per_province($province_ids) {
+    public function get_total_cities_per_province($province_id) {
+        $provinces = $this->get_targeted_provinces();
+        $province_ids = array_column($provinces, 'id');
+
         $this->db->select('province_id, COUNT(id) AS total_cities');
         $this->db->from('cities');
-        $this->db->where_in('province_id', $province_ids);
+        // $this->db->where_in('province_id', $province_ids);
+
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
         $this->db->group_by('province_id');
         $query = $this->db->get();
         return $query->result_array();
     }
 
-    public function get_district_details($province_ids, $year) {
+    public function get_district_details($province_id, $year, $quarter) {
+        $provinces = $this->get_targeted_provinces();
+        $province_ids = array_column($provinces, 'id');
+
         $this->db->select("
             cities.name_id AS district_name,
             provinces.name_id AS province_name,
@@ -300,7 +420,19 @@ class Dpt1_model extends CI_Model {
         $this->db->join('provinces', 'provinces.id = cities.province_id', 'left'); // Join ke tabel provinsi
         $this->db->join('immunization_data', 'immunization_data.city_id = cities.id', 'left');
         $this->db->join('target_immunization', 'target_immunization.city_id = cities.id AND target_immunization.year = immunization_data.year', 'left');
-        $this->db->where_in('cities.province_id', $province_ids);
+        // $this->db->where_in('cities.province_id', $province_ids);
+
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('cities.province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('cities.province_id', $province_id);
+        }
+
         $this->db->where('immunization_data.year', $year); // Filter berdasarkan tahun
         $this->db->group_by('cities.id'); // Group by agar tidak duplikasi district
     
@@ -309,9 +441,29 @@ class Dpt1_model extends CI_Model {
     
         // Hitung persentase dan dropout rates
         foreach ($districts as &$district) {
-            $target = $district['target'];
+            $total_target = $district['target'];
+
+            // Check if total target is 0, then set the quarter target to 0 as well
+            if ($total_target <= 0) {
+                $target = 0;
+
+            } else {
+                // Calculate based on the quarter if total target is not zero
+                if ($quarter == 1) {
+                    $target = $total_target / 4; // Quarter 1: 1/4 of total target
+                } elseif ($quarter == 2) {
+                    $target = 2 * $total_target / 4; // Quarter 2: 2/4 of total target
+                } elseif ($quarter == 3) {
+                    $target = 3 * $total_target / 4; // Quarter 3: 3/4 of total target
+                } elseif ($quarter == 4) {
+                    $target = $total_target; // Quarter 4: Full total target
+                }
+            }
+            
             $dpt1_coverage = $district['dpt1_coverage'];
             $dpt3_coverage = $district['dpt3_coverage'];
+
+            $district['target'] = $target;
 
             // % of DPT1 Coverage
             $district['percent_dpt1_coverage'] = ($target > 0) ? round(($dpt1_coverage / $target) * 100, 2) : 0;

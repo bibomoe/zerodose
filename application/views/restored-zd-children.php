@@ -1200,6 +1200,7 @@
 
 </script> -->
 
+<!-- Peta -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const map = L.map('map').setView([-7.250445, 112.768845], 7);
@@ -1348,6 +1349,7 @@
     });
 </script>
 
+<!-- Auto Focus to Map Card -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Periksa jika parameter get_detail ada di URL dan bernilai 1

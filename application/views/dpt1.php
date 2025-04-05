@@ -34,11 +34,11 @@
                                             <?= form_open('home/dpt1', ['method' => 'get']) ?>
                                                 <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?></label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
-                                                    <!-- <?= form_dropdown('province', 
+                                                    <?= form_dropdown('province', 
                                                         array_column($provinces, 'name_id', 'id'), 
                                                         $selected_province, 
                                                         ['class' => 'form-select', 'id' => 'provinceFilter', 'style' => 'width: 100%; max-width: 300px; height: 48px; font-size: 1rem;']
-                                                    ); ?> -->
+                                                    ); ?>
                                                     <?= form_dropdown(
                                                             'year', 
                                                             [2025 => '2025', 2026 => '2026'], 
@@ -109,7 +109,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-6 col-lg-3 col-md-6">
+                                <!-- <div class="col-6 col-lg-3 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
                                             <div class="row">
@@ -125,7 +125,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="col-6 col-lg-3 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
@@ -181,7 +181,7 @@
                                                         <tr>
                                                             <th><?= $translations['tabelcoloumn1'] ?></th>
                                                             <th><?= $translations['tabelcoloumn2'] ?></th>
-                                                            <th><?= $translations['tabelcoloumn3'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn3'] ?> <?= $translations['text5'] ?> <?= $quarter ?></th>
                                                             <th><?= $translations['tabelcoloumn4'] ?></th>
                                                             <th><?= $translations['tabelcoloumn5'] ?></th>
                                                             <th><?= $translations['tabelcoloumn6'] ?></th>
@@ -256,7 +256,13 @@ document.addEventListener("DOMContentLoaded", function () {
         return (doRate < 5 && dpt != 0) ? '#1A9850' : '#D73027'; // Hijau jika do < 5 dan dpt != 0, merah jika tidak
     }
 
+    function cleanCityCode(code) { 
+            if (!code) return ""; 
+            return String(code).replace(/\./g, ''); 
+        }
 
+
+    let isProvinceLevel = ["all", "targeted"].includes("<?= $selected_province ?>");
 
     fetch("<?= $geojson_file; ?>")
     .then(response => response.json())
@@ -264,8 +270,11 @@ document.addEventListener("DOMContentLoaded", function () {
         let geojsonLayer = L.geoJSON(data, {
             style: function (feature) {
                 // Mendapatkan rawCode untuk membandingkan dengan data DPT yang sudah diproses
-                let rawCode = feature.properties.KDPPUM;
-                let regionId = rawCode; // Langsung menggunakan rawCode untuk membandingkan
+                let rawCode = isProvinceLevel 
+                        ? feature.properties.KDPPUM  
+                        : feature.properties.KDPKAB;
+
+                let regionId = cleanCityCode(rawCode); // Langsung menggunakan rawCode untuk membandingkan
 
                 // Cek apakah ada data DPT untuk wilayah ini
                 let dptUnder5 = dptUnder5Data[regionId] || 0;
@@ -286,8 +295,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 };
             },
             onEachFeature: function (feature, layer) {
-                let rawCode = feature.properties.KDPPUM;
-                let regionId = rawCode; // Langsung menggunakan rawCode untuk membandingkan
+                let rawCode = isProvinceLevel 
+                        ? feature.properties.KDPPUM  
+                        : feature.properties.KDPKAB;
+
+                let regionId = cleanCityCode(rawCode); // Langsung menggunakan rawCode untuk membandingkan
+
+                
 
                 // Cek apakah ada data DPT untuk wilayah ini
                 let dptUnder5 = dptUnder5Data[regionId] || 0;
@@ -314,7 +328,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Ambil persentase districts dengan coverage (DPT1-DPT3) < 5% per provinsi
                 let percentDptUnder5 = percentDptUnder5Data[regionId] || 0;
 
-                let name = feature.properties.WADMPR; // Nama wilayah/provinsi
+                // Nama wilayah/provinsi
+                let name = isProvinceLevel 
+                        ? feature.properties.WADMPR  
+                        : feature.properties.NAMOBJ;  
 
                 // Membuat konten pop-up untuk menampilkan informasi
                 let popupContent = `<b>${name}</b><br>`;
@@ -330,15 +347,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     let labelPoint = turf.pointOnFeature(feature);
                     let latlng = [labelPoint.geometry.coordinates[1], labelPoint.geometry.coordinates[0]];
 
-                    // if (feature.properties.NAMOBJ) {
-                    //     let label = L.divIcon({
-                    //         className: 'label-class',
-                    //         html: `<strong style="font-size: 9px;">${feature.properties.NAMOBJ}</strong>`,
-                    //         iconSize: [100, 20]
-                    //     });
+                    if (feature.properties.NAMOBJ) {
+                        let label = L.divIcon({
+                            className: 'label-class',
+                            html: `<strong style="font-size: 9px;">${feature.properties.NAMOBJ}</strong>`,
+                            iconSize: [100, 20]
+                        });
 
-                    //     L.marker(latlng, { icon: label }).addTo(map);
-                    // } else if (feature.properties.WADMPR) { 
+                        L.marker(latlng, { icon: label }).addTo(map);
+                    } else if (feature.properties.WADMPR) { 
                         let label = L.divIcon({
                             className: 'label-class',
                             html: `<strong style="font-size: 8px;">${feature.properties.WADMPR}</strong>`,
@@ -346,7 +363,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
 
                         L.marker(latlng, { icon: label }).addTo(map);
-                    // }
+                    }
                 }
             }
         }).addTo(map);
