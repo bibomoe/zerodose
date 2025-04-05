@@ -31,6 +31,31 @@ class PartnersActivities_model extends CI_Model {
         $result = $this->db->get('partners_activities')->row_array();
         return $result['total_target_budget'] ?? 0; // Default 0 jika tidak ada data
     }
+
+    public function get_target_budget_by_objective_and_year($year, $partner_id = null) {
+        $this->db->select('a.objective_id, SUM(pa.target_budget_' . $year . ') AS target_budget');
+        $this->db->from('partners_activities pa');
+        $this->db->join('activities a', 'pa.activity_id = a.id');
+        
+        if (!is_null($partner_id) && $partner_id !== 'all') {
+            $this->db->where('pa.partner_id', $partner_id);
+        }
+    
+        $this->db->group_by('a.objective_id');
+        $result = $this->db->get()->result_array();
+    
+        // Siapkan array default
+        $objectives = $this->CountryObjective_model->get_all_objectives();
+        $budget_data = array_fill(0, count($objectives), 0);
+    
+        foreach ($result as $row) {
+            $index = $row['objective_id'] - 1;
+            $budget_data[$index] = (float) $row['target_budget'];
+        }
+    
+        return $budget_data;
+    }
+    
 }
 
 ?>

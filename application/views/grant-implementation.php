@@ -24,6 +24,7 @@
                 <div class="page-content"> 
                     <section class="row">
                         <div class="col-12 col-lg-12">
+                            <!-- Filter -->
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card">
@@ -72,7 +73,58 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Card Row -->
                             <div class="row">
+                                <!-- Grafik Bar -->
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Number of activities conducted</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <!-- Chart -->
+                                            <div id="chartWrapper" class="d-flex justify-content-center">
+                                                <!-- <canvas id="activitiesConductedChart"></canvas> -->
+                                                <!-- <?php var_dump($total_activities); ?>
+                                                <?php var_dump($completed_activities_2024); ?>
+                                                <?php var_dump($completed_activities_2025); ?> -->
+                                                <canvas id="activitiesChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Grafik Bar for Comparison -->
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Comparison of Completed Activities for Each Partner per Objective</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="chartWrapper" class="d-flex justify-content-center">
+                                                <canvas id="activitiesComparisonChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Grafik Bar Budget per Objective -->
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Budget Disbursed per Objective</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="chartWrapper" class="d-flex justify-content-center">
+                                                <canvas id="budgetPerObjectiveChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- Grafik Line Budget Absorption -->
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
@@ -108,38 +160,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Grafik Bar -->
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4 class="card-title">Number of activities conducted</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <!-- Chart -->
-                                            <div id="chartWrapper" class="d-flex justify-content-center">
-                                                <!-- <canvas id="activitiesConductedChart"></canvas> -->
-                                                <!-- <?php var_dump($total_activities); ?>
-                                                <?php var_dump($completed_activities_2024); ?>
-                                                <?php var_dump($completed_activities_2025); ?> -->
-                                                <canvas id="activitiesChart"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Grafik Bar for Comparison -->
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4 class="card-title">Comparison of Completed Activities for Each Partner per Objective</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div id="chartWrapper" class="d-flex justify-content-center">
-                                                <canvas id="activitiesComparisonChart"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </section>
@@ -161,7 +182,7 @@
     </div>
     
     
-
+<!-- Grafik Line Budget Absorption -->
 <script>
         var selectedYear = <?= $selected_year ?>;
         
@@ -326,6 +347,7 @@
 
 </script>
 
+<!-- Grafik Bar Activites Conducted -->
 <script>
         // Labels untuk grafik bar (Objectives)
         const objectivesLabels = [
@@ -639,5 +661,67 @@
     document.addEventListener('DOMContentLoaded', addComparisonDownloadButtons);
 
 
+
+</script>
+
+<script>
+    const targetBudget2024 = <?= json_encode($target_budget_by_objectives_2024 ?? array_fill(0, count($objectives), 0)); ?>;
+const targetBudget2025 = <?= json_encode($target_budget_by_objectives_2025 ?? array_fill(0, count($objectives), 0)); ?>;
+const targetBudget2026 = <?= json_encode($target_budget_by_objectives_2026 ?? array_fill(0, count($objectives), 0)); ?>;
+
+const absorbedBudget2024 = <?= json_encode($budget_by_objectives_2024 ?? array_fill(0, count($objectives), 0)); ?>;
+const absorbedBudget2025 = <?= json_encode($budget_by_objectives_2025 ?? array_fill(0, count($objectives), 0)); ?>;
+const absorbedBudget2026 = <?= json_encode($budget_by_objectives_2026 ?? array_fill(0, count($objectives), 0)); ?>;
+
+const labelsObjectives = <?= json_encode(array_map(fn($o) => 'Obj ' . $o['id'], $objectives)); ?>;
+
+const budgetPerObjectiveCtx = document.getElementById('budgetPerObjectiveChart').getContext('2d');
+const selectedTarget = selectedYear == 2024 ? targetBudget2024 : (selectedYear == 2025 ? targetBudget2025 : targetBudget2026);
+const selectedAbsorbed = selectedYear == 2024 ? absorbedBudget2024 : (selectedYear == 2025 ? absorbedBudget2025 : absorbedBudget2026);
+
+const budgetPerObjectiveChart = new Chart(budgetPerObjectiveCtx, {
+    type: 'bar',
+    data: {
+        labels: labelsObjectives,
+        datasets: [
+            {
+                label: 'Target Budget (USD)',
+                data: selectedTarget,
+                backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                borderColor: 'rgba(255, 206, 86, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Absorbed Budget (USD)',
+                data: selectedAbsorbed,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const usd = context.raw;
+                        const idr = usd * 14500;
+                        return `${context.dataset.label}: ${usd.toLocaleString()} USD | ${idr.toLocaleString()} IDR`;
+                    }
+                }
+            },
+            legend: { display: true }
+        },
+        scales: {
+            x: { title: { display: true, text: 'Objectives' } },
+            y: {
+                title: { display: true, text: 'Budget (USD)' },
+                beginAtZero: true
+            }
+        }
+    }
+});
 
 </script>

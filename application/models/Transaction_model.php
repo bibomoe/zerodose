@@ -158,6 +158,32 @@ class Transaction_model extends CI_Model {
     
         return $cumulative;
     }
+
+    public function get_budget_by_objective_and_year($year, $partner_id = null) {
+        $this->db->select('a.objective_id, SUM(t.total_budget) as total_budget');
+        $this->db->from('transactions t');
+        $this->db->join('activities a', 't.activity_id = a.id');
+        $this->db->where('t.year', $year);
+    
+        if (!is_null($partner_id) && $partner_id !== 'all') {
+            $this->db->where('t.partner_id', $partner_id);
+        }
+    
+        $this->db->group_by('a.objective_id');
+        $result = $this->db->get()->result_array();
+    
+        // Siapkan array default berdasarkan jumlah objectives
+        $objectives = $this->CountryObjective_model->get_all_objectives();
+        $budget_data = array_fill(0, count($objectives), 0);
+    
+        foreach ($result as $row) {
+            $index = $row['objective_id'] - 1;
+            $budget_data[$index] = (float) $row['total_budget'];
+        }
+    
+        return $budget_data;
+    }
+    
 }
 
 ?>
