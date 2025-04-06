@@ -336,22 +336,22 @@ class Immunization_model extends CI_Model {
         // Ambil provinsi yang memiliki priority = 1 (targeted)
         $province_ids = $this->get_targeted_province_ids();
     
-        // Step 1: Ambil total target imunisasi berdasarkan tahun (2024 dan 2025)
+        // Step 1: Ambil total target imunisasi berdasarkan tahun (2026 dan 2025)
         if ($province_id === 'all') {
-            // Ambil total target DPT-1 untuk tahun 2024 dan 2025 dari tabel target_coverage
+            // Ambil total target DPT-1 untuk tahun 2026 dan 2025 dari tabel target_coverage
             $this->db->select("
-                SUM(CASE WHEN year = 2024 AND vaccine_type = 'DPT-1' THEN target_population ELSE 0 END) AS total_target_2024,
+                SUM(CASE WHEN year = 2026 AND vaccine_type = 'DPT-1' THEN target_population ELSE 0 END) AS total_target_2026,
                 SUM(CASE WHEN year = 2025 AND vaccine_type = 'DPT-1' THEN target_population ELSE 0 END) AS total_target_2025
             ", false);
             $this->db->from('target_coverage');
             $total_target = $this->db->get()->row_array();
-            $total_target_2024 = $total_target['total_target_2024'] ?? 0;
+            $total_target_2026 = $total_target['total_target_2026'] ?? 0;
             $total_target_2025 = $total_target['total_target_2025'] ?? 0;
         } else {
-            // Total target untuk tahun 2024
-            $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target_2024", false);
+            // Total target untuk tahun 2026
+            $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target_2026", false);
             $this->db->from('target_immunization');
-            $this->db->where('year', 2024);
+            $this->db->where('year', 2026);
     
             if ($province_id === 'targeted') {
                 if (!empty($province_ids)) {
@@ -367,7 +367,7 @@ class Immunization_model extends CI_Model {
                 $this->db->where('city_id', $city_id);
             }
     
-            $total_target_2024 = $this->db->get()->row()->total_target_2024 ?? 0;
+            $total_target_2026 = $this->db->get()->row()->total_target_2026 ?? 0;
     
             // Total target untuk tahun 2025
             $this->db->select("SUM(dpt_hb_hib_1_target) AS total_target_2025", false);
@@ -408,15 +408,19 @@ class Immunization_model extends CI_Model {
         if ($city_id !== 'all') {
             $this->db->where('city_id', $city_id);
         }
+
+        $this->db->where_in('year', array(2025, 2026));
     
         $this->db->group_by('year, month');
         $this->db->order_by('year ASC, month ASC');
     
         $immunization_data = $this->db->get()->result_array();
+
+        
     
-        // Step 3: Pastikan semua bulan dari Januari - Desember (2024 & 2025) ada
+        // Step 3: Pastikan semua bulan dari Januari - Desember (2026 & 2025) ada
         $all_months = [];
-        for ($y = 2024; $y <= 2025; $y++) {
+        for ($y = 2025; $y <= 2026; $y++) {
             for ($m = 1; $m <= 12; $m++) {
                 $all_months["$y-$m"] = [
                     'year' => $y,
@@ -431,29 +435,33 @@ class Immunization_model extends CI_Model {
             $key = "{$data['year']}-{$data['month']}";
             $all_months[$key]['total_immunized'] = intval($data['total_immunized']);
         }
-    
+
         // Konversi ke array numerik untuk perhitungan kumulatif
         $immunization_data = array_values($all_months);
+
+        // var_dump($immunization_data);
+        // exit;
+    
     
         // Step 4: Hitung ZD Cases dengan metode kumulatif
         $zd_cases = [];
-        $cumulative_immunized_2024 = 0; // Imunisasi kumulatif untuk tahun 2024
-        $cumulative_immunized_2025 = 0; // Imunisasi kumulatif untuk tahun 2025
+        $cumulative_immunized_2025 = 0; // Imunisasi kumulatif untuk tahun 2026
+        $cumulative_immunized_2026 = 0; // Imunisasi kumulatif untuk tahun 2025
     
         foreach ($immunization_data as $data) {
-            if ($data['year'] == 2024) {
-                $cumulative_immunized_2024 += $data['total_immunized']; // Tambahkan imunisasi tahun 2024
-                $zd_cases[] = [
-                    'year' => $data['year'],
-                    'month' => $data['month'],
-                    'zd_cases' => max($total_target_2024 - $cumulative_immunized_2024, 0) // Pastikan tidak negatif
-                ];
-            } elseif ($data['year'] == 2025) {
+            if ($data['year'] == 2025) {
                 $cumulative_immunized_2025 += $data['total_immunized']; // Tambahkan imunisasi tahun 2025
                 $zd_cases[] = [
                     'year' => $data['year'],
                     'month' => $data['month'],
                     'zd_cases' => max($total_target_2025 - $cumulative_immunized_2025, 0) // Pastikan tidak negatif
+                ];
+            } elseif ($data['year'] == 2026) {
+                $cumulative_immunized_2026 += $data['total_immunized']; // Tambahkan imunisasi tahun 2026
+                $zd_cases[] = [
+                    'year' => $data['year'],
+                    'month' => $data['month'],
+                    'zd_cases' => max($total_target_2026 - $cumulative_immunized_2026, 0) // Pastikan tidak negatif
                 ];
             }
         }
