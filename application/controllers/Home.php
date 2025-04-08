@@ -151,7 +151,7 @@ class Home extends CI_Controller {
                 'table2text10' => 'Institutional capacities to plan and deliver sustained, equitable immunization programmes, as a platform for broader PHC delivery',
                 'table2text11' => 'Number of health facilities managing immunization programs as per national guidance in 10 targeted provinces. The data will be retracted from Supportive supervision report (dashboard)',
                 'table2text12' => 'No baseline available',
-                'table2text13' => 'Number of DTP stock out at health facilities',
+                'table2text13' => 'Number of DPT stock out at health facilities',
                 'table2text14' => 'No DPT vaccine stock out in 2022',
                 'table2text15' => 'Zero stock outs',
                 'table2text16' => 'Number of private facilities trained on Immunization Program Management for Private Sectors SOP',
@@ -996,13 +996,13 @@ class Home extends CI_Controller {
     private function load_translation_dpt_stock($lang) {
         $translations = [
             'en' => [
-                'page_title' => 'Number of DTP Stock Out at Health Facilities',
+                'page_title' => 'Number of DPT Stock Out at Health Facilities',
                 'page_subtitle' => 'Vaccine Availability',
                 'filter_label' => 'Select Province',
                 'text1' => 'Stock Out by Duration',
             ],
             'id' => [
-                'page_title' => 'Jumlah Stock Out DTP di Fasilitas Kesehatan',
+                'page_title' => 'Jumlah Stock Out DPT di Fasilitas Kesehatan',
                 'page_subtitle' => 'Ketersediaan Vaksin',
                 'filter_label' => 'Pilih Provinsi',
                 'text1' => 'Stock Out Berdasarkan Durasi',
