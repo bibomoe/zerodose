@@ -114,15 +114,8 @@ class StockOut_model extends CI_Model {
         $this->db->join('cities', 'cities.id = puskesmas_stock_out_details.city_id', 'left');
         $this->db->join('subdistricts', 'subdistricts.id = puskesmas_stock_out_details.subdistrict_id', 'left');
         $this->db->join('puskesmas', 'puskesmas.id = puskesmas_stock_out_details.puskesmas_id', 'left');
-        
-        // Filter berdasarkan parameter yang diberikan
-        if ($province_id === 'targeted') {
-            if (!empty($province_ids)) {
-                $this->db->where_in('province_id', $province_ids);
-            } else {
-                return ['total_puskesmas' => 0, 'total_immunized_puskesmas' => 0, 'percentage' => 0];
-            }
-        } elseif ($province_id !== 'all') {
+
+        if (!empty($province_id)) {
             $this->db->where('province_id', $province_id);
         }
 
@@ -169,7 +162,7 @@ class StockOut_model extends CI_Model {
             if (!empty($province_ids)) {
                 $this->db->where_in('province_id', $province_ids);
             } else {
-                return ['total_puskesmas' => 0, 'total_immunized_puskesmas' => 0, 'percentage' => 0];
+                return 0;
             }
         } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
@@ -311,7 +304,7 @@ class StockOut_model extends CI_Model {
             if (!empty($province_ids)) {
                 $this->db->where_in('province_id', $province_ids);
             } else {
-                return ['total_puskesmas' => 0, 'total_immunized_puskesmas' => 0, 'percentage' => 0];
+                return 0;
             }
         } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
@@ -516,7 +509,7 @@ class StockOut_model extends CI_Model {
             if (!empty($province_ids)) {
                 $this->db->where_in('psd.province_id', $province_ids);
             } else {
-                return ['total_puskesmas' => 0, 'total_immunized_puskesmas' => 0, 'percentage' => 0];
+                return 0;
             }
         } elseif ($province_id !== 'all') {
             $this->db->where('psd.province_id', $province_id);
