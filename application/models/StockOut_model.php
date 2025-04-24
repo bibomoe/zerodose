@@ -352,25 +352,44 @@ class StockOut_model extends CI_Model {
             // Tentukan kategori berdasarkan status stockout
             if ($row['status_stockout'] == 1) {
                 // Jika bulan sebelumnya ada yang memiliki status 0
-                if (!isset($statuses_previous_months[10]) && !isset($statuses_previous_months[11]) && !isset($statuses_previous_months[12])) {
-                    $category = '1 Month';
-                } else {
-                    // Jika ada lebih dari satu bulan berturut-turut dengan status 1
-                    $count_consecutive_1 = 0;
-                    foreach ($previous_months as $prev) {
-                        if (isset($statuses_previous_months[$prev['month']]) && $statuses_previous_months[$prev['month']] == 1) {
-                            $count_consecutive_1++;
-                        }
-                    }
+                // if (!isset($statuses_previous_months[10]) && !isset($statuses_previous_months[11]) && !isset($statuses_previous_months[12])) {
+                //     $category = '1 Month';
+                // } else {
+                //     // Jika ada lebih dari satu bulan berturut-turut dengan status 1
+                //     $count_consecutive_1 = 0;
+                //     foreach ($previous_months as $prev) {
+                //         if (isset($statuses_previous_months[$prev['month']]) && $statuses_previous_months[$prev['month']] == 1) {
+                //             $count_consecutive_1++;
+                //         }
+                //     }
         
-                    // Tentukan kategori berdasarkan jumlah bulan berturut-turut
-                    if ($count_consecutive_1 >= 3) {
-                        $category = '> 3 Months';
-                    } elseif ($count_consecutive_1 == 2) {
-                        $category = '3 Months';
-                    } elseif ($count_consecutive_1 == 1) {
-                        $category = '2 Months';
+                //     // Tentukan kategori berdasarkan jumlah bulan berturut-turut
+                //     if ($count_consecutive_1 >= 3) {
+                //         $category = '> 3 Months';
+                //     } elseif ($count_consecutive_1 == 2) {
+                //         $category = '3 Months';
+                //     } elseif ($count_consecutive_1 == 1) {
+                //         $category = '2 Months';
+                //     }
+                // }
+
+                // Hitung bulan berturut-turut dengan status stockout
+                $count_consecutive_1 = 0;
+                foreach ($previous_months as $prev) {
+                    if (isset($statuses_previous_months[$prev['month']]) && $statuses_previous_months[$prev['month']] == 1) {
+                        $count_consecutive_1++;
                     }
+                }
+
+                // Tentukan kategori berdasarkan jumlah bulan berturut-turut
+                if ($count_consecutive_1 >= 3) {
+                    $category = '> 3 Months';
+                } elseif ($count_consecutive_1 == 2) {
+                    $category = '3 Months';
+                } elseif ($count_consecutive_1 == 1) {
+                    $category = '2 Months';
+                } else {
+                    $category = '1 Month'; // Jika hanya bulan ini yang stockout
                 }
             } else {
                 $category = 'No Stock Out';
