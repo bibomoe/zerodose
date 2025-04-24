@@ -971,6 +971,9 @@ class Home extends CI_Controller {
         // Ambil data stock out hanya untuk vaksin DPT - lama
         // $stock_out_data = $this->StockOut_model->get_dpt_stock_out($selected_province, $selected_year);
 
+        // **Menambahkan Tabel Puskesmas yang Pernah Stockout**
+        $puskesmas_stockout_table = $this->StockOut_model->get_puskesmas_stockout_table($selected_province, $selected_year);
+        $this->data['puskesmas_stockout_table'] = $puskesmas_stockout_table;
 
         // Kirim data ke view
         $this->data['selected_province'] = $selected_province;
@@ -1000,12 +1003,24 @@ class Home extends CI_Controller {
                 'page_subtitle' => 'Vaccine Availability',
                 'filter_label' => 'Select Province',
                 'text1' => 'Stock Out by Duration',
+                'text2' => 'Details of Primary Health Facility experiencing stockouts',
+                'tabelcoloumn1' => 'Province',
+                'tabelcoloumn2' => 'District',
+                'tabelcoloumn3' => 'Subdistrict',
+                'tabelcoloumn4' => 'Puskesmas',
+                'tabelcoloumn5' => 'Months',
             ],
             'id' => [
                 'page_title' => 'Jumlah Stock Out DPT di Fasilitas Kesehatan',
                 'page_subtitle' => 'Ketersediaan Vaksin',
                 'filter_label' => 'Pilih Provinsi',
                 'text1' => 'Stock Out Berdasarkan Durasi',
+                'text2' => 'Detail Puskesmas yang mengalami kekosongan stok',
+                'tabelcoloumn1' => 'Provinsi',
+                'tabelcoloumn2' => 'Kab/Kota',
+                'tabelcoloumn3' => 'Kecamatan',
+                'tabelcoloumn4' => 'Puskesmas',
+                'tabelcoloumn5' => 'Bulan',
             ]
         ];
     

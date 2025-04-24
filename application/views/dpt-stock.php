@@ -88,6 +88,74 @@
 
                             </div>
                         </div>
+
+                        <!-- table -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4><?= $translations['text2']; ?> <?= $selected_year; ?></h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped" id="table1">
+                                                <thead>
+                                                    <tr>
+                                                        <th><?= $translations['tabelcoloumn1'] ?></th> <!-- Province Name -->
+                                                        <th><?= $translations['tabelcoloumn2'] ?></th> <!-- City Name -->
+                                                        <th><?= $translations['tabelcoloumn3'] ?></th> <!-- Subdistrict Name -->
+                                                        <th><?= $translations['tabelcoloumn4'] ?></th> <!-- Puskesmas Name -->
+                                                        <th colspan="12" class="text-center"><?= $translations['tabelcoloumn5'] ?></th> <!-- Column for months -->
+                                                    </tr>
+                                                    <tr>
+                                                        <!-- Columns for months -->
+                                                        <th colspan="4"></th> <!-- Empty space for Province, City, Subdistrict, Puskesmas -->
+                                                        <th>Jan</th>
+                                                        <th>Feb</th>
+                                                        <th>Mar</th>
+                                                        <th>Apr</th>
+                                                        <th>May</th>
+                                                        <th>Jun</th>
+                                                        <th>Jul</th>
+                                                        <th>Aug</th>
+                                                        <th>Sep</th>
+                                                        <th>Oct</th>
+                                                        <th>Nov</th>
+                                                        <th>Dec</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($puskesmas_stockout_table as $row): ?>
+                                                        <tr>
+                                                            <!-- Province, City, Subdistrict, Puskesmas Name -->
+                                                            <td><?= $row['province_name']; ?></td>
+                                                            <td><?= $row['city_name']; ?></td>
+                                                            <td><?= $row['subdistrict_name']; ?></td>
+                                                            <td><?= $row['puskesmas_name']; ?></td>
+
+                                                            <!-- Monthly Stockout Data -->
+                                                            <td><?= $row['month_1'] > 0 ? '✔' : '❌'; ?></td>
+                                                            <td><?= $row['month_2'] > 0 ? '✔' : '❌'; ?></td>
+                                                            <td><?= $row['month_3'] > 0 ? '✔' : '❌'; ?></td>
+                                                            <td><?= $row['month_4'] > 0 ? '✔' : '❌'; ?></td>
+                                                            <td><?= $row['month_5'] > 0 ? '✔' : '❌'; ?></td>
+                                                            <td><?= $row['month_6'] > 0 ? '✔' : '❌'; ?></td>
+                                                            <td><?= $row['month_7'] > 0 ? '✔' : '❌'; ?></td>
+                                                            <td><?= $row['month_8'] > 0 ? '✔' : '❌'; ?></td>
+                                                            <td><?= $row['month_9'] > 0 ? '✔' : '❌'; ?></td>
+                                                            <td><?= $row['month_10'] > 0 ? '✔' : '❌'; ?></td>
+                                                            <td><?= $row['month_11'] > 0 ? '✔' : '❌'; ?></td>
+                                                            <td><?= $row['month_12'] > 0 ? '✔' : '❌'; ?></td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </section>
                 </div>
             </div>

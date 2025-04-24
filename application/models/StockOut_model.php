@@ -3,6 +3,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class StockOut_model extends CI_Model {
 
+    public function get_targeted_province_ids() {
+        $query = $this->db->select('id')
+                          ->from('provinces')
+                          ->where('priority', 1)
+                          ->get();
+    
+        return array_column($query->result_array(), 'id'); // Return array ID
+    }
+
     // // Simpan data stock out ke database
     // public function save_stock_out($data) {
     //     // Cek apakah data untuk province_id, city_id, year, month, dan vaccine_type sudah ada
@@ -92,6 +101,8 @@ class StockOut_model extends CI_Model {
     }
 
     public function get_stock_out_data($province_id, $city_id, $subdistrict_id, $puskesmas_id, $year, $month) {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil daftar targeted provinces
+        
         // Pilih kolom-kolom yang dibutuhkan dari tabel
         $this->db->select('puskesmas_stock_out_details.*, 
                            provinces.name_id AS province_name, 
@@ -105,9 +116,16 @@ class StockOut_model extends CI_Model {
         $this->db->join('puskesmas', 'puskesmas.id = puskesmas_stock_out_details.puskesmas_id', 'left');
         
         // Filter berdasarkan parameter yang diberikan
-        if (!empty($province_id)) {
-            $this->db->where('provinces.id', $province_id);
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return ['total_puskesmas' => 0, 'total_immunized_puskesmas' => 0, 'percentage' => 0];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
         }
+
         if (!empty($city_id)) {
             $this->db->where('cities.id', $city_id);
         }
@@ -136,6 +154,8 @@ class StockOut_model extends CI_Model {
     
 
     public function get_dpt_stock_out($province_id, $year) {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil daftar targeted provinces
+
         $this->db->select('month, 
                            SUM(stock_out_1_month) AS stock_out_1, 
                            SUM(stock_out_2_months) AS stock_out_2, 
@@ -145,7 +165,13 @@ class StockOut_model extends CI_Model {
         $this->db->where('vaccine_type', 'DPT'); // Hanya vaksin DPT
         $this->db->where('year', $year);
     
-        if ($province_id !== 'all') {
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return ['total_puskesmas' => 0, 'total_immunized_puskesmas' => 0, 'percentage' => 0];
+            }
+        } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
         }
     
@@ -261,6 +287,8 @@ class StockOut_model extends CI_Model {
 
     // Fungsi untuk mengambil data stok kosong per puskesmas dan bulan, termasuk data tahun sebelumnya
     public function get_dpt_stock_out_by_month($province_id, $year) {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil daftar targeted provinces
+    
         // Ambil data vaksin per puskesmas tanpa melakukan SUM atau GROUP BY
         $this->db->select('month, 
                         year,
@@ -279,7 +307,13 @@ class StockOut_model extends CI_Model {
         $this->db->where('year', $year);
 
         // Jika province_id tidak 'all', filter berdasarkan province_id
-        if ($province_id !== 'all') {
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return ['total_puskesmas' => 0, 'total_immunized_puskesmas' => 0, 'percentage' => 0];
+            }
+        } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
         }
 
@@ -441,6 +475,87 @@ class StockOut_model extends CI_Model {
         return $result;
     }
     
+    public function get_puskesmas_stockout_table($province_id, $year) {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil daftar targeted provinces
+    
+        // Ambil data vaksin per puskesmas yang pernah stockout
+        $this->db->select('
+                            puskesmas.province_id, 
+                            provinces.name_id AS province_name, 
+                            puskesmas.city_id, 
+                            cities.name_id AS city_name, 
+                            puskesmas.subdistrict_id, 
+                            subdistricts.name AS subdistrict_name,
+                            puskesmas.name AS puskesmas_name,
+                            SUM(CASE WHEN psd.month = 1 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_1,
+                            SUM(CASE WHEN psd.month = 2 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_2,
+                            SUM(CASE WHEN psd.month = 3 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_3,
+                            SUM(CASE WHEN psd.month = 4 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_4,
+                            SUM(CASE WHEN psd.month = 5 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_5,
+                            SUM(CASE WHEN psd.month = 6 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_6,
+                            SUM(CASE WHEN psd.month = 7 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_7,
+                            SUM(CASE WHEN psd.month = 8 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_8,
+                            SUM(CASE WHEN psd.month = 9 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_9,
+                            SUM(CASE WHEN psd.month = 10 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_10,
+                            SUM(CASE WHEN psd.month = 11 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_11,
+                            SUM(CASE WHEN psd.month = 12 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_12
+                        ');
+    
+        $this->db->from('puskesmas_stock_out_details psd');
+        
+        // Gabungkan tabel puskesmas dengan tabel lainnya
+        $this->db->join('puskesmas', 'psd.puskesmas_id = puskesmas.id');
+        $this->db->join('provinces', 'puskesmas.province_id = provinces.id');
+        $this->db->join('cities', 'puskesmas.city_id = cities.id');
+        $this->db->join('subdistricts', 'puskesmas.subdistrict_id = subdistricts.id');
+    
+        // Filter data berdasarkan tahun
+        $this->db->where('psd.year', $year);
+
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('psd.province_id', $province_ids);
+            } else {
+                return ['total_puskesmas' => 0, 'total_immunized_puskesmas' => 0, 'percentage' => 0];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('psd.province_id', $province_id);
+        }
+    
+        // Group by puskesmas_id dan data terkait
+        $this->db->group_by('puskesmas.province_id, 
+                            provinces.name_id, 
+                            puskesmas.city_id, 
+                            cities.name_id, 
+                            puskesmas.subdistrict_id, 
+                            subdistricts.name, 
+                            puskesmas.name');
+    
+        // Hanya ambil puskesmas yang pernah stockout
+        $this->db->having('month_1 > 0 
+                           OR month_2 > 0 
+                           OR month_3 > 0 
+                           OR month_4 > 0 
+                           OR month_5 > 0 
+                           OR month_6 > 0 
+                           OR month_7 > 0 
+                           OR month_8 > 0 
+                           OR month_9 > 0 
+                           OR month_10 > 0 
+                           OR month_11 > 0 
+                           OR month_12 > 0');
+    
+        // Urutkan berdasarkan provinsi, kabupaten, subdistrik, dan puskesmas_id
+        $this->db->order_by('puskesmas.province_id', 'ASC');
+        $this->db->order_by('cities.name_id', 'ASC');
+        $this->db->order_by('subdistricts.name', 'ASC');
+        $this->db->order_by('puskesmas.name', 'ASC');
+    
+        // Ambil data yang sesuai dengan filter
+        $result = $this->db->get()->result_array();
+    
+        return $result;
+    }
     
     
 }
