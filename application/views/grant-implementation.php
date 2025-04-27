@@ -417,6 +417,10 @@
             selectedActivities = completedActivities2026;
         }
 
+        
+        console.log(selectedYear);
+        console.log(selectedActivities);
+
         // Inisialisasi grafik bar Chart.js 
         const ctxActivities = document.getElementById('activitiesChart').getContext('2d');
         const activitiesChart = new Chart(ctxActivities, {
