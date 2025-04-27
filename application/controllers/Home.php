@@ -950,8 +950,6 @@ class Home extends CI_Controller {
     
         return $translations[$lang] ?? $translations['id']; // Default ke Bahasa Indonesia
     }
-    
-    
 
     public function dpt_stock() {
         $this->load->model('StockOut_model'); // Pastikan model dipanggil
@@ -1198,13 +1196,16 @@ class Home extends CI_Controller {
         $total_target_budget_2026 = ($filter_partner_id === 'all') 
             ? $this->PartnersActivities_model->get_total_target_budget_by_year(2026) 
             : $this->PartnersActivities_model->get_target_budget_by_partner_and_year($filter_partner_id, 2026);
-    
 
+        $total_target_budget_all = $total_target_budget_2024 + $total_target_budget_2025 + $total_target_budget_2026;
+    
         // Konversi target budget USD ke IDR
         $conversion_rate = 14500; // Rp 14.500 per USD
         $total_target_budget_2024_idr = $total_target_budget_2024 * $conversion_rate;
         $total_target_budget_2025_idr = $total_target_budget_2025 * $conversion_rate;
         $total_target_budget_2026_idr = $total_target_budget_2026 * $conversion_rate;
+
+        $total_target_budget_all_idr = $total_target_budget_all * $conversion_rate;
 
         // Ambil data budget absorption berdasarkan filter
         if ($filter_partner_id === 'all') {
@@ -1249,11 +1250,13 @@ class Home extends CI_Controller {
             $completed_activities_2024 = $this->Activity_model->get_completed_activities_by_objectives_and_year(2024);
             $completed_activities_2025 = $this->Activity_model->get_completed_activities_by_objectives_and_year(2025);
             $completed_activities_2026 = $this->Activity_model->get_completed_activities_by_objectives_and_year(2026);
+            $completed_activities_all = $this->Activity_model->get_completed_activities_by_objectives_and_year('all');
         } else {
             $total_activities = $this->Activity_model->get_total_activities_by_objectives($filter_partner_id);
             $completed_activities_2024 = $this->Activity_model->get_completed_activities_by_objectives_and_year(2024, $filter_partner_id);
             $completed_activities_2025 = $this->Activity_model->get_completed_activities_by_objectives_and_year(2025, $filter_partner_id);
             $completed_activities_2026 = $this->Activity_model->get_completed_activities_by_objectives_and_year(2026, $filter_partner_id);
+            $completed_activities_all = $this->Activity_model->get_completed_activities_by_objectives_and_year('all', $filter_partner_id);
         }
 
         // Ambil daftar country objectives
@@ -1262,6 +1265,8 @@ class Home extends CI_Controller {
         $completed_activities_2024_data = array_fill(0, count($objectives), 0);
         $completed_activities_2025_data = array_fill(0, count($objectives), 0);
         $completed_activities_2026_data = array_fill(0, count($objectives), 0);
+        $completed_activities_all_data = array_fill(0, count($objectives), 0);
+
 
         foreach ($total_activities as $activity) {
             $index = $activity['objective_id'] - 1;
@@ -1281,6 +1286,11 @@ class Home extends CI_Controller {
         foreach ($completed_activities_2026 as $activity) {
             $index = $activity['objective_id'] - 1;
             $completed_activities_2026_data[$index] = (int) $activity['completed'];
+        }
+
+        foreach ($completed_activities_all as $activity) {
+            $index = $activity['objective_id'] - 1;
+            $completed_activities_all_data[$index] = (int) $activity['completed'];
         }
 
         // Chart Comparison
@@ -1379,9 +1389,11 @@ class Home extends CI_Controller {
         $this->data['total_target_budget_2024'] = $total_target_budget_2024;
         $this->data['total_target_budget_2025'] = $total_target_budget_2025;
         $this->data['total_target_budget_2026'] = $total_target_budget_2026;
+        $this->data['total_target_budget_all'] = $total_target_budget_all;
         $this->data['total_target_budget_2024_idr'] = $total_target_budget_2024_idr; // IDR
         $this->data['total_target_budget_2025_idr'] = $total_target_budget_2025_idr; // IDR
         $this->data['total_target_budget_2026_idr'] = $total_target_budget_2026_idr; // IDR
+        $this->data['total_target_budget_all_idr'] = $total_target_budget_all_idr; // IDR
         $this->data['partners'] = $partners;
         $this->data['selected_partner'] = $filter_partner_id;
         // Kirim data ke view
@@ -1389,6 +1401,7 @@ class Home extends CI_Controller {
         $this->data['completed_activities_2024'] = $completed_activities_2024_data;
         $this->data['completed_activities_2025'] = $completed_activities_2025_data;
         $this->data['completed_activities_2026'] = $completed_activities_2026_data;
+        $this->data['completed_activities_all'] = $completed_activities_all_data;
         $this->data['objectives'] = $objectives;
 
         // Ambil tahun dari request (default 2025)

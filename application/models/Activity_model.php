@@ -39,7 +39,10 @@ class Activity_model extends CI_Model {
         $this->db->join('activities a', 't.activity_id = a.id');
         $this->db->join('country_objectives o', 'a.objective_id = o.id', 'left');
 
-        $this->db->where('t.year', $year);
+        if($year !== 'all'){
+            $this->db->where('t.year', $year);
+        }
+        
         $this->db->where('t.number_of_activities >', 0);
 
         if ($partner_id) {

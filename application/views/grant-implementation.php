@@ -60,7 +60,7 @@
                                                         <?php endif; ?>
                                                         <?= form_dropdown(
                                                             'year', 
-                                                            [2024 => '2024', 2025 => '2025', 2026 => '2026'], 
+                                                            [2024 => '2024', 2025 => '2025', 2026 => '2026', 'all' => 'All'], 
                                                             set_value('year', $selected_year ?? 2025), 
                                                             'class="form-select" style="width: 100%; max-width: 150px; height: 48px; font-size: 1rem;" required'
                                                         ); ?>
@@ -125,7 +125,7 @@
 
 
                                 <!-- Grafik Line Budget Absorption -->
-                                <div class="col-md-12">
+                                <!-- <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
                                             <h4 class="card-title">Budget Absorption</h4>
@@ -156,6 +156,47 @@
                                                 </div>
                                                 <div id="chartWrapper" class="d-flex justify-content-center">
                                                     <canvas id="budgetAbsorptionChart"></canvas>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Budget Absorption</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            
+                                                <div class="col-md-12 text-center">
+                                                    <h5 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">Total Target Budget</h5>
+                                                    <p style="font-size: 1.2rem;">
+                                                    <strong style="color: <?= ($selected_year == 2024) ? '#0056b3' : (($selected_year == 2025) ? '#00b359' : '#ff9900'); ?>;">
+                                                        <?= $selected_year; ?>:
+                                                    </strong> 
+
+                                                    <?php
+                                                        if($selected_year == 'all'){
+                                                            $total_target_budget = $total_target_budget_all;
+                                                            $total_target_budget_IDR = $total_target_budget_all_idr;
+                                                        } else if($selected_year == 2024){
+                                                            $total_target_budget = $total_target_budget_2024;
+                                                            $total_target_budget_IDR = $total_target_budget_2024_idr;
+                                                        } else if($selected_year == 2025){
+                                                            $total_target_budget = $total_target_budget_2025;
+                                                            $total_target_budget_IDR = $total_target_budget_2025_idr;
+                                                        } else if($selected_year == 2026){
+                                                            $total_target_budget = $total_target_budget_2026;
+                                                            $total_target_budget_IDR = $total_target_budget_2026_idr;
+                                                        }
+                                                    ?>
+                                                    <?= number_format(
+                                                        $total_target_budget, 
+                                                        0, ',', '.'); ?> USD | 
+                                                    <?= number_format(
+                                                        $total_target_budget_IDR, 
+                                                        0, ',', '.'); ?> IDR
+                                                    </p>
                                                 </div>
                                         </div>
                                     </div>
@@ -361,6 +402,20 @@
         const completedActivities2024 = <?= json_encode($completed_activities_2024); ?>;
         const completedActivities2025 = <?= json_encode($completed_activities_2025); ?>;
         const completedActivities2026 = <?= json_encode($completed_activities_2026); ?>;
+        const completedActivities_all = <?= json_encode($completed_activities_all); ?>;
+
+        // Menentukan data yang akan digunakan berdasarkan tahun yang dipilih
+        let selectedActivities;
+
+        if (selectedYear === 'all') {
+            selectedActivities = completedActivitiesAll;
+        } else if (selectedYear == 2024) {
+            selectedActivities = completedActivities2024;
+        } else if (selectedYear == 2025) {
+            selectedActivities = completedActivities2025;
+        } else if (selectedYear == 2026) {
+            selectedActivities = completedActivities2026;
+        }
 
         // Inisialisasi grafik bar Chart.js 
         const ctxActivities = document.getElementById('activitiesChart').getContext('2d');
@@ -378,7 +433,7 @@
                     },
                     {
                         label: 'Completed Activities (' + selectedYear + ')',
-                        data: selectedYear == 2024 ? <?= json_encode($completed_activities_2024); ?> : (selectedYear == 2025 ? <?= json_encode($completed_activities_2025); ?> : <?= json_encode($completed_activities_2026); ?>),
+                        data: selectedActivities,
                         backgroundColor: 'rgba(255, 99, 132, 0.8)',
                         borderColor: 'rgba(255, 99, 132, 1)',
                         borderWidth: 1
@@ -413,11 +468,7 @@
         function downloadActivitiesCSV() {
             const selectedDataset = activitiesChart.data.datasets[1]; // Ambil dataset aktif
             const selectedYear = selectedDataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label
-            const selectedCompletedActivities = selectedYear == 2024 
-            ? completedActivities2024 
-            : (selectedYear == 2025 
-                ? completedActivities2025 
-                : completedActivities2026);
+            const selectedCompletedActivities = selectedActivities;
 
             let csvContent = "data:text/csv;charset=utf-8,";
             csvContent += `Objective,Total Activities,Completed Activities (${selectedYear})\n`; // Header
@@ -439,11 +490,7 @@
         function downloadActivitiesExcel() {
             const selectedDataset = activitiesChart.data.datasets[1]; // Ambil dataset aktif
             const selectedYear = selectedDataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label
-            const selectedCompletedActivities = selectedYear == 2024 
-            ? completedActivities2024 
-            : (selectedYear == 2025 
-                ? completedActivities2025 
-                : completedActivities2026);
+            const selectedCompletedActivities = selectedActivities;
 
             // Buat worksheet
             const worksheetData = [
