@@ -390,6 +390,8 @@
 
 <!-- Grafik Bar Activites Conducted -->
 <script>
+        selectedYear = <?= $selected_year ?>;
+        
         // Labels untuk grafik bar (Objectives)
         const objectivesLabels = [
                 <?php foreach ($objectives as $index => $objective): ?>
