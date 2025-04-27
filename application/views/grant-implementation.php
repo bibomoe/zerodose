@@ -176,7 +176,6 @@
                                                     </strong> 
 
                                                     <?php
-                                                    var_dump ($selected_year);
                                                         if($selected_year == 'all'){
                                                             $total_target_budget = $total_target_budget_all;
                                                             $total_target_budget_IDR = $total_target_budget_all_idr;
@@ -420,7 +419,7 @@
 
         
         console.log(selectedYear);
-        console.log(selectedActivities);
+        console.log(completedActivities_all);
 
         // Inisialisasi grafik bar Chart.js 
         const ctxActivities = document.getElementById('activitiesChart').getContext('2d');
