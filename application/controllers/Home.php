@@ -1308,6 +1308,7 @@ class Home extends CI_Controller {
             $completed_activities_for_comparison_2024[$partner->id] = $this->Activity_model->get_completed_activities_by_objectives_and_year(2024, $partner->id);
             $completed_activities_for_comparison_2025[$partner->id] = $this->Activity_model->get_completed_activities_by_objectives_and_year(2025, $partner->id);
             $completed_activities_for_comparison_2026[$partner->id] = $this->Activity_model->get_completed_activities_by_objectives_and_year(2026, $partner->id);
+            $completed_activities_for_comparison_all[$partner->id] = $this->Activity_model->get_completed_activities_by_objectives_and_year('all', $partner->id);
         }
 
         // Ambil daftar country objectives
@@ -1324,12 +1325,14 @@ class Home extends CI_Controller {
         $completed_activities_data_2024_for_comparison = [];
         $completed_activities_data_2025_for_comparison = [];
         $completed_activities_data_2026_for_comparison = [];
+        $completed_activities_data_all_for_comparison = [];
         
         foreach ($objectives_for_comparison as $index => $objective) {
             foreach ($partners as $partner) {
                 $completed_activities_data_2024_for_comparison[$partner->id][$index] = 0;
                 $completed_activities_data_2025_for_comparison[$partner->id][$index] = 0;
                 $completed_activities_data_2026_for_comparison[$partner->id][$index] = 0;
+                $completed_activities_data_all_for_comparison[$partner->id][$index] = 0;
             }
         }
 
@@ -1352,6 +1355,13 @@ class Home extends CI_Controller {
             foreach ($activities as $activity) {
                 $index = $activity['objective_id'] - 1;
                 $completed_activities_data_2026_for_comparison[$partner_id][$index] = (int) $activity['completed'];
+            }
+        }
+
+        foreach ($completed_activities_for_comparison_all as $partner_id => $activities) {
+            foreach ($activities as $activity) {
+                $index = $activity['objective_id'] - 1;
+                $completed_activities_data_all_for_comparison[$partner_id][$index] = (int) $activity['completed'];
             }
         }
         // Chart Comparison
@@ -1415,6 +1425,7 @@ class Home extends CI_Controller {
         $this->data['completed_activities_2024_for_comparison'] = $completed_activities_data_2024_for_comparison;
         $this->data['completed_activities_2025_for_comparison'] = $completed_activities_data_2025_for_comparison;
         $this->data['completed_activities_2026_for_comparison'] = $completed_activities_data_2026_for_comparison;
+        $this->data['completed_activities_all_for_comparison'] = $completed_activities_data_all_for_comparison;
         $this->data['objectives_for_comparison'] = $objectives_for_comparison;
 
         $this->data['title'] = 'Grants Implementation and Budget Disbursement';

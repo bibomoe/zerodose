@@ -559,6 +559,7 @@
     const completedActivitiesForComparison2024 = <?= json_encode($completed_activities_2024_for_comparison); ?>;
     const completedActivitiesForComparison2025 = <?= json_encode($completed_activities_2025_for_comparison); ?>;
     const completedActivitiesForComparison2026 = <?= json_encode($completed_activities_2026_for_comparison); ?>;
+    const completedActivitiesForComparison_all = <?= json_encode($completed_activities_all_for_comparison); ?>;
     const partnersForComparison = <?= json_encode($partners_for_comparison); ?>;
     const objectivesForComparison = <?= json_encode($objectives_for_comparison); ?>;
 
@@ -570,6 +571,8 @@
             return completedActivitiesForComparison2025;
         } else if (year == 2026) {
             return completedActivitiesForComparison2026;
+        } else if (year == 'all') {
+            return completedActivitiesForComparison_all;
         }
         return []; // Default return empty array if no matching year
     }
