@@ -224,7 +224,7 @@
     
     
 <!-- Grafik Line Budget Absorption -->
-<script>
+<!-- <script>
         var selectedYear = <?= is_numeric($selected_year) ? $selected_year : "'$selected_year'" ?>;
         
 
@@ -386,11 +386,11 @@
 
         
 
-</script>
+</script> -->
 
 <!-- Grafik Bar Activites Conducted -->
 <script>
-        selectedYear = <?= is_numeric($selected_year) ? $selected_year : "'$selected_year'" ?>;
+        var selectedYear = <?= is_numeric($selected_year) ? $selected_year : "'$selected_year'" ?>;
         
         // Labels untuk grafik bar (Objectives)
         const objectivesLabels = [
@@ -410,7 +410,7 @@
         let selectedActivities;
 
         if (selectedYear === 'all') {
-            selectedActivities = completedActivitiesAll;
+            selectedActivities = completedActivities_all;
         } else if (selectedYear == 2024) {
             selectedActivities = completedActivities2024;
         } else if (selectedYear == 2025) {
@@ -420,8 +420,8 @@
         }
 
         
-        console.log(selectedYear);
-        console.log(completedActivities_all);
+        // console.log(selectedYear);
+        // console.log(completedActivities_all);
 
         // Inisialisasi grafik bar Chart.js 
         const ctxActivities = document.getElementById('activitiesChart').getContext('2d');
