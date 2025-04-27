@@ -176,6 +176,7 @@
                                                     </strong> 
 
                                                     <?php
+                                                    var_dump ($selected_year);
                                                         if($selected_year == 'all'){
                                                             $total_target_budget = $total_target_budget_all;
                                                             $total_target_budget_IDR = $total_target_budget_all_idr;
