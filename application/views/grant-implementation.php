@@ -225,7 +225,7 @@
     
 <!-- Grafik Line Budget Absorption -->
 <script>
-        var selectedYear = <?= $selected_year ?>;
+        var selectedYear = <?= is_numeric($selected_year) ? $selected_year : "'$selected_year'" ?>;
         
 
         const months = <?= json_encode($months); ?>;
@@ -390,7 +390,7 @@
 
 <!-- Grafik Bar Activites Conducted -->
 <script>
-        selectedYear = <?= strval($selected_year) ?>;
+        selectedYear = <?= is_numeric($selected_year) ? $selected_year : "'$selected_year'" ?>;
         
         // Labels untuk grafik bar (Objectives)
         const objectivesLabels = [
