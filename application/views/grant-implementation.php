@@ -390,7 +390,7 @@
 
 <!-- Grafik Bar Activites Conducted -->
 <script>
-        selectedYear = <?= $selected_year ?>.toString();
+        selectedYear = <?= strval($selected_year) ?>;
         
         // Labels untuk grafik bar (Objectives)
         const objectivesLabels = [
