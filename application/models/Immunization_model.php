@@ -31,7 +31,7 @@ class Immunization_model extends CI_Model {
         $province_ids = $this->get_targeted_province_ids();  // Ambil provinsi yang ditargetkan
         $this->db->select('SUM(zd_cases) AS total_zd_cases');
         $this->db->from('zd_cases_2023');
-        // $this->db->where('year', $year); // Filter berdasarkan tahun
+        $this->db->where('year', 2024); // Filter berdasarkan tahun
 
         // Jika provinsi yang dipilih adalah 'targeted', ambil provinsi yang ditargetkan
         if ($province_id === 'targeted') {
