@@ -720,64 +720,84 @@
 
 </script>
 
+<!-- SCRIPT FOR BAR BUDGET BY OBJECTIVE -->
 <script>
+    selectedYear = <?= is_numeric($selected_year) ? $selected_year : "'$selected_year'" ?>;
+
     const targetBudget2024 = <?= json_encode($target_budget_by_objectives_2024 ?? array_fill(0, count($objectives), 0)); ?>;
-const targetBudget2025 = <?= json_encode($target_budget_by_objectives_2025 ?? array_fill(0, count($objectives), 0)); ?>;
-const targetBudget2026 = <?= json_encode($target_budget_by_objectives_2026 ?? array_fill(0, count($objectives), 0)); ?>;
+    const targetBudget2025 = <?= json_encode($target_budget_by_objectives_2025 ?? array_fill(0, count($objectives), 0)); ?>;
+    const targetBudget2026 = <?= json_encode($target_budget_by_objectives_2026 ?? array_fill(0, count($objectives), 0)); ?>;
+    const targetBudgetAll = <?= json_encode($target_budget_by_objectives_all ?? array_fill(0, count($objectives), 0)); ?>;
 
-const absorbedBudget2024 = <?= json_encode($budget_by_objectives_2024 ?? array_fill(0, count($objectives), 0)); ?>;
-const absorbedBudget2025 = <?= json_encode($budget_by_objectives_2025 ?? array_fill(0, count($objectives), 0)); ?>;
-const absorbedBudget2026 = <?= json_encode($budget_by_objectives_2026 ?? array_fill(0, count($objectives), 0)); ?>;
+    const absorbedBudget2024 = <?= json_encode($budget_by_objectives_2024 ?? array_fill(0, count($objectives), 0)); ?>;
+    const absorbedBudget2025 = <?= json_encode($budget_by_objectives_2025 ?? array_fill(0, count($objectives), 0)); ?>;
+    const absorbedBudget2026 = <?= json_encode($budget_by_objectives_2026 ?? array_fill(0, count($objectives), 0)); ?>;
+    const absorbedBudgetAll = <?= json_encode($budget_by_objectives_all ?? array_fill(0, count($objectives), 0)); ?>;
 
-const labelsObjectives = <?= json_encode(array_map(fn($o) => 'Obj ' . $o['id'], $objectives)); ?>;
+    const labelsObjectives = <?= json_encode(array_map(fn($o) => 'Obj ' . $o['id'], $objectives)); ?>;
 
-const budgetPerObjectiveCtx = document.getElementById('budgetPerObjectiveChart').getContext('2d');
-const selectedTarget = selectedYear == 2024 ? targetBudget2024 : (selectedYear == 2025 ? targetBudget2025 : targetBudget2026);
-const selectedAbsorbed = selectedYear == 2024 ? absorbedBudget2024 : (selectedYear == 2025 ? absorbedBudget2025 : absorbedBudget2026);
+    const budgetPerObjectiveCtx = document.getElementById('budgetPerObjectiveChart').getContext('2d');
 
-const budgetPerObjectiveChart = new Chart(budgetPerObjectiveCtx, {
-    type: 'bar',
-    data: {
-        labels: labelsObjectives,
-        datasets: [
-            {
-                label: 'Target Budget (USD)',
-                data: selectedTarget,
-                backgroundColor: 'rgba(255, 206, 86, 0.7)',
-                borderColor: 'rgba(255, 206, 86, 1)',
-                borderWidth: 1
-            },
-            {
-                label: 'Absorbed Budget (USD)',
-                data: selectedAbsorbed,
-                backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        const usd = context.raw;
-                        const idr = usd * 14500;
-                        return `${context.dataset.label}: ${usd.toLocaleString()} USD | ${idr.toLocaleString()} IDR`;
-                    }
+    var selectedTarget = null;
+    var selectedAbsorbed = null;
+
+        if (selectedYear === 'all') {
+            selectedTarget = targetBudgetAll;
+            selectedAbsorbed = absorbedBudgetAll;
+        } else if (selectedYear == 2024) {
+            selectedTarget = targetBudget2024;
+            selectedAbsorbed = absorbedBudget2024;
+        } else if (selectedYear == 2025) {
+            selectedTarget = targetBudget2025;
+            selectedAbsorbed = absorbedBudget2025;
+        } else if (selectedYear == 2026) {
+            selectedTarget = targetBudget2026;
+            selectedAbsorbed = absorbedBudget2026;
+        }
+
+    const budgetPerObjectiveChart = new Chart(budgetPerObjectiveCtx, {
+        type: 'bar',
+        data: {
+            labels: labelsObjectives,
+            datasets: [
+                {
+                    label: 'Target Budget (USD)',
+                    data: selectedTarget,
+                    backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Absorbed Budget (USD)',
+                    data: selectedAbsorbed,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
                 }
-            },
-            legend: { display: true }
+            ]
         },
-        scales: {
-            x: { title: { display: true, text: 'Objectives' } },
-            y: {
-                title: { display: true, text: 'Budget (USD)' },
-                beginAtZero: true
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const usd = context.raw;
+                            const idr = usd * 14500;
+                            return `${context.dataset.label}: ${usd.toLocaleString()} USD | ${idr.toLocaleString()} IDR`;
+                        }
+                    }
+                },
+                legend: { display: true }
+            },
+            scales: {
+                x: { title: { display: true, text: 'Objectives' } },
+                y: {
+                    title: { display: true, text: 'Budget (USD)' },
+                    beginAtZero: true
+                }
             }
         }
-    }
-});
+    });
 
 </script>

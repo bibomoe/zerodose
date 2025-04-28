@@ -1371,22 +1371,24 @@ class Home extends CI_Controller {
         $budget_by_objectives_2024 = $this->Transaction_model->get_budget_by_objective_and_year(2024, $filter_partner_id);
         $budget_by_objectives_2025 = $this->Transaction_model->get_budget_by_objective_and_year(2025, $filter_partner_id);
         $budget_by_objectives_2026 = $this->Transaction_model->get_budget_by_objective_and_year(2026, $filter_partner_id);
+        $budget_by_objectives_all = $this->Transaction_model->get_budget_by_objective_and_year('all', $filter_partner_id);
 
         // Ambil target budget per objective
         $target_budget_by_objectives_2024 = $this->PartnersActivities_model->get_target_budget_by_objective_and_year(2024, $filter_partner_id);
         $target_budget_by_objectives_2025 = $this->PartnersActivities_model->get_target_budget_by_objective_and_year(2025, $filter_partner_id);
         $target_budget_by_objectives_2026 = $this->PartnersActivities_model->get_target_budget_by_objective_and_year(2026, $filter_partner_id);
+        $target_budget_by_objectives_all = $this->PartnersActivities_model->get_target_budget_by_objective_and_year('all', $filter_partner_id);
 
         // Kirim ke view
         $this->data['budget_by_objectives_2024'] = $budget_by_objectives_2024;
         $this->data['budget_by_objectives_2025'] = $budget_by_objectives_2025;
         $this->data['budget_by_objectives_2026'] = $budget_by_objectives_2026;
+        $this->data['budget_by_objectives_all'] = $budget_by_objectives_all;
 
         $this->data['target_budget_by_objectives_2024'] = $target_budget_by_objectives_2024;
         $this->data['target_budget_by_objectives_2025'] = $target_budget_by_objectives_2025;
         $this->data['target_budget_by_objectives_2026'] = $target_budget_by_objectives_2026;
-
-
+        $this->data['target_budget_by_objectives_all'] = $target_budget_by_objectives_all;
 
         // Kirim data ke view
         $this->data['months'] = $months;

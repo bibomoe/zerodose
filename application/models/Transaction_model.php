@@ -163,7 +163,11 @@ class Transaction_model extends CI_Model {
         $this->db->select('a.objective_id, SUM(t.total_budget) as total_budget');
         $this->db->from('transactions t');
         $this->db->join('activities a', 't.activity_id = a.id');
-        $this->db->where('t.year', $year);
+        // $this->db->where('t.year', $year);
+
+        if($year !== 'all'){
+            $this->db->where('t.year', $year);
+        }
     
         if (!is_null($partner_id) && $partner_id !== 'all') {
             $this->db->where('t.partner_id', $partner_id);

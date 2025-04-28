@@ -33,7 +33,12 @@ class PartnersActivities_model extends CI_Model {
     }
 
     public function get_target_budget_by_objective_and_year($year, $partner_id = null) {
-        $this->db->select('a.objective_id, SUM(pa.target_budget_' . $year . ') AS target_budget');
+        if($year !== 'all'){
+            $this->db->select('a.objective_id, SUM(pa.target_budget_' . $year . ') AS target_budget');
+        } else {
+            $this->db->select('a.objective_id, SUM(pa.target_budget_2024 + pa.target_budget_2025 + pa.target_budget_2026) AS target_budget');
+        }
+
         $this->db->from('partners_activities pa');
         $this->db->join('activities a', 'pa.activity_id = a.id');
         
