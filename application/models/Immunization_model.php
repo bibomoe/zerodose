@@ -237,6 +237,7 @@ class Immunization_model extends CI_Model {
             $this->db->join('(
                 SELECT city_id, SUM(zd_cases) AS zd_cases_2023
                 FROM zd_cases_2023
+                WHERE year = 2024
                 GROUP BY province_id
             ) zd', 'zd.city_id = i.city_id', 'left');  // Menggabungkan dengan hasil SUM
         } else {
@@ -253,6 +254,7 @@ class Immunization_model extends CI_Model {
             $this->db->join('(
                 SELECT city_id, SUM(zd_cases) AS zd_cases_2023
                 FROM zd_cases_2023
+                WHERE year = 2024
                 GROUP BY city_id
             ) zd', 'zd.city_id = i.city_id', 'left');  // Menggabungkan dengan hasil SUM
         }
