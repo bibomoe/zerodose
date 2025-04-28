@@ -98,6 +98,22 @@ class Transaction_model extends CI_Model {
     
         return $cumulative;
     }
+
+    // Fungsi untuk menghitung total budget absorption berdasarkan tahun dan partner
+    public function get_total_budget_absorption($year, $partner_id = null) {
+        // Ambil total budget yang diserap untuk tahun yang dipilih
+        $this->db->select('SUM(total_budget) AS total_budget')
+                 ->from('transactions')
+                 ->where('year', $year);
+        
+        // Jika partner_id diberikan, tambahkan filter untuk partner tersebut
+        if (!is_null($partner_id)) {
+            $this->db->where('partner_id', $partner_id);
+        }
+        
+        $result = $this->db->get()->row_array();
+        return $result['total_budget'] ?? 0; // Jika tidak ada data, kembalikan 0
+    }
     
     public function get_cumulative_budget_absorption_with_percentage($year, $partner_id = null, $total_target_budget = null) {
         // Ambil data transaksi berdasarkan tahun dan, jika ada, partner_id

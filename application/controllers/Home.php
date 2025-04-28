@@ -1212,20 +1212,30 @@ class Home extends CI_Controller {
             $data_2024 = $this->Transaction_model->get_cumulative_budget_absorption_with_percentage(2024);
             $data_2025 = $this->Transaction_model->get_cumulative_budget_absorption_with_percentage(2025);
             $data_2026 = $this->Transaction_model->get_cumulative_budget_absorption_with_percentage(2026);
+
+            $data_absorbed_2024 = $this->Transaction_model->get_total_budget_absorption(2024);
+            $data_absorbed_2025 = $this->Transaction_model->get_total_budget_absorption(2025);
+            $data_absorbed_2026 = $this->Transaction_model->get_total_budget_absorption(2026);
         } else {
             $data_2024 = $this->Transaction_model->get_cumulative_budget_absorption_with_percentage(2024, $filter_partner_id, $total_target_budget_2024);
             $data_2025 = $this->Transaction_model->get_cumulative_budget_absorption_with_percentage(2025, $filter_partner_id, $total_target_budget_2025);
             $data_2026 = $this->Transaction_model->get_cumulative_budget_absorption_with_percentage(2026, $filter_partner_id, $total_target_budget_2026);
+
+            $data_absorbed_2024 = $this->Transaction_model->get_total_budget_absorption(2024, $filter_partner_id,);
+            $data_absorbed_2025 = $this->Transaction_model->get_total_budget_absorption(2025, $filter_partner_id,);
+            $data_absorbed_2026 = $this->Transaction_model->get_total_budget_absorption(2026, $filter_partner_id,);
         }
 
+
+
         // Hitung total absorption untuk masing-masing tahun
-        $total_absorbed_2024 = array_sum(array_column($data_2024, 'total_budget'));
-        $total_absorbed_2025 = array_sum(array_column($data_2025, 'total_budget'));
-        $total_absorbed_2026 = array_sum(array_column($data_2026, 'total_budget'));
+        $total_absorbed_2024 = array_sum(array_column($data_absorbed_2024, 'total_budget'));
+        $total_absorbed_2025 = array_sum(array_column($data_absorbed_2025, 'total_budget'));
+        $total_absorbed_2026 = array_sum(array_column($data_absorbed_2026, 'total_budget'));
         $total_absorbed_all = $total_absorbed_2024 + $total_absorbed_2025 + $total_absorbed_2026;
 
-        var_dump($data_2024);
-        exit;
+        // var_dump($data_2024);
+        // exit;
 
         // Konversi absorption ke IDR
         $conversion_rate = 14500; // Rp 14.500 per USD
