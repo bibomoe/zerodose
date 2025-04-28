@@ -1211,7 +1211,7 @@
         }).addTo(map);
 
         let immunizationData = <?= json_encode($immunization_data, JSON_NUMERIC_CHECK); ?>;
-        // console.log(immunizationData);
+        console.log(immunizationData);
         
         function cleanCityCode(code) { 
             if (!code) return ""; 
