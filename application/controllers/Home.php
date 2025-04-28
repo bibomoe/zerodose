@@ -1218,6 +1218,29 @@ class Home extends CI_Controller {
             $data_2026 = $this->Transaction_model->get_cumulative_budget_absorption_with_percentage(2026, $filter_partner_id, $total_target_budget_2026);
         }
 
+        // Hitung total absorption untuk masing-masing tahun
+        $total_absorbed_2024 = array_sum(array_column($data_2024, 'total_budget'));
+        $total_absorbed_2025 = array_sum(array_column($data_2025, 'total_budget'));
+        $total_absorbed_2026 = array_sum(array_column($data_2026, 'total_budget'));
+        $total_absorbed_all = $total_absorbed_2024 + $total_absorbed_2025 + $total_absorbed_2026;
+
+        // Konversi absorption ke IDR
+        $conversion_rate = 14500; // Rp 14.500 per USD
+        $total_absorbed_2024_idr = $total_absorbed_2024 * $conversion_rate;
+        $total_absorbed_2025_idr = $total_absorbed_2025 * $conversion_rate;
+        $total_absorbed_2026_idr = $total_absorbed_2026 * $conversion_rate;
+        $total_absorbed_all_idr = $total_absorbed_all * $conversion_rate;
+
+        // Kirim data ke view
+        $this->data['total_absorbed_2024'] = $total_absorbed_2024;
+        $this->data['total_absorbed_2025'] = $total_absorbed_2025;
+        $this->data['total_absorbed_2026'] = $total_absorbed_2026;
+        $this->data['total_absorbed_all'] = $total_absorbed_all;
+        $this->data['total_absorbed_2024_idr'] = $total_absorbed_2024_idr;
+        $this->data['total_absorbed_2025_idr'] = $total_absorbed_2025_idr;
+        $this->data['total_absorbed_2026_idr'] = $total_absorbed_2026_idr;
+        $this->data['total_absorbed_all_idr'] = $total_absorbed_all_idr;
+
         // Inisialisasi data chart dengan nilai default 0
         $budget_2024 = array_fill(0, 12, 0);
         $percentage_2024 = array_fill(0, 12, 0);
@@ -1240,6 +1263,8 @@ class Home extends CI_Controller {
             $budget_2026[$row['MONTH'] - 1] = $row['total_budget'];
             $percentage_2026[$row['MONTH'] - 1] = $row['percentage'];
         }
+
+        
 
         // Ambil daftar partner untuk filter dropdown
         $partners = $this->Partner_model->get_all_partners();

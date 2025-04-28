@@ -161,11 +161,12 @@
                                     </div>
                                 </div> -->
 
+                                <!-- Card Total Target Budget -->
                                 <div class="col-md-6">
                                     <div class="card">
-                                        <div class="card-header">
+                                        <!-- <div class="card-header">
                                             <h4 class="card-title">Budget Absorption</h4>
-                                        </div>
+                                        </div> -->
                                         <div class="card-body">
                                             
                                                 <div class="col-md-12 text-center">
@@ -201,6 +202,44 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Card Total Budget Absorption -->
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <!-- <div class="card-header">
+                                            <h4 class="card-title">Budget Absorption</h4>
+                                        </div> -->
+                                        <div class="card-body">
+                                            <div class="col-md-12 text-center">
+                                                <h5 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">Total Budget Absorption</h5>
+                                                <p style="font-size: 1.2rem;">
+                                                <strong style="color: <?= ($selected_year == 2024) ? '#0056b3' : (($selected_year == 2025) ? '#00b359' : '#ff9900'); ?>;">
+                                                    <?= $selected_year; ?>:
+                                                </strong> 
+
+                                                <?php
+                                                    if($selected_year == 'all'){
+                                                        $total_budget_absorption = $total_absorbed_all;
+                                                        $total_budget_absorption_IDR = $total_absorbed_all_idr;
+                                                    } else if($selected_year == 2024){
+                                                        $total_budget_absorption = $total_absorbed_2024;
+                                                        $total_budget_absorption_IDR = $total_absorbed_2024_idr;
+                                                    } else if($selected_year == 2025){
+                                                        $total_budget_absorption = $total_absorbed_2025;
+                                                        $total_budget_absorption_IDR = $total_absorbed_2025_idr;
+                                                    } else if($selected_year == 2026){
+                                                        $total_budget_absorption = $total_absorbed_2026;
+                                                        $total_budget_absorption_IDR = $total_absorbed_2026_idr;
+                                                    }
+                                                ?>
+                                                <?= number_format($total_budget_absorption, 0, ',', '.'); ?> USD | 
+                                                <?= number_format($total_budget_absorption_IDR, 0, ',', '.'); ?> IDR
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
 
                             </div>
                         </div>
