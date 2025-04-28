@@ -1229,9 +1229,9 @@ class Home extends CI_Controller {
 
 
         // Hitung total absorption untuk masing-masing tahun
-        $total_absorbed_2024 = $data_absorbed_2024['total_budget'];
-        $total_absorbed_2025 = $data_absorbed_2025['total_budget'];
-        $total_absorbed_2026 = $data_absorbed_2026['total_budget'];
+        $total_absorbed_2024 = $data_absorbed_2024;
+        $total_absorbed_2025 = $data_absorbed_2025;
+        $total_absorbed_2026 = $data_absorbed_2026;
         $total_absorbed_all = $total_absorbed_2024 + $total_absorbed_2025 + $total_absorbed_2026;
 
         // var_dump($data_2024);
