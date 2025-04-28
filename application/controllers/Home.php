@@ -1224,6 +1224,9 @@ class Home extends CI_Controller {
         $total_absorbed_2026 = array_sum(array_column($data_2026, 'total_budget'));
         $total_absorbed_all = $total_absorbed_2024 + $total_absorbed_2025 + $total_absorbed_2026;
 
+        var_dump($total_absorbed_2024);
+        exit;
+
         // Konversi absorption ke IDR
         $conversion_rate = 14500; // Rp 14.500 per USD
         $total_absorbed_2024_idr = $total_absorbed_2024 * $conversion_rate;
