@@ -1298,8 +1298,8 @@
                                         MR1 Coverage: ${mr1} (Coverage: ${mr1Coverage})<br>
                                         Zero Dose Children: ${zeroDoseChildren}<br>
                                         % Zero Dose: ${percentZD}<br>
-                                        Zero Dose Children 2023: ${zd2023}<br>
-                                        % Reduction From ZD 2023: ${percentReductionZD}`;
+                                        Zero Dose Children 2024: ${zd2023}<br>
+                                        % Reduction From ZD 2024: ${percentReductionZD}`;
                                         
                     
                     // Jika ini level provinsi, tambahkan tombol
