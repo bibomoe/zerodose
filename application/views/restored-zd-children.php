@@ -132,7 +132,11 @@
                                         <div class="card-body px-4 py-4-5 text-center">
                                             <h6 class="text-muted font-semibold"><?= $translations['text_baseline2'] ?></h6>
                                             <h6 class="font-extrabold mb-0 highlight"><?= number_format(1000) ?> <?= $translations['children'] ?></h6>
-                                            
+                                            <div class="card-subtext">
+                                                <?= $translations['text5_3'] ?>
+                                                <?php echo "(15%) "; ?>
+                                                <?= number_format($national_baseline_zd * 0.15) ?>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
