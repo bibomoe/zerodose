@@ -8,11 +8,30 @@ class User extends CI_Controller {
         $this->load->model('Immunization_model');  // Load model untuk provinsi dan kota
         $this->load->library('form_validation');
         $this->load->library('encryption'); // Pastikan library encryption diload
+
+        $this->load->library('session'); // Load library session
+
+        // Cek apakah user sudah login
+        if (!$this->session->userdata('logged_in')) {
+            redirect('auth/login');
+        }
+
+        // Regenerasi ID session setiap kali user aktif
+        $this->session->sess_regenerate();
+
+        // Inisialisasi data sesi di $data
+        $this->data = [
+            'session_email' => $this->session->userdata('email'),
+            'session_name' => $this->session->userdata('name'),
+            'session_user_category_name' => $this->session->userdata('user_category_name'),
+        ];
     }
 
     public function index() {
         $user_category = $this->session->userdata('user_category'); // Ambil kategori pengguna yang login
-        
+        $user_province = $this->session->userdata('province_id');
+        $user_city = $this->session->userdata('city_id');
+
         // Logika kontrol akses berdasarkan kategori pengguna
         if ($user_category == 1) {
             // Jika kategori adalah 1, tampilkan data untuk kategori 7 dan 8 (PHO & DHO)
@@ -30,7 +49,7 @@ class User extends CI_Controller {
 
         // Ambil data user yang sesuai kategori yang diperbolehkan
         $this->data['title'] = 'User Management';
-        $this->data['users'] = $this->User_model->get_users_by_categories($this->data['allowed_categories']);
+        $this->data['users'] = $this->User_model->get_users_by_categories($this->data['allowed_categories'], $user_province);
         load_template('input/user-view', $this->data);
     }
 

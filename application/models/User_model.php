@@ -1,6 +1,6 @@
 <?php
 class User_model extends CI_Model {
-    public function get_users_by_categories($categories) {
+    public function get_users_by_categories($categories, $province_id) {
         $this->db->select('users.id, users.email, users.name, users.category, users.province_id, users.city_id, users.send_auto_email');
         $this->db->select('user_category.name AS category_name');
         $this->db->select('provinces.name_id AS province_name');
@@ -13,6 +13,10 @@ class User_model extends CI_Model {
         
         // Menggunakan kondisi untuk memfilter kategori yang diizinkan
         $this->db->where_in('users.category', $categories);
+
+        if(!empty($province_id)){
+            $this->db->where('users.province_id', $province_id);
+        }
         
         $query = $this->db->get('users');
 

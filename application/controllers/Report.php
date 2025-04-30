@@ -5,6 +5,24 @@ class Report extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
+
+        $this->load->library('session'); // Load library session
+
+        // Cek apakah user sudah login
+        if (!$this->session->userdata('logged_in')) {
+            redirect('auth/login');
+        }
+
+        // Regenerasi ID session setiap kali user aktif
+        $this->session->sess_regenerate();
+
+        // Inisialisasi data sesi di $data
+        $this->data = [
+            'session_email' => $this->session->userdata('email'),
+            'session_name' => $this->session->userdata('name'),
+            'session_user_category_name' => $this->session->userdata('user_category_name'),
+        ];
+        
         $this->load->model('Transaction_model');
         $this->load->model('PartnersActivities_model');
         $this->load->model('Activity_model');
