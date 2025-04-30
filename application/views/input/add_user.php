@@ -149,6 +149,7 @@
                         }
                     });
                 }
+                alert('hello');
             }
 
             // Ketika province dipilih, load district
