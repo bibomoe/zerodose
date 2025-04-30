@@ -60,6 +60,8 @@
                                                             <?= form_input('name', $user->name, 'class="form-control" required'); ?>
                                                         </div>
 
+                                                        
+
                                                         <div class="form-group">
                                                             <?= form_label('Category', 'category'); ?>
                                                             <?= form_dropdown('category', $category_options, $user->category, 'class="form-control" id="category"'); ?>
@@ -74,7 +76,8 @@
                                                         <!-- Dropdown untuk memilih province dan city (untuk kategori 7 dan 8) -->
                                                         <div class="form-group" id="province-city-group" style="display:<?= ($user->category == 7 || $user->category == 8) ? 'block' : 'none'; ?>;">
                                                             <?php
-                                                                if($user->category != 7){
+                                                                $user_category = $this->session->userdata('user_category'); // Ambil kategori pengguna yang login
+                                                                if($user_category != 7){
                                                             ?>
                                                                 <?= form_label('Province', 'province_id'); ?>
                                                                 <?= form_dropdown('province_id', $province_options, '', 'class="form-control" id="province_id"'); ?>
