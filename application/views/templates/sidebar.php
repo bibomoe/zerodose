@@ -496,7 +496,7 @@
                             </li>
                             <?php
                                     $user_category = $this->session->userdata('user_category');
-                                    if ($user_category == 1 || $user_category == 2 || $user_category == 9) { 
+                                    if ($user_category == 1 || $user_category == 2 || $user_category == 9 || $user_category == 7) { 
                                 ?>
                                 <li
                                     class="sidebar-item">
