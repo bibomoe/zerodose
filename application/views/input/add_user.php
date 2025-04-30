@@ -132,9 +132,9 @@
     <script>
         $(document).ready(function () {
 
-            var category = $(this).val();
+            var category = $('#category').val();
+            alert(category);
             if (category == 8) {
-                alert('hello');
                 var province_id = $('#province_id').val();
                 // if (province_id) {
                     $.ajax({
