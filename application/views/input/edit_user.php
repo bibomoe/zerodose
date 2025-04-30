@@ -73,8 +73,20 @@
 
                                                         <!-- Dropdown untuk memilih province dan city (untuk kategori 7 dan 8) -->
                                                         <div class="form-group" id="province-city-group" style="display:<?= ($user->category == 7 || $user->category == 8) ? 'block' : 'none'; ?>;">
-                                                            <?= form_label('Province', 'province_id'); ?>
-                                                            <?= form_dropdown('province_id', $province_options, $user->province_id, 'class="form-control" id="province_id"'); ?>
+                                                            <?php
+                                                                if($user_category != 7){
+                                                            ?>
+                                                                <?= form_label('Province', 'province_id'); ?>
+                                                                <?= form_dropdown('province_id', $province_options, '', 'class="form-control" id="province_id"'); ?>
+                                                            <?php
+                                                                } else {
+                                                            ?>
+                                                                <?= form_label('Province', 'province_idx'); ?>
+                                                                <?= form_dropdown('province_idx', $province_options, $user_province, 'class="form-control" id="province_idx" disabled'); ?>
+                                                                <input type="hidden" id="province_id" name="province_id" value="<?=$user_province;?>">
+                                                            <?php
+                                                                }
+                                                            ?>
 
                                                             <?= form_label('City', 'city_id'); ?>
                                                             <?= form_dropdown('city_id', [], $user->city_id, 'class="form-control" id="city_id"'); ?>
@@ -106,6 +118,27 @@
 
     <script>
         $(document).ready(function () {
+
+            var category = $('#category').val();
+            // alert(category);
+            if (category == 8) {
+                var province_id = $('#province_id').val();
+                // if (province_id) {
+                    $.ajax({
+                        url: "<?= base_url('input/get_cities_by_province') ?>",
+                        type: "GET",
+                        data: { province_id: province_id },
+                        dataType: "json",
+                        success: function (data) {
+                            $.each(data, function (key, value) {
+                                $('#city_id').append('<option value="' + value.id + '">' + value.name_id + '</option>');
+                            });
+                        }
+                    });
+                // }
+                
+            }
+
             // Ketika province dipilih, load district
             $('#province_id').change(function () {
                 var province_id = $(this).val();

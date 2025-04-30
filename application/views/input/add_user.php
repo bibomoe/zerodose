@@ -133,7 +133,7 @@
         $(document).ready(function () {
 
             var category = $('#category').val();
-            alert(category);
+            // alert(category);
             if (category == 8) {
                 var province_id = $('#province_id').val();
                 // if (province_id) {
