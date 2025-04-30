@@ -32,7 +32,7 @@
                             <div class="col-md-12 col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4 class="card-title">List User</h4>
+                                        <h4 class="card-title">Add User</h4>
                                         <button class="btn btn-primary ms-auto floating-button bg-white border-white" type="button" style="margin-right: 20px;"
                                                 data-bs-toggle="collapse" data-bs-target="#cardContent" aria-expanded="false" aria-controls="cardContent">
                                                 <i class="bi bi-arrows-collapse" style="color: gray;"></i> 
@@ -87,9 +87,20 @@
 
                                                         <!-- Dropdown untuk memilih province dan city (untuk kategori 7 dan 8) -->
                                                         <div id="province-city-group" style="display: <?= ($category_value == 7 || $category_value == 8) ? 'block' : 'none'; ?>;">
-                                                            <?= form_label('Province', 'province_id'); ?>
-                                                            <?= form_dropdown('province_id', $province_options, '', 'class="form-control" id="province_id"'); ?>
-
+                                                            <?php
+                                                                if($user_category != 7){
+                                                            ?>
+                                                                <?= form_label('Province', 'province_id'); ?>
+                                                                <?= form_dropdown('province_id', $province_options, '', 'class="form-control" id="province_id"'); ?>
+                                                            <?php
+                                                                } else {
+                                                            ?>
+                                                                <?= form_label('Province', 'province_idx'); ?>
+                                                                <?= form_dropdown('province_idx', $province_options, $user_province, 'class="form-control" id="province_idx" disabled'); ?>
+                                                                <input type="hidden" id="province_id" name="province_id" value="<?=$user_province;?>">
+                                                            <?php
+                                                                }
+                                                            ?>
                                                             <?= form_label('City', 'city_id'); ?>
                                                             <?= form_dropdown('city_id', [], '', 'class="form-control" id="city_id"'); ?>
                                                         </div>
@@ -120,6 +131,26 @@
 
     <script>
         $(document).ready(function () {
+
+            var category = $(this).val();
+            if (category == 8) {
+                var province_id = $(this).val();
+                if (province_id) {
+                    $.ajax({
+                        url: "<?= base_url('input/get_cities_by_province') ?>",
+                        type: "GET",
+                        data: { province_id: province_id },
+                        dataType: "json",
+                        success: function (data) {
+                            $('#city_id').html('<option value="">-- Select District --</option>');
+                            $.each(data, function (key, value) {
+                                $('#city_id').append('<option value="' + value.id + '">' + value.name_id + '</option>');
+                            });
+                        }
+                    });
+                }
+            }
+            
             // Ketika province dipilih, load district
             $('#province_id').change(function () {
                 var province_id = $(this).val();

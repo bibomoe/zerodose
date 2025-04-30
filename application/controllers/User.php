@@ -57,7 +57,12 @@ class User extends CI_Controller {
     public function add_user() {
 
         $user_category = $this->session->userdata('user_category'); // Ambil kategori pengguna yang login
-    
+        $user_province = $this->session->userdata('province_id');
+        $user_city = $this->session->userdata('city_id');
+
+        $this->data['user_province'] = $user_province;
+        $this->data['user_city'] = $user_city;
+
         // Logika kontrol akses berdasarkan kategori pengguna
         if ($user_category == 1) {
             // Jika kategori adalah 1, tampilkan data untuk kategori 7 dan 8 (PHO & DHO)
