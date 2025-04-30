@@ -134,7 +134,7 @@
 
             var category = $(this).val();
             if (category == 8) {
-                var province_id = $(this).val();
+                var province_id = $('#province_id').val();
                 if (province_id) {
                     $.ajax({
                         url: "<?= base_url('input/get_cities_by_province') ?>",
@@ -150,7 +150,7 @@
                     });
                 }
             }
-            
+
             // Ketika province dipilih, load district
             $('#province_id').change(function () {
                 var province_id = $(this).val();
