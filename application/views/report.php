@@ -352,6 +352,7 @@
 <script>
 $(document).ready(function () {
             const user_category = <?= $user_category; ?>;
+            const user_city = <?= $user_city; ?>;
 
             if (user_category == 7) {
                 var province_id = $('#province_id').val();
@@ -369,7 +370,25 @@ $(document).ready(function () {
                         }
                     });
                 // }
+                $('#city_id').val(user_city).change();
                 
+            } else if (user_category == 8) {
+                var province_id = $('#province_id').val();
+                // if (province_id) {
+                    $.ajax({
+                        url: "<?= base_url('input/get_cities_by_province') ?>",
+                        type: "GET",
+                        data: { province_id: province_id },
+                        dataType: "json",
+                        success: function (data) {
+                            $('#city_id').html('<option value="">-- Select District --</option>');
+                            $.each(data, function (key, value) {
+                                $('#city_id').append('<option value="' + value.id + '">' + value.name_id + '</option>');
+                            });
+                        }
+                    });
+                // }
+                $('#city_id').val(user_city).change();
             }
 
     $('#province_id').change(function () {
