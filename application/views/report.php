@@ -155,10 +155,34 @@
                                                                     <?php if ($is_disabled): ?>
                                                                         <input type="hidden" name="partner_id" value="<?= $partner_category ?>">
                                                                     <?php endif; ?> -->
-                                                                    <?= form_dropdown('province_id', $province_options, '', 
-                                                                        'class="form-select" id="province_id2" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
-                                                                    <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
-                                                                        'class="form-select" id="city_id2" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
+
+                                                                    <?php
+                                                                        if($user_category != 7 && $user_category != 8){
+                                                                    ?>
+                                                                        <?= form_dropdown('province_id', $province_options, '', 
+                                                                        'class="form-select" id="province_id2" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
+                                                                        <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
+                                                                        'class="form-select" id="city_id2" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
+                                                                    <?php
+                                                                        } else {
+                                                                            if($user_category == 7){
+                                                                    ?>
+                                                                        <?= form_dropdown('province_idx', $province_options, $user_province, 
+                                                                            'class="form-select" id="province_idx" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"
+                                                                            disabled'); ?>
+                                                                        <input type="hidden" id="province_id" name="province_id" value="<?=$user_province;?>">
+                                                                        <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
+                                                                        'class="form-select" id="city_id2" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
+                                                                    <?php
+                                                                            } else if($user_category == 8){
+                                                                    ?>
+                                                                        <input type="hidden" id="province_id" name="province_id" value="<?=$user_province;?>">
+                                                                        <input type="hidden" id="city_id" name="city_id" value="<?=$user_city;?>">
+                                                                    <?php
+                                                                            }
+                                                                        }
+                                                                    ?>
+
                                                                     <?= form_dropdown('year', $year_options, '', 
                                                                         'class="form-select" id="year" style="width: 20%; max-width: 100px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('month', $month_options, '', 
@@ -358,8 +382,10 @@ $(document).ready(function () {
                         dataType: "json",
                         success: function (data) {
                             $('#city_id').html('<option value="">-- Select District --</option>');
+                            $('#city_id2').html('<option value="">-- Select District --</option>');
                             $.each(data, function (key, value) {
                                 $('#city_id').append('<option value="' + value.id + '">' + value.name_id + '</option>');
+                                $('#city_id2').append('<option value="' + value.id + '">' + value.name_id + '</option>');
                             });
                         }
                     });
