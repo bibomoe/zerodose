@@ -74,6 +74,7 @@
 
                                                                         if($user_category != 7 || $user_category != 8){
                                                                     ?>
+                                                                        <?php echo 'halo0000'; ?>
                                                                         <?= form_dropdown('province_id', $province_options, '', 
                                                                         'class="form-select" id="province_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                         <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
@@ -82,6 +83,7 @@
                                                                         } else {
                                                                             if($user_category == 7){
                                                                     ?>
+                                                                        <?php echo 'halo'; ?>
                                                                         <?= form_dropdown('province_idx', $province_options, $user_province, 
                                                                             'class="form-select" id="province_idx" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"
                                                                             disabled'); ?>
@@ -91,6 +93,7 @@
                                                                     <?php
                                                                             } else if($user_category == 8){
                                                                     ?>
+                                                                        <?php echo 'halo2'; ?>
                                                                         <?= form_dropdown('province_idx', $province_options, $user_province, 
                                                                             'class="form-select" id="province_idx" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"
                                                                             disabled'); ?>
@@ -194,7 +197,9 @@
                             </div>
                         </div>
                 </section>
+
                 <?php if (!in_array($this->session->userdata('user_category'), [7, 8])): ?>
+
                 <!-- Unduh Laporan Mitra -->
                 <section id="basic-horizontal-layouts">
                     <div class="row match-height">
