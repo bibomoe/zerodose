@@ -352,7 +352,7 @@
 <script>
 $(document).ready(function () {
             const user_category = <?= $user_category; ?>;
-            const user_city = <?= $user_city; ?>;
+            
 
             if (user_category == 7) {
                 var province_id = $('#province_id').val();
@@ -370,9 +370,13 @@ $(document).ready(function () {
                         }
                     });
                 // }
-                $('#city_id').val(user_city).change();
+                // $('#city_id').val(user_city).change();
                 
             } else if (user_category == 8) {
+                const user_city = <?= $user_city; ?>;
+                console.log(user_city); // Pastikan ini memiliki nilai yang valid dan ada di dalam data
+                alert(user_city);
+
                 var province_id = $('#province_id').val();
                 // if (province_id) {
                     $.ajax({
@@ -402,8 +406,7 @@ $(document).ready(function () {
                     console.log('user_city not found');
                 }
 
-                console.log(user_city); // Pastikan ini memiliki nilai yang valid dan ada di dalam data
-                alert(user_city);
+                
             }
 
     $('#province_id').change(function () {
