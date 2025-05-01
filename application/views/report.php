@@ -236,7 +236,7 @@
                                                                         <input type="hidden" name="partner_id" value="<?= $partner_category ?>">
                                                                     <?php endif; ?> -->
                                                                     <!-- <?= form_dropdown('province_id', $province_options, '', 
-                                                                        'class="form-select" id="province_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
+                                                                        'class="form-select" id="province_id3" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
                                                                         'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('year', $year_options, '', 
@@ -299,7 +299,7 @@
                                                                         <input type="hidden" name="partner_id" value="<?= $partner_category ?>">
                                                                     <?php endif; ?> -->
                                                                     <!-- <?= form_dropdown('province_id', $province_options, '', 
-                                                                        'class="form-select" id="province_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
+                                                                        'class="form-select" id="province_id4" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
                                                                         'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('year', $year_options, '', 
