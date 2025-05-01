@@ -91,13 +91,7 @@
                                                                     <?php
                                                                             } else if($user_category == 8){
                                                                     ?>
-                                                                        <?= form_dropdown('province_idx', $province_options, $user_province, 
-                                                                            'class="form-select" id="province_idx" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"
-                                                                            disabled'); ?>
                                                                         <input type="hidden" id="province_id" name="province_id" value="<?=$user_province;?>">
-                                                                        <?= form_dropdown('city_idx', ['all' => '-- Kab/Kota --'], '',
-                                                                            'class="form-select" id="city_idx" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"
-                                                                            disabled'); ?>
                                                                         <input type="hidden" id="city_id" name="city_id" value="<?=$user_city;?>">
                                                                     <?php
                                                                             }
@@ -372,42 +366,7 @@ $(document).ready(function () {
                 // }
                 // $('#city_id').val(user_city).change();
                 
-            } else if (user_category == 8) {
-                const user_city = <?= $user_city; ?>;
-                console.log(user_city); // Pastikan ini memiliki nilai yang valid dan ada di dalam data
-                alert(user_city);
-
-                var province_id = $('#province_id').val();
-                // if (province_id) {
-                    $.ajax({
-                        url: "<?= base_url('input/get_cities_by_province') ?>",
-                        type: "GET",
-                        data: { province_id: province_id },
-                        dataType: "json",
-                        success: function (data) {
-                            $('#city_idx').html('<option value="">-- Select District --</option>');
-                            $.each(data, function (key, value) {
-                                $('#city_idx').append('<option value="' + value.id + '">' + value.name_id + '</option>');
-                                if (value.id == user_city) {
-                                    cityFound = true;
-                                }
-                            });
-                            
-                        }
-                    });
-                // }
-
-                // Gunakan timeout untuk memastikan data selesai di-load
-                if (cityFound) {
-                    setTimeout(function() {
-                        $('#city_idx').val(user_city).change();
-                    }, 100); // Menunggu 100ms sebelum menyetel nilai
-                } else {
-                    console.log('user_city not found');
-                }
-
-                
-            }
+            } 
 
     $('#province_id').change(function () {
         var province_id = $(this).val();
