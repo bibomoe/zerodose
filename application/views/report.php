@@ -74,7 +74,10 @@
 
                                                                         if($user_category != 7 || $user_category != 8){
                                                                     ?>
-                                                                        <?php echo 'halo0000'; ?>
+                                                                        <?php 
+                                                                            echo $user_category;
+                                                                            echo 'halo0000'; 
+                                                                        ?>
                                                                         <?= form_dropdown('province_id', $province_options, '', 
                                                                         'class="form-select" id="province_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                         <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
