@@ -384,12 +384,26 @@ $(document).ready(function () {
                             $('#city_idx').html('<option value="">-- Select District --</option>');
                             $.each(data, function (key, value) {
                                 $('#city_idx').append('<option value="' + value.id + '">' + value.name_id + '</option>');
+                                if (value.id == user_city) {
+                                    cityFound = true;
+                                }
                             });
+                            
                         }
                     });
                 // }
-                $('#city_idx').val(user_city).change();
-                // alert(user_city);
+
+                // Gunakan timeout untuk memastikan data selesai di-load
+                if (cityFound) {
+                    setTimeout(function() {
+                        $('#city_idx').val(user_city).change();
+                    }, 100); // Menunggu 100ms sebelum menyetel nilai
+                } else {
+                    console.log('user_city not found');
+                }
+
+                console.log(user_city); // Pastikan ini memiliki nilai yang valid dan ada di dalam data
+                alert(user_city);
             }
 
     $('#province_id').change(function () {
