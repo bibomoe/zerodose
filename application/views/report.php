@@ -381,14 +381,15 @@ $(document).ready(function () {
                         data: { province_id: province_id },
                         dataType: "json",
                         success: function (data) {
-                            $('#city_id').html('<option value="">-- Select District --</option>');
+                            $('#city_idx').html('<option value="">-- Select District --</option>');
                             $.each(data, function (key, value) {
-                                $('#city_id').append('<option value="' + value.id + '">' + value.name_id + '</option>');
+                                $('#city_idx').append('<option value="' + value.id + '">' + value.name_id + '</option>');
                             });
                         }
                     });
                 // }
-                $('#city_id').val(user_city).change();
+                $('#city_idx').val(user_city).change();
+                // alert(user_city);
             }
 
     $('#province_id').change(function () {
