@@ -43,6 +43,12 @@ class Report extends CI_Controller {
         // Ambil daftar partner untuk dropdown
         $this->data['partners'] = $this->Partner_model->get_all_partners();
 
+        $user_province = $this->session->userdata('province_id');
+        $user_city = $this->session->userdata('city_id');
+
+        $this->data['user_province'] = $user_province;
+        $this->data['user_city'] = $user_city;
+
         // Ambil tahun dan bulan dalam bentuk array
         $this->data['year_options'] = [
             '2024' => '2024',
