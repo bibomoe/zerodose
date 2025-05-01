@@ -381,8 +381,8 @@ $(document).ready(function () {
                         data: { province_id: province_id },
                         dataType: "json",
                         success: function (data) {
-                            $('#city_id').html('<option value="">-- Select District --</option>');
-                            $('#city_id2').html('<option value="">-- Select District --</option>');
+                            $('#city_id').html('<option value="all">-- Kab/Kota --</option>');
+                            $('#city_id2').html('<option value="all">-- Kab/Kota --</option>');
                             $.each(data, function (key, value) {
                                 $('#city_id').append('<option value="' + value.id + '">' + value.name_id + '</option>');
                                 $('#city_id2').append('<option value="' + value.id + '">' + value.name_id + '</option>');
