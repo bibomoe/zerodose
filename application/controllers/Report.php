@@ -393,7 +393,7 @@ class Report extends CI_Controller {
         // Menentukan baseline ZD
         if ($selected_province == 'all') {
             // Ambil baseline ZD 2023 dari tabel target_baseline
-            $this->data['national_baseline_zd'] = $this->Immunization_model->get_baseline_zd(2023);
+            $this->data['national_baseline_zd'] = $this->Immunization_model->get_baseline_zd(2024);
         } else {
             // Ambil total ZD dari tabel zd_cases_2023 berdasarkan provinsi yang dipilih
             $this->data['national_baseline_zd'] = $this->Report_model->get_zero_dose_by_province($selected_province, $selected_district);
@@ -429,6 +429,8 @@ class Report extends CI_Controller {
         // exit;
 
         $zero_dose = $this->data["zero_dose_$year"];
+        $baseline_zd = $this->data['national_baseline_zd'];
+        $baseline_zd = ($year <= 2025 ) ? number_format($baseline_zd * 0.85, 0, ',', '.') : number_format($baseline_zd * 0.75, 0, ',', '.');
         $percent_dpt3_coverage = $this->data["percent_dpt_3_$year"];
         $total_dpt3_coverage = $this->data["total_dpt_3_$year"];
         $total_dpt3_target = $this->data["total_target_dpt_3_$year"];
@@ -754,6 +756,7 @@ class Report extends CI_Controller {
                                         . '</span> <br><br>' . number_format($percent_mr1_coverage, 1, ',', '.') . '% dari baseline'
                                         . '<br><br> Baseline : ' . number_format($total_mr1_target, 0, ',', '.'),
             'children_zero_dose' => number_format($zero_dose, 0, ',', '.'),
+            'baseline_zd' => '<br><br> <span style="font-size:12pt; font-weight: normal;"> Target ' . (($year <= 2025 ) ? '15% : ' : '25% : ') . $baseline_zd . ' </span>',
             'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt1_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '%',
             'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
             'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
@@ -865,7 +868,7 @@ class Report extends CI_Controller {
                         <tr>
                             <td style="font-size:12pt; ">' . $data['cumulative_dpt3'] . '</td>
                             <td style="font-size:12pt; ">' . $data['cumulative_mr1'] . '</td>
-                            <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['children_zero_dose'] . '</td>
+                            <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['children_zero_dose'] . $data['baseline_zd'] . '</td>
                         </tr>
                     </tbody>
                 </table>';
