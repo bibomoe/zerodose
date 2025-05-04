@@ -431,8 +431,10 @@ class Report extends CI_Controller {
         $zero_dose = $this->data["zero_dose_$year"];
         $percent_dpt3_coverage = $this->data["percent_dpt_3_$year"];
         $total_dpt3_coverage = $this->data["total_dpt_3_$year"];
+        $total_dpt3_target = $this->data["total_target_dpt_3_$year"];
         $total_mr1_coverage = $this->data["total_mr_1_$year"];
         $percent_mr1_coverage = $this->data["percent_mr_1_$year"];
+        $total_mr1_target = $this->data["total_target_mr_1_$year"];
 
         $total_dpt1_coverage = $this->data["total_dpt_1_$year"];
         $percent_dpt1_coverage = $this->data["percent_dpt_1_$year"];
@@ -745,8 +747,12 @@ class Report extends CI_Controller {
         $province_name = "Indonesia";
     
         $data = [
-            'cumulative_dpt3' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt3_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_dpt3_coverage, 1, ',', '.') . '%',
-            'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_mr1_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_mr1_coverage, 1, ',', '.') . '%',
+            'cumulative_dpt3' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt3_coverage, 0, ',', '.') 
+                                        . '</span> <br><br>' . number_format($percent_dpt3_coverage, 1, ',', '.') . '% dari baseline'
+                                        . '<br><br> Baseline : ' . number_format($total_dpt3_target, 0, ',', '.'),
+            'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_mr1_coverage, 0, ',', '.') 
+                                        . '</span> <br><br>' . number_format($percent_mr1_coverage, 1, ',', '.') . '% dari baseline'
+                                        . '<br><br> Baseline : ' . number_format($total_mr1_target, 0, ',', '.'),
             'children_zero_dose' => number_format($zero_dose, 0, ',', '.'),
             'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt1_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '%',
             'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
