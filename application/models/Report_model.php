@@ -275,8 +275,7 @@ class Report_model extends CI_Model {
 
     // Mengambil total jumlah regencies/cities untuk 10 provinsi priority
     public function get_total_regencies_cities($province_id) {
-        $provinces = $this->get_targeted_provinces();
-        $province_ids = array_column($provinces, 'id');
+        $province_ids = $this->get_targeted_province_ids();
 
         $this->db->select('COUNT(DISTINCT id) AS total_cities');
         $this->db->from('cities');
