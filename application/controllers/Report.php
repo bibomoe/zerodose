@@ -492,6 +492,11 @@ class Report extends CI_Controller {
 
         $percentage_under_5_DO = number_format($percentage_under_5_DO, 1, ',', '.');
 
+        var_dump($total_provinces);
+        var_dump($total_district_under_5_DO);
+        var_dump($percentage_under_5_DO);
+        exit;
+
         $dropout_rate_all_provinces = $this->data['dropout_rate_all_provinces'];
 
         // Ambil data jumlah puskesmas & imunisasi dari model baru
@@ -778,7 +783,7 @@ class Report extends CI_Controller {
             'children_zero_dose' => number_format($zero_dose, 0, ',', '.'),
             'baseline_zd' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> Target ' . (($year <= 2025 ) ? '15% : ' : '25% : ') . $baseline_zd . ' </span>',
             'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt1_coverage, 0, ',', '.') 
-                                    . '</span> <br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '% dari sasaran'
+                                    . '</span> <br><br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '% dari sasaran'
                                     . '<br> Sasaran : ' . number_format($total_dpt1_target, 0, ',', '.') ,
             'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
             'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
