@@ -897,7 +897,7 @@ class Report extends CI_Controller {
                 </table>';
 
         // Menambahkan jarak antara tabel pertama dan kedua
-        $html .= '<br><br>';
+        $html .= '';
         
             // Tabel 2: Indikator Jangka Menengah
             $html .= '<h3 style="font-size:14pt;">Indikator Jangka Menengah</h3>';
