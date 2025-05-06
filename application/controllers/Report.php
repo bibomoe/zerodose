@@ -493,10 +493,10 @@ class Report extends CI_Controller {
 
         $percentage_under_5_DO = number_format($percentage_under_5_DO, 1, ',', '.');
 
-        // var_dump($total_provinces);
-        // var_dump($total_district_under_5_DO);
-        // var_dump($percentage_under_5_DO);
-        // exit;
+        var_dump($total_cities);
+        var_dump($total_district_under_5_DO);
+        var_dump($percentage_under_5_DO);
+        exit;
 
         $dropout_rate_all_provinces = $this->data['dropout_rate_all_provinces'];
 
