@@ -273,6 +273,30 @@ class Report_model extends CI_Model {
         return $dropout_rates; // Kembalikan hanya drop-out rate
     }
 
+    // Mengambil total jumlah regencies/cities untuk 10 provinsi priority
+    public function get_total_regencies_cities($province_id) {
+        $provinces = $this->get_targeted_provinces();
+        $province_ids = array_column($provinces, 'id');
+
+        $this->db->select('COUNT(DISTINCT id) AS total_cities');
+        $this->db->from('cities');
+        // $this->db->where_in('province_id', $province_ids);
+
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
+        $query = $this->db->get();
+        return $query->row()->total_cities ?? 0;
+    }
+
     public function get_districts_under_5_percent_by_province($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
         $province_ids = $this->get_targeted_province_ids();
         

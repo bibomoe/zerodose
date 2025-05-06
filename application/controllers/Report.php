@@ -400,7 +400,7 @@ class Report extends CI_Controller {
         }
 
         // Menentukan baseline DPT 3 dan MR 1
-        $this->data['national_baseline_dpt_mr'] = $this->Immunization_model->get_baseline_by_province($selected_province);
+        $this->data['national_baseline_dpt_mr'] = $this->Report_model->get_baseline_by_province($selected_province);
 
         // Ambil target dari target_immunization untuk provinsi tertentu atau targeted
         $this->data["total_target_dpt_1_$year"] = $this->Report_model->get_total_target('dpt_hb_hib_1', $selected_province, $selected_district, $year);
@@ -469,7 +469,6 @@ class Report extends CI_Controller {
         // Hitung total dan jumlah provinsi untuk perhitungan rata-rata
         $total_dropout_rate = 0;
         $total_provinces = count($dropout_rates_per_province);
-        $total_cities = count($dropout_rates);
 
         // var_dump($dropout_rates_per_province);
         // exit;
@@ -486,6 +485,8 @@ class Report extends CI_Controller {
 
         $total_district_under_5_DO = $this->data['total_dropout_rate']; //Jumlah Kab/Kota dengan %DO dibawah 5%
         
+        $total_cities = $this->Report_model->get_total_regencies_cities($selected_province);
+
         // Menghitung Persen KabKota dengan DO Rate dibawah 5%
         $percentage_under_5_DO = ($total_cities > 0) 
             ? round(($total_district_under_5_DO / $total_cities) * 100, 2)
@@ -493,10 +494,10 @@ class Report extends CI_Controller {
 
         $percentage_under_5_DO = number_format($percentage_under_5_DO, 1, ',', '.');
 
-        var_dump($total_cities);
-        var_dump($total_district_under_5_DO);
-        var_dump($percentage_under_5_DO);
-        exit;
+        // var_dump($total_cities);
+        // var_dump($total_district_under_5_DO);
+        // var_dump($percentage_under_5_DO);
+        // exit;
 
         $dropout_rate_all_provinces = $this->data['dropout_rate_all_provinces'];
 
