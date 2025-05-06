@@ -13,19 +13,6 @@ class Immunization_model extends CI_Model {
         return $query->row()->zd ?? 0;
     }
 
-    //Ambil data quarter saat ini
-    public function get_max_quarter($year) {
-        // Select the maximum quarter for the given year
-        $query = $this->db->select('MAX(quarter) as max_quarter')
-                          ->where('year', $year)
-                          ->get('quarter_immunization_data');
-    
-        // Return the maximum quarter value, or 0 if no data is found
-        return $query->row()->max_quarter ?? 1;
-    }
-    
-    
-
     // Ambil Zero Dose (ZD) berdasarkan provinsi atau seluruh provinsi
     public function get_zero_dose_by_province($province_id) {
         $province_ids = $this->get_targeted_province_ids();  // Ambil provinsi yang ditargetkan
@@ -53,6 +40,46 @@ class Immunization_model extends CI_Model {
         return $query->total_zd_cases ?? 0;
     }
 
+    public function get_baseline_by_province($province_id) {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil provinsi yang ditargetkan
+        $this->db->select('SUM(dpt3_baseline) AS total_dpt3_baseline, SUM(mr1_baseline) AS total_mr1_baseline');
+        $this->db->from('baseline_immunization');
+        $this->db->where('year', 2024); // Filter tahun
+    
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return ['dpt3' => 0, 'mr1' => 0];
+            }
+        } elseif ($province_id === 'all') {
+            $query = $this->db->get()->row();
+            return [
+                'dpt3' => $query->total_dpt3_baseline ?? 0,
+                'mr1'  => $query->total_mr1_baseline ?? 0
+            ];
+        } else {
+            $this->db->where('province_id', $province_id);
+        }
+    
+        $query = $this->db->get()->row();
+        return [
+            'dpt3' => $query->total_dpt3_baseline ?? 0,
+            'mr1'  => $query->total_mr1_baseline ?? 0
+        ];
+    }
+    
+
+    //Ambil data quarter saat ini
+    public function get_max_quarter($year) {
+        // Select the maximum quarter for the given year
+        $query = $this->db->select('MAX(quarter) as max_quarter')
+                          ->where('year', $year)
+                          ->get('quarter_immunization_data');
+    
+        // Return the maximum quarter value, or 0 if no data is found
+        return $query->row()->max_quarter ?? 1;
+    }
 
     // Ambil total target dari target_coverage (All Provinces) dengan filter tahun
     public function get_total_target_coverage($vaccine_type, $year) {

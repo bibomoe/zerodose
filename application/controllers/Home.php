@@ -325,6 +325,9 @@ class Home extends CI_Controller {
             $this->data['national_baseline_zd'] = $this->Immunization_model->get_zero_dose_by_province($selected_province);
         }
 
+        // Menentukan baseline DPT 3 dan MR 1
+        $this->data['national_baseline_dpt_mr'] = $this->Immunization_model->get_baseline_by_province($selected_province);
+
         // Menentukan quarter
         $this->data['quarter'] = $this->Immunization_model->get_max_quarter($selected_year);
 
@@ -515,7 +518,7 @@ class Home extends CI_Controller {
                 // 'text8' => 'DPT-1 Coverage Year 2025',
                 // 'text9' => 'Zero Dose Year 2025',
                 'text10' => 'DPT-3 Coverage Year ',
-                'text11' => '% of the baseline',
+                'text11' => '% achievement of targets',
                 'text12' => ' children need vaccination ',
                 'text13' => 'Target Coverage ',
                 'text14' => 'MR-1 Coverage Year ',
@@ -556,7 +559,7 @@ class Home extends CI_Controller {
                 // 'text8' => 'Cakupan DPT-1 Tahun 2025',
                 // 'text9' => 'Zero Dose Tahun 2025',
                 'text10' => 'Cakupan DPT-3 Tahun ',
-                'text11' => '% dari baseline',
+                'text11' => '% ketercapaian dari sasaran',
                 'text12' => ' anak-anak membutuhkan vaksinasi ',
                 'text13' => 'Sasaran Cakupan ',
                 'text14' => 'Cakupan MR-1 Tahun ',
