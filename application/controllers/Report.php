@@ -778,11 +778,11 @@ class Report extends CI_Controller {
             'children_zero_dose' => number_format($zero_dose, 0, ',', '.'),
             'baseline_zd' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> Target ' . (($year <= 2025 ) ? '15% : ' : '25% : ') . $baseline_zd . ' </span>',
             'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt1_coverage, 0, ',', '.') 
-                                    . '</span> <br><br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '% dari sasaran'
-                                    . '</span> <br> Sasaran : ' . number_format($total_dpt1_target, 0, ',', '.') ,
+                                    . '</span> <br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '% dari sasaran'
+                                    . '<br> Sasaran : ' . number_format($total_dpt1_target, 0, ',', '.') ,
             'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
             'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
-            'district_under_5_puskesmas' => '<br><br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . ' </span>',
+            'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . ' </span>',
             'puskesmas_conduct_immunization' => number_format($puskesmas_conduct_immunization, 0, ',', '.'),
             'percentage_puskesmas_conduct_immunization' => number_format($percentage_puskesmas_conduct_immunization, 1, ',', '.') . '%',
             'total_dpt_stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
@@ -911,7 +911,7 @@ class Report extends CI_Controller {
                         </thead>
                         <tbody>
                             <tr>
-                                
+                                <td style="font-size:12pt; ">' . $data['cumulative_dpt1'] . '</td>
                                 <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['drop_out_percentage'] . '</td>
                                 <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_percentage'] . $data['district_under_5_puskesmas'] . '</td>
                             </tr>
