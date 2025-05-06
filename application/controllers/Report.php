@@ -469,6 +469,7 @@ class Report extends CI_Controller {
         // Hitung total dan jumlah provinsi untuk perhitungan rata-rata
         $total_dropout_rate = 0;
         $total_provinces = count($dropout_rates_per_province);
+        $total_cities = count($dropout_rates);
 
         // var_dump($dropout_rates_per_province);
         // exit;
@@ -486,16 +487,16 @@ class Report extends CI_Controller {
         $total_district_under_5_DO = $this->data['total_dropout_rate']; //Jumlah Kab/Kota dengan %DO dibawah 5%
         
         // Menghitung Persen KabKota dengan DO Rate dibawah 5%
-        $percentage_under_5_DO = ($total_provinces > 0) 
-            ? round(($total_district_under_5_DO / $total_provinces) * 100, 2)
+        $percentage_under_5_DO = ($total_cities > 0) 
+            ? round(($total_district_under_5_DO / $total_cities) * 100, 2)
             : 0;
 
         $percentage_under_5_DO = number_format($percentage_under_5_DO, 1, ',', '.');
 
-        var_dump($total_provinces);
-        var_dump($total_district_under_5_DO);
-        var_dump($percentage_under_5_DO);
-        exit;
+        // var_dump($total_provinces);
+        // var_dump($total_district_under_5_DO);
+        // var_dump($percentage_under_5_DO);
+        // exit;
 
         $dropout_rate_all_provinces = $this->data['dropout_rate_all_provinces'];
 
