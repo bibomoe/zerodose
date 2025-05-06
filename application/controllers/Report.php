@@ -897,7 +897,7 @@ class Report extends CI_Controller {
                 </table>';
 
         // Menambahkan jarak antara tabel pertama dan kedua
-        $html .= '';
+        $html .= '<br>';
         
             // Tabel 2: Indikator Jangka Menengah
             $html .= '<h3 style="font-size:14pt;">Indikator Jangka Menengah</h3>';
@@ -911,7 +911,7 @@ class Report extends CI_Controller {
                         </thead>
                         <tbody>
                             <tr>
-                                <td style="font-size:12pt; ">' . $data['cumulative_dpt1'] . '</td>
+                                
                                 <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['drop_out_percentage'] . '</td>
                                 <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_percentage'] . $data['district_under_5_puskesmas'] . '</td>
                             </tr>
