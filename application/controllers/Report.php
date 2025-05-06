@@ -449,6 +449,8 @@ class Report extends CI_Controller {
         $total_mr1_target = $this->data['national_baseline_dpt_mr']['mr1'];
 
         $total_dpt1_coverage = $this->data["total_dpt_1_$year"];
+        $total_dpt1_target = $this->data["total_target_dpt_1_$year"];
+
         $percent_dpt1_coverage = $this->data["percent_dpt_1_$year"];
 
         // TABLE 2 
@@ -482,6 +484,14 @@ class Report extends CI_Controller {
         $this->data['dropout_rate_all_provinces'] = round($average_dropout_rate_all_provinces, 2);
 
         $total_district_under_5_DO = $this->data['total_dropout_rate']; //Jumlah Kab/Kota dengan %DO dibawah 5%
+        
+        // Menghitung Persen KabKota dengan DO Rate dibawah 5%
+        $percentage_under_5_DO = ($total_provinces > 0) 
+            ? round(($total_district_under_5_DO / $total_provinces) * 100, 2)
+            : 0;
+
+        $percentage_under_5_DO = number_format($percentage_under_5_DO, 1, ',', '.');
+
         $dropout_rate_all_provinces = $this->data['dropout_rate_all_provinces'];
 
         // Ambil data jumlah puskesmas & imunisasi dari model baru
@@ -760,16 +770,19 @@ class Report extends CI_Controller {
     
         $data = [
             'cumulative_dpt3' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt3_coverage, 0, ',', '.') 
-                                        . '</span> <br><br>' . number_format($percent_dpt3_coverage, 1, ',', '.') . '% dari baseline'
-                                        . '<br><br> Baseline : ' . number_format($total_dpt3_target, 0, ',', '.'),
+                                        . '</span> <br><br>' . number_format($percent_dpt3_coverage, 1, ',', '.') . '% dari sasaran'
+                                        . 'br> Baseline : ' . number_format($total_dpt3_target, 0, ',', '.'),
             'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_mr1_coverage, 0, ',', '.') 
-                                        . '</span> <br><br>' . number_format($percent_mr1_coverage, 1, ',', '.') . '% dari baseline'
-                                        . '<br><br> Baseline : ' . number_format($total_mr1_target, 0, ',', '.'),
+                                        . '</span> <br><br>' . number_format($percent_mr1_coverage, 1, ',', '.') . '% dari sasaran'
+                                        . '<br> Baseline : ' . number_format($total_mr1_target, 0, ',', '.'),
             'children_zero_dose' => number_format($zero_dose, 0, ',', '.'),
-            'baseline_zd' => '<br><br> <span style="font-size:12pt; font-weight: normal; color: black;"> Target ' . (($year <= 2025 ) ? '15% : ' : '25% : ') . $baseline_zd . ' </span>',
-            'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt1_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '%',
+            'baseline_zd' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> Target ' . (($year <= 2025 ) ? '15% : ' : '25% : ') . $baseline_zd . ' </span>',
+            'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt1_coverage, 0, ',', '.') 
+                                    . '</span> <br><br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '% dari sasaran'
+                                    . '</span> <br> Sasaran : ' . number_format($total_dpt1_target, 0, ',', '.') ,
             'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
             'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
+            'district_under_5_puskesmas_' => '<br><br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . ' </span>',
             'puskesmas_conduct_immunization' => number_format($puskesmas_conduct_immunization, 0, ',', '.'),
             'percentage_puskesmas_conduct_immunization' => number_format($percentage_puskesmas_conduct_immunization, 1, ',', '.') . '%',
             'total_dpt_stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
