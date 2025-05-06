@@ -399,6 +399,9 @@ class Report extends CI_Controller {
             $this->data['national_baseline_zd'] = $this->Report_model->get_zero_dose_by_province($selected_province, $selected_district);
         }
 
+        // Menentukan baseline DPT 3 dan MR 1
+        $this->data['national_baseline_dpt_mr'] = $this->Immunization_model->get_baseline_by_province($selected_province);
+
         // Ambil target dari target_immunization untuk provinsi tertentu atau targeted
         $this->data["total_target_dpt_1_$year"] = $this->Report_model->get_total_target('dpt_hb_hib_1', $selected_province, $selected_district, $year);
         $this->data["total_target_dpt_3_$year"] = $this->Report_model->get_total_target('dpt_hb_hib_3', $selected_province, $selected_district, $year);
@@ -433,10 +436,17 @@ class Report extends CI_Controller {
         $baseline_zd = ($year <= 2025 ) ? number_format($baseline_zd * 0.85, 0, ',', '.') : number_format($baseline_zd * 0.75, 0, ',', '.');
         $percent_dpt3_coverage = $this->data["percent_dpt_3_$year"];
         $total_dpt3_coverage = $this->data["total_dpt_3_$year"];
-        $total_dpt3_target = $this->data["total_target_dpt_3_$year"];
+
+        //Baseline DPT 3
+        // $total_dpt3_target = $this->data["total_target_dpt_3_$year"];
+        $total_dpt3_target = $this->data['national_baseline_dpt_mr']['dpt3'];
+
         $total_mr1_coverage = $this->data["total_mr_1_$year"];
         $percent_mr1_coverage = $this->data["percent_mr_1_$year"];
-        $total_mr1_target = $this->data["total_target_mr_1_$year"];
+
+        //Baseline MR 1
+        // $total_mr1_target = $this->data["total_target_mr_1_$year"];
+        $total_mr1_target = $this->data['national_baseline_dpt_mr']['mr1'];
 
         $total_dpt1_coverage = $this->data["total_dpt_1_$year"];
         $percent_dpt1_coverage = $this->data["percent_dpt_1_$year"];

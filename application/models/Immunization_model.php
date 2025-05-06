@@ -40,6 +40,7 @@ class Immunization_model extends CI_Model {
         return $query->total_zd_cases ?? 0;
     }
 
+    // Ambil baseline DPT 3 dan MR1 berdasarkan provinsi atau seluruh provinsi
     public function get_baseline_by_province($province_id) {
         $province_ids = $this->get_targeted_province_ids(); // Ambil provinsi yang ditargetkan
         $this->db->select('SUM(dpt3_baseline) AS total_dpt3_baseline, SUM(mr1_baseline) AS total_mr1_baseline');

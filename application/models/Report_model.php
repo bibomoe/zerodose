@@ -82,6 +82,36 @@ class Report_model extends CI_Model {
         return $query->total_zd_cases ?? 0;
     }
 
+    // Ambil baseline DPT 3 dan MR1 berdasarkan provinsi atau seluruh provinsi
+    public function get_baseline_by_province($province_id) {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil provinsi yang ditargetkan
+        $this->db->select('SUM(dpt3_baseline) AS total_dpt3_baseline, SUM(mr1_baseline) AS total_mr1_baseline');
+        $this->db->from('baseline_immunization');
+        $this->db->where('year', 2024); // Filter tahun
+    
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return ['dpt3' => 0, 'mr1' => 0];
+            }
+        } elseif ($province_id === 'all') {
+            $query = $this->db->get()->row();
+            return [
+                'dpt3' => $query->total_dpt3_baseline ?? 0,
+                'mr1'  => $query->total_mr1_baseline ?? 0
+            ];
+        } else {
+            $this->db->where('province_id', $province_id);
+        }
+    
+        $query = $this->db->get()->row();
+        return [
+            'dpt3' => $query->total_dpt3_baseline ?? 0,
+            'mr1'  => $query->total_mr1_baseline ?? 0
+        ];
+    }
+
     // Ambil total target dari target_immunization (Targeted/Specific Province) dengan filter tahun
     public function get_total_target($vaccine_column, $province_id, $city_id, $year) {
         $province_ids = $this->get_targeted_province_ids();
