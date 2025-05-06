@@ -789,7 +789,7 @@ class Report extends CI_Controller {
                                     . '<br> Sasaran : ' . number_format($total_dpt1_target, 0, ',', '.') ,
             'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
             'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
-            'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . ' </span>',
+            'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . '% dari total Kab/Kota </span>',
             'puskesmas_conduct_immunization' => number_format($puskesmas_conduct_immunization, 0, ',', '.'),
             'percentage_puskesmas_conduct_immunization' => number_format($percentage_puskesmas_conduct_immunization, 1, ',', '.') . '%',
             'total_dpt_stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
