@@ -794,7 +794,7 @@ class Report extends CI_Controller {
             'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . '% dari total Kab/Kota </span>',
             'puskesmas_conduct_immunization' => number_format($puskesmas_conduct_immunization, 0, ',', '.'),
             'percentage_puskesmas_conduct_immunization' => number_format($percentage_puskesmas_conduct_immunization, 1, ',', '.') . '%',
-            'total_puskesmas_conduct_immunization' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $puskesmas_conduct_immunization . ' Puskesmas'
+            'total_puskesmas_conduct_immunization' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> Total ' . number_format($puskesmas_conduct_immunization, 0, ',', '.') . ' Puskesmas'
                                                         . '<br>' . (($year <= 2025 ) ? 'Tanpa Target' : 'Target 80%') . '</span>',
             'total_dpt_stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
             'province_do' => $table_do,
