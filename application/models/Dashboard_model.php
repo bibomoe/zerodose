@@ -574,7 +574,16 @@ class Dashboard_model extends CI_Model {
         return $total_faskes_stockout;
     }
 
+    public function get_total_stockout_puskesmas($year) {
+        $this->db->distinct(); // Pastikan hasilnya unik
+        $this->db->select('puskesmas_id');
+        $this->db->from('puskesmas_stock_out_details');
+        $this->db->where('year', $year);
+        $this->db->where('status_stockout', 1);
     
+        $query = $this->db->get();
+        return $query->num_rows(); // Hitung total puskesmas unik yang stockout
+    }
 
     // ✅ Ambil ID dari 10 targeted provinces
     public function get_targeted_province_ids() {

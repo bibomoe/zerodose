@@ -83,8 +83,11 @@ class Home extends CI_Controller {
         $this->data['percent_puskesmas_immunized_2025'] = $this->Dashboard_model->get_puskesmas_immunization_percentage(2025);
         $this->data['percent_puskesmas_immunized_2026'] = $this->Dashboard_model->get_puskesmas_immunization_percentage(2026);
 
-        $this->data['total_dpt_stockout_2025'] = $this->Dashboard_model->get_total_dpt_stock_out(2025);
-        $this->data['total_dpt_stockout_2026'] = $this->Dashboard_model->get_total_dpt_stock_out(2026);
+        // $this->data['total_dpt_stockout_2025'] = $this->Dashboard_model->get_total_dpt_stock_out(2025);
+        // $this->data['total_dpt_stockout_2026'] = $this->Dashboard_model->get_total_dpt_stock_out(2026);
+
+        $this->data['total_dpt_stockout_2025'] = $this->Dashboard_model->get_total_stockout_puskesmas(2025);
+        $this->data['total_dpt_stockout_2026'] = $this->Dashboard_model->get_total_stockout_puskesmas(2026);
 
         // ✅ Ambil persentase fasilitas kesehatan yang menjalankan program imunisasi (10 targeted provinces)
         $this->data['percent_health_facilities_2025'] = $this->Dashboard_model->get_health_facilities_percentage(2025);
