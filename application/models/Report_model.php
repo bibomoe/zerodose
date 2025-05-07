@@ -669,10 +669,9 @@ class Report_model extends CI_Model {
             $this->db->where('ss.city_id', $district_id);
         }
 
-        
-
-        $total_good_puskesmas = $this->db->get()->row()->total_good_puskesmas ?? 0;
-        $total_ss = $this->db->get()->row()->total_ss ?? 0;
+        $query = $this->db->get()->row();
+        $total_good_puskesmas = $query->total_good_puskesmas ?? 0;
+        $total_ss = $query->total_ss ?? 0;
 
         // Hitung total seluruh puskesmas di targeted provinces
         $this->db->select('COUNT(id) AS total_puskesmas');
