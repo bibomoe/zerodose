@@ -505,9 +505,11 @@ class Report extends CI_Controller {
         $puskesmas_data = $this->Report_model->get_puskesmas_data($selected_province, $selected_district, $selected_year, $selected_month);
         $this->data['total_immunized_puskesmas'] = $puskesmas_data['total_immunized_puskesmas'];
         $this->data['percentage_puskesmas'] = $puskesmas_data['percentage'];
+        $this->data['total_puskesmas'] = $puskesmas_data['total_puskesmas'];
 
         $puskesmas_conduct_immunization = $this->data['total_immunized_puskesmas'];
         $percentage_puskesmas_conduct_immunization = $this->data['percentage_puskesmas'];
+        $total_puskesmas = $this->data['total_puskesmas'];
 
         $this->data["total_dpt_stockout_$year"] = $this->Report_model->get_total_dpt_stock_out($selected_province, $selected_district, $selected_year, $selected_month);
 
@@ -792,6 +794,8 @@ class Report extends CI_Controller {
             'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . '% dari total Kab/Kota </span>',
             'puskesmas_conduct_immunization' => number_format($puskesmas_conduct_immunization, 0, ',', '.'),
             'percentage_puskesmas_conduct_immunization' => number_format($percentage_puskesmas_conduct_immunization, 1, ',', '.') . '%',
+            'total_puskesmas_conduct_immunization' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $puskesmas_conduct_immunization . ' Puskesmas'
+                                                        . '<br>' . (($year <= 2025 ) ? 'Tanpa Target' : 'Target 80%') . '</span>',
             'total_dpt_stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
             'province_do' => $table_do,
             'puskesmas_do_immunization' => $table_puskesmas_immunization,
@@ -930,7 +934,7 @@ class Report extends CI_Controller {
                             </tr>
     
                             <tr>
-                                <td style="font-size:22pt; font-weight: bold; ">' . $data['percentage_puskesmas_conduct_immunization'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; ">' . $data['percentage_puskesmas_conduct_immunization'] . $data['total_puskesmas_conduct_immunization'] . '</td>
                                 <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_conduct_immunization'] . '</td>
                                 <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['total_dpt_stockout'] . '</td>
                             </tr>
