@@ -709,6 +709,7 @@ class Report_model extends CI_Model {
         ];
     }
 
+    
     public function get_total_dpt_stock_out($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
         $province_ids = $this->get_targeted_province_ids();
         $this->db->select('
@@ -742,6 +743,78 @@ class Report_model extends CI_Model {
         $query = $this->db->get();
         return $query->row()->total_stock_out ?? 0;
     }
+
+    public function get_stockout_summary($province_id, $district_id, $year, $month = 12) {
+        $province_ids = $this->get_targeted_province_ids(); // Targeted provinces
+    
+        // ================================
+        // Ambil total Puskesmas yang stockout (distinct)
+        // ================================
+        $this->db->distinct();
+        $this->db->select('puskesmas_id');
+        $this->db->from('puskesmas_stock_out_details');
+        $this->db->where('year', $year);
+        $this->db->where('status_stockout', 1);
+        
+        if ($month !== 'all') {
+            $this->db->where('month <=', $month);
+        }
+    
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return ['total_stockout' => 0, 'total_puskesmas' => 0, 'percentage_stockout' => 0];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+    
+        if ($district_id !== 'all') {
+            $this->db->where('city_id', $district_id);
+        }
+    
+        $total_stockout = $this->db->get()->num_rows(); // Puskesmas unik dengan stockout
+    
+        // ================================
+        // Ambil total puskesmas yang aktif
+        // ================================
+        $this->db->select('COUNT(id) AS total_puskesmas');
+        $this->db->from('puskesmas');
+    
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return ['total_stockout' => 0, 'total_puskesmas' => 0, 'percentage_stockout' => 0];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+    
+        if ($district_id !== 'all') {
+            $this->db->where('city_id', $district_id);
+        }
+    
+        $total_puskesmas = $this->db->get()->row()->total_puskesmas ?? 0;
+    
+        // ================================
+        // Hitung persentase
+        // ================================
+        $percentage_stockout = ($total_puskesmas > 0)
+            ? round(($total_stockout / $total_puskesmas) * 100, 2)
+            : 0;
+    
+        // ================================
+        // Return hasil
+        // ================================
+        return [
+            'total_stockout' => $total_stockout,
+            'total_puskesmas' => $total_puskesmas,
+            'percentage_stockout' => $percentage_stockout
+        ];
+    }
+    
 
     // Tabel 3
     // Mengambil total jumlah cities per provinsi

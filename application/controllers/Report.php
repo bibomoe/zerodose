@@ -519,9 +519,12 @@ class Report extends CI_Controller {
         $ss_percentage_good = $ss_data['percentage_good'];
         $ss_total_puskesmas = $ss_data['total_puskesmas'];
 
-        $this->data["total_dpt_stockout_$year"] = $this->Report_model->get_total_dpt_stock_out($selected_province, $selected_district, $selected_year, $selected_month);
+        // $this->data["total_dpt_stockout_$year"] = $this->Report_model->get_total_dpt_stock_out($selected_province, $selected_district, $selected_year, $selected_month);
+        $this->data["total_dpt_stockout_$year"] = $this->Report_model->get_stockout_summary($selected_province, $selected_district, $selected_year, $selected_month);
 
-        $total_dpt_stockout = $this->data["total_dpt_stockout_$year"];
+        $total_dpt_stockout = $this->data["total_dpt_stockout_$year"]['total_stockout'];
+        $stockout_total_puskesmas = $this->data["total_dpt_stockout_$year"]['total_puskesmas'];
+        $stockout_percentage = $this->data["total_dpt_stockout_$year"]['percentage_stockout'];
         
         // TABLE 3
 
@@ -807,6 +810,8 @@ class Report extends CI_Controller {
             'total_puskesmas_conduct_immunization' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> ' . number_format($puskesmas_conduct_immunization, 0, ',', '.') . ' Puskesmas'
                                                         . '<br>' . (($year <= 2025 ) ? 'Tanpa Target' : 'Target 80%') . '</span>',
             'total_dpt_stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
+            'percentage_stockout' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($stockout_percentage, 1, ',', '.') . '% dari Total Puskesmas'
+                                                        . '<br> Total Puskesmas : ' . number_format($stockout_total_puskesmas, 0, ',', '.') . '</span>',
             'province_do' => $table_do,
             'puskesmas_do_immunization' => $table_puskesmas_immunization,
             'puskesmas_dpt_stock_out_data' => $table_puskesmas_stock_out
@@ -946,7 +951,7 @@ class Report extends CI_Controller {
                             <tr>
                                 <td style="font-size:22pt; font-weight: bold; ">' . $data['percentage_puskesmas_conduct_immunization'] . $data['total_puskesmas_conduct_immunization'] . '</td>
                                 <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_conduct_immunization'] . $data['total_ss'] . '</td>
-                                <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['total_dpt_stockout'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['total_dpt_stockout'] . $data['percentage_stockout'] . '</td>
                             </tr>
                         </tbody>
                     </table>';
