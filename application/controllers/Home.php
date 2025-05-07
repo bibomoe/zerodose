@@ -885,8 +885,8 @@ class Home extends CI_Controller {
         $this->data['supportive_supervision_table'] = $this->District_model->get_supportive_supervision_targeted_table($selected_province, $selected_year);
     
         // ✅ Data untuk card (summary seluruh 10 targeted provinces)
-        $this->data['supportive_supervision_2025'] = $this->District_model->get_supportive_supervision_targeted_summary(2025);
-        $this->data['supportive_supervision_2026'] = $this->District_model->get_supportive_supervision_targeted_summary(2026);
+        $this->data['supportive_supervision_2025'] = $this->District_model->get_supportive_supervision_targeted_summary($selected_province, 2025);
+        $this->data['supportive_supervision_2026'] = $this->District_model->get_supportive_supervision_targeted_summary($selected_province, 2026);
 
         // Ambil data Puskesmas yang melakukan RCA
         $rca_puskesmas_data = $this->Puskesmas_model->get_puskesmas_rca_data($selected_province, $selected_year);

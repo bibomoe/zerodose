@@ -511,6 +511,14 @@ class Report extends CI_Controller {
         $percentage_puskesmas_conduct_immunization = $this->data['percentage_puskesmas'];
         $total_puskesmas = $this->data['total_puskesmas'];
 
+        // Ambil data jumlah Supportive Supervision
+        $ss_data = $this->Report_model->get_supportive_supervision_targeted_summary($selected_province, $selected_district, $selected_year, $selected_month);
+
+        $ss_category_good = $ss_data['total_good_puskesmas'];
+        $ss_total_ss = $ss_data['total_ss'];
+        $ss_percentage_good = $ss_data['percentage_good'];
+        $ss_total_puskesmas = $ss_data['total_puskesmas'];
+
         $this->data["total_dpt_stockout_$year"] = $this->Report_model->get_total_dpt_stock_out($selected_province, $selected_district, $selected_year, $selected_month);
 
         $total_dpt_stockout = $this->data["total_dpt_stockout_$year"];
@@ -792,7 +800,9 @@ class Report extends CI_Controller {
             'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
             'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
             'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . '% dari total Kab/Kota </span>',
-            'puskesmas_conduct_immunization' => number_format($puskesmas_conduct_immunization, 0, ',', '.'),
+            'puskesmas_conduct_immunization' => number_format($ss_category_good, 0, ',', '.'),
+            'total_ss' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($ss_percentage_good, 0, ',', '.') . '% dari Total Puskesmas'
+                                                        . '<br> Total SS : ' . number_format($ss_total_ss, 0, ',', '.') . '</span>',
             'percentage_puskesmas_conduct_immunization' => number_format($percentage_puskesmas_conduct_immunization, 1, ',', '.') . '%',
             'total_puskesmas_conduct_immunization' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> Total ' . number_format($puskesmas_conduct_immunization, 0, ',', '.') . ' Puskesmas'
                                                         . '<br>' . (($year <= 2025 ) ? 'Tanpa Target' : 'Target 80%') . '</span>',
@@ -935,7 +945,7 @@ class Report extends CI_Controller {
     
                             <tr>
                                 <td style="font-size:22pt; font-weight: bold; ">' . $data['percentage_puskesmas_conduct_immunization'] . $data['total_puskesmas_conduct_immunization'] . '</td>
-                                <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_conduct_immunization'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_conduct_immunization'] . $data['total_ss'] . '</td>
                                 <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['total_dpt_stockout'] . '</td>
                             </tr>
                         </tbody>

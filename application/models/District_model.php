@@ -131,18 +131,25 @@ class District_model extends CI_Model {
     }
 
     // ✅ Fungsi untuk card (Mengambil total data untuk semua 10 targeted provinces)
-    public function get_supportive_supervision_targeted_summary($year) {
-        // $province_ids = $this->get_targeted_province_ids();
+    public function get_supportive_supervision_targeted_summary($province_id, $year) {
+        $province_ids = $this->get_targeted_province_ids();
 
-        $this->db->select('SUM(ss.good_category_puskesmas) AS total_good_puskesmas', false);
+        $this->db->select('SUM(ss.good_category_puskesmas) AS total_good_puskesmas, SUM(ss.total_ss)', false);
         $this->db->from('supportive_supervision ss');
         $this->db->where('ss.year', $year);
         
-        if (!empty($province_ids)) {
-            $this->db->where_in('ss.province_id', $province_ids);
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('ss.province_id', $province_ids);
+            } else {
+                return ['total_puskesmas' => 0, 'total_good_puskesmas' => 0, 'percentage_good' => 0, 'total_ss' => 0];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('ss.province_id', $province_id);
         }
 
         $total_good_puskesmas = $this->db->get()->row()->total_good_puskesmas ?? 0;
+        $total_ss = $this->db->get()->row()->total_ss ?? 0;
 
         // Hitung total seluruh puskesmas di targeted provinces
         $this->db->select('COUNT(id) AS total_puskesmas');
@@ -150,6 +157,16 @@ class District_model extends CI_Model {
         // if (!empty($province_ids)) {
         //     $this->db->where_in('province_id', $province_ids);
         // }
+
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return ['total_puskesmas' => 0, 'total_good_puskesmas' => 0, 'percentage_good' => 0, 'total_ss' => 0];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
 
         $total_puskesmas = $this->db->get()->row()->total_puskesmas ?? 0;
 
@@ -161,7 +178,8 @@ class District_model extends CI_Model {
         return [
             'total_puskesmas' => $total_puskesmas,
             'total_good_puskesmas' => $total_good_puskesmas,
-            'percentage_good' => $percentage_good
+            'percentage_good' => $percentage_good,
+            'total_ss' => $total_ss
         ];
     }
 
