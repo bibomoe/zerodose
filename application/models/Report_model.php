@@ -1389,8 +1389,7 @@ class Report_model extends CI_Model {
     
         $stockout_data = $this->db->get()->result_array();
 
-        var_dump($stockout_data);
-                exit;
+        
     
         // ================================
         // Ambil total Puskesmas aktif per provinsi
@@ -1421,27 +1420,36 @@ class Report_model extends CI_Model {
         // Menghitung total stockout per provinsi
         foreach ($total_puskesmas_data as $puskesmas) {
             $province_id = $puskesmas['province_id'];
+            $province_name = $puskesmas['province_name'];
             
-            // Menghitung total stockout per provinsi
+            // Inisialisasi hitung stockout untuk setiap provinsi
             $total_stockout = 0;
+            $total_puskesmas = 0;
+
+            // Cek berapa banyak Puskesmas per provinsi
+            $total_puskesmas = 0;
+            foreach ($total_puskesmas_data as $puskesmas_item) {
+                if ($puskesmas_item['province_id'] == $province_id) {
+                    $total_puskesmas++;
+                }
+            }
+            
+            // Hitung jumlah Puskesmas yang mengalami stockout per provinsi
             foreach ($stockout_data as $stockout) {
                 if ($stockout['province_id'] == $province_id) {
                     $total_stockout++;
                 }
             }
-    
-            // Menghitung total Puskesmas aktif per provinsi
-            $total_puskesmas = count($total_puskesmas_data); // Jumlah total Puskesmas aktif per provinsi
-            
-            // Hitung persentase stockout
-            $percentage_stockout = ($total_puskesmas > 0) 
+
+            // Hitung persentase stockout per provinsi
+            $percentage_stockout = ($total_puskesmas > 0)
                 ? round(($total_stockout / $total_puskesmas) * 100, 2)
                 : 0;
-    
+
             // Menyimpan data per provinsi
             $result[] = [
                 'province_id' => $province_id,
-                'province_name' => $puskesmas['province_name'], // Nama Provinsi
+                'province_name' => $province_name, // Nama Provinsi
                 'total_stockout' => $total_stockout,
                 'total_puskesmas' => $total_puskesmas,
                 'percentage_stockout' => $percentage_stockout
