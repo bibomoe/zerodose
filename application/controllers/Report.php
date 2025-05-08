@@ -1044,7 +1044,7 @@ class Report extends CI_Controller {
                             <td>{$item['total_puskesmas_with_immunization']}</td>
                             <td>{$item['percentage_immunization']}%</td>
                             <td>{$item['total_ss']}</td>
-                            <td>{$item['total_good_puskesmas']}%</td>
+                            <td>{$item['total_good_puskesmas']}</td>
                             <td>{$item['percentage_good']}%</td>
                         </tr>";
             }
@@ -1417,6 +1417,9 @@ class Report extends CI_Controller {
                 $total_puskesmas_with_immunization = 0;
                 $total_puskesmas = 0;
                 $percentage_immunization = 0;
+                $total_ss = 0;
+                $total_good_puskesmas = 0;
+                $percentage_good = 0;
     
                 // Cari data imunisasi berdasarkan provinsi
                 foreach ($immunization_data as $data) {
@@ -1428,6 +1431,14 @@ class Report extends CI_Controller {
                         $total_puskesmas = $data['total_puskesmas'];
                         // Hitung persentase imunisasi
                         $percentage_immunization = $data['percentage_immunization'];
+
+                        // Ambil total puskesmas yang sudah di ss
+                        $total_ss = $data['total_ss'];
+                        // Ambil total puskesmas dengan kategori baik
+                        $total_good_puskesmas = $data['total_good_puskesmas'];
+                        // Hitung persentase kategori baik
+                        $percentage_good = $data['percentage_good'];
+
                         break;  // Setelah ditemukan data untuk provinsi ini, keluar dari loop
                     }
                 }
@@ -1438,7 +1449,10 @@ class Report extends CI_Controller {
                     'province_name' => $province_name,
                     'total_puskesmas_with_immunization' => $total_puskesmas_with_immunization,
                     'total_puskesmas' => $total_puskesmas,
-                    'percentage_immunization' => number_format($percentage_immunization, 2, ',', '.')
+                    'percentage_immunization' => number_format($percentage_immunization, 2, ',', '.'),
+                    'total_ss' => $total_ss,
+                    'total_good_puskesmas' => $total_good_puskesmas,
+                    'percentage_good' => number_format($percentage_good, 2, ',', '.')
                 ];
             }
         } else {
