@@ -706,6 +706,10 @@ class Report extends CI_Controller {
                 }
             } else {
                 $immunization_data = $this->Report_model->get_immunization_puskesmas_table_by_province($selected_province,$selected_district,$selected_year, $selected_month);
+
+                var_dump($immunization_data);
+                exit;
+                
                 foreach ($immunization_data as $row){
                     $table_puskesmas_immunization[] = [
                         'city_name' => $row['city_name'],
