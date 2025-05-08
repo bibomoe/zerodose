@@ -711,7 +711,10 @@ class Report extends CI_Controller {
                         'city_name' => $row['city_name'],
                         'total_puskesmas_with_immunization' => $row['total_puskesmas_with_immunization'],
                         'total_puskesmas' => $row['total_puskesmas'],
-                        'percentage_immunization' => number_format($row['percentage_immunization'], 2, ',', '.')
+                        'percentage_immunization' => number_format($row['percentage_immunization'], 2, ',', '.'),
+                        'total_ss' => $total_ss,
+                        'total_good_puskesmas' => $total_good_puskesmas,
+                        'percentage_good' => number_format($percentage_good, 2, ',', '.')
                     ];
                 }
             }
@@ -1185,6 +1188,9 @@ class Report extends CI_Controller {
                                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Kab/Kota</th>
                                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
                                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
                                 </tr>
                             </thead>
                             <tbody>';
@@ -1193,6 +1199,9 @@ class Report extends CI_Controller {
                                 <td><b>{$item['city_name']}</b></td>
                                 <td>{$item['total_puskesmas_with_immunization']}</td>
                                 <td>{$item['percentage_immunization']}%</td>
+                                <td>{$item['total_ss']}</td>
+                                <td>{$item['total_good_puskesmas']}</td>
+                                <td>{$item['percentage_good']}%</td>
                             </tr>";
                 }
                 $html2 .= '</tbody></table>';

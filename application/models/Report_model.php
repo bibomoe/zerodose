@@ -1024,7 +1024,27 @@ class Report_model extends CI_Model {
             c.id as city_id,
             c.name_id AS city_name,
             COUNT(DISTINCT pd.id) AS total_puskesmas_with_immunization,  -- Jumlah Puskesmas yang melakukan imunisasi
-            (SELECT COUNT(id) FROM puskesmas WHERE city_id = c.id ) AS total_puskesmas  -- Jumlah total Puskesmas aktif di provinsi
+            (SELECT COUNT(id) FROM puskesmas WHERE city_id = c.id ) AS total_puskesmas,  -- Jumlah total Puskesmas aktif di provinsi
+
+            -- Subquery untuk mendapatkan total_good_puskesmas dengan filter yang sama
+            (SELECT SUM(ss.good_category_puskesmas) 
+            FROM supportive_supervision ss 
+            WHERE ss.year = {$year} 
+            " . ($month !== 'all' ? "AND ss.month <= {$month}" : "") . "  -- Kondisi bulan yang sama dengan query utama
+            " . ($province_id === 'targeted' && !empty($province_ids) ? "AND ss.province_id IN (" . implode(",", $province_ids) . ")" : "") . "
+            " . ($province_id !== 'all' && $province_id !== 'targeted' ? "AND ss.province_id = {$province_id}" : "") . "
+            " . ($city_id !== 'all' ? "AND ss.city_id = {$city_id}" : "") . "
+            ) AS total_good_puskesmas,
+            
+            -- Subquery untuk mendapatkan total_ss dengan filter yang sama
+            (SELECT SUM(ss.total_ss) 
+            FROM supportive_supervision ss 
+            WHERE ss.year = {$year} 
+            " . ($month !== 'all' ? "AND ss.month <= {$month}" : "") . "  -- Kondisi bulan yang sama dengan query utama
+            " . ($province_id === 'targeted' && !empty($province_ids) ? "AND ss.province_id IN (" . implode(",", $province_ids) . ")" : "") . "
+            " . ($province_id !== 'all' && $province_id !== 'targeted' ? "AND ss.province_id = {$province_id}" : "") . "
+            " . ($city_id !== 'all' ? "AND ss.city_id = {$city_id}" : "") . "
+            ) AS total_ss
         ");
         $this->db->from('immunization_data id');
         $this->db->join('puskesmas pd', 'id.puskesmas_id = pd.id', 'left');  // Gabungkan dengan tabel puskesmas
@@ -1068,10 +1088,20 @@ class Report_model extends CI_Model {
             $total_puskesmas = (int) $row['total_puskesmas'];
             $puskesmas_with_immunization = (int) $row['total_puskesmas_with_immunization'];
             
+            $total_good_puskesmas = (int) $row['total_good_puskesmas'];
+            $total_ss = (int) $row['total_ss'];
+
             // Hitung persentase Puskesmas yang sudah melakukan imunisasi
             $row['percentage_immunization'] = ($total_puskesmas > 0) 
                 ? round(($puskesmas_with_immunization / $total_puskesmas) * 100, 2) 
                 : 0;
+            
+            // Hitung persentase Good Puskesmas
+            $row['percentage_good'] = ($total_puskesmas > 0) 
+                ? round(($total_good_puskesmas / $total_puskesmas) * 100, 2) 
+                : 0;
+
+            
         }
         
         // var_dump($query);
