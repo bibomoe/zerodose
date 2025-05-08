@@ -707,18 +707,15 @@ class Report extends CI_Controller {
             } else {
                 $immunization_data = $this->Report_model->get_immunization_puskesmas_table_by_province($selected_province,$selected_district,$selected_year, $selected_month);
 
-                var_dump($immunization_data);
-                exit;
-                
                 foreach ($immunization_data as $row){
                     $table_puskesmas_immunization[] = [
                         'city_name' => $row['city_name'],
                         'total_puskesmas_with_immunization' => $row['total_puskesmas_with_immunization'],
                         'total_puskesmas' => $row['total_puskesmas'],
                         'percentage_immunization' => number_format($row['percentage_immunization'], 2, ',', '.'),
-                        'total_ss' => $total_ss,
-                        'total_good_puskesmas' => $total_good_puskesmas,
-                        'percentage_good' => number_format($percentage_good, 2, ',', '.')
+                        'total_ss' => $row['total_ss'],
+                        'total_good_puskesmas' => $row['total_good_puskesmas'],
+                        'percentage_good' => number_format($row['percentage_good'], 2, ',', '.')
                     ];
                 }
             }
