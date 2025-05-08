@@ -1409,6 +1409,8 @@ class Report extends CI_Controller {
         if($selected_province === 'all' || $selected_province === 'targeted'){
             $immunization_data = $this->Report_model->get_immunization_puskesmas_table($selected_province,$selected_district,$selected_year, $selected_month);
 
+            var_dump($immunization_data);
+            exit;
             foreach ($list_province as $province) {
                 $province_id = $province['id'];  // ID Provinsi
                 $province_name = $province['name_id'];  // Nama Provinsi (gunakan 'name_id' jika nama provinsi dalam bahasa Indonesia)
