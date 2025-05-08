@@ -1370,7 +1370,7 @@ class Report_model extends CI_Model {
         $this->db->where('status_stockout', 1); // Pastikan status stockout adalah 1 (terjadi stockout)
         
         if ($month !== 'all') {
-            $this->db->where('month <=', $month); // Ambil hingga bulan yang ditentukan
+            $this->db->where('month =', $month); // Ambil hingga bulan yang ditentukan
         }
     
         if ($province_id === 'targeted') {
@@ -1388,6 +1388,9 @@ class Report_model extends CI_Model {
         }
     
         $stockout_data = $this->db->get()->result_array();
+
+        var_dump($stockout_data);
+                exit;
     
         // ================================
         // Ambil total Puskesmas aktif per provinsi
