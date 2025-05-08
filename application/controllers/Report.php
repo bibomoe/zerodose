@@ -729,6 +729,8 @@ class Report extends CI_Controller {
         if($selected_province === 'all' || $selected_province === 'targeted'){
             $puskesmas_dpt_stock_out_data = $this->Report_model->get_puskesmas_dpt_stock_out_table($selected_province,$selected_district,$selected_year, $selected_month);
                 
+                var_dump($puskesmas_dpt_stock_out_data);
+                exit;
                 foreach ($puskesmas_dpt_stock_out_data as $row){
                     // Masukkan data ke dalam array $table_puskesmas_stock_out
                     $table_puskesmas_stock_out[] = [
@@ -1040,7 +1042,7 @@ class Report extends CI_Controller {
             $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                         <thead>
                             <tr>
-                                <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Nama Provinsi</th>
+                                <th style="background-color: rgb(34, 32, 37); color: white; font-weight: bold;">Nama Provinsi</th>
                                 <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Jumlah Puskesmas</th>
                                 <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">% Puskesmas</th>
                             </tr>
