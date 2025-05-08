@@ -1365,7 +1365,7 @@ class Report_model extends CI_Model {
         // ================================
         $this->db->select('
             puskesmas.province_id,
-            puskesmas.name_id AS province_name,
+            p.name_id AS province_name,
             COUNT(DISTINCT s.puskesmas_id) AS total_stockout,
             COUNT(DISTINCT puskesmas.id) AS total_puskesmas
         ');
