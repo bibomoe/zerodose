@@ -641,7 +641,7 @@ class Report_model extends CI_Model {
         // $province_ids = $this->get_targeted_province_ids();
         $province_ids = $this->get_targeted_province_ids(); // Ambil daftar targeted provinces
 
-        $this->db->select('SUM(ss.good_category_puskesmas) AS total_good_puskesmas, SUM(ss.total_ss)', false);
+        $this->db->select('SUM(ss.good_category_puskesmas) AS total_good_puskesmas, SUM(ss.total_ss) AS total_ss', false);
         $this->db->from('supportive_supervision ss');
         $this->db->where('ss.year', $year);
         
