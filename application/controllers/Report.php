@@ -729,8 +729,8 @@ class Report extends CI_Controller {
         if($selected_province === 'all' || $selected_province === 'targeted'){
             $puskesmas_dpt_stock_out_data = $this->Report_model->get_puskesmas_dpt_stock_out_table($selected_province,$selected_district,$selected_year, $selected_month);
                 
-                var_dump($puskesmas_dpt_stock_out_data);
-                exit;
+                // var_dump($puskesmas_dpt_stock_out_data);
+                // exit;
                 foreach ($puskesmas_dpt_stock_out_data as $row){
                     // Masukkan data ke dalam array $table_puskesmas_stock_out
                     $table_puskesmas_stock_out[] = [
