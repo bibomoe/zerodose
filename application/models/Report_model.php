@@ -1361,54 +1361,105 @@ class Report_model extends CI_Model {
         $result = [];
         
         // ================================
-        // Ambil total Puskesmas yang mengalami stockout per provinsi
+        // Ambil semua provinsi dari tabel provinces
+        // ================================
+        $this->db->select('id AS province_id, name_id AS province_name');
+        $this->db->from('provinces');
+        $provinces = $this->db->get()->result_array();
+    
+        // ================================
+        // Query untuk menghitung total Puskesmas yang mengalami stockout per provinsi
         // ================================
         $this->db->select('
-            puskesmas.province_id,
-            p.name_id AS province_name,
-            COUNT(DISTINCT s.puskesmas_id) AS total_stockout,
-            COUNT(DISTINCT puskesmas.id) AS total_puskesmas
+            ss.province_id,
+            COUNT(DISTINCT ss.puskesmas_id) AS total_stockout
         ');
-        $this->db->from('puskesmas');
-        $this->db->join('provinces p', 'puskesmas.province_id = p.id', 'left');
-        $this->db->join('puskesmas_stock_out_details s', 'puskesmas.id = s.puskesmas_id AND s.year = '.$year, 'left');
-        $this->db->where('s.status_stockout', 1); // Stockout harus 1
+        $this->db->from('puskesmas_stock_out_details ss');
+        $this->db->where('ss.year', $year);
+        $this->db->where('ss.status_stockout', 1); // Hanya Puskesmas yang mengalami stockout
         
+        // Kondisi untuk bulan
         if ($month !== 'all') {
-            $this->db->where('s.month =', $month); // Ambil hingga bulan yang ditentukan
+            $this->db->where('ss.month =', $month); // Ambil hingga bulan yang ditentukan
         }
-        
+    
         // Kondisi untuk province_id
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
-                $this->db->where_in('puskesmas.province_id', $province_ids);
+                $this->db->where_in('ss.province_id', $province_ids);
             } else {
                 return ['total_stockout' => 0, 'total_puskesmas' => 0, 'percentage_stockout' => 0];
             }
         } elseif ($province_id !== 'all') {
-            $this->db->where('puskesmas.province_id', $province_id);
+            $this->db->where('ss.province_id', $province_id);
         }
-        
+    
         // Kondisi untuk city_id
         if ($city_id !== 'all') {
-            $this->db->where('puskesmas.city_id', $city_id);
+            $this->db->where('ss.city_id', $city_id);
         }
-        
-        // GROUP BY province_id untuk mengelompokkan data per provinsi
-        $this->db->group_by('puskesmas.province_id');
-        
-        // Eksekusi query
+    
+        // Group by province_id untuk menghitung stockout per provinsi
+        $this->db->group_by('ss.province_id');
         $stockout_data = $this->db->get()->result_array();
         
         // ================================
-        // Proses dan simpan hasil ke dalam array
+        // Query untuk menghitung total Puskesmas per provinsi (aktif)
         // ================================
-        foreach ($stockout_data as $data) {
-            $province_id = $data['province_id'];
-            $province_name = $data['province_name'];
-            $total_stockout = $data['total_stockout'];
-            $total_puskesmas = $data['total_puskesmas'];
+        $this->db->select('
+            p.province_id,
+            COUNT(DISTINCT p.id) AS total_puskesmas
+        ');
+        $this->db->from('puskesmas p');
+        $this->db->join('provinces pr', 'p.province_id = pr.id', 'left');
+        
+        // Kondisi untuk province_id
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('p.province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('p.province_id', $province_id);
+        }
+    
+        // Kondisi untuk city_id
+        if ($city_id !== 'all') {
+            $this->db->where('p.city_id', $city_id);
+        }
+    
+        // Group by province_id untuk menghitung total Puskesmas per provinsi
+        $this->db->group_by('p.province_id');
+        $total_puskesmas_data = $this->db->get()->result_array();
+        
+        // ================================
+        // Gabungkan hasil data stockout dan total Puskesmas per provinsi
+        // ================================
+        foreach ($provinces as $province) {
+            $province_id = $province['province_id'];
+            $province_name = $province['province_name'];
             
+            // Inisialisasi nilai stockout dan total_puskesmas untuk setiap provinsi
+            $total_stockout = 0;
+            $total_puskesmas = 0;
+            
+            // Cek apakah ada data stockout untuk provinsi ini
+            foreach ($stockout_data as $stockout) {
+                if ($stockout['province_id'] == $province_id) {
+                    $total_stockout = $stockout['total_stockout'];
+                    break;
+                }
+            }
+            
+            // Cek total Puskesmas untuk provinsi ini
+            foreach ($total_puskesmas_data as $puskesmas) {
+                if ($puskesmas['province_id'] == $province_id) {
+                    $total_puskesmas = $puskesmas['total_puskesmas'];
+                    break;
+                }
+            }
+    
             // Hitung persentase stockout
             $percentage_stockout = ($total_puskesmas > 0)
                 ? round(($total_stockout / $total_puskesmas) * 100, 2)
@@ -1417,7 +1468,7 @@ class Report_model extends CI_Model {
             // Menyimpan data per provinsi
             $result[] = [
                 'province_id' => $province_id,
-                'province_name' => $province_name, // Nama Provinsi
+                'province_name' => $province_name,
                 'total_stockout' => $total_stockout,
                 'total_puskesmas' => $total_puskesmas,
                 'percentage_stockout' => $percentage_stockout
@@ -1429,6 +1480,7 @@ class Report_model extends CI_Model {
         // ================================
         return $result;
     }
+    
     
     
 
