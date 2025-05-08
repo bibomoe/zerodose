@@ -573,6 +573,21 @@ class Report extends CI_Controller {
                     'cities_do_under_5' => $cities_do_under_5,
                     'percentage_cities_do_under_5' => number_format($percentage_cities_do_under_5, 2, ',', '.') . '%',  // Persentase dengan format %
                 ];
+
+                // Fungsi pembanding untuk mengurutkan berdasarkan persentase (dalam bentuk numerik)
+                usort($table_do, function($a, $b) {
+                    // Menghapus tanda persen dan mengkonversi ke angka
+                    $percentage_a = (float) str_replace('%', '', $a['percentage_cities_do_under_5']);
+                    $percentage_b = (float) str_replace('%', '', $b['percentage_cities_do_under_5']);
+
+                    // Urutkan dari yang terbesar
+                    if ($percentage_a == $percentage_b) {
+                        return 0;
+                    }
+                    return ($percentage_a > $percentage_b) ? -1 : 1;
+                });
+
+                // Sekarang $table_do sudah terurut berdasarkan 'percentage_cities_do_under_5' dari yang terbesar
             }
         } else {
             if ($selected_district !== 'all'){
@@ -604,6 +619,22 @@ class Report extends CI_Controller {
                     ];
                 }
             }
+
+            // Fungsi pembanding untuk mengurutkan berdasarkan dropout_rate (dalam bentuk numerik)
+            usort($table_do, function($a, $b) {
+                // Mengonversi dropout_rate dari format string ke angka desimal
+                $dropout_rate_a = (float) str_replace(',', '.', $a['dropout_rate']);
+                $dropout_rate_b = (float) str_replace(',', '.', $b['dropout_rate']);
+
+                // Urutkan dari yang terbesar
+                if ($dropout_rate_a == $dropout_rate_b) {
+                    return 0;
+                }
+                return ($dropout_rate_a > $dropout_rate_b) ? -1 : 1;
+            });
+
+            // Sekarang $table_do sudah terurut berdasarkan 'dropout_rate' dari yang terbesar
+
         }
         
 
