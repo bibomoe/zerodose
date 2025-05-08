@@ -728,53 +728,15 @@ class Report extends CI_Controller {
 
         if($selected_province === 'all' || $selected_province === 'targeted'){
             $puskesmas_dpt_stock_out_data = $this->Report_model->get_puskesmas_dpt_stock_out_table($selected_province,$selected_district,$selected_year, $selected_month);
-                foreach ($list_province as $province) {
-                    $province_id = $province['id'];  // ID Provinsi
-                    $province_name = $province['name_id'];  // Nama Provinsi (gunakan 'name_id' jika nama provinsi dalam bahasa Indonesia)
-
-                    // Inisialisasi variabel untuk menyimpan data
-                    $total_stock_out_1_month = 0;
-                    $total_stock_out_2_months = 0;
-                    $total_stock_out_3_months = 0;
-                    $total_stock_out_more_than_3_months = 0;
-                    $total_stock_out = 0;
-                    $total_puskesmas = 0;
-                    $percentage_stock_out = 0;
-
-                    // Cari data puskesmas dengan DPT stock out berdasarkan provinsi
-                    foreach ($puskesmas_dpt_stock_out_data as $data) {
-                        // Cek jika province_id dari data sama dengan id provinsi di $list_province
-                        if ($data['province_id'] == $province_id) {
-                            // Ambil data stock out berdasarkan durasi
-                            $total_stock_out_1_month = $data['total_stock_out_1_month'];
-                            $total_stock_out_2_months = $data['total_stock_out_2_months'];
-                            $total_stock_out_3_months = $data['total_stock_out_3_months'];
-                            $total_stock_out_more_than_3_months = $data['total_stock_out_more_than_3_months'];
-                            // Ambil total puskesmas aktif di provinsi
-                            $total_puskesmas = $data['total_puskesmas'];
-
-                            // Hitung total puskesmas yang mengalami DPT stock out
-                            $total_stock_out = $total_stock_out_1_month + $total_stock_out_2_months + $total_stock_out_3_months + $total_stock_out_more_than_3_months;
-
-                            // Hitung persentase Puskesmas dengan DPT stock out
-                            $percentage_stock_out = ($total_puskesmas > 0)
-                                ? round(($total_stock_out / $total_puskesmas) * 100, 2)
-                                : 0;
-                            break;  // Setelah ditemukan data untuk provinsi ini, keluar dari loop
-                        }
-                    }
-
+                
+                foreach ($puskesmas_dpt_stock_out_data as $row){
                     // Masukkan data ke dalam array $table_puskesmas_stock_out
                     $table_puskesmas_stock_out[] = [
-                        'province_id' => $province_id,
-                        'province_name' => $province_name,
-                        'total_stock_out_1_month' => $total_stock_out_1_month,
-                        'total_stock_out_2_months' => $total_stock_out_2_months,
-                        'total_stock_out_3_months' => $total_stock_out_3_months,
-                        'total_stock_out_more_than_3_months' => $total_stock_out_more_than_3_months,
-                        'total_stock_out' => $total_stock_out,
-                        'total_puskesmas' => $total_puskesmas,
-                        'percentage_stock_out' => number_format($percentage_stock_out, 2, ',', '.')
+                        'province_id' => $row['province_id'],
+                        'province_name' => $row['province_name'],
+                        'total_stock_out' => $row['total_stockout'],
+                        'total_puskesmas' => $row['total_puskesmas'],
+                        'percentage_stock_out' => number_format($row['percentage_stockout'], 2, ',', '.')
                     ];
                 }
         } else {
