@@ -265,8 +265,8 @@ class Report_model extends CI_Model {
             }
         }
 
-        // var_dump($dropout_rates);
-        // exit;
+        var_dump($dropout_rates);
+        exit;
 
         
     

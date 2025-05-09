@@ -483,16 +483,29 @@ class Report extends CI_Controller {
         // Menambahkan rata-rata dropout rate ke data view
         $this->data['dropout_rate_all_provinces'] = round($average_dropout_rate_all_provinces, 2);
 
-        $total_district_under_5_DO = $this->data['total_dropout_rate']; //Jumlah Kab/Kota dengan %DO dibawah 5%
-        
-        $total_cities = $this->Report_model->get_total_regencies_cities($selected_province);
+        if ($selected_district !== 'all'){
+            $total_district_under_5_DO = $this->data['total_dropout_rate']; //Jumlah Kab/Kota dengan %DO dibawah 5%
+            
+            $total_cities = $this->Report_model->get_total_regencies_cities($selected_province);
 
-        // Menghitung Persen KabKota dengan DO Rate dibawah 5%
-        $percentage_under_5_DO = ($total_cities > 0) 
-            ? round(($total_district_under_5_DO / $total_cities) * 100, 2)
-            : 0;
+            // Menghitung Persen KabKota dengan DO Rate dibawah 5%
+            $percentage_under_5_DO = ($total_cities > 0) 
+                ? round(($total_district_under_5_DO / $total_cities) * 100, 2)
+                : 0;
 
-        $percentage_under_5_DO = number_format($percentage_under_5_DO, 1, ',', '.');
+            $percentage_under_5_DO = number_format($percentage_under_5_DO, 1, ',', '.');
+        } else {
+            $total_district_under_5_DO = $this->data['total_dropout_rate']; //Jumlah Kab/Kota dengan %DO dibawah 5%
+            
+            $total_cities = $this->Report_model->get_total_regencies_cities($selected_province);
+
+            // Menghitung Persen KabKota dengan DO Rate dibawah 5%
+            $percentage_under_5_DO = ($total_cities > 0) 
+                ? round(($total_district_under_5_DO / $total_cities) * 100, 2)
+                : 0;
+
+            $percentage_under_5_DO = number_format($percentage_under_5_DO, 1, ',', '.');
+        }
 
         // var_dump($total_cities);
         // var_dump($total_district_under_5_DO);
@@ -748,12 +761,12 @@ class Report extends CI_Controller {
                 // Cari data puskesmas dengan DPT stock out berdasarkan provinsi
                 foreach ($puskesmas_dpt_stock_out_data as $data) {
 
-                // Masukkan data ke dalam array $table_puskesmas_stock_out
-                $table_puskesmas_stock_out[] = [
-                    'puskesmas_name' => $data['puskesmas_name'],
-                    'month' => $data['month']
-                ];
-            }
+                    // Masukkan data ke dalam array $table_puskesmas_stock_out
+                    $table_puskesmas_stock_out[] = [
+                        'puskesmas_name' => $data['puskesmas_name'],
+                        'month' => $data['month']
+                    ];
+                }
             } else {
                 $puskesmas_dpt_stock_out_data = $this->Report_model->get_puskesmas_dpt_stock_out_table_by_province($selected_province,$selected_district,$selected_year, $selected_month);
 
