@@ -760,32 +760,13 @@ class Report extends CI_Controller {
                 // Cari data puskesmas dengan DPT stock out berdasarkan provinsi
                 foreach ($puskesmas_dpt_stock_out_data as $data) {
                     
-                        // Ambil data stock out berdasarkan durasi
-                        $total_stock_out_1_month = $data['total_stock_out_1_month'];
-                        $total_stock_out_2_months = $data['total_stock_out_2_months'];
-                        $total_stock_out_3_months = $data['total_stock_out_3_months'];
-                        $total_stock_out_more_than_3_months = $data['total_stock_out_more_than_3_months'];
-                        // Ambil total puskesmas aktif di provinsi
-                        $total_puskesmas = $data['total_puskesmas'];
-
-                        // Hitung total puskesmas yang mengalami DPT stock out
-                        $total_stock_out = $total_stock_out_1_month + $total_stock_out_2_months + $total_stock_out_3_months + $total_stock_out_more_than_3_months;
-
-                        // Hitung persentase Puskesmas dengan DPT stock out
-                        $percentage_stock_out = ($total_puskesmas > 0)
-                            ? round(($total_stock_out / $total_puskesmas) * 100, 2)
-                            : 0;
-
-                    // Masukkan data ke dalam array $table_puskesmas_stock_out
                     $table_puskesmas_stock_out[] = [
-                        'city_name' => $data['city_name'],
-                        'total_stock_out_1_month' => $total_stock_out_1_month,
-                        'total_stock_out_2_months' => $total_stock_out_2_months,
-                        'total_stock_out_3_months' => $total_stock_out_3_months,
-                        'total_stock_out_more_than_3_months' => $total_stock_out_more_than_3_months,
-                        'total_stock_out' => $total_stock_out,
-                        'total_puskesmas' => $total_puskesmas,
-                        'percentage_stock_out' => number_format($percentage_stock_out, 2, ',', '.')
+                        'province_name' => $row['province_name'],
+                        'city_id' => $row['city_id'],
+                        'city_name' => $row['city_name'],
+                        'total_stock_out' => $row['total_stockout'],
+                        'total_puskesmas' => $row['total_puskesmas'],
+                        'percentage_stock_out' => number_format($row['percentage_stockout'], 2, ',', '.')
                     ];
                 }
 
@@ -1042,7 +1023,7 @@ class Report extends CI_Controller {
             $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
                         <thead>
                             <tr>
-                                <th style="background-color: rgb(34, 32, 37); color: white; font-weight: bold;">Nama Provinsi</th>
+                                <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Nama Provinsi</th>
                                 <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Jumlah Puskesmas</th>
                                 <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">% Puskesmas</th>
                             </tr>
