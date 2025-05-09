@@ -758,7 +758,7 @@ class Report extends CI_Controller {
                 $puskesmas_dpt_stock_out_data = $this->Report_model->get_puskesmas_dpt_stock_out_table_by_province($selected_province,$selected_district,$selected_year, $selected_month);
 
                 // Cari data puskesmas dengan DPT stock out berdasarkan provinsi
-                foreach ($puskesmas_dpt_stock_out_data as $data) {
+                foreach ($puskesmas_dpt_stock_out_data as $row) {
                     
                     $table_puskesmas_stock_out[] = [
                         'province_name' => $row['province_name'],

@@ -1507,8 +1507,7 @@ class Report_model extends CI_Model {
         }
     
         $cities = $this->db->get()->result_array();
-
-        var_dump($cities);
+        
     
         // ================================
         // Query total stockout per kota
@@ -1538,8 +1537,6 @@ class Report_model extends CI_Model {
     
         $this->db->group_by('ss.city_id');
         $stockout_data = $this->db->get()->result_array();
-
-        var_dump($stockout_data);
     
         // ================================
         // Query total puskesmas aktif per kota
@@ -1563,9 +1560,7 @@ class Report_model extends CI_Model {
     
         $this->db->group_by('p.city_id');
         $total_puskesmas_data = $this->db->get()->result_array();
-        
-        var_dump($total_puskesmas_data);
-
+    
         // ================================
         // Gabungkan hasil per kota
         // ================================
@@ -1604,9 +1599,7 @@ class Report_model extends CI_Model {
                 'percentage_stockout' => $percentage_stockout
             ];
         }
-
-        var_dump($result);
-        exit;
+    
         return $result;
     }
     
