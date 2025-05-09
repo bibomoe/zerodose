@@ -815,7 +815,7 @@ class Report extends CI_Controller {
                                     . '<br> Sasaran : ' . number_format($total_dpt1_target, 0, ',', '.') ,
             'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
             'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
-            'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . ' </span>',
+            'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . (($selected_district === 'all') ? '% dari total Kab/Kota' : '% dari total puskesmas') . ' </span>',
             'puskesmas_conduct_immunization' => number_format($ss_category_good, 0, ',', '.'),
             'total_ss' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($ss_percentage_good, 1, ',', '.') . '% dari total Puskesmas'
                                                         . '<br> Total SS : ' . number_format($ss_total_ss, 0, ',', '.') . '</span>',
@@ -961,7 +961,7 @@ class Report extends CI_Controller {
                                 <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['drop_out_percentage'] . '</td>
                                 <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_percentage'] 
                                                                                     . $data['district_under_5_puskesmas'] 
-                                                                                    . (($selected_district === 'all') ? '% dari total Kab/Kota' : '% dari total puskesmas') . '</td>
+                                                                                    . '</td>
                             </tr>
     
                             <tr>
