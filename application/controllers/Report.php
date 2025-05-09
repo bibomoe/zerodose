@@ -716,9 +716,6 @@ class Report extends CI_Controller {
             if ($selected_district !== 'all'){
                 $immunization_data = $this->Report_model->get_immunization_puskesmas_table_by_district($selected_province,$selected_district,$selected_year, $selected_month);
                 
-                var_dump($immunization_data);
-                exit;
-                
                 foreach ($immunization_data as $row) {
                     // Masukkan data ke dalam array $table_puskesmas_immunization
                     $table_puskesmas_immunization[] = [
