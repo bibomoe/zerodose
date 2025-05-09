@@ -497,7 +497,8 @@ class Report extends CI_Controller {
         } else {
             // Mendapatkan dropout rates per distrik
             $dropout_rates = $this->Report_model->get_puskesmas_under_5_percent_in_district($selected_province,$selected_district,$selected_year, $selected_month);
-            
+            var_dump($dropout_rates);
+            exit;
             $total_district_under_5_DO =  $dropout_rates; //Jumlah Puskesmas dengan %DO dibawah 5%
             
             $total_cities = $this->Report_model->get_total_puskesmas_in_district($selected_district);
