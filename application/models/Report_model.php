@@ -1674,9 +1674,7 @@ class Report_model extends CI_Model {
         $province_ids = $this->get_targeted_province_ids();
 
         // Mengambil data hanya untuk puskesmas yang mengalami stockout (status_stockout = 1)
-        $this->db->select("
-            DISTINCT pd.name AS puskesmas_name
-        ");
+        $this->db->select("pd.name AS puskesmas_name");
         $this->db->from('puskesmas_stock_out_details sod');
         $this->db->join('puskesmas pd', 'sod.puskesmas_id = pd.id', 'left');  // Gabungkan dengan tabel puskesmas
 
@@ -1709,6 +1707,10 @@ class Report_model extends CI_Model {
 
         // Mengurutkan berdasarkan bulan
         // $this->db->order_by('sod.month');
+
+        // Ambil hasil query dan memastikan hanya nama puskesmas yang unik
+        $this->db->group_by('pd.name');  // Pastikan nama puskesmas hanya muncul sekali
+
 
         // Ambil hasil query
         $query = $this->db->get()->result_array();
