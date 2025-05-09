@@ -767,8 +767,8 @@ class Report extends CI_Controller {
 
                     // Masukkan data ke dalam array $table_puskesmas_stock_out
                     $table_puskesmas_stock_out[] = [
-                        'puskesmas_name' => $data['puskesmas_name'],
-                        'month' => $data['month']
+                        'puskesmas_name' => $data['puskesmas_name']
+                        // 'month' => $data['month']
                     ];
                 }
             } else {
@@ -1116,14 +1116,13 @@ class Report extends CI_Controller {
                             <thead>
                                 <tr>
                                     <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Nama Puskesmas</th>
-                                    <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Bulan</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>';
                 foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
                     $html2 .= "<tr>
                                 <td><b>{$item['puskesmas_name']}</b></td>
-                                <td>{$item['month']}</td>
                             </tr>";
                 }
                 $html2 .= '</tbody></table>';

@@ -270,7 +270,7 @@ class Report_model extends CI_Model {
     }
 
     // menghitung jumlah Puskesmas dalam satu distrik/kabupaten/kota ($city_id) yang memiliki dropout rate DPT1–DPT3 di bawah 5%
-    public function get_puskesmas_under_5_percent_in_district($province_id = 'all', $city_id, $year = 2025, $month = 12) {
+    public function get_puskesmas_under_5_percent_in_district($province_id = 'all', $city_id = 'all',$year = 2025, $month = 12) {
         if ($city_id === 'all') {
             return 0; // Fungsi ini hanya untuk satu district
         }
@@ -1365,59 +1365,59 @@ class Report_model extends CI_Model {
     //     return $query;
     // }
 
-    public function get_puskesmas_dpt_stock_out_table_by_district($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
-        // Mengambil daftar province yang ditargetkan (bisa menggunakan function get_targeted_province_ids)
-        $province_ids = $this->get_targeted_province_ids();
+    // public function get_puskesmas_dpt_stock_out_table_by_district($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
+    //     // Mengambil daftar province yang ditargetkan (bisa menggunakan function get_targeted_province_ids)
+    //     $province_ids = $this->get_targeted_province_ids();
     
-        // Mengambil data dari tabel stock_out_data yang berkaitan dengan DPT
-        $this->db->select("
-            sod.puskesmas_id AS puskesmas_id,
-            pd.name AS puskesmas_name,
-            sod.month AS month,
-            sod.total_dpt_stock AS stock
-        ");
-        $this->db->from('puskesmas_stock_out_details sod');
-        $this->db->join('provinces p', 'sod.province_id = p.id', 'left');  // Gabungkan dengan tabel provinces
-        $this->db->join('cities c', 'sod.city_id = c.id', 'left');
-        $this->db->join('puskesmas pd', 'sod.puskesmas_id = pd.id', 'left');
+    //     // Mengambil data dari tabel stock_out_data yang berkaitan dengan DPT
+    //     $this->db->select("
+    //         sod.puskesmas_id AS puskesmas_id,
+    //         pd.name AS puskesmas_name,
+    //         sod.month AS month,
+    //         sod.total_dpt_stock AS stock
+    //     ");
+    //     $this->db->from('puskesmas_stock_out_details sod');
+    //     $this->db->join('provinces p', 'sod.province_id = p.id', 'left');  // Gabungkan dengan tabel provinces
+    //     $this->db->join('cities c', 'sod.city_id = c.id', 'left');
+    //     $this->db->join('puskesmas pd', 'sod.puskesmas_id = pd.id', 'left');
 
-        // Filter berdasarkan provinsi yang ditargetkan
-        if ($province_id === 'targeted') {
-            if (!empty($province_ids)) {
-                $this->db->where_in('sod.province_id', $province_ids);
-            } else {
-                return []; // Jika tidak ada province yang ditargetkan, kembalikan array kosong
-            }
-        } elseif ($province_id !== 'all') {
-            $this->db->where('sod.province_id', $province_id);
-        }
+    //     // Filter berdasarkan provinsi yang ditargetkan
+    //     if ($province_id === 'targeted') {
+    //         if (!empty($province_ids)) {
+    //             $this->db->where_in('sod.province_id', $province_ids);
+    //         } else {
+    //             return []; // Jika tidak ada province yang ditargetkan, kembalikan array kosong
+    //         }
+    //     } elseif ($province_id !== 'all') {
+    //         $this->db->where('sod.province_id', $province_id);
+    //     }
     
-        // Filter berdasarkan kota jika diberikan
-        if ($city_id !== 'all') {
-            $this->db->where('sod.city_id', $city_id);
-        }
+    //     // Filter berdasarkan kota jika diberikan
+    //     if ($city_id !== 'all') {
+    //         $this->db->where('sod.city_id', $city_id);
+    //     }
     
-        // Filter berdasarkan tahun
-        $this->db->where('sod.year', $year);
+    //     // Filter berdasarkan tahun
+    //     $this->db->where('sod.year', $year);
     
-        // Jika bulan bukan 'all', maka ambil data dari bulan 1 sampai bulan yang ditentukan
-        if ($month !== 'all') {
-            $this->db->where('sod.month =', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
-        }
+    //     // Jika bulan bukan 'all', maka ambil data dari bulan 1 sampai bulan yang ditentukan
+    //     if ($month !== 'all') {
+    //         $this->db->where('sod.month =', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
+    //     }
 
-        $this->db->where('sod.total_dpt_stock =', 0);
+    //     $this->db->where('sod.total_dpt_stock =', 0);
 
-        // $this->db->group_by('sod.puskesmas_id');
-        $this->db->order_by('sod.month');
-        // Ambil hasil query
-        $query = $this->db->get()->result_array();
+    //     // $this->db->group_by('sod.puskesmas_id');
+    //     $this->db->order_by('sod.month');
+    //     // Ambil hasil query
+    //     $query = $this->db->get()->result_array();
 
-        // var_dump($query);
-        // exit;
+    //     // var_dump($query);
+    //     // exit;
     
-        // Kembalikan hasil query
-        return $query;
-    }
+    //     // Kembalikan hasil query
+    //     return $query;
+    // }
 
     public function get_puskesmas_dpt_stock_out_table($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
         // Mengambil daftar province yang ditargetkan (bisa menggunakan function get_targeted_province_ids)
@@ -1669,6 +1669,54 @@ class Report_model extends CI_Model {
         return $result;
     }
     
+    public function get_puskesmas_dpt_stock_out_table_by_district($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
+        // Mengambil daftar province yang ditargetkan (bisa menggunakan function get_targeted_province_ids)
+        $province_ids = $this->get_targeted_province_ids();
+
+        // Mengambil data hanya untuk puskesmas yang mengalami stockout (status_stockout = 1)
+        $this->db->select("
+            DISTINCT pd.name AS puskesmas_name
+        ");
+        $this->db->from('puskesmas_stock_out_details sod');
+        $this->db->join('puskesmas pd', 'sod.puskesmas_id = pd.id', 'left');  // Gabungkan dengan tabel puskesmas
+
+        // Pastikan hanya puskesmas yang mengalami stockout (status_stockout = 1)
+        $this->db->where('sod.status_stockout', 1);
+
+        // Filter berdasarkan provinsi yang ditargetkan
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('sod.province_id', $province_ids);
+            } else {
+                return []; // Jika tidak ada province yang ditargetkan, kembalikan array kosong
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('sod.province_id', $province_id);
+        }
+
+        // Filter berdasarkan kota jika diberikan
+        if ($city_id !== 'all') {
+            $this->db->where('sod.city_id', $city_id);
+        }
+
+        // Filter berdasarkan tahun
+        $this->db->where('sod.year', $year);
+
+        // Jika bulan bukan 'all', maka ambil data untuk bulan yang ditentukan
+        if ($month !== 'all') {
+            $this->db->where('sod.month =', $month);
+        }
+
+        // Mengurutkan berdasarkan bulan
+        // $this->db->order_by('sod.month');
+
+        // Ambil hasil query
+        $query = $this->db->get()->result_array();
+
+        // Kembalikan hasil query
+        return $query;
+    }
+
     
     
     
