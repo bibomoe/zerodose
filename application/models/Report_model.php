@@ -264,14 +264,64 @@ class Report_model extends CI_Model {
                 }
             }
         }
-
-        var_dump($dropout_rates);
-        exit;
-
         
     
         return $dropout_rates; // Kembalikan hanya drop-out rate
     }
+
+    // menghitung jumlah Puskesmas dalam satu distrik/kabupaten/kota ($city_id) yang memiliki dropout rate DPT1–DPT3 di bawah 5%
+    public function get_puskesmas_under_5_percent_in_district($province_id = 'all', $city_id, $year = 2025, $month = 12) {
+        if ($city_id === 'all') {
+            return 0; // Fungsi ini hanya untuk satu district
+        }
+    
+        $province_ids = $this->get_targeted_province_ids();
+    
+        $this->db->select("
+            puskesmas.id AS puskesmas_id,
+            SUM(immunization_data.dpt_hb_hib_1) AS dpt1,
+            SUM(immunization_data.dpt_hb_hib_3) AS dpt3
+        ");
+        $this->db->from('puskesmas');
+        $this->db->join('immunization_data', 'immunization_data.puskesmas_id = puskesmas.id', 'left');
+        $this->db->where('puskesmas.city_id', $city_id);
+        $this->db->where('immunization_data.year', $year);
+    
+        if ($month !== 'all') {
+            $this->db->where('immunization_data.month <=', $month);
+        }
+    
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('puskesmas.province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('puskesmas.province_id', $province_id);
+        }
+    
+        $this->db->group_by('puskesmas.id');
+        $query = $this->db->get()->result_array();
+    
+        $count_under_5 = 0;
+    
+        foreach ($query as $row) {
+            $dpt1 = (int) $row['dpt1'];
+            $dpt3 = (int) $row['dpt3'];
+    
+            if ($dpt1 <= 0) continue;
+    
+            $dropout_rate = (($dpt1 - $dpt3) / $dpt1) * 100;
+            if ($dropout_rate < 5) {
+                $count_under_5++;
+            }
+        }
+    
+        return $count_under_5;
+    }
+    
+    
 
     // Mengambil total jumlah regencies/cities untuk 10 provinsi priority
     public function get_total_regencies_cities($province_id) {
@@ -295,6 +345,22 @@ class Report_model extends CI_Model {
         $query = $this->db->get();
         return $query->row()->total_cities ?? 0;
     }
+
+    // Mengambil total jumlah puskesmas
+    public function get_total_puskesmas_in_district($city_id) {
+        if ($city_id === 'all') {
+            return 0; // Fungsi ini hanya untuk satu distrik
+        }
+    
+        $this->db->select('COUNT(id) AS total_puskesmas');
+        $this->db->from('puskesmas');
+        $this->db->where('city_id', $city_id);
+        $this->db->where('active', 1); // Hanya hitung puskesmas yang aktif (jika perlu)
+    
+        $query = $this->db->get();
+        return $query->row()->total_puskesmas ?? 0;
+    }
+    
 
     public function get_districts_under_5_percent_by_province($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
         $province_ids = $this->get_targeted_province_ids();

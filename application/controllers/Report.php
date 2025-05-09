@@ -495,9 +495,12 @@ class Report extends CI_Controller {
 
             $percentage_under_5_DO = number_format($percentage_under_5_DO, 1, ',', '.');
         } else {
-            $total_district_under_5_DO = $this->data['total_dropout_rate']; //Jumlah Kab/Kota dengan %DO dibawah 5%
+            // Mendapatkan dropout rates per distrik
+            $dropout_rates = $this->Report_model->get_puskesmas_under_5_percent_in_district($selected_province,$selected_district,$selected_year, $selected_month);
             
-            $total_cities = $this->Report_model->get_total_regencies_cities($selected_province);
+            $total_district_under_5_DO =  $dropout_rates; //Jumlah Puskesmas dengan %DO dibawah 5%
+            
+            $total_cities = $this->Report_model->get_total_puskesmas_in_district($selected_district);
 
             // Menghitung Persen KabKota dengan DO Rate dibawah 5%
             $percentage_under_5_DO = ($total_cities > 0) 
