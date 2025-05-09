@@ -483,10 +483,8 @@ class Report extends CI_Controller {
         // Menambahkan rata-rata dropout rate ke data view
         $this->data['dropout_rate_all_provinces'] = round($average_dropout_rate_all_provinces, 2);
 
-        var_dump($selected_district);
-            exit;
-
-        if ($selected_district != 'all'){
+        if ($selected_district === 'all'){
+            
             $total_district_under_5_DO = $this->data['total_dropout_rate']; //Jumlah Kab/Kota dengan %DO dibawah 5%
             
             $total_cities = $this->Report_model->get_total_regencies_cities($selected_province);
