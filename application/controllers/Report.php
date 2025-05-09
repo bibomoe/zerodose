@@ -944,8 +944,16 @@ class Report extends CI_Controller {
                         <thead>
                             <tr>
                                 <th style="background-color: blue; color: white; font-weight: bold;">Cakupan DPT-1</th>
-                                <th style="background-color: blue; color: white; font-weight: bold;">% Drop Out</th>
-                                <th style="background-color: blue; color: white; font-weight: bold;">Jumlah Kab/Kota dengan %DO dibawah 5%</th>
+                                <th style="background-color: blue; color: white; font-weight: bold;">% Drop Out</th>';
+
+                
+                if ($selected_district === 'all') {
+                    $html .=    '<th style="background-color: blue; color: white; font-weight: bold;">Jumlah Kab/Kota dengan %DO dibawah 5%</th>';
+                } else {
+                    $html .=    '<th style="background-color: blue; color: white; font-weight: bold;">Jumlah Puskesmas dengan %DO dibawah 5%</th>';
+                }
+
+            $html .=            '<th style="background-color: blue; color: white; font-weight: bold;">Jumlah Kab/Kota dengan %DO dibawah 5%</th>
                             </tr>
                         </thead>
                         <tbody>
