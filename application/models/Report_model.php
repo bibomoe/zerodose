@@ -820,7 +820,7 @@ class Report_model extends CI_Model {
         $this->db->select('puskesmas_id');
         $this->db->from('puskesmas_stock_out_details');
         $this->db->where('year', $year);
-        $this->db->where('status_stockout', 1);
+        $this->db->where('status_stockout', '1');
         
         if ($month !== 'all') {
             $this->db->where('month =', $month);
@@ -1520,7 +1520,7 @@ class Report_model extends CI_Model {
         ');
         $this->db->from('puskesmas_stock_out_details ss');
         $this->db->where('ss.year', $year);
-        $this->db->where('ss.status_stockout', 1); // Hanya Puskesmas yang mengalami stockout
+        $this->db->where('ss.status_stockout', '1'); // Hanya Puskesmas yang mengalami stockout
         
         // Kondisi untuk bulan
         if ($month !== 'all') {
@@ -1659,7 +1659,7 @@ class Report_model extends CI_Model {
         $this->db->select('ss.city_id, COUNT(DISTINCT ss.puskesmas_id) AS total_stockout');
         $this->db->from('puskesmas_stock_out_details ss');
         $this->db->where('ss.year', $year);
-        $this->db->where('ss.status_stockout', 1);
+        $this->db->where('ss.status_stockout', '1');
     
         if ($month !== 'all') {
             $this->db->where('ss.month =', $month);
@@ -1757,7 +1757,7 @@ class Report_model extends CI_Model {
         $this->db->join('puskesmas pd', 'sod.puskesmas_id = pd.id', 'left');  // Gabungkan dengan tabel puskesmas
 
         // Pastikan hanya puskesmas yang mengalami stockout (status_stockout = 1)
-        $this->db->where('sod.status_stockout', 1);
+        $this->db->where('sod.status_stockout', '1');
 
         // Filter berdasarkan provinsi yang ditargetkan
         if ($province_id === 'targeted') {
