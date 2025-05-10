@@ -480,18 +480,18 @@ class StockOut_model extends CI_Model {
                             puskesmas.subdistrict_id, 
                             subdistricts.name AS subdistrict_name,
                             puskesmas.name AS puskesmas_name,
-                            SUM(CASE WHEN psd.month = 1 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_1,
-                            SUM(CASE WHEN psd.month = 2 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_2,
-                            SUM(CASE WHEN psd.month = 3 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_3,
-                            SUM(CASE WHEN psd.month = 4 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_4,
-                            SUM(CASE WHEN psd.month = 5 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_5,
-                            SUM(CASE WHEN psd.month = 6 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_6,
-                            SUM(CASE WHEN psd.month = 7 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_7,
-                            SUM(CASE WHEN psd.month = 8 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_8,
-                            SUM(CASE WHEN psd.month = 9 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_9,
-                            SUM(CASE WHEN psd.month = 10 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_10,
-                            SUM(CASE WHEN psd.month = 11 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_11,
-                            SUM(CASE WHEN psd.month = 12 AND psd.status_stockout = 1 THEN 1 ELSE 0 END) AS month_12
+                            SUM(CASE WHEN psd.month = 1 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_1,
+                            SUM(CASE WHEN psd.month = 2 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_2,
+                            SUM(CASE WHEN psd.month = 3 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_3,
+                            SUM(CASE WHEN psd.month = 4 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_4,
+                            SUM(CASE WHEN psd.month = 5 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_5,
+                            SUM(CASE WHEN psd.month = 6 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_6,
+                            SUM(CASE WHEN psd.month = 7 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_7,
+                            SUM(CASE WHEN psd.month = 8 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_8,
+                            SUM(CASE WHEN psd.month = 9 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_9,
+                            SUM(CASE WHEN psd.month = 10 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_10,
+                            SUM(CASE WHEN psd.month = 11 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_11,
+                            SUM(CASE WHEN psd.month = 12 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_12
                         ');
     
         $this->db->from('puskesmas_stock_out_details psd');
