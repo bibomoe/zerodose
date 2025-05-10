@@ -823,7 +823,7 @@ class Report_model extends CI_Model {
         $this->db->where('status_stockout', 1);
         
         if ($month !== 'all') {
-            $this->db->where('month <=', $month);
+            $this->db->where('month =', $month);
         }
     
         if ($province_id === 'targeted') {
