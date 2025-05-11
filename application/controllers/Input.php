@@ -1074,8 +1074,8 @@ class Input extends CI_Controller {
                 'province_id' => $row_data[0], // Province (ID)
                 'city_id' => $row_data[1],     // City (ID)
                 'subdistrict_id' => $row_data[2], // Subdistrict (ID)
-                'puskesmas_id' => $row_data[3],   // Puskesmas (ID)
-                'status_stockout' => $row_data[6] // Stock Out status (assuming it's in column 7)
+                'puskesmas_id' => (string) $row_data[3],   // Puskesmas (ID)
+                'status_stockout' => (string) $row_data[6] // Stock Out status (assuming it's in column 7)
             ];
     
             // Check if the combination of puskesmas_id, year, and month already exists
