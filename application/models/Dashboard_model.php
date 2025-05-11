@@ -579,7 +579,7 @@ class Dashboard_model extends CI_Model {
         $this->db->select('puskesmas_id');
         $this->db->from('puskesmas_stock_out_details');
         $this->db->where('year', $year);
-        $this->db->where('status_stockout', 1);
+        $this->db->where('status_stockout', '1');
     
         $query = $this->db->get();
         return $query->num_rows(); // Hitung total puskesmas unik yang stockout
