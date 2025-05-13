@@ -314,7 +314,7 @@ class Immunization_model extends CI_Model {
         $this->db->select("
             puskesmas.name AS district, 
             SUM(immunization_data.dpt_hb_hib_1) AS total_dpt1,
-            target_immunization_per_puskesmas.dpt_hb_hib_1_target AS target_puskesmas,
+            target_immunization_per_puskesmas.dpt_hb_hib_1_target AS target_district,
             (SUM(immunization_data.dpt_hb_hib_1) / NULLIF(target_immunization_per_puskesmas.dpt_hb_hib_1_target, 0)) * 100 AS percentage_target,  -- Persentase target DPT-1
             (target_immunization_per_puskesmas.dpt_hb_hib_1_target - SUM(immunization_data.dpt_hb_hib_1)) AS zero_dose_children,  -- Anak zero dose
             ((target_immunization_per_puskesmas.dpt_hb_hib_1_target - SUM(immunization_data.dpt_hb_hib_1)) / NULLIF(target_immunization_per_puskesmas.dpt_hb_hib_1_target, 0)) * 100 AS percent_zero_dose  -- Persentase zero dose
