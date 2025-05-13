@@ -374,7 +374,7 @@ class Immunization_model extends CI_Model {
             // Ensure we handle the division by zero properly
             if ($zd_cases_2023 > 0 && $total_dpt1_coverage_kejar > 0) {
                 $percent_reduction = ($total_dpt1_coverage_kejar / $zd_cases_2023) * 100;
-            } elseif ($zd_cases_2023 == 0 && $total_dpt1_coverage_kejar > 0) {
+            } elseif ($zd_cases_2023 == 0 && $total_dpt1_coverage_kejar >= 0) {
                 $percent_reduction = 100; // If zd_cases_2023 is zero and total_dpt1_coverage_kejar is greater than zero, set percent_reduction to 100
             } else {
                 $percent_reduction = 0; // If both are zero or conditions are not met, set percent_reduction to 0
