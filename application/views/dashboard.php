@@ -237,8 +237,10 @@
                                                                     <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning"><?= number_format($percent_puskesmas_immunized_2025, 2) . '%' ?></td>
-                                                                    <td class="table-warning"><?= number_format($percent_puskesmas_immunized_2026, 2) . '%' ?></td>
+                                                                    <!-- <td class="table-warning"><?= number_format($percent_puskesmas_immunized_2025, 2) . '%' ?></td>
+                                                                    <td class="table-warning"><?= number_format($percent_puskesmas_immunized_2026, 2) . '%' ?></td> -->
+                                                                    <td class="table-warning"><?= number_format(0, 2) . '%' ?></td>
+                                                                    <td class="table-warning"><?= number_format(0, 2) . '%' ?></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td rowspan="2"><?= $translations['table2text5'] ?></td>
