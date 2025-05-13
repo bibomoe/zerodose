@@ -181,23 +181,23 @@
                                                             $total_target = ${"total_target_dpt_1_$year"};  // We assume the variable already contains a valid value
 
                                                             // Calculate the quarter portion of the total target based on the quarter
-                                                            $quarter_target = 0;
+                                                            $quarter_target = $total_target;
 
                                                             // Check if total target is 0, then set the quarter target to 0 as well
-                                                            if ($total_target == 0) {
-                                                                $quarter_target = 0;
-                                                            } else {
-                                                                // Calculate based on the quarter if total target is not zero
-                                                                if ($quarter == 1) {
-                                                                    $quarter_target = $total_target / 4; // Quarter 1: 1/4 of total target
-                                                                } elseif ($quarter == 2) {
-                                                                    $quarter_target = 2 * $total_target / 4; // Quarter 2: 2/4 of total target
-                                                                } elseif ($quarter == 3) {
-                                                                    $quarter_target = 3 * $total_target / 4; // Quarter 3: 3/4 of total target
-                                                                } elseif ($quarter == 4) {
-                                                                    $quarter_target = $total_target; // Quarter 4: Full total target
-                                                                }
-                                                            }
+                                                            // if ($total_target == 0) {
+                                                            //     $quarter_target = 0;
+                                                            // } else {
+                                                            //     // Calculate based on the quarter if total target is not zero
+                                                            //     if ($quarter == 1) {
+                                                            //         $quarter_target = $total_target / 4; // Quarter 1: 1/4 of total target
+                                                            //     } elseif ($quarter == 2) {
+                                                            //         $quarter_target = 2 * $total_target / 4; // Quarter 2: 2/4 of total target
+                                                            //     } elseif ($quarter == 3) {
+                                                            //         $quarter_target = 3 * $total_target / 4; // Quarter 3: 3/4 of total target
+                                                            //     } elseif ($quarter == 4) {
+                                                            //         $quarter_target = $total_target; // Quarter 4: Full total target
+                                                            //     }
+                                                            // }
                                                         ?>
                                                         <div class="card-number font-extrabold mb-0"><?= number_format($quarter_target); ?></div>
                                                         

@@ -355,6 +355,22 @@ class Home extends CI_Controller {
                 $this->data["total_target_mr_1_$year"] = $this->Immunization_model->get_total_target('mr_1', $selected_province, $year);
             // }
 
+            // Check if total target is 0, then set the quarter target to 0 as well
+            // if ($this->data["total_target_dpt_1_$year"] == 0) {
+            //     $quarter_target = 0;
+            // } else {
+                // Calculate based on the quarter if total target is not zero
+                if ($this->data['quarter'] == 1) {
+                    $this->data["total_target_dpt_1_$year"] = $this->data["total_target_dpt_1_$year"] / 4; // Quarter 1: 1/4 of total target
+                } elseif ($this->data['quarter'] == 2) {
+                    $this->data["total_target_dpt_1_$year"] = 2 * $this->data["total_target_dpt_1_$year"] / 4; // Quarter 2: 2/4 of total target
+                } elseif ($this->data['quarter'] == 3) {
+                    $this->data["total_target_dpt_1_$year"] = 3 * $this->data["total_target_dpt_1_$year"] / 4; // Quarter 3: 3/4 of total target
+                } elseif ($this->data['quarter'] == 4) {
+                    $this->data["total_target_dpt_1_$year"] = $this->data["total_target_dpt_1_$year"]; // Quarter 4: Full total target
+                }
+            // }
+
             // Ambil data cakupan imunisasi dari immunization_data
             $this->data["total_dpt_1_$year"] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province, $year);
             $this->data["total_dpt_3_$year"] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_3', $selected_province, $year);
