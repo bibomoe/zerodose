@@ -189,7 +189,7 @@ class Immunization_model extends CI_Model {
     }
 
     // Total imunisasi berdasarkan jenis vaksin, filter provinsi, tahun, dan triwulan
-    public function get_total_vaccine_by_quarter($vaccine_column, $province_id, $year, $quarter) {
+    public function get_total_vaccine_by_quarter($vaccine_column, $province_id, $city_id, $year, $quarter) {
         // Get the targeted provinces if needed
         $province_ids = $this->get_targeted_province_ids();
 
@@ -223,6 +223,10 @@ class Immunization_model extends CI_Model {
         } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
         }
+
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        } 
 
         // Execute the query
         $query = $this->db->get()->row();

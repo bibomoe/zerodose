@@ -465,7 +465,7 @@ class Home extends CI_Controller {
         // Calculate the target and coverage for each quarter
         foreach ($quarters as $quarter) {
             // Fetch total target for DPT-1
-            $total_target = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province, $selected_year);
+            $total_target = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province, $selected_district, $selected_year);
             
             // Calculate target for the quarter
             $quarter_target = 0;
@@ -480,7 +480,7 @@ class Home extends CI_Controller {
             }
 
             // Fetch total DPT-1 coverage for the selected quarter
-            $dpt_coverage = $this->Immunization_model->get_total_vaccine_by_quarter('dpt_hb_hib_1', $selected_province, $selected_year, $quarter);
+            $dpt_coverage = $this->Immunization_model->get_total_vaccine_by_quarter('dpt_hb_hib_1', $selected_province, $selected_district, $selected_year, $quarter);
 
             // Store the values
             $target_data[] = $quarter_target;
