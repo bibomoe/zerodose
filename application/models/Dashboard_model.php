@@ -298,21 +298,35 @@ class Dashboard_model extends CI_Model {
         ", FALSE);
         $target_dpt1 = $this->db->get('target_coverage')->row_array();
 
-        // Ambil realisasi imunisasi DPT-1 dari immunization_data
+        // // Ambil realisasi imunisasi DPT-1 dari immunization_data
+        // $this->db->select("
+        // SUM(CASE WHEN year = 2025 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y1,
+        // SUM(CASE WHEN year = 2026 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y2
+        // ", FALSE);
+        // //$this->db->where_in('province_id', $province_ids);
+        // $reduction_zd = $this->db->get('immunization_data')->row_array();
+
+        // // Hitung jumlah anak yang belum menerima DPT-1 (Zero Dose)
+        // $zd_remaining_y1 = max($target_dpt1['target_dpt1_y1'] - $reduction_zd['actual_y1'], 0);
+        // $zd_remaining_y2 = max($target_dpt1['target_dpt1_y2'] - $reduction_zd['actual_y2'], 0);
+
+        // // Menghitung persentase pengurangan zero dose
+        // $percent_reduction_y1 = ($baseline_zd_2024 - $zd_remaining_y1) / $baseline_zd_2024 * 100;
+        // $percent_reduction_y2 = ($baseline_zd_2024 - $zd_remaining_y2) / $baseline_zd_2024 * 100;
+
+        // Ambil realisasi imunisasi DPT-1 dari tabel immunization_data_kejar
         $this->db->select("
-        SUM(CASE WHEN year = 2025 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y1,
-        SUM(CASE WHEN year = 2026 THEN dpt_hb_hib_1 ELSE 0 END) AS actual_y2
+            SUM(CASE WHEN year = 2025 THEN dpt1_coverage ELSE 0 END) AS actual_y1,
+            SUM(CASE WHEN year = 2026 THEN dpt1_coverage ELSE 0 END) AS actual_y2
         ", FALSE);
+
+        // Pastikan untuk menambahkan kondisi yang sesuai, seperti provinsi atau kota, jika perlu
         //$this->db->where_in('province_id', $province_ids);
-        $reduction_zd = $this->db->get('immunization_data')->row_array();
+        $reduction_zd = $this->db->get('immunization_data_kejar')->row_array();
 
-        // Hitung jumlah anak yang belum menerima DPT-1 (Zero Dose)
-        $zd_remaining_y1 = max($target_dpt1['target_dpt1_y1'] - $reduction_zd['actual_y1'], 0);
-        $zd_remaining_y2 = max($target_dpt1['target_dpt1_y2'] - $reduction_zd['actual_y2'], 0);
-
-        // Menghitung persentase pengurangan zero dose
-        $percent_reduction_y1 = ($baseline_zd_2024 - $zd_remaining_y1) / $baseline_zd_2024 * 100;
-        $percent_reduction_y2 = ($baseline_zd_2024 - $zd_remaining_y2) / $baseline_zd_2024 * 100;
+        // Menghitung persentase pengurangan zero dose berdasarkan cakupan
+        $percent_reduction_y1 = ($reduction_zd['actual_y1'] / $baseline_zd_2024) * 100;
+        $percent_reduction_y2 = ($reduction_zd['actual_y2'] / $baseline_zd_2024) * 100;
 
         // Menghitung persentase pengurangan zero dose, jika negatif maka set ke 0
         // $percent_reduction_y1 = max(($baseline_zd_2023 - $zd_remaining_y1) / $baseline_zd_2023 * 100, 0);
