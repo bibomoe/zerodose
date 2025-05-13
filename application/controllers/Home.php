@@ -1004,6 +1004,19 @@ class Home extends CI_Controller {
         $selected_district = $this->input->post('district') ?? $this->input->get('district') ?? 'all';
         $selected_year = $this->input->post('year') ?? $this->input->get('year') ?? date("Y"); // Default tahun 2025
 
+        // Jika user PHO, atur provinsi default sesuai wilayahnya
+        if ($user_category == 7 && empty($this->input->get('province'))) { 
+            $selected_province = $user_province;
+            // $this->data['selected_province2'] = $selected_province;
+        }
+
+        // Jika user DHO, atur provinsi & district sesuai wilayahnya
+        if ($user_category == 8 && empty($this->input->get('province'))) {
+            $selected_province = $user_province;
+            $selected_district = $user_city;
+            // $this->data['selected_province2'] = $selected_province;
+        }
+
         $this->data['selected_province'] = $selected_province;
         $this->data['selected_district'] = $selected_district;
         $this->data['selected_year'] = $selected_year;
