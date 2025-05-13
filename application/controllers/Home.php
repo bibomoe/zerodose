@@ -422,7 +422,12 @@ class Home extends CI_Controller {
         }
 
         // Data imunisasi DPT-1 per distrik
-        $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year);
+        if ($selected_district == 'all'){
+            $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year);
+        } else {
+            $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_puskesmas($selected_province, $selected_district, $selected_year);
+        }
+        
 
         // Urutkan array berdasarkan 'zero_dose_children' secara menurun
         usort($this->data['district_data'], function($a, $b) {
@@ -551,7 +556,9 @@ class Home extends CI_Controller {
                 // 'text16' => 'MR-1 Coverage Year 2025',
                 'text17' => 'District with the highest number of not immunized DPT-1 children Year ',
                 'tabelcoloumn1' => 'District',
+                'tabelcoloumn1_2' => 'Puskesmas',
                 'tabelcoloumn6' => 'Target District',
+                'tabelcoloumn6_2' => 'Target Puskesmas',
                 'tabelcoloumn2' => 'Total Coverage DPT1',
                 'tabelcoloumn3' => '% of Total Target',
                 'tabelcoloumn4' => 'Number of Children Not Immunized with DPT-1',
@@ -592,7 +599,9 @@ class Home extends CI_Controller {
                 // 'text16' => 'Cakupan MR-1 Tahun 2025',
                 'text17' => 'Kab/Kota dengan jumlah anak belum diimunisasi DPT-1 Tahun ',
                 'tabelcoloumn1' => 'Kab/Kota',
+                'tabelcoloumn1_2' => 'Puskesmas',
                 'tabelcoloumn6' => 'Sasaran Kab/Kota',
+                'tabelcoloumn6_2' => 'Sasaran Puskesmas',
                 'tabelcoloumn2' => 'Total Cakupan DPT1',
                 'tabelcoloumn3' => '% dari Total Sasaran',
                 'tabelcoloumn4' => 'Jumlah Anak Belum di Imunisasi DPT-1',

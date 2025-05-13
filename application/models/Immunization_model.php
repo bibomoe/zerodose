@@ -286,6 +286,65 @@ class Immunization_model extends CI_Model {
         return $this->db->get()->result_array();
     }
 
+    // Data total DPT-1 per distrik berdasarkan kabkota
+    public function get_dpt1_by_puskesmas($province_id = 'all', $city_id = 'all', $year = 2025) {
+        // Fetch province IDs based on the target condition (if needed)
+        $province_ids = $this->get_targeted_province_ids();
+        
+        // Retrieve the total target for DPT-1 based on the selected province and year
+        $this->db->select('SUM(dpt_hb_hib_1_target) AS total_target');
+        $this->db->from('target_immunization_per_puskesmas');
+        $this->db->where('year', $year);
+
+        // Apply filtering based on the province_id
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
+        // Get the total target
+        $total_target = $this->db->get()->row()->total_target ?? 0;
+
+        // Now, fetch the data for each puskesmas
+        $this->db->select("
+            puskesmas.name AS district, 
+            SUM(immunization_data.dpt_hb_hib_1) AS total_dpt1,
+            target_immunization_per_puskesmas.dpt_hb_hib_1_target AS target_puskesmas,
+            (SUM(immunization_data.dpt_hb_hib_1) / NULLIF(target_immunization_per_puskesmas.dpt_hb_hib_1_target, 0)) * 100 AS percentage_target,  -- Persentase target DPT-1
+            (target_immunization_per_puskesmas.dpt_hb_hib_1_target - SUM(immunization_data.dpt_hb_hib_1)) AS zero_dose_children,  -- Anak zero dose
+            ((target_immunization_per_puskesmas.dpt_hb_hib_1_target - SUM(immunization_data.dpt_hb_hib_1)) / NULLIF(target_immunization_per_puskesmas.dpt_hb_hib_1_target, 0)) * 100 AS percent_zero_dose  -- Persentase zero dose
+        ", false);
+
+        // Join with immunization data and target table
+        $this->db->from('immunization_data');
+        $this->db->join('puskesmas', 'puskesmas.id = immunization_data.puskesmas_id', 'left');
+        $this->db->join('target_immunization_per_puskesmas', 'target_immunization_per_puskesmas.puskesmas_id = immunization_data.puskesmas_id AND target_immunization_per_puskesmas.year = immunization_data.year', 'left');
+        $this->db->where('immunization_data.year', $year);
+
+        // Apply the province filter
+        if ($province_id === 'targeted' && !empty($province_ids)) {
+            $this->db->where_in('puskesmas.province_id', $province_ids);
+        } elseif ($province_id !== 'all') {
+            $this->db->where('puskesmas.province_id', $province_id);
+        }
+
+         if ($city_id !== 'all') {
+            $this->db->where('puskesmas.city_id', $city_id);
+        } 
+
+        // Group by puskesmas and order by the total DPT-1
+        $this->db->group_by('immunization_data.puskesmas_id, puskesmas.name');
+        $this->db->order_by('total_dpt1', 'DESC');
+
+        return $this->db->get()->result_array();
+    }
+
+
     // Ambil cakupan imunisasi berdasarkan provinsi atau kota dan tahun
     public function get_immunization_coverage($province_id = 'all', $year = 2025) {
         $province_ids = $this->get_targeted_province_ids();

@@ -494,8 +494,10 @@
                                                 <table class="table table-striped" id="table1">
                                                     <thead>
                                                         <tr>
-                                                            <th><?= $translations['tabelcoloumn1'] ?></th>
-                                                            <th><?= $translations['tabelcoloumn6'] ?></th>
+                                                            <!-- <th><?= $translations['tabelcoloumn1'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn6'] ?></th> -->
+                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn1'] : $translations['tabelcoloumn1_2'] ?></th>
+                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn6'] : $translations['tabelcoloumn6_2'] ?></th>
                                                             <th><?= $translations['tabelcoloumn2'] ?></th>
                                                             <th><?= $translations['tabelcoloumn3'] ?></th>
                                                             <th><?= $translations['tabelcoloumn4'] ?></th>
