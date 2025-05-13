@@ -36,6 +36,11 @@
                                             <?= form_open('home/restored', ['method' => 'post']) ?>
                                                 <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?>​</label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
+                                                    <?php
+                                                        $user_category = $this->session->userdata('user_category'); // Ambil kategori pengguna yang login
+
+                                                        if($user_category != 7 && $user_category != 8){
+                                                    ?>
                                                     <?= form_dropdown('province', 
                                                         array_column($provinces, 'name_id', 'id'), 
                                                         $selected_province, 
@@ -45,6 +50,24 @@
                                                         array_column($district_dropdown, 'name_id', 'id'), 
                                                         $selected_district,
                                                         'class="form-select" id="city_id" style="width: 100%; max-width: 200px; height: 48px; font-size: 1rem;"'); ?>
+                                                    <?php
+                                                        } else {
+                                                            if($user_category == 7){
+                                                    ?>
+                                                        <input type="hidden" id="province" name="province" value="<?=$selected_province;?>">
+                                                        <?= form_dropdown('district', 
+                                                            array_column($district_dropdown, 'name_id', 'id'), 
+                                                            $selected_district,
+                                                            'class="form-select" id="city_id" style="width: 100%; max-width: 200px; height: 48px; font-size: 1rem;"'); ?>
+                                                    <?php
+                                                            } else if($user_category == 8){
+                                                    ?>
+                                                        <input type="hidden" id="province" name="province" value="<?=$selected_province;?>">
+                                                        <input type="hidden" id="district" name="province" value="<?=$selected_district;?>">
+                                                    <?php
+                                                            }
+                                                        }
+                                                    ?>
                                                     <?= form_dropdown(
                                                             'year', 
                                                             [2025 => '2025', 2026 => '2026'], 
