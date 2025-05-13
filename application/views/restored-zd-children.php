@@ -33,7 +33,7 @@
                                             <?php
                                                 // var_dump($selected_province);
                                             ?>
-                                            <?= form_open('home/restored', ['method' => 'get']) ?>
+                                            <?= form_open('home/restored', ['method' => 'post']) ?>
                                                 <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?>​</label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?= form_dropdown('province', 
@@ -41,8 +41,8 @@
                                                         $selected_province, 
                                                         ['class' => 'form-select', 'id' => 'provinceFilter', 'style' => 'width: 100%; max-width: 200px; height: 48px; font-size: 1rem;']
                                                     ); ?>
-                                                    <?= form_dropdown('city_id', 
-                                                        ['all' => '-- Kab/Kota --'], 
+                                                    <?= form_dropdown('district', 
+                                                        array_column($district_dropdown, 'name_id', 'id'), 
                                                         '',
                                                         'class="form-select" id="city_id" style="width: 100%; max-width: 200px; height: 48px; font-size: 1rem;"'); ?>
                                                     <?= form_dropdown(

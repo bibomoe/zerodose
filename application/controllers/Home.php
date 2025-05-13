@@ -279,10 +279,10 @@ class Home extends CI_Controller {
         $user_province = $this->session->userdata('province_id');
         $user_city = $this->session->userdata('city_id');
 
-        // Ambil filter provinsi dari dropdown (default: all)
-        $selected_province = $this->input->get('province') ?? 'all';
-        $selected_district = $this->input->get('district') ?? 'all';
-        $selected_year = $this->input->get('year') ?? date("Y"); // Default tahun 2025
+        // Ambil filter provinsi dari dropdown, cek dari POST atau GET (default: all)
+        $selected_province = $this->input->post('province') ?? $this->input->get('province') ?? 'all';
+        $selected_district = $this->input->post('district') ?? $this->input->get('district') ?? 'all';
+        $selected_year = $this->input->post('year') ?? $this->input->get('year') ?? date("Y"); // Default tahun 2025
 
         // Ambil parameter dari URL
         $get_detail = $this->input->get('get_detail') ?? 0; // Default 0 jika tidak ada parameter
@@ -309,6 +309,9 @@ class Home extends CI_Controller {
 
         // Ambil daftar provinsi untuk dropdown + targeted provinces
         $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
+
+        // Ambil daftar kabkota untuk dropdown + targeted provinces
+        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province);
 
         // Ambil daftar distrik berdasarkan provinsi
         if ($selected_province !== 'all' && $selected_province !== 'targeted') {

@@ -730,7 +730,28 @@ class Immunization_model extends CI_Model {
     
         return $province_options;
     }
-    
+
+    public function get_districts_with_all($province_id) {
+        // Ambil data kabupaten/kota berdasarkan province_id
+        $districts = $this->db->select('id, name_id, province_id, status')
+                            ->where('province_id', $province_id)
+                            ->where('active', 1)  // Pastikan hanya yang aktif
+                            ->get('cities')
+                            ->result_array();
+        
+        // Tambahkan opsi "All Districts" dan "Targeted Districts" ke dropdown
+        $district_options = [
+            ['id' => 'all', 'name_id' => 'All Districts']
+        ];
+        
+        // Pisahkan distrik yang memiliki status = 1 (misalnya Targeted Districts)
+        foreach ($districts as $district) {
+            // Jika ingin memfilter berdasarkan status atau kondisi tertentu, bisa disesuaikan
+            $district_options[] = $district;
+        }
+        
+        return $district_options;
+    }
 
     // Simpan data target imunisasi
     public function save_target_immunization($data) {
