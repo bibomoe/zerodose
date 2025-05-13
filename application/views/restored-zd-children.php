@@ -439,7 +439,7 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4><?= $translations['text17']; ?> <?= $year; ?></h4>
+                                            <h4><?= $selected_district == 'all' ? $translations['text17'] : $translations['text17_2'] ?> <?= $year; ?></h4>
                                         </div>
                                         <!-- <div class="card-body">
                                             <div id="chart-profile-visit"></div>
