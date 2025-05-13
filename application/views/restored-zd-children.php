@@ -43,7 +43,7 @@
                                                     ); ?>
                                                     <?= form_dropdown('district', 
                                                         array_column($district_dropdown, 'name_id', 'id'), 
-                                                        '',
+                                                        $selected_district,
                                                         'class="form-select" id="city_id" style="width: 100%; max-width: 200px; height: 48px; font-size: 1rem;"'); ?>
                                                     <?= form_dropdown(
                                                             'year', 
