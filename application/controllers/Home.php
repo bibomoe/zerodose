@@ -328,11 +328,11 @@ class Home extends CI_Controller {
             $this->data['national_baseline_zd'] = $this->Immunization_model->get_baseline_zd(2024);
         } else {
             // Ambil total ZD dari tabel zd_cases_2023 berdasarkan provinsi yang dipilih
-            $this->data['national_baseline_zd'] = $this->Immunization_model->get_zero_dose_by_province($selected_province);
+            $this->data['national_baseline_zd'] = $this->Immunization_model->get_zero_dose_by_province($selected_province, $selected_district);
         }
 
         // Misalnya, ambil cakupan DPT-1 untuk tahun 2025 di provinsi yang dipilih
-        $this->data['dpt1_coverage_kejar'] = $this->Immunization_model->get_dpt1_coverage_by_province($selected_province, $selected_year);
+        $this->data['dpt1_coverage_kejar'] = $this->Immunization_model->get_dpt1_coverage_by_province($selected_province, $selected_year, $selected_district);
 
         // Menentukan baseline DPT 3 dan MR 1
         $this->data['national_baseline_dpt_mr'] = $this->Immunization_model->get_baseline_by_province($selected_province);
@@ -526,7 +526,7 @@ class Home extends CI_Controller {
             'en' => [
                 'page_title' => 'Mitigate',
                 'page_subtitle' => 'Coverage rates restored, including by reaching zero-dose children',
-                'filter_label' => 'Select Province',
+                'filter_label' => 'Select Filter',
                 'text_baseline' => 'Children Zero Dose Year 2024 (National Baseline)',
                 'text_baseline2' => 'Children Zero Dose Year 2024 who are chased (ASIK)',
                 'children' => ' children',
@@ -567,7 +567,7 @@ class Home extends CI_Controller {
             'id' => [
                 'page_title' => 'Mitigasi',
                 'page_subtitle' => 'Tingkat cakupan yang dipulihkan, termasuk mencapai anak zero-dose',
-                'filter_label' => 'Pilih Provinsi',
+                'filter_label' => 'Pilih Filter',
                 'text_baseline' => 'Jumlah Anak Zero Dose Tahun 2024 (National Baseline)',
                 'text_baseline2' => 'Jumlah Anak Zero Dose Tahun 2024 yang dikejar (ASIK)',
                 'children' => ' anak',

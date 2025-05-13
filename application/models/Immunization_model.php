@@ -14,11 +14,12 @@ class Immunization_model extends CI_Model {
     }
 
     // Ambil Zero Dose (ZD) berdasarkan provinsi atau seluruh provinsi
-    public function get_zero_dose_by_province($province_id) {
+    public function get_zero_dose_by_province($province_id, $city_id) {
         $province_ids = $this->get_targeted_province_ids();  // Ambil provinsi yang ditargetkan
         $this->db->select('SUM(zd_cases) AS total_zd_cases');
         $this->db->from('zd_cases_2023');
         $this->db->where('year', 2024); // Filter berdasarkan tahun
+        // $this->db->where('year', $year); // Filter berdasarkan tahun
 
         // Jika provinsi yang dipilih adalah 'targeted', ambil provinsi yang ditargetkan
         if ($province_id === 'targeted') {
@@ -35,6 +36,10 @@ class Immunization_model extends CI_Model {
             // Jika provinsi yang dipilih adalah provinsi tertentu
             $this->db->where('province_id', $province_id);
         }
+
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        } 
 
         $query = $this->db->get()->row();
         return $query->total_zd_cases ?? 0;
@@ -72,7 +77,7 @@ class Immunization_model extends CI_Model {
     
 
     // Ambil jumlah anak dpt1 kejar
-    public function get_dpt1_coverage_by_province($province_id, $selected_year) {
+    public function get_dpt1_coverage_by_province($province_id, $selected_year, $city_id) {
         $province_ids = $this->get_targeted_province_ids();  // Ambil provinsi yang ditargetkan
         
         $this->db->select('SUM(dpt1_coverage) AS total_dpt1_coverage');
@@ -96,6 +101,10 @@ class Immunization_model extends CI_Model {
             // Jika provinsi yang dipilih adalah provinsi tertentu
             $this->db->where('province_id', $province_id);
         }
+
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        } 
 
         // Ambil hasil dan kembalikan total cakupan DPT-1
         $query = $this->db->get()->row();
