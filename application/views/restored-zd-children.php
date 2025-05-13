@@ -1314,8 +1314,8 @@
 
                     let popupContent = `<b>${name}</b><br>
                                         DPT1 Coverage: ${numberFormat.format(dpt1)} (Coverage: ${dpt1Coverage})<br>
-                                        DPT3 Coverage: ${numberFormat.format(dpt3)} ${dpt3Coverage})<br>
-                                        MR1 Coverage: ${numberFormat.format(mr1)} ${mr1Coverage})<br>
+                                        DPT3 Coverage: ${numberFormat.format(dpt3)} (${dpt3Coverage})<br>
+                                        MR1 Coverage: ${numberFormat.format(mr1)} (${mr1Coverage})<br>
                                         Zero Dose Children: ${numberFormat.format(zeroDoseChildren)}<br>
                                         % Zero Dose: ${percentZD}<br>
                                         Zero Dose Children Outreach: ${numberFormat.format(total_kejar)}<br>
