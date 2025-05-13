@@ -14,7 +14,7 @@ class Dpt1_model extends CI_Model {
     }
 
     // Mengambil total DPT1 coverage untuk 10 provinsi priority
-    public function get_total_dpt1_coverage($year, $province_id) {
+    public function get_total_dpt1_coverage($year, $province_id, $city_id) {
         $provinces = $this->get_targeted_provinces();
         $province_ids = array_column($provinces, 'id');
 
@@ -34,12 +34,16 @@ class Dpt1_model extends CI_Model {
             $this->db->where('province_id', $province_id);
         }
 
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        }
+
         $query = $this->db->get();
         return $query->row()->total_dpt1 ?? 0;
     }
 
     // Mengambil total DPT1 target untuk 10 provinsi priority
-    public function get_total_dpt1_target($year, $province_id) {
+    public function get_total_dpt1_target($year, $province_id, $city_id) {
         $provinces = $this->get_targeted_provinces();
         $province_ids = array_column($provinces, 'id');
 
@@ -56,6 +60,10 @@ class Dpt1_model extends CI_Model {
             }
         } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
+        }
+
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
         }
 
         $this->db->where('target_immunization.year', $year); // Filter berdasarkan tahun
@@ -263,6 +271,21 @@ class Dpt1_model extends CI_Model {
         return $query->row()->total_cities ?? 0;
     }
 
+    // Mengambil total jumlah puskesmas
+    public function get_total_puskesmas_in_district($city_id) {
+        if ($city_id === 'all') {
+            return 0; // Fungsi ini hanya untuk satu distrik
+        }
+    
+        $this->db->select('COUNT(id) AS total_puskesmas');
+        $this->db->from('puskesmas');
+        $this->db->where('city_id', $city_id);
+        $this->db->where('active', 1); // Hanya hitung puskesmas yang aktif (jika perlu)
+    
+        $query = $this->db->get();
+        return $query->row()->total_puskesmas ?? 0;
+    }
+
     public function get_dpt_under_5_percent_cities($province_id) {
         // Query untuk mendapatkan cakupan DPT1, DPT2, DPT3 dan target masing-masing untuk setiap distrik
         $this->db->select("
@@ -327,6 +350,55 @@ class Dpt1_model extends CI_Model {
     
         return $under_5_percent_provinces;
     }
+
+    // menghitung jumlah Puskesmas dalam satu distrik/kabupaten/kota ($city_id) yang memiliki dropout rate DPT1–DPT3 di bawah 5%
+    public function get_puskesmas_under_5_percent_in_district($province_id = 'all', $city_id = 'all',$year = 2025) {
+        if ($city_id === 'all') {
+            return 0; // Fungsi ini hanya untuk satu district
+        }
+    
+        $province_ids = $this->get_targeted_province_ids();
+    
+        $this->db->select("
+            puskesmas.id AS puskesmas_id,
+            SUM(immunization_data.dpt_hb_hib_1) AS dpt1,
+            SUM(immunization_data.dpt_hb_hib_3) AS dpt3
+        ");
+        $this->db->from('puskesmas');
+        $this->db->join('immunization_data', 'immunization_data.puskesmas_id = puskesmas.id', 'left');
+        $this->db->where('puskesmas.city_id', $city_id);
+        $this->db->where('immunization_data.year', $year);
+    
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('puskesmas.province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('puskesmas.province_id', $province_id);
+        }
+    
+        $this->db->group_by('puskesmas.id');
+        $query = $this->db->get()->result_array();
+    
+        $count_under_5 = 0;
+    
+        foreach ($query as $row) {
+            $dpt1 = (int) $row['dpt1'];
+            $dpt3 = (int) $row['dpt3'];
+    
+            if ($dpt1 <= 0) continue;
+    
+            $dropout_rate = (($dpt1 - $dpt3) / $dpt1) * 100;
+            if ($dropout_rate < 5) {
+                $count_under_5++;
+            }
+        }
+    
+        return $count_under_5;
+    }
+    
     
     // Mengambil total DPT1 coverage untuk tiap provinsi
     public function get_dpt1_coverage_per_province($province_id, $year) {

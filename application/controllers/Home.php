@@ -635,10 +635,10 @@ class Home extends CI_Controller {
         $user_province = $this->session->userdata('province_id');
         $user_city = $this->session->userdata('city_id');
 
-        // Ambil filter provinsi dari dropdown (default: all)
-        $selected_province = $this->input->get('province') ?? 'all';
-        $selected_district = $this->input->get('district') ?? 'all';
-        $selected_year = $this->input->get('year') ?? date("Y"); // Default tahun 2025
+        // Ambil filter provinsi dari dropdown, cek dari POST atau GET (default: all)
+        $selected_province = $this->input->post('province') ?? $this->input->get('province') ?? 'all';
+        $selected_district = $this->input->post('district') ?? $this->input->get('district') ?? 'all';
+        $selected_year = $this->input->post('year') ?? $this->input->get('year') ?? date("Y"); // Default tahun 2025
 
         // Ambil parameter dari URL
         $get_detail = $this->input->get('get_detail') ?? 0; // Default 0 jika tidak ada parameter
@@ -665,6 +665,9 @@ class Home extends CI_Controller {
 
         // Ambil daftar provinsi untuk dropdown + targeted provinces
         $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
+
+        // Ambil daftar kabkota untuk dropdown + targeted provinces
+        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province);
 
         $province_ids = $this->Immunization_model->get_targeted_province_ids(); // Ambil province_id yang priority = 1
         
@@ -698,20 +701,36 @@ class Home extends CI_Controller {
         $this->data['dropout_rate_all_provinces'] = round($average_dropout_rate_all_provinces, 2);
 
 
-        $this->data['total_dpt1_coverage'] = $this->Dpt1_model->get_total_dpt1_coverage($selected_year, $selected_province);
-        $this->data['total_dpt1_target'] = $this->Dpt1_model->get_total_dpt1_target($selected_year, $selected_province);
+        $this->data['total_dpt1_coverage'] = $this->Dpt1_model->get_total_dpt1_coverage($selected_year, $selected_province, $selected_district);
+        $this->data['total_dpt1_target'] = $this->Dpt1_model->get_total_dpt1_target($selected_year, $selected_province, $selected_district);
         // $this->data['districts_under_5'] = $this->Dpt1_model->get_districts_under_5_percent();
-        $this->data['total_regencies_cities'] = $this->Dpt1_model->get_total_regencies_cities($selected_province);
+        
 
         // Hitung persentase DPT1 Coverage
         $this->data['percent_dpt1_coverage'] = ($this->data['total_dpt1_target'] > 0) 
             ? ($this->data['total_dpt1_coverage'] / $this->data['total_dpt1_target']) * 100 
             : 0;
 
-        // Hitung persentase Districts dengan Coverage < 5%
-        $this->data['percent_districts_under_5'] = ($this->data['total_regencies_cities'] > 0) 
-            ? ($this->data['total_dropout_rate'] / $this->data['total_regencies_cities']) * 100 
-            : 0;
+        if ($selected_district === 'all'){
+
+            $this->data['total_regencies_cities'] = $this->Dpt1_model->get_total_regencies_cities($selected_province);
+
+            // Hitung persentase Districts dengan Coverage < 5%
+            $this->data['percent_districts_under_5'] = ($this->data['total_regencies_cities'] > 0) 
+                ? ($this->data['total_dropout_rate'] / $this->data['total_regencies_cities']) * 100 
+                : 0;
+        } else {
+
+            $this->data['total_dropout_rate'] = $this->Dpt1_model->get_puskesmas_under_5_percent_in_district($selected_province,$selected_district,$selected_year);;
+
+            // Hitung total Puskesmas
+            $this->data['total_regencies_cities'] = $this->Dpt1_model->get_total_puskesmas_in_district($selected_district);
+
+            // Hitung persentase Puskesmas dengan Coverage < 5%
+            $this->data['percent_districts_under_5'] = ($this->data['total_regencies_cities'] > 0) 
+                ? ($this->data['total_dropout_rate'] / $this->data['total_regencies_cities']) * 100 
+                : 0;
+        }
 
         // Mengambil data cakupan DPT untuk provinsi yang telah dipilih
         // $dpt_under_5_data = $this->Dpt1_model->get_dpt_under_5_percent_cities($province_ids);
@@ -1064,7 +1083,7 @@ class Home extends CI_Controller {
             'en' => [
                 'page_title' => 'Number of DPT Stock Out at Health Facilities',
                 'page_subtitle' => 'Vaccine Availability',
-                'filter_label' => 'Select Province',
+                'filter_label' => 'Select Filter',
                 'text1' => 'Stock Out by Duration',
                 'text2' => 'Details of Primary Health Facility experiencing stockouts Year ',
                 'tabelcoloumn1' => 'Province',
@@ -1076,7 +1095,7 @@ class Home extends CI_Controller {
             'id' => [
                 'page_title' => 'Jumlah Stock Out DPT di Fasilitas Kesehatan',
                 'page_subtitle' => 'Ketersediaan Vaksin',
-                'filter_label' => 'Pilih Provinsi',
+                'filter_label' => 'Pilih Filter',
                 'text1' => 'Stock Out Berdasarkan Durasi',
                 'text2' => 'Detail Puskesmas yang mengalami Stock Out Tahun ',
                 'tabelcoloumn1' => 'Provinsi',
