@@ -883,27 +883,52 @@ class Immunization_model extends CI_Model {
     }
     
     
+    // public function get_restored_children($province_id = 'all', $year = 2025) {
+    //     $province_ids = $this->get_targeted_province_ids();
+    
+    //     $this->db->select("
+    //         SUM(CASE WHEN cities.status = 0 THEN immunization_data.dpt_hb_hib_1 ELSE 0 END) AS kabupaten_restored,
+    //         SUM(CASE WHEN cities.status = 1 THEN immunization_data.dpt_hb_hib_1 ELSE 0 END) AS kota_restored
+    //     ");
+    //     $this->db->from('immunization_data');
+    //     $this->db->join('cities', 'cities.id = immunization_data.city_id', 'left');
+        
+    //     // Filter berdasarkan tahun
+    //     $this->db->where('immunization_data.year', $year);
+    
+    //     if ($province_id === 'targeted' && !empty($province_ids)) {
+    //         $this->db->where_in('immunization_data.province_id', $province_ids);
+    //     } elseif ($province_id !== 'all') {
+    //         $this->db->where('immunization_data.province_id', $province_id);
+    //     }
+    
+    //     return $this->db->get()->row_array();
+    // }    
+
     public function get_restored_children($province_id = 'all', $year = 2025) {
         $province_ids = $this->get_targeted_province_ids();
-    
+
+        // Select the sum of restored children (dpt1_coverage) based on city status
         $this->db->select("
-            SUM(CASE WHEN cities.status = 0 THEN immunization_data.dpt_hb_hib_1 ELSE 0 END) AS kabupaten_restored,
-            SUM(CASE WHEN cities.status = 1 THEN immunization_data.dpt_hb_hib_1 ELSE 0 END) AS kota_restored
+            SUM(CASE WHEN cities.status = 0 THEN immunization_data_kejar.dpt1_coverage ELSE 0 END) AS kabupaten_restored,
+            SUM(CASE WHEN cities.status = 1 THEN immunization_data_kejar.dpt1_coverage ELSE 0 END) AS kota_restored
         ");
-        $this->db->from('immunization_data');
-        $this->db->join('cities', 'cities.id = immunization_data.city_id', 'left');
-        
-        // Filter berdasarkan tahun
-        $this->db->where('immunization_data.year', $year);
-    
+        $this->db->from('immunization_data_kejar'); // Changed the table name to immunization_data_kejar
+        $this->db->join('cities', 'cities.id = immunization_data_kejar.city_id', 'left');
+
+        // Filter based on the year
+        $this->db->where('immunization_data_kejar.year', $year); // Updated to use the correct table alias
+
+        // Filter by province if necessary
         if ($province_id === 'targeted' && !empty($province_ids)) {
-            $this->db->where_in('immunization_data.province_id', $province_ids);
+            $this->db->where_in('immunization_data_kejar.province_id', $province_ids); // Updated to correct table
         } elseif ($province_id !== 'all') {
-            $this->db->where('immunization_data.province_id', $province_id);
+            $this->db->where('immunization_data_kejar.province_id', $province_id); // Updated to correct table
         }
-    
+
         return $this->db->get()->row_array();
-    }    
+    }
+
     
     
 }
