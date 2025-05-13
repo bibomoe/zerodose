@@ -357,7 +357,9 @@ class Dpt1_model extends CI_Model {
             return 0; // Fungsi ini hanya untuk satu district
         }
     
-        $province_ids = $this->get_targeted_province_ids();
+        // Mengambil 10 provinsi dengan priority = 1
+        $provinces = $this->get_targeted_provinces();
+        $province_ids = array_column($provinces, 'id'); // Ambil array ID provinsi
     
         $this->db->select("
             puskesmas.id AS puskesmas_id,
