@@ -995,14 +995,27 @@ class Home extends CI_Controller {
     public function dpt_stock() {
         $this->load->model('StockOut_model'); // Pastikan model dipanggil
 
-        $selected_province = $this->input->get('province') ?? 'all';
-        $selected_year = $this->input->get('year') ?? date("Y");
+        $user_category = $this->session->userdata('user_category');
+        $user_province = $this->session->userdata('province_id');
+        $user_city = $this->session->userdata('city_id');
+
+        // Ambil filter provinsi dari dropdown, cek dari POST atau GET (default: all)
+        $selected_province = $this->input->post('province') ?? $this->input->get('province') ?? 'all';
+        $selected_district = $this->input->post('district') ?? $this->input->get('district') ?? 'all';
+        $selected_year = $this->input->post('year') ?? $this->input->get('year') ?? date("Y"); // Default tahun 2025
+
+        $this->data['selected_province'] = $selected_province;
+        $this->data['selected_district'] = $selected_district;
+        $this->data['selected_year'] = $selected_year;
 
         // Ambil daftar provinsi untuk dropdown + targeted provinces
         $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
 
+        // Ambil daftar kabkota untuk dropdown + targeted provinces
+        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province);
+
         // Ambil data stok kosong per bulan dan puskesmas
-        $stock_out_data = $this->StockOut_model->get_dpt_stock_out_by_month($selected_province, $selected_year);
+        $stock_out_data = $this->StockOut_model->get_dpt_stock_out_by_month($selected_province, $selected_district, $selected_year);
 
         // Menghitung kategori durasi stok kosong per bulan
         $monthly_stock_out_categories = $this->StockOut_model->calculate_stock_out_category($stock_out_data, $selected_year);
@@ -1011,12 +1024,10 @@ class Home extends CI_Controller {
         // $stock_out_data = $this->StockOut_model->get_dpt_stock_out($selected_province, $selected_year);
 
         // **Menambahkan Tabel Puskesmas yang Pernah Stockout**
-        $puskesmas_stockout_table = $this->StockOut_model->get_puskesmas_stockout_table($selected_province, $selected_year);
+        $puskesmas_stockout_table = $this->StockOut_model->get_puskesmas_stockout_table($selected_province, $selected_district, $selected_year);
         $this->data['puskesmas_stockout_table'] = $puskesmas_stockout_table;
 
         // Kirim data ke view
-        $this->data['selected_province'] = $selected_province;
-        $this->data['selected_year'] = $selected_year;
         // $this->data['stock_out_data'] = json_encode($stock_out_data); // Kirim dalam bentuk JSON
         // $this->data['stock_out_data'] = $stock_out_data; // Kirim dalam bentuk JSON
         $this->data['stock_out_data'] = $monthly_stock_out_categories; // Kirim dalam bentuk JSON

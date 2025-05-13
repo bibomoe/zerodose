@@ -279,7 +279,7 @@ class StockOut_model extends CI_Model {
     // }
 
     // Fungsi untuk mengambil data stok kosong per puskesmas dan bulan, termasuk data tahun sebelumnya
-    public function get_dpt_stock_out_by_month($province_id, $year) {
+    public function get_dpt_stock_out_by_month($province_id, $city_id, $year) {
         $province_ids = $this->get_targeted_province_ids(); // Ambil daftar targeted provinces
     
         // Ambil data vaksin per puskesmas tanpa melakukan SUM atau GROUP BY
@@ -308,6 +308,10 @@ class StockOut_model extends CI_Model {
             }
         } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
+        }
+
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
         }
 
         // Ambil data untuk tahun sebelumnya
@@ -468,7 +472,7 @@ class StockOut_model extends CI_Model {
         return $result;
     }
     
-    public function get_puskesmas_stockout_table($province_id, $year) {
+    public function get_puskesmas_stockout_table($province_id, $city_id, $year) {
         $province_ids = $this->get_targeted_province_ids(); // Ambil daftar targeted provinces
     
         // Ambil data vaksin per puskesmas yang pernah stockout
@@ -513,6 +517,10 @@ class StockOut_model extends CI_Model {
             }
         } elseif ($province_id !== 'all') {
             $this->db->where('psd.province_id', $province_id);
+        }
+
+        if ($city_id !== 'all') {
+            $this->db->where('psd.city_id', $city_id);
         }
     
         // Group by puskesmas_id dan data terkait
