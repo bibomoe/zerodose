@@ -275,6 +275,7 @@ class Immunization_model extends CI_Model {
             t.dpt_hb_hib_1_target AS target_dpt1,
             t.dpt_hb_hib_3_target AS target_dpt3,
             IFNULL(zd.zd_cases_2023, 0) AS zd_cases_2023,
+            IFNULL(k.total_dpt1_coverage_kejar, 0) AS total_dpt1_coverage_kejar,
             t.mr_1_target AS target_mr1
             
         ', false);
@@ -300,6 +301,13 @@ class Immunization_model extends CI_Model {
                 WHERE year = 2024
                 GROUP BY province_id
             ) zd', 'zd.city_id = i.city_id', 'left');  // Menggabungkan dengan hasil SUM
+
+            $this->db->join('(
+                SELECT city_id, SUM(dpt1_coverage) AS total_dpt1_coverage_kejar
+                FROM immunization_data_kejar
+                WHERE year = ' . $year . '
+                GROUP BY province_id
+            ) k', 'k.city_id = i.city_id', 'left');  // Menggabungkan dengan hasil SUM
         } else {
 
             $this->db->join('(
@@ -317,6 +325,13 @@ class Immunization_model extends CI_Model {
                 WHERE year = 2024
                 GROUP BY city_id
             ) zd', 'zd.city_id = i.city_id', 'left');  // Menggabungkan dengan hasil SUM
+
+            $this->db->join('(
+                SELECT city_id, SUM(dpt1_coverage) AS total_dpt1_coverage_kejar
+                FROM immunization_data_kejar
+                WHERE year = ' . $year . '
+                GROUP BY city_id
+            ) k', 'k.city_id = i.city_id', 'left');  // Menggabungkan dengan hasil SUM
         }
 
         // Filter berdasarkan tahun
@@ -349,10 +364,12 @@ class Immunization_model extends CI_Model {
             $percentage_target_mr1 = ($row['target_mr1'] != 0) ? ($row['mr1'] / $row['target_mr1']) * 100 : 0;
             $percent_zero_dose = ($row['target_dpt1'] != 0) ? ($zero_dose_children / $row['target_dpt1']) * 100 : 0;
 
-            // Hitung % reduction dari ZD 2023
+            // Hitung % reduction dari ZD 2024
             $zd_cases_2023 = $row['zd_cases_2023'];
-            $percent_reduction = ($zd_cases_2023 > 0) ? (($zd_cases_2023 - $zero_dose_children) / $zd_cases_2023) * 100 : 0;
+            $total_dpt1_coverage_kejar = $row['total_dpt1_coverage_kejar'];
 
+            // $percent_reduction = ($zd_cases_2023 > 0) ? (($zd_cases_2023 - $zero_dose_children) / $zd_cases_2023) * 100 : 0;
+            $percent_reduction = ($total_dpt1_coverage_kejar > 0) ? ($total_dpt1_coverage_kejar / $zd_cases_2023) * 100 : 0;
 
             $result_key = ($province_id !== 'all' && $province_id !== 'targeted') ? $row['city_id'] : $row['province_id'];
     
@@ -362,6 +379,7 @@ class Immunization_model extends CI_Model {
                 'percentage_target_dpt3' => $percentage_target_dpt3,
                 'percentage_target_mr1' => $percentage_target_mr1,
                 'zd_children_2023' => $zd_cases_2023,
+                'total_dpt1_kejar' => $total_dpt1_coverage_kejar,
                 'percent_reduction' => $percent_reduction,
                 'percent_zero_dose' => $percent_zero_dose
             ]);

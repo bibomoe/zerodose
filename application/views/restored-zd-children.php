@@ -1235,7 +1235,16 @@
         function getColor(percentReductionZD) {
             // let threshold = isProvince ? 10000 : 1000;
             // return dpt1 > threshold ? '#1A9850' : '#D73027';
-            return percentReductionZD > 85 ? '#1A9850' : '#D73027';
+            // return percentReductionZD > 85 ? '#1A9850' : '#D73027';
+
+            let yearFilter = <?= $selected_year; ?>;
+
+            // Adjust the color condition based on the selected year
+            if (yearFilter === 2025) {
+                return percentReductionZD > 15 ? '#1A9850' : '#D73027';
+            } else if (yearFilter === 2026) {
+                return percentReductionZD > 25 ? '#1A9850' : '#D73027';
+            }
         }
 
         let isProvinceLevel = ["all", "targeted"].includes("<?= $selected_province ?>");
@@ -1284,7 +1293,7 @@
                     let dpt3Coverage = formatValue(regionData.percentage_target_dpt3, true);
                     let mr1Coverage  = formatValue(regionData.percentage_target_mr1, true);
 
-                    let zd2023 = formatValue(regionData.zd_children_2023);
+                    let total_kejar = formatValue(regionData.total_dpt1_kejar);
                     let percentReductionZD  = formatValue(regionData.percent_reduction, true);
 
                     let name = isProvinceLevel 
@@ -1292,23 +1301,24 @@
                         : feature.properties.NAMOBJ;  
 
                     // let popupContent = `<b>${name}</b><br>
-                    //                     DPT1 Coverage: ${dpt1}<br>
-                    //                     DPT2 Coverage: ${dpt2}<br>
+                    //                     DPT1 Coverage: ${dpt1} (Coverage: ${dpt1Coverage})<br>
                     //                     DPT3 Coverage: ${dpt3} (Coverage: ${dpt3Coverage})<br>
                     //                     MR1 Coverage: ${mr1} (Coverage: ${mr1Coverage})<br>
                     //                     Zero Dose Children: ${zeroDoseChildren}<br>
-                    //                     % Zero Dose: ${percentZD}`;
+                    //                     % Zero Dose: ${percentZD}<br>
+                    //                     Zero Dose Children 2024: ${zd2023}<br>
+                    //                     % Reduction From ZD 2024: ${percentReductionZD}`;
 
                     // Create a number formatter for the locale
                     const numberFormat = new Intl.NumberFormat();
 
                     let popupContent = `<b>${name}</b><br>
-                                        DPT1 Coverage: ${numberFormat.format(dpt1)} (Coverage: ${numberFormat.format(dpt1Coverage)})<br>
-                                        DPT3 Coverage: ${numberFormat.format(dpt3)} (Coverage: ${numberFormat.format(dpt3Coverage)})<br>
-                                        MR1 Coverage: ${numberFormat.format(mr1)} (Coverage: ${numberFormat.format(mr1Coverage)})<br>
+                                        DPT1 Coverage: ${numberFormat.format(dpt1)} (Coverage: ${dpt1Coverage})<br>
+                                        DPT3 Coverage: ${numberFormat.format(dpt3)} ${dpt3Coverage})<br>
+                                        MR1 Coverage: ${numberFormat.format(mr1)} ${mr1Coverage})<br>
                                         Zero Dose Children: ${numberFormat.format(zeroDoseChildren)}<br>
-                                        % Zero Dose: ${percentZD}%<br>
-                                        Zero Dose Children Outreach 2024: ${numberFormat.format(zd2023)}<br>
+                                        % Zero Dose: ${percentZD}<br>
+                                        Zero Dose Children Outreach: ${numberFormat.format(total_kejar)}<br>
                                         % Reduction From ZD 2024: ${percentReductionZD}`;
                                         
                     
