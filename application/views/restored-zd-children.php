@@ -39,8 +39,12 @@
                                                     <?= form_dropdown('province', 
                                                         array_column($provinces, 'name_id', 'id'), 
                                                         $selected_province, 
-                                                        ['class' => 'form-select', 'id' => 'provinceFilter', 'style' => 'width: 100%; max-width: 300px; height: 48px; font-size: 1rem;']
+                                                        ['class' => 'form-select', 'id' => 'provinceFilter', 'style' => 'width: 100%; max-width: 200px; height: 48px; font-size: 1rem;']
                                                     ); ?>
+                                                    <?= form_dropdown('city_id', 
+                                                        ['all' => '-- Kab/Kota --'], 
+                                                        '',
+                                                        'class="form-select" id="city_id" style="width: 100%; max-width: 200px; height: 48px; font-size: 1rem;"'); ?>
                                                     <?= form_dropdown(
                                                             'year', 
                                                             [2025 => '2025', 2026 => '2026'], 
@@ -1395,4 +1399,27 @@
         // Lanjutkan kode untuk peta...
     });
 
+</script>
+
+<script>
+    
+    $('#province').change(function () {
+        var province_id = $(this).val();
+        if (province_id !== 'all' || province_id !== 'targeted') {
+            $.ajax({
+                url: "<?= base_url('input/get_cities_by_province') ?>",
+                type: "GET",
+                data: { province_id: province_id },
+                dataType: "json",
+                success: function (data) {
+                    $('#city_id').html('<option value="all">-- Kab/Kota --</option>');
+                    $.each(data, function (key, value) {
+                        $('#city_id').append('<option value="' + value.id + '">' + value.name_id + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#city_id').html('<option value="all">-- Kab/Kota --</option>');
+        }
+    });
 </script>
