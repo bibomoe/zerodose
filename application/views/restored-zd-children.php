@@ -1299,13 +1299,16 @@
                     //                     Zero Dose Children: ${zeroDoseChildren}<br>
                     //                     % Zero Dose: ${percentZD}`;
 
+                    // Create a number formatter for the locale
+                    const numberFormat = new Intl.NumberFormat();
+
                     let popupContent = `<b>${name}</b><br>
-                                        DPT1 Coverage: ${dpt1} (Coverage: ${dpt1Coverage})<br>
-                                        DPT3 Coverage: ${dpt3} (Coverage: ${dpt3Coverage})<br>
-                                        MR1 Coverage: ${mr1} (Coverage: ${mr1Coverage})<br>
-                                        Zero Dose Children: ${zeroDoseChildren}<br>
-                                        % Zero Dose: ${percentZD}<br>
-                                        Zero Dose Children 2024: ${zd2023}<br>
+                                        DPT1 Coverage: ${numberFormat.format(dpt1)} (Coverage: ${numberFormat.format(dpt1Coverage)})<br>
+                                        DPT3 Coverage: ${numberFormat.format(dpt3)} (Coverage: ${numberFormat.format(dpt3Coverage)})<br>
+                                        MR1 Coverage: ${numberFormat.format(mr1)} (Coverage: ${numberFormat.format(mr1Coverage)})<br>
+                                        Zero Dose Children: ${numberFormat.format(zeroDoseChildren)}<br>
+                                        % Zero Dose: ${percentZD.toFixed(2)}%<br>
+                                        Zero Dose Children Outreach 2024: ${numberFormat.format(zd2023)}<br>
                                         % Reduction From ZD 2024: ${percentReductionZD}`;
                                         
                     
