@@ -1230,7 +1230,7 @@
         }).addTo(map);
 
         let immunizationData = <?= json_encode($immunization_data, JSON_NUMERIC_CHECK); ?>;
-        console.log(immunizationData);
+        // console.log(immunizationData);
         
         function cleanCityCode(code) { 
             if (!code) return ""; 
@@ -1275,7 +1275,7 @@
 
                     let dpt1 = formatValue(regionData.dpt1);
                     let percentReductionZD  = formatValue(regionData.percent_reduction);
-                    console.log(percentReductionZD);
+                    // console.log(percentReductionZD);
 
                     return {
                         fillColor: getColor(percentReductionZD),
@@ -1402,7 +1402,7 @@
 </script>
 
 <script>
-    
+$(document).ready(function () {
     $('#province').change(function () {
         var province_id = $(this).val();
         if (province_id !== 'all' || province_id !== 'targeted') {
@@ -1422,4 +1422,5 @@
             $('#city_id').html('<option value="all">-- Kab/Kota --</option>');
         }
     });
+});
 </script>
