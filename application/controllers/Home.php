@@ -335,7 +335,7 @@ class Home extends CI_Controller {
         $this->data['dpt1_coverage_kejar'] = $this->Immunization_model->get_dpt1_coverage_by_province($selected_province, $selected_year, $selected_district);
 
         // Menentukan baseline DPT 3 dan MR 1
-        $this->data['national_baseline_dpt_mr'] = $this->Immunization_model->get_baseline_by_province($selected_province);
+        $this->data['national_baseline_dpt_mr'] = $this->Immunization_model->get_baseline_by_province($selected_province, $selected_district);
 
         // Menentukan quarter
         $this->data['quarter'] = $this->Immunization_model->get_max_quarter($selected_year);
@@ -353,9 +353,9 @@ class Home extends CI_Controller {
             //     $this->data["total_target_mr_1_$year"] = $this->Immunization_model->get_total_target_coverage('MR-1', $year);
             // } else {
                 // Ambil target dari target_immunization untuk provinsi tertentu atau targeted
-                $this->data["total_target_dpt_1_$year"] = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province, $year);
-                $this->data["total_target_dpt_3_$year"] = $this->Immunization_model->get_total_target('dpt_hb_hib_3', $selected_province, $year);
-                $this->data["total_target_mr_1_$year"] = $this->Immunization_model->get_total_target('mr_1', $selected_province, $year);
+                $this->data["total_target_dpt_1_$year"] = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province, $selected_district, $year);
+                $this->data["total_target_dpt_3_$year"] = $this->Immunization_model->get_total_target('dpt_hb_hib_3', $selected_province, $selected_district, $year);
+                $this->data["total_target_mr_1_$year"] = $this->Immunization_model->get_total_target('mr_1', $selected_province, $selected_district, $year);
             // }
 
             // Check if total target is 0, then set the quarter target to 0 as well
@@ -375,9 +375,9 @@ class Home extends CI_Controller {
             // }
 
             // Ambil data cakupan imunisasi dari immunization_data
-            $this->data["total_dpt_1_$year"] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province, $year);
-            $this->data["total_dpt_3_$year"] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_3', $selected_province, $year);
-            $this->data["total_mr_1_$year"] = $this->Immunization_model->get_total_vaccine('mr_1', $selected_province, $year);
+            $this->data["total_dpt_1_$year"] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province, $selected_district, $year);
+            $this->data["total_dpt_3_$year"] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_3', $selected_province, $selected_district, $year);
+            $this->data["total_mr_1_$year"] = $this->Immunization_model->get_total_vaccine('mr_1', $selected_province, $selected_district, $year);
             // echo "Year: $year, DPT1: {$this->data["total_dpt_1_$year"]}, DPT3: {$this->data["total_dpt_3_$year"]}, MR1: {$this->data["total_mr_1_$year"]}"; 
 
 

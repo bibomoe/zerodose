@@ -46,7 +46,7 @@ class Immunization_model extends CI_Model {
     }
 
     // Ambil baseline DPT 3 dan MR1 berdasarkan provinsi atau seluruh provinsi
-    public function get_baseline_by_province($province_id) {
+    public function get_baseline_by_province($province_id, $city_id) {
         $province_ids = $this->get_targeted_province_ids(); // Ambil provinsi yang ditargetkan
         $this->db->select('SUM(dpt3_baseline) AS total_dpt3_baseline, SUM(mr1_baseline) AS total_mr1_baseline');
         $this->db->from('baseline_immunization');
@@ -67,6 +67,10 @@ class Immunization_model extends CI_Model {
         } else {
             $this->db->where('province_id', $province_id);
         }
+
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        } 
     
         $query = $this->db->get()->row();
         return [
@@ -134,7 +138,7 @@ class Immunization_model extends CI_Model {
     }
 
     // Ambil total target dari target_immunization (Targeted/Specific Province) dengan filter tahun
-    public function get_total_target($vaccine_column, $province_id, $year) {
+    public function get_total_target($vaccine_column, $province_id, $city_id, $year) {
         $province_ids = $this->get_targeted_province_ids();
     
         $this->db->select("SUM({$vaccine_column}_target) AS total_target"); // ✅ Corrected
@@ -150,13 +154,17 @@ class Immunization_model extends CI_Model {
         } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
         }
+
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        } 
     
         $result = $this->db->get()->row();
         return $result->total_target ?? 0;
     }
     
     // Total imunisasi berdasarkan jenis vaksin dan filter provinsi
-    public function get_total_vaccine($vaccine_column, $province_id, $year) {
+    public function get_total_vaccine($vaccine_column, $province_id, $city_id, $year) {
         $province_ids = $this->get_targeted_province_ids();
         $this->db->select("SUM($vaccine_column) AS total");
         $this->db->from('immunization_data');
@@ -171,6 +179,10 @@ class Immunization_model extends CI_Model {
         } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
         }
+
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        } 
     
         $query = $this->db->get()->row();
         return $query->total ?? 0;
