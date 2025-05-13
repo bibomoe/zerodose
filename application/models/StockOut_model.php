@@ -325,8 +325,8 @@ class StockOut_model extends CI_Model {
         // Ambil data yang sesuai dengan filter
         $result = $this->db->get()->result_array();
 
-        var_dump($result);
-        exit;
+        // var_dump($result);
+        // exit;
         return $result;
     }
 
