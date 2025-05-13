@@ -109,7 +109,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="col-6 col-lg-3 col-md-6">
+                                <div class="col-6 col-lg-3 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
                                             <div class="row">
@@ -125,7 +125,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                                 <div class="col-6 col-lg-3 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
@@ -249,7 +249,9 @@ document.addEventListener("DOMContentLoaded", function () {
     let dropout_rate_per_provinces = <?= json_encode($dropout_rate_per_provinces, JSON_NUMERIC_CHECK); ?>;
     let percentDptUnder5Data = <?= json_encode($percent_dpt_under_5_per_province, JSON_NUMERIC_CHECK); ?>;
 
-    // console.log(dropout_rate_per_provinces);
+    console.log(dptUnder5Data);
+    console.log(dptCoverageData);
+    console.log(dropout_rate_per_provinces);
     
 
     function getColor(dpt, doRate) {
