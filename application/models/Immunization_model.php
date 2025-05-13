@@ -71,6 +71,38 @@ class Immunization_model extends CI_Model {
     }
     
 
+    // Ambil jumlah anak dpt1 kejar
+    public function get_dpt1_coverage_by_province($province_id, $selected_year) {
+        $province_ids = $this->get_targeted_province_ids();  // Ambil provinsi yang ditargetkan
+        
+        $this->db->select('SUM(dpt1_coverage) AS total_dpt1_coverage');
+        $this->db->from('immunization_data_kejar');
+        
+        // Filter berdasarkan tahun yang dipilih
+        $this->db->where('year', $selected_year);
+        
+        // Jika provinsi yang dipilih adalah 'targeted', ambil provinsi yang ditargetkan
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);  // Filter berdasarkan provinsi yang ditargetkan
+            } else {
+                return 0;  // Jika tidak ada provinsi yang ditargetkan
+            }
+        } elseif ($province_id === 'all') {
+            // Jika provinsi yang dipilih adalah 'all', ambil data untuk seluruh provinsi
+            $query = $this->db->get()->row();
+            return $query->total_dpt1_coverage ?? 0;
+        } else {
+            // Jika provinsi yang dipilih adalah provinsi tertentu
+            $this->db->where('province_id', $province_id);
+        }
+
+        // Ambil hasil dan kembalikan total cakupan DPT-1
+        $query = $this->db->get()->row();
+        return $query->total_dpt1_coverage ?? 0;
+    }
+
+
     //Ambil data quarter saat ini
     public function get_max_quarter($year) {
         // Select the maximum quarter for the given year

@@ -328,6 +328,9 @@ class Home extends CI_Controller {
             $this->data['national_baseline_zd'] = $this->Immunization_model->get_zero_dose_by_province($selected_province);
         }
 
+        // Misalnya, ambil cakupan DPT-1 untuk tahun 2025 di provinsi yang dipilih
+        $this->data['dpt1_coverage_kejar'] = $this->Immunization_model->get_dpt1_coverage_by_province($selected_province, $selected_year);
+
         // Menentukan baseline DPT 3 dan MR 1
         $this->data['national_baseline_dpt_mr'] = $this->Immunization_model->get_baseline_by_province($selected_province);
 

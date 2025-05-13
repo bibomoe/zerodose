@@ -91,17 +91,17 @@
                             <!-- DPT1 dan ZD -->
                             <div class="row">
                                 <!-- National Baseline -->
-                                <?php
-                                    if($selected_province == 'all'){
-                                ?>
+                                <!-- <?php
+                                    // if($selected_province == 'all'){
+                                ?> -->
                                 <div class="col-12 col-lg-6 col-md-12">
-                                <?php
-                                    } else {
-                                ?>
-                                <div class="col-12 col-lg-12 col-md-12">
-                                <?php
-                                    }
-                                ?>
+                                <!-- <?php
+                                    // } else {
+                                ?> -->
+                                <!-- <div class="col-12 col-lg-12 col-md-12"> -->
+                                <!-- <?php
+                                    // }
+                                ?> -->
                                 
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5 text-center">
@@ -124,14 +124,14 @@
                                 </div>
 
                                 <?php
-                                    if($selected_province == 'all'){
+                                    // if($selected_province == 'all'){
                                 ?>
                                 <!-- National Baseline -->
                                 <div class="col-12 col-lg-6 col-md-12">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5 text-center">
                                             <h6 class="text-muted font-semibold"><?= $translations['text_baseline2'] ?></h6>
-                                            <h6 class="font-extrabold mb-0 highlight"><?= number_format(0) ?> <?= $translations['children'] ?></h6>
+                                            <h6 class="font-extrabold mb-0 highlight"><?= number_format($dpt1_coverage_kejar) ?> <?= $translations['children'] ?></h6>
                                             <br>
                                             <div class="card-subtext">
                                                 <?= $translations['text5_3'] ?>
@@ -142,7 +142,7 @@
                                     </div>
                                 </div>
                                 <?php
-                                    }
+                                    // }
                                 ?>
                             </div>
 
