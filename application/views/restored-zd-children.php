@@ -1403,7 +1403,7 @@
 
 <script>
 $(document).ready(function () {
-    $('#province').change(function () {
+    $('#provinceFilter').change(function () {
         var province_id = $(this).val();
         if (province_id !== 'all' || province_id !== 'targeted') {
             $.ajax({
