@@ -832,6 +832,8 @@
     const quarters = <?= json_encode($quarters); ?>;
     const targetData = <?= json_encode($target_data); ?>;
     const coverageData = <?= json_encode($coverage_data); ?>;
+
+    let nowQuarter = <?= $quarter; ?>;
     
     const quarter = ["Q1", "Q2", "Q3", "Q4"];
     
@@ -853,6 +855,11 @@
     let scaleXlabel3 = translationsCoverageLineChart['en'].scaleX;
     let scaleYlabel3 = translationsCoverageLineChart['en'].scaleY;
 
+    // Slice data to only show up to the current quarter
+    // const quartersToShow = quarter.slice(0, nowQuarter);
+    // const targetDataToShow = targetData.slice(0, nowQuarter);
+    const coverageDataToShow = coverageData.slice(0, nowQuarter);
+
     // Create the chart
     const ctx = document.getElementById('dptChart').getContext('2d');
     new Chart(ctx, {
@@ -868,7 +875,8 @@
                 tension: 0.4
             }, {
                 label: 'DPT-1 Coverage',
-                data: coverageData,
+                // data: coverageData,
+                data: coverageDataToShow,
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 2,
