@@ -369,7 +369,13 @@ class Immunization_model extends CI_Model {
             $total_dpt1_coverage_kejar = $row['total_dpt1_coverage_kejar'];
 
             // $percent_reduction = ($zd_cases_2023 > 0) ? (($zd_cases_2023 - $zero_dose_children) / $zd_cases_2023) * 100 : 0;
-            $percent_reduction = ($total_dpt1_coverage_kejar > 0) ? ($total_dpt1_coverage_kejar / $zd_cases_2023) * 100 : 0;
+            // $percent_reduction = ($total_dpt1_coverage_kejar > 0) ? ($total_dpt1_coverage_kejar / $zd_cases_2023) * 100 : 0;
+            // Ensure we don't divide by zero
+            if ($zd_cases_2023 > 0 && $total_dpt1_coverage_kejar > 0) {
+                $percent_reduction = ($total_dpt1_coverage_kejar / $zd_cases_2023) * 100;
+            } else {
+                $percent_reduction = 0; // Set to 0 if division by zero would occur
+            }
 
             $result_key = ($province_id !== 'all' && $province_id !== 'targeted') ? $row['city_id'] : $row['province_id'];
     
