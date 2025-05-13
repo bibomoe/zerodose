@@ -1010,7 +1010,7 @@ class Immunization_model extends CI_Model {
     //     return $this->db->get()->row_array();
     // }    
 
-    public function get_restored_children($province_id = 'all', $year = 2025) {
+    public function get_restored_children($province_id = 'all', $city_id = 'all', $year = 2025) {
         $province_ids = $this->get_targeted_province_ids();
 
         // Select the sum of restored children (dpt1_coverage) based on city status
@@ -1029,6 +1029,10 @@ class Immunization_model extends CI_Model {
             $this->db->where_in('immunization_data_kejar.province_id', $province_ids); // Updated to correct table
         } elseif ($province_id !== 'all') {
             $this->db->where('immunization_data_kejar.province_id', $province_id); // Updated to correct table
+        }
+
+        if ($city_id !== 'all') {
+            $this->db->where('immunization_data_kejar.city_id', $city_id);
         }
 
         return $this->db->get()->row_array();

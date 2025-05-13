@@ -502,7 +502,7 @@ class Home extends CI_Controller {
 
 
         // Data untuk grafik bar Restored Children (berdasarkan kota/kabupaten)
-        $restored_data = $this->Immunization_model->get_restored_children($selected_province, $selected_year);
+        $restored_data = $this->Immunization_model->get_restored_children($selected_province, $selected_district, $selected_year);
         $this->data['restored_data'] = [
             'kabupaten' => $restored_data['kabupaten_restored'] ?? 0,
             'kota' => $restored_data['kota_restored'] ?? 0
