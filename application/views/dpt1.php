@@ -146,7 +146,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold"><?= $translations['text3'] ?></h6>
+                                                    <h6 class="text-muted font-semibold"><?= $selected_district == 'all' ? $translations['text3'] : $translations['text3_2'] ?></h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_dropout_rate); ?> <small>(<?= number_format($percent_districts_under_5, 2) ?>%)</small></h6>
                                                 </div>
                                             </div>
@@ -163,7 +163,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold"><?= $translations['text4'] ?></h6>
+                                                    <h6 class="text-muted font-semibold"><?= $selected_district == 'all' ? $translations['text4'] : $translations['text4_2'] ?></h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_regencies_cities); ?></h6>
                                                 </div>
                                             </div>
