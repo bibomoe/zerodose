@@ -361,8 +361,8 @@ class Dashboard_model extends CI_Model {
     public function get_dpt1_coverage_percentage($year) {
         $this->load->model('Dpt1_model'); // Pastikan model Dpt1_model diload
     
-        $total_coverage = $this->Dpt1_model->get_total_dpt1_coverage($year, 'all');
-        $total_target = $this->Dpt1_model->get_total_dpt1_target($year, 'all');
+        $total_coverage = $this->Dpt1_model->get_total_dpt1_coverage($year, 'all', 'all');
+        $total_target = $this->Dpt1_model->get_total_dpt1_target($year, 'all', 'all');
     
         // Hitung persentase cakupan DPT1
         return ($total_target > 0) ? round(($total_coverage / $total_target) * 100, 2) : 0;
