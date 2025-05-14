@@ -811,9 +811,13 @@ class Home extends CI_Controller {
         // Menentukan quarter
         $this->data['quarter'] = $this->Immunization_model->get_max_quarter($selected_year);
 
-        // Ambil data distrik dan cakupan DPT
-        $this->data['district_details'] = $this->Dpt1_model->get_district_details($selected_province, $selected_year, $this->data['quarter']);
-
+        if ($selected_district === 'all'){
+            // Ambil data distrik dan cakupan DPT
+            $this->data['district_details'] = $this->Dpt1_model->get_district_details($selected_province, $selected_year, $this->data['quarter']);
+        } else {
+            // Ambil data distrik dan cakupan DPT
+            $this->data['district_details'] = $this->Dpt1_model->get_puskesmas_details($selected_province, $selected_district, $selected_year, $this->data['quarter']);
+        }
         // echo "Total districts from model: " . count($this->data['district_details']);
         // print_r($this->data['district_details']);
         // exit;
@@ -846,6 +850,7 @@ class Home extends CI_Controller {
                 'text5' => ' Quarter ',
                 'tabelcoloumn1' => 'Province',
                 'tabelcoloumn2' => 'District',
+                'tabelcoloumn9' => 'Puskesmas',
                 'tabelcoloumn3' => 'Target',
                 'tabelcoloumn4' => 'DPT1 Coverage',
                 'tabelcoloumn5' => '% of DPT1 Coverage',
@@ -866,6 +871,7 @@ class Home extends CI_Controller {
                 'text5' => ' Triwulan ',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Kab/Kota',
+                'tabelcoloumn9' => 'Puskesmas',
                 'tabelcoloumn3' => 'Target',
                 'tabelcoloumn4' => 'Cakupan DPT1',
                 'tabelcoloumn5' => '% Cakupan DPT1',

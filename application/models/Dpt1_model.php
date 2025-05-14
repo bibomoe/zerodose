@@ -563,6 +563,92 @@ class Dpt1_model extends CI_Model {
         return $districts;
     }
     
-    
+    public function get_puskesmas_details($province_id, $city_id, $year, $quarter) {
+        $provinces = $this->get_targeted_provinces();
+        $province_ids = array_column($provinces, 'id');
+
+        // Select data from puskesmas, including immunization data and targets
+        $this->db->select("
+            puskesmas.name AS puskesmas_name,
+            provinces.name_id AS province_name,
+            COALESCE(target_immunization_per_puskesmas.dpt_hb_hib_1_target, 0) AS target,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage
+        ");
+        $this->db->from('puskesmas');
+        $this->db->join('provinces', 'provinces.id = puskesmas.province_id', 'left'); // Join to provinces table
+        $this->db->join('immunization_data', 'immunization_data.puskesmas_id = puskesmas.id', 'left'); // Join to immunization data
+        $this->db->join('target_immunization_per_puskesmas', 'target_immunization_per_puskesmas.puskesmas_id = puskesmas.id AND target_immunization_per_puskesmas.year = immunization_data.year', 'left'); // Join to target immunization table
+        // Filter by province if provided
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('puskesmas.province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('puskesmas.province_id', $province_id);
+        }
+
+        if ($city_id !== 'all') {
+            $this->db->where('puskesmas.city_id', $city_id);
+        }
+
+        $this->db->where('immunization_data.year', $year); // Filter by year
+        $this->db->group_by('puskesmas.id'); // Group by to avoid duplicate puskesmas entries
+
+        // Execute query
+        $query = $this->db->get();
+        $puskesmas = $query->result_array();
+
+        // Calculate the percentages and dropout rates
+        foreach ($puskesmas as &$puskesmas_data) {
+            $total_target = $puskesmas_data['target'];
+
+            // Calculate target based on the quarter
+            if ($total_target <= 0) {
+                $target = 0;
+            } else {
+                // Calculate based on quarter
+                if ($quarter == 1) {
+                    $target = $total_target / 4; // Quarter 1: 1/4 of total target
+                } elseif ($quarter == 2) {
+                    $target = 2 * $total_target / 4; // Quarter 2: 2/4 of total target
+                } elseif ($quarter == 3) {
+                    $target = 3 * $total_target / 4; // Quarter 3: 3/4 of total target
+                } elseif ($quarter == 4) {
+                    $target = $total_target; // Quarter 4: Full total target
+                }
+            }
+
+            $dpt1_coverage = $puskesmas_data['dpt1_coverage'];
+            $dpt3_coverage = $puskesmas_data['dpt3_coverage'];
+
+            $puskesmas_data['target'] = $target;
+
+            // Calculate DPT1 Coverage percentage
+            $puskesmas_data['percent_dpt1_coverage'] = ($target > 0) ? round(($dpt1_coverage / $target) * 100, 2) : 0;
+
+            // Calculate number of Dropout
+            $puskesmas_data['dropout_number'] = max(0, $dpt1_coverage - $dpt3_coverage);
+
+            // Calculate Dropout Rate
+            if ($dpt1_coverage == 0) {
+                // If DPT1 Coverage is 0, Drop Out Rate should be 100%
+                $puskesmas_data['dropout_rate'] = 100;
+            } else {
+                // Normal calculation if DPT1 Coverage > 0
+                $puskesmas_data['dropout_rate'] = round(($puskesmas_data['dropout_number'] / $dpt1_coverage) * 100, 2);
+            }
+        }
+
+        // Sort the array based on dropout_rate in descending order
+        usort($puskesmas, function ($a, $b) {
+            return $b['dropout_rate'] - $a['dropout_rate']; // Sort in descending order
+        });
+
+        return $puskesmas;
+    }
+
 
 }

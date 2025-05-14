@@ -206,8 +206,18 @@
                                                 <table class="table table-striped" id="table1">
                                                     <thead>
                                                         <tr>
-                                                            <th><?= $translations['tabelcoloumn1'] ?></th>
-                                                            <th><?= $translations['tabelcoloumn2'] ?></th>
+                                                            <?php
+                                                                if($selected_district == 'all') {
+                                                            ?>
+                                                                <th><?= $translations['tabelcoloumn1'] ?></th>
+                                                                <th><?= $translations['tabelcoloumn2'] ?></th>
+                                                            <?php
+                                                                } else {
+                                                            ?>
+                                                                <th><?= $translations['tabelcoloumn9'] ?></th>
+                                                            <?php
+                                                                }
+                                                            ?>
                                                             <th><?= $translations['tabelcoloumn3'] ?> <?= $translations['text5'] ?> <?= $quarter ?></th>
                                                             <th><?= $translations['tabelcoloumn4'] ?></th>
                                                             <th><?= $translations['tabelcoloumn5'] ?></th>
@@ -219,8 +229,19 @@
                                                     <tbody>
                                                         <?php foreach ($district_details as $district): ?>
                                                             <tr>
-                                                                <td><?= htmlspecialchars($district['province_name']); ?></td>
-                                                                <td><?= htmlspecialchars($district['district_name']) ?></td>
+                                                                <?php
+                                                                    if($selected_district == 'all') {
+                                                                ?>
+                                                                    <td><?= htmlspecialchars($district['province_name']); ?></td>
+                                                                    <td><?= htmlspecialchars($district['district_name']) ?></td>
+                                                                <?php
+                                                                    } else {
+                                                                ?>
+                                                                    <td><?= htmlspecialchars($district['puskesmas_name']) ?></td>
+                                                                <?php
+                                                                    }
+                                                                ?>
+                                                                
                                                                 <td><?= number_format($district['target']) ?></td>
                                                                 <td><?= number_format($district['dpt1_coverage']) ?></td>
                                                                 <td><?= $district['percent_dpt1_coverage'] ?>%</td>
