@@ -474,7 +474,13 @@ class Dpt1_model extends CI_Model {
         $provinces = $this->get_targeted_provinces();
         $province_ids = array_column($provinces, 'id');
 
-        $this->db->select('province_id, SUM(dpt_hb_hib_1) AS dpt1_coverage');
+        if ($province_id === 'targeted' || $province_id === 'all') {
+            $this->db->select('province_id, SUM(dpt_hb_hib_1) AS dpt1_coverage');
+        } else {
+            $this->db->select('city_id AS province_id, SUM(dpt_hb_hib_1) AS dpt1_coverage');
+        }
+
+        // $this->db->select('province_id, SUM(dpt_hb_hib_1) AS dpt1_coverage');
         $this->db->from('immunization_data');
         // $this->db->where_in('province_id', $province_ids);
 
@@ -490,7 +496,13 @@ class Dpt1_model extends CI_Model {
         }
 
         $this->db->where('immunization_data.year', $year); // Filter berdasarkan tahun
-        $this->db->group_by('province_id');
+        // $this->db->group_by('province_id');
+        if ($province_id === 'targeted' || $province_id === 'all') {
+            $this->db->group_by('province_id');
+        } else {
+            $this->db->group_by('city_id');
+        }
+
         $query = $this->db->get();
         return $query->result_array();
     }
@@ -500,7 +512,13 @@ class Dpt1_model extends CI_Model {
         $provinces = $this->get_targeted_provinces();
         $province_ids = array_column($provinces, 'id');
 
-        $this->db->select('province_id, SUM(dpt_hb_hib_1_target) AS dpt1_target');
+        if ($province_id === 'targeted' || $province_id === 'all') {
+            $this->db->select('province_id, SUM(dpt_hb_hib_1) AS dpt1_coverage');
+        } else {
+            $this->db->select('city_id AS province_id, SUM(dpt_hb_hib_1) AS dpt1_coverage');
+        }
+
+        // $this->db->select('province_id, SUM(dpt_hb_hib_1_target) AS dpt1_target');
         $this->db->from('target_immunization');
         // $this->db->where_in('province_id', $province_ids);
 
@@ -516,7 +534,14 @@ class Dpt1_model extends CI_Model {
         }
 
         $this->db->where('target_immunization.year', $year); // Filter berdasarkan tahun
-        $this->db->group_by('province_id');
+        // $this->db->group_by('province_id');
+        
+        if ($province_id === 'targeted' || $province_id === 'all') {
+            $this->db->group_by('province_id');
+        } else {
+            $this->db->group_by('city_id');
+        }
+
         $query = $this->db->get();
         return $query->result_array();
     }
