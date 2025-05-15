@@ -668,20 +668,6 @@
         let isProvinceLevelCheck = ["all", "targeted"].includes("<?= $selected_province ?>");
         let isDistrictLevelCheck = ["all", "targeted"].includes("<?= $selected_district ?>");
 
-        // Tentukan batas atas dan bawah Y axis berdasarkan checkProvince dan checkDistrict
-        let yMin = 0;
-        let yMax = 1000000; // default Per Indonesia
-
-        // Logic translated to use the boolean checks:
-        if (!isProvinceLevelCheck && isDistrictLevelCheck) {
-            // province is NOT all/targeted, district IS all/targeted
-            yMax = 300000; // Per province
-        } else if (!isProvinceLevelCheck && !isDistrictLevelCheck) {
-            // both province and district NOT all/targeted
-            yMax = 50000;  // Per kabkota
-        }
-        // else if province is all or targeted, yMax stays 1,000,000
-
         // Mapping data untuk Chart.js
         const months = [
             "January", "February", "March", "April", "May", "June",
@@ -724,6 +710,38 @@
             scaleXlabel = translationsLineChart[lang].scaleX;
             scaleYlabel = translationsLineChart[lang].scaleY;
         }
+
+        // Function to find first non-null value in an array, or 0 if none found
+        function firstNonNullValue(arr) {
+            for (let val of arr) {
+                if (val !== null && val !== undefined) return val;
+            }
+            return 0;
+        }
+
+        // Get first non-null zd case value for the selected year
+        let firstValue = 0;
+        if (year === 2025) {
+            firstValue = firstNonNullValue(zdCases2025);
+        } else if (year === 2026) {
+            firstValue = firstNonNullValue(zdCases2026);
+        }
+
+        // Tentukan batas atas dan bawah Y axis berdasarkan checkProvince, checkDistrict, dan firstValue
+        let yMin = 0;
+        let yMax = 1000000; // default Per Indonesia
+
+        if (!isProvinceLevelCheck && isDistrictLevelCheck) {
+            // province is NOT all/targeted, district IS all/targeted
+            yMax = Math.max(300000, firstValue * 1.1); // 10% padding over first value, minimum 300k
+        } else if (!isProvinceLevelCheck && !isDistrictLevelCheck) {
+            // both province and district NOT all/targeted
+            yMax = Math.max(50000, firstValue * 1.1);  // 10% padding, minimum 50k
+        } else {
+            // province is all/targeted
+            yMax = Math.max(1000000, firstValue * 1.1); // 10% padding, minimum 1M
+        }
+
 
         // Inisialisasi bahasa berdasarkan localStorage
         let savedLang = localStorage.getItem("selectedLanguage");
