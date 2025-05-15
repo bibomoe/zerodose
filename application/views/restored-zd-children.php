@@ -158,12 +158,14 @@
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5 text-center">
                                             <h6 class="text-muted font-semibold"><?= $translations['text_baseline2'] ?></h6>
-                                            <h6 class="font-extrabold mb-0 highlight"><?= number_format($dpt1_coverage_kejar) ?> <?= $translations['children'] ?></h6>
+                                            <h6 class="font-extrabold mb-0 highlight"><?= number_format($dpt1_coverage_kejar) ?> <?= $translations['children'] . " ("; ?> <?= number_format($dpt1_coverage_kejar / $national_baseline_zd * 100) . "%)" ?></h6>
                                             <br>
                                             <div class="card-subtext">
                                                 <?= $translations['text5_3'] ?>
-                                                <?php echo "(15%) "; ?>
                                                 <?= number_format($national_baseline_zd * 0.15) ?>
+                                                <?= $translations['children'] ?>
+                                                <?php echo " (15%)"; ?>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -279,11 +281,13 @@
                                                         <div class="card-subtext">
                                                         <?= $translations['text5_2'] ?>
                                                             <?php if ($year == 2025): ?>
-                                                                <?php echo "(15% " . $translations['text5_4'] . ")"; ?>
                                                                 <?= number_format($national_baseline_zd * 0.85) ?>
+                                                                <?php echo " (15% " . $translations['text5_4'] . ")"; ?>
+                                                                
                                                             <?php elseif ($year == 2026): ?>
-                                                                <?php echo "(25% " . $translations['text5_4'] . ")"; ?>
                                                                 <?= number_format($national_baseline_zd * 0.75) ?>
+                                                                <?php echo " (25% " . $translations['text5_4'] . ")"; ?>
+                                                                
                                                             <?php else: ?>
                                                                 <!-- You can put a default value here if needed -->
                                                                 <?= number_format($national_baseline_zd) ?>
@@ -326,7 +330,7 @@
                                                 <!-- Baseline and Target Coverage -->
                                                 <div class="mt-1">
                                                     <!-- <p><strong>Baseline: </strong><?= number_format(${"total_target_dpt_3_$year"}); ?> <?= $translations['children'] ?></p> -->
-                                                    <p><strong>Baseline: </strong><?= number_format($national_baseline_dpt_mr['dpt3']); ?> <?= $translations['children'] ?></p>
+                                                    <!-- <p><strong>Baseline: </strong><?= number_format($national_baseline_dpt_mr['dpt3']); ?> <?= $translations['children'] ?></p> -->
                                                     <p><strong><?= $translations['text13'] ?> <?= ($year == 2025) ? '90%' : '95%'; ?> </strong></p>
                                                 </div>
                                             </div>
@@ -352,7 +356,7 @@
                                                 <!-- Baseline and Target Coverage -->
                                                 <div class="mt-1">
                                                     <!-- <p><strong>Baseline: </strong><?= number_format(${"total_target_mr_1_$year"}); ?> <?= $translations['children'] ?></p> -->
-                                                    <p><strong>Baseline: </strong><?= number_format($national_baseline_dpt_mr['mr1']); ?> <?= $translations['children'] ?></p>
+                                                    <!-- <p><strong>Baseline: </strong><?= number_format($national_baseline_dpt_mr['mr1']); ?> <?= $translations['children'] ?></p> -->
                                                     <p><strong><?= $translations['text13'] ?> <?= ($year == 2025) ? '90%' : '95%'; ?> </strong></p>
                                                 </div>
                                             </div>

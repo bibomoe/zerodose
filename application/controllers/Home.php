@@ -596,7 +596,7 @@ class Home extends CI_Controller {
                 'text10' => 'Cakupan DPT-3 Tahun ',
                 'text11' => '% ketercapaian dari sasaran',
                 'text12' => ' anak-anak membutuhkan vaksinasi ',
-                'text13' => 'Sasaran Cakupan ',
+                'text13' => 'Target Cakupan ',
                 'text14' => 'Cakupan MR-1 Tahun ',
                 // 'text15' => 'Cakupan DPT-3 Tahun 2025',
                 // 'text16' => 'Cakupan MR-1 Tahun 2025',
