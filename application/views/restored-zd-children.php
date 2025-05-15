@@ -158,7 +158,16 @@
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5 text-center">
                                             <h6 class="text-muted font-semibold"><?= $translations['text_baseline2'] ?></h6>
-                                            <h6 class="font-extrabold mb-0 highlight"><?= number_format($dpt1_coverage_kejar) ?> <?= $translations['children'] . " ("; ?><?= number_format($dpt1_coverage_kejar / $national_baseline_zd * 100, 1) . "%)" ?></h6>
+                                            <h6 class="font-extrabold mb-0 highlight">
+                                                <?= number_format($dpt1_coverage_kejar) ?> <?= $translations['children'] . " ("; ?>
+                                                <?php 
+                                                    if ($national_baseline_zd == 0) {
+                                                        echo "100%";
+                                                    } else {
+                                                        echo number_format($dpt1_coverage_kejar / $national_baseline_zd * 100, 1) . "%)";
+                                                    }
+                                                ?>
+                                            </h6>
                                             <br>
                                             <div class="card-subtext">
                                                 <?= $translations['text5_3'] ?>
