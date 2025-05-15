@@ -714,16 +714,6 @@
         let savedLang = localStorage.getItem("selectedLanguage");
         setLanguageLineChart(savedLang);
 
-        // Tentukan batas atas dan bawah Y axis berdasarkan checkProvince dan checkDistrict
-        // let yMin = 0;
-        // let yMax = 1000000; // default Per Indonesia
-
-        // if (checkProvince !== 'all' && checkDistrict === 'all') {
-        //     yMax = 300000; // Per province
-        // } else if (checkProvince !== 'all' && checkDistrict !== 'all') {
-        //     yMax = 50000;  // Per kabkota
-        // }          
-
         let zdChart; // Mendeklarasikan variable untuk chart
         const zdCtx = document.getElementById('zdChart').getContext('2d');
         zdChart = new Chart(zdCtx, {
@@ -746,11 +736,7 @@
                 },
                 scales: {
                     x: { title: { display: true, text: scaleXlabel } },
-                    y: { title: { display: true, text: scaleYlabel ,
-                                min: yMin,
-                                max: yMax
-                            } 
-                        }
+                    y: { title: { display: true, text: scaleYlabel } }
                 }
             }
         });
