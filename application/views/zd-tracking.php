@@ -281,7 +281,7 @@
                                                         <?php
                                                             } else {
                                                         ?>
-                                                            <th><?= $translations['tabelcoloumn7'] ?></th>
+                                                            <th style="text-align: center; vertical-align: middle;"><?= $translations['tabelcoloumn7'] ?></th>
                                                         <?php
                                                             } 
                                                         ?>
@@ -317,7 +317,7 @@
                                                     ?>
                                                         <?php foreach ($supportive_supervision_table_puskesmas as $row) : ?>
                                                             <tr>
-                                                                <td><?= $row['puskesmas_name']; ?></td>
+                                                                <td style="text-align: center; vertical-align: middle;"><?= $row['puskesmas_name']; ?></td>
                                                             </tr>
                                                         <?php endforeach; ?>
                                                     <?php
