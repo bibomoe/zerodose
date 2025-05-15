@@ -162,9 +162,9 @@
                                                 <?= number_format($dpt1_coverage_kejar) ?> <?= $translations['children'] . " ("; ?>
                                                 <?php 
                                                     if ($national_baseline_zd == 0) {
-                                                        echo "100%";
+                                                        echo "100% )";
                                                     } else {
-                                                        echo number_format($dpt1_coverage_kejar / $national_baseline_zd * 100, 1) . "%)";
+                                                        echo number_format($dpt1_coverage_kejar / $national_baseline_zd * 100, 1) . "% )";
                                                     }
                                                 ?>
                                             </h6>
