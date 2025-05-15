@@ -246,7 +246,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                        <h6 class="text-muted font-semibold"><?= $translations['text3'] ?> <?= $year; ?></h6>
+                                                        <h6 class="text-muted font-semibold"><?= $translations['text3'] ?> <?= $year; ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></h6>
                                                         <div class="card-number font-extrabold mb-0"><?= number_format(${"total_dpt_1_$year"}); ?></div>
                                                         <div class="card-subtext">
                                                             <?= ${"total_target_dpt_1_$year"} > 0 
@@ -272,17 +272,17 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                        <h6 class="text-muted font-semibold"><?= $translations['text5'] ?> <?= $year; ?></h6>
+                                                        <h6 class="text-muted font-semibold"><?= $translations['text5'] ?> <?= $year; ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></h6>
                                                         <div class="card-number font-extrabold mb-0"><?= number_format(${"zero_dose_$year"}); ?></div>
                                                         <!-- <div class="card-subtext"><?= ${"zd_narrative_$year"}; ?></div> -->
                                                         
                                                         <div class="card-subtext">
                                                         <?= $translations['text5_2'] ?>
                                                             <?php if ($year == 2025): ?>
-                                                                <?php echo "(15%) "; ?>
+                                                                <?php echo "(15% " . $translations['text5_4'] . ")"; ?>
                                                                 <?= number_format($national_baseline_zd * 0.85) ?>
                                                             <?php elseif ($year == 2026): ?>
-                                                                <?php echo "(25%) "; ?>
+                                                                <?php echo "(25% " . $translations['text5_4'] . ")"; ?>
                                                                 <?= number_format($national_baseline_zd * 0.75) ?>
                                                             <?php else: ?>
                                                                 <!-- You can put a default value here if needed -->
