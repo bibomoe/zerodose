@@ -664,6 +664,9 @@
 
         const zeroDoseData = <?= json_encode($zero_dose_cases); ?>;
 
+        let checkProvince = <?= $selected_province; ?>;
+        let checkDistrict = <?= $selected_district; ?>;
+
         // Mapping data untuk Chart.js
         const months = [
             "January", "February", "March", "April", "May", "June",
@@ -689,13 +692,13 @@
         // Object untuk menyimpan terjemahan
         const translationsLineChart = {
                 en: {
-                    title: `ZD Children ${year}`,
+                    title: `Number of ZD Children from 2024 Targeted for Outreach in Year ${year}`,
                     scaleX: 'Months',
                     scaleY: 'ZD Children'
                     
                 },
                 id: {
-                    title: `Jumlah Anak ZD Tahun ${year}`,
+                    title: `Jumlah Anak ZD 2024 yang dikejar di Tahun ${year}`,
                     scaleX: 'Bulan',
                     scaleY: 'Jumlah Anak ZD'
                 }
@@ -710,6 +713,16 @@
         // Inisialisasi bahasa berdasarkan localStorage
         let savedLang = localStorage.getItem("selectedLanguage");
         setLanguageLineChart(savedLang);
+
+        // Tentukan batas atas dan bawah Y axis berdasarkan checkProvince dan checkDistrict
+        let yMin = 0;
+        let yMax = 1000000; // default Per Indonesia
+
+        if (checkProvince !== 'all' && checkDistrict === 'all') {
+            yMax = 300000; // Per province
+        } else if (checkProvince !== 'all' && checkDistrict !== 'all') {
+            yMax = 50000;  // Per kabkota
+        }          
 
         let zdChart; // Mendeklarasikan variable untuk chart
         const zdCtx = document.getElementById('zdChart').getContext('2d');
@@ -733,7 +746,11 @@
                 },
                 scales: {
                     x: { title: { display: true, text: scaleXlabel } },
-                    y: { title: { display: true, text: scaleYlabel } }
+                    y: { title: { display: true, text: scaleYlabel ,
+                                min: yMin,
+                                max: yMax
+                            } 
+                        }
                 }
             }
         });
