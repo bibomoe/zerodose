@@ -664,8 +664,8 @@
 
         const zeroDoseData = <?= json_encode($zero_dose_cases); ?>;
 
-        let checkProvince = <?= $selected_province; ?>;
-        let checkDistrict = <?= $selected_district; ?>;
+        // let checkProvince = <?= $selected_province; ?>;
+        // let checkDistrict = <?= $selected_district; ?>;
 
         // Mapping data untuk Chart.js
         const months = [
