@@ -397,20 +397,12 @@ class Home extends CI_Controller {
             } else {
                 // Hitung persentase ZD dari baseline 2023
                 if ($this->data["zero_dose_$year"] <= $this->data['national_baseline_zd']) {
-                    $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% penurunan dari baseline nasional 2024 untuk tahun $year";
+                    // $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% penurunan dari baseline nasional 2024 untuk tahun $year";
+                    $this->data["zd_narrative_$year"] = "";
                 // } elseif ($this->data["zero_dose_$year"] > 2 * $this->data['national_baseline_zd']) {
                 } else {
                     // $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% peningkatan dari baseline nasional 2024 untuk tahun $year";
-                    $baseline = $this->data['national_baseline_zd'];
-                    if ($baseline == 0) {
-                        $percentage = "N/A"; // or 0%, or any fallback value you prefer
-                    } else {
-                        $percentageValue = (($this->data["zero_dose_$year"] - $baseline) / $baseline) * 100;
-                        $percentage = round($percentageValue, 1) . "% peningkatan dari baseline nasional 2024 untuk tahun $year";
-                    }
-
-                    $this->data["zd_narrative_$year"] = $percentage;
-
+                    $this->data["zd_narrative_$year"] = "";
                 // } else {
                 //     $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% perubahan dari baseline nasional 2023 untuk tahun $year";
                 }
