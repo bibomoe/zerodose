@@ -513,9 +513,9 @@ class Dpt1_model extends CI_Model {
         $province_ids = array_column($provinces, 'id');
 
         if ($province_id === 'targeted' || $province_id === 'all') {
-            $this->db->select('province_id, SUM(dpt_hb_hib_1) AS dpt1_coverage');
+            $this->db->select('province_id, SUM(dpt_hb_hib_1_target) AS dpt1_target');
         } else {
-            $this->db->select('city_id AS province_id, SUM(dpt_hb_hib_1) AS dpt1_coverage');
+            $this->db->select('city_id AS province_id, SUM(dpt_hb_hib_1_target) AS dpt1_target');
         }
 
         // $this->db->select('province_id, SUM(dpt_hb_hib_1_target) AS dpt1_target');
@@ -535,7 +535,7 @@ class Dpt1_model extends CI_Model {
 
         $this->db->where('target_immunization.year', $year); // Filter berdasarkan tahun
         // $this->db->group_by('province_id');
-        
+
         if ($province_id === 'targeted' || $province_id === 'all') {
             $this->db->group_by('province_id');
         } else {
