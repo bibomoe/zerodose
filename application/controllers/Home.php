@@ -748,18 +748,19 @@ class Home extends CI_Controller {
             $dpt_under_5_data = $this->Dpt1_model->get_puskesmas_dropout_under_5_percent_per_city($selected_year, $selected_province, 'all');
         }
         
-
-        $this->data['total_dpt1_coverage_per_province'] = $this->Dpt1_model->get_dpt1_coverage_per_province($selected_province, $selected_year);
-        $this->data['total_dpt1_target_per_province'] = $this->Dpt1_model->get_dpt1_target_per_province($selected_province, $selected_year);
+        // Kirim data ke view dalam format array
+        $this->data['dpt_under_5_data'] = $dpt_under_5_data;
+        
         // Mengambil data total cities per provinsi
         $this->data['total_cities_per_province'] = $this->Dpt1_model->get_total_cities_per_province($selected_province);
 
         // Mengambil data total puskesmas per kabkota
         $this->data['total_puskesmas_per_city'] = $this->Dpt1_model->get_total_puskesmas_per_city($selected_province);
 
+        $this->data['total_dpt1_coverage_per_province'] = $this->Dpt1_model->get_dpt1_coverage_per_province($selected_province, $selected_year);
+        $this->data['total_dpt1_target_per_province'] = $this->Dpt1_model->get_dpt1_target_per_province($selected_province, $selected_year);
+        
 
-        // Kirim data ke view dalam format array
-        $this->data['dpt_under_5_data'] = $dpt_under_5_data;
 
         // **Hitung persentase DPT1 Coverage per provinsi**
         $this->data['percent_dpt1_coverage_per_province'] = [];
@@ -792,19 +793,36 @@ class Home extends CI_Controller {
 
         // **Hitung persentase districts dengan coverage < 5% per provinsi**
         $this->data['percent_dpt_under_5_per_province'] = [];
-        foreach ($dpt_under_5_data as $province_id => $district_count) {
-            // Cari total cities berdasarkan province_id
-            $total_cities = 0;
-            foreach ($this->data['total_cities_per_province'] as $province_data) {
-                if ($province_data['province_id'] == $province_id) {
-                    $total_cities = (int)$province_data['total_cities'];
-                    break; // Keluar dari loop jika ditemukan
+        if($selected_province === 'all' || $selected_province === 'targeted') {
+            foreach ($dpt_under_5_data as $province_id => $district_count) {
+                // Cari total cities berdasarkan province_id
+                $total_cities = 0;
+                foreach ($this->data['total_cities_per_province'] as $province_data) {
+                    if ($province_data['province_id'] == $province_id) {
+                        $total_cities = (int)$province_data['total_cities'];
+                        break; // Keluar dari loop jika ditemukan
+                    }
                 }
-            }
 
-            $this->data['percent_dpt_under_5_per_province'][$province_id] = ($total_cities > 0)
-                ? round(($district_count / $total_cities) * 100, 2)
-                : 0;
+                $this->data['percent_dpt_under_5_per_province'][$province_id] = ($total_cities > 0)
+                    ? round(($district_count / $total_cities) * 100, 2)
+                    : 0;
+            }
+        } else {
+            foreach ($dpt_under_5_data as $city_id => $puskesmas_count) {
+                // Cari total cities berdasarkan city_id
+                $total_puskesmas = 0;
+                foreach ($this->data['total_puskesmas_per_city'] as $city_data) {
+                    if ($city_data['city_id'] == $city_id) {
+                        $total_puskesmas = (int)$city_data['total_puskesmas'];
+                        break; // Keluar dari loop jika ditemukan
+                    }
+                }
+
+                $this->data['percent_dpt_under_5_per_province'][$city_id] = ($total_puskesmas > 0)
+                    ? round(($puskesmas_count / $total_puskesmas) * 100, 2)
+                    : 0;
+            }
         }
 
 

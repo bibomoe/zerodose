@@ -305,6 +305,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // console.log(dropout_rate_per_provinces);
     console.log(totalCitiesData);
     console.log(totalPuskesmasData);
+    console.log(percentDptUnder5Data);
 
     function getColor(dpt, doRate) {
         return (doRate < 5 && dpt != 0) ? '#1A9850' : '#D73027'; // Hijau jika do < 5 dan dpt != 0, merah jika tidak
