@@ -741,7 +741,7 @@ class Home extends CI_Controller {
 
         
         
-        if($selected_district != 'all') {
+        if($selected_district == 'all') {
             // Mengambil data cakupan DPT untuk provinsi yang telah dipilih
             $dpt_under_5_data = $this->Dpt1_model->get_districts_under_5_percent($selected_year, $selected_province);
         } else {
