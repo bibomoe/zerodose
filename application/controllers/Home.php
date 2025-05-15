@@ -960,6 +960,9 @@ class Home extends CI_Controller {
 
         // ✅ Data untuk tabel (per district)
         $this->data['supportive_supervision_table'] = $this->District_model->get_supportive_supervision_targeted_table($selected_province, $selected_year);
+
+        // ✅ Data untuk tabel (per puskesmas)
+        $this->data['supportive_supervision_table_puskesmas'] = $this->Puskesmas_model->get_immunization_puskesmas_table_by_district($selected_province, $selected_district, $selected_year, 'all');
     
         // ✅ Data untuk card (summary seluruh 10 targeted provinces)
         $this->data['supportive_supervision_2025'] = $this->District_model->get_supportive_supervision_targeted_summary($selected_province, 2025);
@@ -1008,7 +1011,8 @@ class Home extends CI_Controller {
                 'tabelcoloumn3' => 'Total number of Puskesmas',
                 'tabelcoloumn4' => 'Number of Puskesmas that Have Undergone Supportive Supervision with "Good" Category',
                 'tabelcoloumn5' => 'Percentage of "Good" Category',
-                'tabelcoloumn6' => 'Total Supportive Supervision'
+                'tabelcoloumn6' => 'Total Supportive Supervision',
+                'tabelcoloumn7' => 'Puskesmas'
             ],
             'id' => [
                 'page_title' => 'Kinerja Imunisasi',
@@ -1026,7 +1030,8 @@ class Home extends CI_Controller {
                 'tabelcoloumn3' => 'Jumlah Puskesmas',
                 'tabelcoloumn4' => 'Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik',
                 'tabelcoloumn5' => 'Persentase Kategori "Baik"',
-                'tabelcoloumn6' => 'Jumlah Puskesmas yang di supervisi suportif'
+                'tabelcoloumn6' => 'Jumlah Puskesmas yang di supervisi suportif',
+                'tabelcoloumn7' => 'Puskesmas'
             ]
         ];
     

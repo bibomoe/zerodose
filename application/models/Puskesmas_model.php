@@ -188,5 +188,53 @@ class Puskesmas_model extends CI_Model {
         return $query->row()->total_puskesmas_rca ?? 0;
     }
     
+    public function get_immunization_puskesmas_table_by_district($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
+        // Mengambil daftar province yang ditargetkan (bisa menggunakan function get_targeted_province_ids)
+        $province_ids = $this->get_targeted_province_ids();
     
+        // Mengambil data dari tabel-tabel yang dibutuhkan
+        $this->db->select("
+            pd.id AS puskesmas_id,
+            pd.name AS puskesmas_name
+        ");
+        $this->db->from('immunization_data id');
+        $this->db->join('puskesmas pd', 'id.puskesmas_id = pd.id', 'left');  // Gabungkan dengan tabel puskesmas
+        
+
+        // Filter berdasarkan provinsi yang ditargetkan
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('id.province_id', $province_ids);
+            } else {
+                return []; // Jika tidak ada province yang ditargetkan, kembalikan array kosong
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('id.province_id', $province_id);
+        }
+    
+        // Filter berdasarkan kota jika diberikan
+        if ($city_id !== 'all') {
+            $this->db->where('id.city_id', $city_id);
+        }
+    
+        // Filter berdasarkan tahun
+        $this->db->where('id.year', $year);
+    
+        // Jika bulan bukan 'all', maka ambil data dari bulan 1 sampai bulan yang ditentukan
+        if ($month !== 'all') {
+            $this->db->where('id.month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
+        }
+
+        $this->db->group_by('id.puskesmas_id');
+        // $this->db->order_by('p.name_id');
+    
+        // Ambil hasil query
+        $query = $this->db->get()->result_array();
+        
+        // var_dump($query);
+        // exit;
+    
+        // Kembalikan hasil query
+        return $query;
+    }
 }

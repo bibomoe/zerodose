@@ -264,41 +264,63 @@
                                             <table class="table table-striped" id="table1">
                                                 <thead>
                                                     <tr>
-                                                        <?php if ($selected_province === 'all' || $selected_province === 'targeted') : ?>
-                                                            <th><?= $translations['tabelcoloumn1'] ?></th> <!-- Province Name -->
-                                                            <th class="d-none"><?= $translations['tabelcoloumn2'] ?></th> <!-- City Name (hidden) -->
-                                                        <?php elseif ($selected_province !== 'all' && $selected_province !== 'targeted') : ?>
-                                                            <th class="d-none"><?= $translations['tabelcoloumn1'] ?></th> <!-- Province Name (hidden) -->
-                                                            <th><?= $translations['tabelcoloumn2'] ?></th> <!-- City Name -->
-                                                        <?php endif; ?>
-                                                        <th><?= $translations['tabelcoloumn3'] ?></th>
-                                                        <th><?= $translations['tabelcoloumn6'] ?></th>
-                                                        <th><?= $translations['tabelcoloumn4'] ?></th>
-                                                        <th><?= $translations['tabelcoloumn5'] ?></th>
+                                                        <?php
+                                                            if ($selected_district === 'all'){
+                                                        ?>
+                                                            <?php if ($selected_province === 'all' || $selected_province === 'targeted') : ?>
+                                                                <th><?= $translations['tabelcoloumn1'] ?></th> <!-- Province Name -->
+                                                                <th class="d-none"><?= $translations['tabelcoloumn2'] ?></th> <!-- City Name (hidden) -->
+                                                            <?php elseif ($selected_province !== 'all' && $selected_province !== 'targeted') : ?>
+                                                                <th class="d-none"><?= $translations['tabelcoloumn1'] ?></th> <!-- Province Name (hidden) -->
+                                                                <th><?= $translations['tabelcoloumn2'] ?></th> <!-- City Name -->
+                                                            <?php endif; ?>
+                                                            <th><?= $translations['tabelcoloumn3'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn6'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn5'] ?></th>
+                                                        <?php
+                                                            } else {
+                                                        ?>
+                                                            <th><?= $translations['tabelcoloumn7'] ?></th>
+                                                        <?php
+                                                            } 
+                                                        ?>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <?php if (!empty($supportive_supervision_table)) : ?>
-                                                        <?php foreach ($supportive_supervision_table as $row) : ?>
+                                                    <?php
+                                                        if ($selected_district === 'all'){
+                                                    ?>
+                                                        <?php if (!empty($supportive_supervision_table)) : ?>
+                                                            <?php foreach ($supportive_supervision_table as $row) : ?>
+                                                                <tr>
+                                                                    <?php if ($selected_province === 'all' || $selected_province === 'targeted') : ?>
+                                                                        <td><?= $row['province_name']; ?></td> <!-- Province Name -->
+                                                                        <td class="d-none"><?= $row['city_name']; ?></td> <!-- City Name (hidden) -->
+                                                                    <?php elseif ($selected_province !== 'all' && $selected_province !== 'targeted') : ?>
+                                                                        <td class="d-none"><?= $row['province_name']; ?></td> <!-- Province Name (hidden) -->
+                                                                        <td><?= $row['city_name']; ?></td> <!-- City Name -->
+                                                                    <?php endif; ?>
+                                                                    <td><?= $row['total_puskesmas']; ?></td>
+                                                                    <td><?= $row['total_ss']; ?></td>
+                                                                    <td><?= $row['good_category_puskesmas']; ?></td>
+                                                                    <td><?= $row['percentage_good_category']; ?>%</td>
+                                                                </tr>
+                                                            <?php endforeach; ?>
+                                                        <?php else : ?>
                                                             <tr>
-                                                                <?php if ($selected_province === 'all' || $selected_province === 'targeted') : ?>
-                                                                    <td><?= $row['province_name']; ?></td> <!-- Province Name -->
-                                                                    <td class="d-none"><?= $row['city_name']; ?></td> <!-- City Name (hidden) -->
-                                                                <?php elseif ($selected_province !== 'all' && $selected_province !== 'targeted') : ?>
-                                                                    <td class="d-none"><?= $row['province_name']; ?></td> <!-- Province Name (hidden) -->
-                                                                    <td><?= $row['city_name']; ?></td> <!-- City Name -->
-                                                                <?php endif; ?>
-                                                                <td><?= $row['total_puskesmas']; ?></td>
-                                                                <td><?= $row['total_ss']; ?></td>
-                                                                <td><?= $row['good_category_puskesmas']; ?></td>
-                                                                <td><?= $row['percentage_good_category']; ?>%</td>
+                                                                <td colspan="6" class="text-center">No data available</td>
                                                             </tr>
+                                                        <?php endif; ?>
+                                                    <?php
+                                                        } else {
+                                                    ?>
+                                                        <?php foreach ($supportive_supervision_table as $row) : ?>
+                                                            <td><?= $row['supportive_supervision_table_puskesmas']; ?></td>
                                                         <?php endforeach; ?>
-                                                    <?php else : ?>
-                                                        <tr>
-                                                            <td colspan="6" class="text-center">No data available</td>
-                                                        </tr>
-                                                    <?php endif; ?>
+                                                    <?php
+                                                        } 
+                                                    ?>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -440,10 +462,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getColor(percentage) {
-        return percentage > 50 ? '#1A9850' :
-               percentage > 20 ? '#91CF60' :
-               percentage > 10 ? '#FEE08B' :
-               '#D73027';
+        return '#D73027';
+                // percentage > 50 ? '#1A9850' :
+                // percentage > 20 ? '#91CF60' :
+                // percentage > 10 ? '#FEE08B' :
+            //    '#D73027';
     }
 
     let isProvinceLevel = ["all", "targeted"].includes("<?= $selected_province ?>");
