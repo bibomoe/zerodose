@@ -741,11 +741,11 @@ class Home extends CI_Controller {
 
         
         
-        if($selected_district == 'all') {
+        if($selected_province === 'all' || $selected_province === 'targeted') {
             // Mengambil data cakupan DPT untuk provinsi yang telah dipilih
             $dpt_under_5_data = $this->Dpt1_model->get_districts_under_5_percent($selected_year, $selected_province);
         } else {
-            $dpt_under_5_data = $this->Dpt1_model->get_puskesmas_dropout_under_5_percent_per_city($selected_year, $selected_province, $selected_district);
+            $dpt_under_5_data = $this->Dpt1_model->get_puskesmas_dropout_under_5_percent_per_city($selected_year, $selected_province, 'all');
         }
         
 
