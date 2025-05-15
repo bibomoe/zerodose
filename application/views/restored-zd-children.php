@@ -731,17 +731,13 @@
         let yMin = 0;
         let yMax = 1000000; // default Per Indonesia
 
-        if (!isProvinceLevelCheck && isDistrictLevelCheck) {
-            // province is NOT all/targeted, district IS all/targeted
-            yMax = Math.max(300000, firstValue * 1.1); // 10% padding over first value, minimum 300k
-        } else if (!isProvinceLevelCheck && !isDistrictLevelCheck) {
-            // both province and district NOT all/targeted
-            yMax = Math.max(50000, firstValue * 1.1);  // 10% padding, minimum 50k
+        if (firstValue === 0) {
+            // If no data, set a default max to avoid zero scale
+            yMax = 1000;
         } else {
-            // province is all/targeted
-            yMax = Math.max(1000000, firstValue * 1.1); // 10% padding, minimum 1M
+            // Set yMax as 10% above the first value
+            yMax = firstValue * 1.1;
         }
-
 
         // Inisialisasi bahasa berdasarkan localStorage
         let savedLang = localStorage.getItem("selectedLanguage");
