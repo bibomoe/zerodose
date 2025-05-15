@@ -668,8 +668,19 @@
         let isProvinceLevelCheck = ["all", "targeted"].includes("<?= $selected_province ?>");
         let isDistrictLevelCheck = ["all", "targeted"].includes("<?= $selected_district ?>");
 
-        console.log(isProvinceLevelCheck);
-        console.log(isDistrictLevelCheck);
+        // Tentukan batas atas dan bawah Y axis berdasarkan checkProvince dan checkDistrict
+        let yMin = 0;
+        let yMax = 1000000; // default Per Indonesia
+
+        // Logic translated to use the boolean checks:
+        if (!isProvinceLevelCheck && isDistrictLevelCheck) {
+            // province is NOT all/targeted, district IS all/targeted
+            yMax = 300000; // Per province
+        } else if (!isProvinceLevelCheck && !isDistrictLevelCheck) {
+            // both province and district NOT all/targeted
+            yMax = 50000;  // Per kabkota
+        }
+        // else if province is all or targeted, yMax stays 1,000,000
 
         // Mapping data untuk Chart.js
         const months = [
@@ -740,7 +751,11 @@
                 },
                 scales: {
                     x: { title: { display: true, text: scaleXlabel } },
-                    y: { title: { display: true, text: scaleYlabel } }
+                    y: {
+                            title: { display: true, text: scaleYlabel },
+                            min: yMin,
+                            max: yMax
+                        }
                 }
             }
         });
