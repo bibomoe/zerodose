@@ -300,12 +300,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //Data Perkabkota
     let totalPuskesmasData = <?= json_encode($total_puskesmas_per_city, JSON_NUMERIC_CHECK); ?>;
     
-    console.log(dptUnder5Data);
-    // console.log(dptCoverageData);
-    // console.log(dropout_rate_per_provinces);
-    console.log(totalCitiesData);
-    console.log(totalPuskesmasData);
-    console.log(percentDptUnder5Data);
+    // console.log(dptUnder5Data);
 
     function getColor(dpt, doRate) {
         return (doRate < 5 && dpt != 0) ? '#1A9850' : '#D73027'; // Hijau jika do < 5 dan dpt != 0, merah jika tidak
@@ -366,7 +361,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 let dptTarget = dptTargetData.find(item => item.province_id == regionId) || { dpt1_target: 0 };
 
                 // Ambil total jumlah cities per provinsi
-                let totalCities = totalCitiesData.find(item => item.province_id == regionId) || { total_cities: 0 };
+                let totalCities = isProvinceLevel 
+                        ? totalCitiesData.find(item => item.province_id == regionId) || { total_cities: 0 }
+                        : totalPuskesmasData.find(item => item.city_id == regionId) || { total_puskesmas: 0 };  
 
                 // Ambil persentase cakupan DPT1 per provinsi
                 let percentDptCoverage = percentDptCoverageData[regionId] || 0;
@@ -390,7 +387,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Membuat konten pop-up untuk menampilkan informasi
                 let popupContent = `<b>${name}</b><br>`;
-                popupContent += `Total Districts: ${totalCities.total_cities}<br>`;
+                popupContent += isProvinceLevel 
+                            ? `Total Districts: ${totalCities.total_cities}<br>`
+                            : `Total Puskesmas: ${totalPuskesmas.total_puskesmas}<br>`;
                 popupContent += `Dropout Rate: ${averageDropoutRate}%<br>`;
                 popupContent += `Total Districts with DO (DPT1-DPT3) < 5%: ${dptUnder5} (${percentDptUnder5}%)<br>`;
                 popupContent += `DPT1 Coverage: ${dptCoverage.dpt1_coverage} (${percentDptCoverage}%)<br>`;
