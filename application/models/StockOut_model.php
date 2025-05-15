@@ -327,178 +327,256 @@ class StockOut_model extends CI_Model {
     }
 
 
+    // public function calculate_stock_out_category($data, $selected_year) {
+    //     $monthly_stock_out = [];
+        
+    //     // Array untuk menyimpan status stockout per bulan dan tahun
+    //     $previous_month_stockout = [];
+        
+    //     foreach ($data as $row) {
+    //         $month = $row['month'];
+    //         $year = $row['year']; // Tahun data
+    
+    //         // Hanya proses data untuk tahun yang dipilih
+    //         if ($year != $selected_year) {
+    //             continue; // Lewatkan data jika tahun tidak sesuai
+    //         }
+    
+    //         // Tentukan bulan-bulan yang akan dicek untuk 3 bulan sebelumnya
+    //         $previous_months = [];
+        
+    //         // Tentukan bulan-bulan sebelumnya
+    //         for ($i = 1; $i <= 3; $i++) {
+    //             $prev_month = $month - $i;
+        
+    //             // Jika bulan sebelumnya kurang dari 1 (misalnya Januari - 1), kita perlu mengubah tahun
+    //             if ($prev_month < 1) {
+    //                 $prev_month += 12; // Bulan Desember, November, Oktober...
+    //                 $prev_year = $year - 1; // Tahun sebelumnya
+    //             } else {
+    //                 $prev_year = $year; // Tahun yang sama jika bulan tidak kurang dari 1
+    //             }
+        
+    //             // Simpan bulan dan tahun sebelumnya
+    //             $previous_months[] = [
+    //                 'month' => $prev_month,
+    //                 'year' => $prev_year
+    //             ];
+    //         }
+        
+    //         // Menyimpan status stockout untuk bulan-bulan sebelumnya
+    //         $statuses_previous_months = [];
+        
+    //         // Loop untuk mencari status stockout bulan-bulan sebelumnya
+    //         foreach ($previous_months as $prev) {
+    //             foreach ($data as $previous_row) {
+    //                 if ($previous_row['month'] == $prev['month'] && $previous_row['year'] == $prev['year'] && $previous_row['puskesmas_id'] == $row['puskesmas_id']) {
+    //                     $statuses_previous_months[$prev['month']] = $previous_row['status_stockout'];
+    //                 }
+    //             }
+    //         }
+        
+    //         // Tentukan kategori berdasarkan status stockout
+    //         if ($row['status_stockout'] == 1) {
+    //             // Jika bulan sebelumnya ada yang memiliki status 0
+    //             // if (!isset($statuses_previous_months[10]) && !isset($statuses_previous_months[11]) && !isset($statuses_previous_months[12])) {
+    //             //     $category = '1 Month';
+    //             // } else {
+    //             //     // Jika ada lebih dari satu bulan berturut-turut dengan status 1
+    //             //     $count_consecutive_1 = 0;
+    //             //     foreach ($previous_months as $prev) {
+    //             //         if (isset($statuses_previous_months[$prev['month']]) && $statuses_previous_months[$prev['month']] == 1) {
+    //             //             $count_consecutive_1++;
+    //             //         }
+    //             //     }
+        
+    //             //     // Tentukan kategori berdasarkan jumlah bulan berturut-turut
+    //             //     if ($count_consecutive_1 >= 3) {
+    //             //         $category = '> 3 Months';
+    //             //     } elseif ($count_consecutive_1 == 2) {
+    //             //         $category = '3 Months';
+    //             //     } elseif ($count_consecutive_1 == 1) {
+    //             //         $category = '2 Months';
+    //             //     }
+    //             // }
+
+    //             // Hitung bulan berturut-turut dengan status stockout
+    //             $count_consecutive_1 = 0;
+    //             foreach ($previous_months as $prev) {
+    //                 if (isset($statuses_previous_months[$prev['month']]) && $statuses_previous_months[$prev['month']] == 1) {
+    //                     $count_consecutive_1++;
+    //                 }
+    //             }
+
+    //             // Tentukan kategori berdasarkan jumlah bulan berturut-turut
+    //             if ($count_consecutive_1 >= 3) {
+    //                 $category = '> 3 Months';
+    //             } elseif ($count_consecutive_1 == 2) {
+    //                 $category = '3 Months';
+    //             } elseif ($count_consecutive_1 == 1) {
+    //                 $category = '2 Months';
+    //             } else {
+    //                 $category = '1 Month'; // Jika hanya bulan ini yang stockout
+    //             }
+    //         } else {
+    //             $category = 'No Stock Out';
+    //         }
+        
+    //         // Menyimpan kategori untuk setiap bulan
+    //         if (!isset($monthly_stock_out[$month])) {
+    //             $monthly_stock_out[$month] = [
+    //                 'stock_out_1' => 0,
+    //                 'stock_out_2' => 0,
+    //                 'stock_out_3' => 0,
+    //                 'stock_out_4' => 0,
+    //                 'stock_out_no' => 0
+    //             ];
+    //         }
+        
+    //         // Menambahkan jumlah puskesmas untuk kategori durasi stok kosong
+    //         if ($category == '1 Month') {
+    //             $monthly_stock_out[$month]['stock_out_1']++;
+    //         } elseif ($category == '2 Months') {
+    //             $monthly_stock_out[$month]['stock_out_2']++;
+    //         } elseif ($category == '3 Months') {
+    //             $monthly_stock_out[$month]['stock_out_3']++;
+    //         } elseif ($category == '> 3 Months') {
+    //             $monthly_stock_out[$month]['stock_out_4']++;
+    //         } elseif ($category == 'No Stock Out') {
+    //             $monthly_stock_out[$month]['stock_out_no']++;
+    //         }
+        
+    //         // Menyimpan status stockout untuk bulan ini
+    //         $previous_month_stockout[$month] = $row['status_stockout'];
+    //     }
+        
+    //     // Format data untuk menyesuaikan dengan struktur yang diinginkan
+    //     $result = [];
+    //     foreach ($monthly_stock_out as $month => $categories) {
+    //         $result[] = [
+    //             'month' => (string)$month,  // Menjadikan bulan dalam format string
+    //             'stock_out_1' => $categories['stock_out_1'],
+    //             'stock_out_2' => $categories['stock_out_2'],
+    //             'stock_out_3' => $categories['stock_out_3'],
+    //             'stock_out_4' => $categories['stock_out_4'],
+    //             'stock_out_no' => $categories['stock_out_no']
+    //         ];
+    //     }
+    
+    //     // var_dump($result);
+        
+    //     return $result;
+    // }
+
     public function calculate_stock_out_category($data, $selected_year) {
-        $monthly_stock_out = [];
-        
-        // Array untuk menyimpan status stockout per bulan dan tahun
-        $previous_month_stockout = [];
-        
-        foreach ($data as $row) {
-            $month = $row['month'];
-            $year = $row['year']; // Tahun data
-    
-            // Hanya proses data untuk tahun yang dipilih
-            if ($year != $selected_year) {
-                continue; // Lewatkan data jika tahun tidak sesuai
-            }
-    
-            // Tentukan bulan-bulan yang akan dicek untuk 3 bulan sebelumnya
-            $previous_months = [];
-        
-            // Tentukan bulan-bulan sebelumnya
-            for ($i = 1; $i <= 3; $i++) {
-                $prev_month = $month - $i;
-        
-                // Jika bulan sebelumnya kurang dari 1 (misalnya Januari - 1), kita perlu mengubah tahun
-                if ($prev_month < 1) {
-                    $prev_month += 12; // Bulan Desember, November, Oktober...
-                    $prev_year = $year - 1; // Tahun sebelumnya
-                } else {
-                    $prev_year = $year; // Tahun yang sama jika bulan tidak kurang dari 1
-                }
-        
-                // Simpan bulan dan tahun sebelumnya
-                $previous_months[] = [
-                    'month' => $prev_month,
-                    'year' => $prev_year
-                ];
-            }
-        
-            // Menyimpan status stockout untuk bulan-bulan sebelumnya
-            $statuses_previous_months = [];
-        
-            // Loop untuk mencari status stockout bulan-bulan sebelumnya
-            foreach ($previous_months as $prev) {
-                foreach ($data as $previous_row) {
-                    if ($previous_row['month'] == $prev['month'] && $previous_row['year'] == $prev['year'] && $previous_row['puskesmas_id'] == $row['puskesmas_id']) {
-                        $statuses_previous_months[$prev['month']] = $previous_row['status_stockout'];
-                    }
-                }
-            }
-        
-            // Tentukan kategori berdasarkan status stockout
-            if ($row['status_stockout'] == 1) {
-                // Jika bulan sebelumnya ada yang memiliki status 0
-                // if (!isset($statuses_previous_months[10]) && !isset($statuses_previous_months[11]) && !isset($statuses_previous_months[12])) {
-                //     $category = '1 Month';
-                // } else {
-                //     // Jika ada lebih dari satu bulan berturut-turut dengan status 1
-                //     $count_consecutive_1 = 0;
-                //     foreach ($previous_months as $prev) {
-                //         if (isset($statuses_previous_months[$prev['month']]) && $statuses_previous_months[$prev['month']] == 1) {
-                //             $count_consecutive_1++;
-                //         }
-                //     }
-        
-                //     // Tentukan kategori berdasarkan jumlah bulan berturut-turut
-                //     if ($count_consecutive_1 >= 3) {
-                //         $category = '> 3 Months';
-                //     } elseif ($count_consecutive_1 == 2) {
-                //         $category = '3 Months';
-                //     } elseif ($count_consecutive_1 == 1) {
-                //         $category = '2 Months';
-                //     }
-                // }
+    $monthly_stock_out = [];
 
-                // Hitung bulan berturut-turut dengan status stockout
-                // $count_consecutive_1 = 0;
-                // foreach ($previous_months as $prev) {
-                //     if (isset($statuses_previous_months[$prev['month']]) && $statuses_previous_months[$prev['month']] == 1) {
-                //         $count_consecutive_1++;
-                //     }
-                // }
+    // Build lookup table for quick status_stockout query by puskesmas, year, month
+    $status_map = [];
+    foreach ($data as $row) {
+        $status_map[$row['puskesmas_id']][$row['year']][$row['month']] = $row['status_stockout'];
+    }
 
-                // Hitung bulan berturut-turut dengan status stockout mulai dari bulan ini ke belakang
-                $count_consecutive_1 = 0;
-                for ($i = 0; $i < 3; $i++) {
-                    $check_month = $month - $i;
-                    $check_year = $year;
-                    if ($check_month < 1) {
-                        $check_month += 12;
-                        $check_year -= 1;
-                    }
+    // For each data row in selected year, calculate consecutive stockout months
+    foreach ($data as $row) {
+        $month = $row['month'];
+        $year = $row['year'];
+        $puskesmas_id = $row['puskesmas_id'];
 
-                    // Cari status stockout bulan yang dicek
-                    $found_status = 0;
-                    foreach ($data as $check_row) {
-                        if (
-                            $check_row['month'] == $check_month &&
-                            $check_row['year'] == $check_year &&
-                            $check_row['puskesmas_id'] == $row['puskesmas_id']
-                        ) {
-                            $found_status = $check_row['status_stockout'];
-                            break;
-                        }
-                    }
-
-                    if ($found_status == 1) {
-                        $count_consecutive_1++;
-                    } else {
-                        // Berhenti hitung kalau ada bulan yang tidak stockout
-                        break;
-                    }
-                }
-
-
-                // Tentukan kategori berdasarkan jumlah bulan berturut-turut
-                if ($count_consecutive_1 >= 3) {
-                    $category = '> 3 Months';
-                } elseif ($count_consecutive_1 == 2) {
-                    $category = '3 Months';
-                } elseif ($count_consecutive_1 == 1) {
-                    $category = '2 Months';
-                } else {
-                    $category = '1 Month'; // Jika hanya bulan ini yang stockout
-                }
-            } else {
-                $category = 'No Stock Out';
-            }
-        
-            // Menyimpan kategori untuk setiap bulan
-            if (!isset($monthly_stock_out[$month])) {
-                $monthly_stock_out[$month] = [
-                    'stock_out_1' => 0,
-                    'stock_out_2' => 0,
-                    'stock_out_3' => 0,
-                    'stock_out_4' => 0,
-                    'stock_out_no' => 0
-                ];
-            }
-        
-            // Menambahkan jumlah puskesmas untuk kategori durasi stok kosong
-            if ($category == '1 Month') {
-                $monthly_stock_out[$month]['stock_out_1']++;
-            } elseif ($category == '2 Months') {
-                $monthly_stock_out[$month]['stock_out_2']++;
-            } elseif ($category == '3 Months') {
-                $monthly_stock_out[$month]['stock_out_3']++;
-            } elseif ($category == '> 3 Months') {
-                $monthly_stock_out[$month]['stock_out_4']++;
-            } elseif ($category == 'No Stock Out') {
-                $monthly_stock_out[$month]['stock_out_no']++;
-            }
-        
-            // Menyimpan status stockout untuk bulan ini
-            $previous_month_stockout[$month] = $row['status_stockout'];
+        if ($year != $selected_year) {
+            continue; // only process selected year
         }
-        
-        // Format data untuk menyesuaikan dengan struktur yang diinginkan
-        $result = [];
-        foreach ($monthly_stock_out as $month => $categories) {
-            $result[] = [
-                'month' => (string)$month,  // Menjadikan bulan dalam format string
-                'stock_out_1' => $categories['stock_out_1'],
-                'stock_out_2' => $categories['stock_out_2'],
-                'stock_out_3' => $categories['stock_out_3'],
-                'stock_out_4' => $categories['stock_out_4'],
-                'stock_out_no' => $categories['stock_out_no']
+
+        if (!isset($status_map[$puskesmas_id])) {
+            continue;
+        }
+
+        if (!isset($status_map[$puskesmas_id][$year][$month])) {
+            continue;
+        }
+
+        $current_status = $status_map[$puskesmas_id][$year][$month];
+
+        if ($current_status != 1) {
+            $category = 'No Stock Out';
+        } else {
+            // Count consecutive months backward starting from current month
+            $count_consecutive = 0;
+            for ($i = 0; $i < 4; $i++) { // count up to 4 months (current + 3 previous)
+                $check_month = $month - $i;
+                $check_year = $year;
+                if ($check_month < 1) {
+                    $check_month += 12;
+                    $check_year -= 1;
+                }
+                if (isset($status_map[$puskesmas_id][$check_year][$check_month]) &&
+                    $status_map[$puskesmas_id][$check_year][$check_month] == 1) {
+                    $count_consecutive++;
+                } else {
+                    break; // break on first month without stockout
+                }
+            }
+
+            // Assign category based on count
+            if ($count_consecutive >= 4) {
+                $category = '> 3 Months';
+            } elseif ($count_consecutive == 3) {
+                $category = '3 Months';
+            } elseif ($count_consecutive == 2) {
+                $category = '2 Months';
+            } elseif ($count_consecutive == 1) {
+                $category = '1 Month';
+            }
+        }
+
+        // Initialize month aggregation if not exists
+        if (!isset($monthly_stock_out[$month])) {
+            $monthly_stock_out[$month] = [
+                'stock_out_1' => 0,
+                'stock_out_2' => 0,
+                'stock_out_3' => 0,
+                'stock_out_4' => 0,
+                'stock_out_no' => 0
             ];
         }
-    
-        // var_dump($result);
-        
-        return $result;
+
+        // Increment category count
+        switch ($category) {
+            case '1 Month':
+                $monthly_stock_out[$month]['stock_out_1']++;
+                break;
+            case '2 Months':
+                $monthly_stock_out[$month]['stock_out_2']++;
+                break;
+            case '3 Months':
+                $monthly_stock_out[$month]['stock_out_3']++;
+                break;
+            case '> 3 Months':
+                $monthly_stock_out[$month]['stock_out_4']++;
+                break;
+            case 'No Stock Out':
+            default:
+                $monthly_stock_out[$month]['stock_out_no']++;
+                break;
+        }
     }
+
+    // Format result as array with string month keys
+    $result = [];
+    foreach ($monthly_stock_out as $month => $counts) {
+        $result[] = [
+            'month' => (string)$month,
+            'stock_out_1' => $counts['stock_out_1'],
+            'stock_out_2' => $counts['stock_out_2'],
+            'stock_out_3' => $counts['stock_out_3'],
+            'stock_out_4' => $counts['stock_out_4'],
+            'stock_out_no' => $counts['stock_out_no']
+        ];
+    }
+
+    return $result;
+}
+
     
     public function get_puskesmas_stockout_table($province_id, $city_id, $year) {
         $province_ids = $this->get_targeted_province_ids(); // Ambil daftar targeted provinces
