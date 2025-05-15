@@ -289,10 +289,6 @@ class StockOut_model extends CI_Model {
                         city_id, 
                         subdistrict_id, 
                         puskesmas_id, 
-                        DPT_HB_Hib_5_ds, 
-                        Pentavalent_Easyfive_10_ds, 
-                        Pentavac_10_ds, 
-                        Vaksin_ComBE_Five_10_ds, 
                         status_stockout'); // Menambahkan status_stockout
         $this->db->from('puskesmas_stock_out_details');
 
@@ -405,12 +401,44 @@ class StockOut_model extends CI_Model {
                 // }
 
                 // Hitung bulan berturut-turut dengan status stockout
+                // $count_consecutive_1 = 0;
+                // foreach ($previous_months as $prev) {
+                //     if (isset($statuses_previous_months[$prev['month']]) && $statuses_previous_months[$prev['month']] == 1) {
+                //         $count_consecutive_1++;
+                //     }
+                // }
+
+                // Hitung bulan berturut-turut dengan status stockout mulai dari bulan ini ke belakang
                 $count_consecutive_1 = 0;
-                foreach ($previous_months as $prev) {
-                    if (isset($statuses_previous_months[$prev['month']]) && $statuses_previous_months[$prev['month']] == 1) {
+                for ($i = 0; $i < 3; $i++) {
+                    $check_month = $month - $i;
+                    $check_year = $year;
+                    if ($check_month < 1) {
+                        $check_month += 12;
+                        $check_year -= 1;
+                    }
+
+                    // Cari status stockout bulan yang dicek
+                    $found_status = 0;
+                    foreach ($data as $check_row) {
+                        if (
+                            $check_row['month'] == $check_month &&
+                            $check_row['year'] == $check_year &&
+                            $check_row['puskesmas_id'] == $row['puskesmas_id']
+                        ) {
+                            $found_status = $check_row['status_stockout'];
+                            break;
+                        }
+                    }
+
+                    if ($found_status == 1) {
                         $count_consecutive_1++;
+                    } else {
+                        // Berhenti hitung kalau ada bulan yang tidak stockout
+                        break;
                     }
                 }
+
 
                 // Tentukan kategori berdasarkan jumlah bulan berturut-turut
                 if ($count_consecutive_1 >= 3) {
