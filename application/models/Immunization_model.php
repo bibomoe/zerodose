@@ -643,30 +643,32 @@ class Immunization_model extends CI_Model {
     // }
     
     public function get_zero_dose_cases($province_id = 'all', $city_id = 'all') {
+        // Fetch province IDs based on the target condition (if needed)
+        $province_ids = $this->get_targeted_province_ids();
+
         // Step 1: Ambil total target (zd_cases) untuk tahun 2024 dari tabel zd_cases_2023
-        if ($province_id === 'all') {
-            // Ambil total zd_cases untuk tahun 2024 dari tabel zd_cases_2023
-            $this->db->select("SUM(zd_cases) AS total_target_2024", false);
-            $this->db->from('zd_cases_2023');
-            $this->db->where('year', 2024);
-            $total_target = $this->db->get()->row_array();
-            $total_target_2024 = $total_target['total_target_2024'] ?? 0;
-        } else {
-            // Total zd_cases untuk tahun 2024 berdasarkan provinsi
-            $this->db->select("SUM(zd_cases) AS total_target_2024", false);
-            $this->db->from('zd_cases_2023');
-            $this->db->where('year', 2024);
+        $this->db->select("SUM(zd_cases) AS total_target_2024", false);
+        $this->db->from('zd_cases_2023');
+        $this->db->where('year', 2024);
 
-            if ($province_id !== 'all') {
-                $this->db->where('province_id', $province_id);
+        // Apply filtering based on the province_id
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return [];  // Jika tidak ada province_ids, langsung return kosong
             }
-
-            if ($city_id !== 'all') {
-                $this->db->where('city_id', $city_id);
-            }
-
-            $total_target_2024 = $this->db->get()->row()->total_target_2024 ?? 0;
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
         }
+
+        // Filter city_id jika diperlukan
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        }
+
+        $total_target_2024 = $this->db->get()->row()->total_target_2024 ?? 0;
+
 
         // Step 2: Ambil data cakupan DPT-1 per bulan dari tabel immunization_data_kejar
         $this->db->select("
@@ -676,7 +678,14 @@ class Immunization_model extends CI_Model {
         ", false);
         $this->db->from('immunization_data_kejar');
         
-        if ($province_id !== 'all') {
+        // Apply filtering based on the province_id
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
         }
         
