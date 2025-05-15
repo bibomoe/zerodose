@@ -738,12 +738,25 @@ class Home extends CI_Controller {
 
         // Mengambil data cakupan DPT untuk provinsi yang telah dipilih
         // $dpt_under_5_data = $this->Dpt1_model->get_dpt_under_5_percent_cities($province_ids);
-        $dpt_under_5_data = $this->Dpt1_model->get_districts_under_5_percent($selected_year, $selected_province);
+
+        
+        
+        if($selected_district != 'all') {
+            // Mengambil data cakupan DPT untuk provinsi yang telah dipilih
+            $dpt_under_5_data = $this->Dpt1_model->get_districts_under_5_percent($selected_year, $selected_province);
+        } else {
+            $dpt_under_5_data = $this->Dpt1_model->get_puskesmas_dropout_under_5_percent_per_city($selected_year, $selected_province, $selected_district);
+        }
+        
 
         $this->data['total_dpt1_coverage_per_province'] = $this->Dpt1_model->get_dpt1_coverage_per_province($selected_province, $selected_year);
         $this->data['total_dpt1_target_per_province'] = $this->Dpt1_model->get_dpt1_target_per_province($selected_province, $selected_year);
         // Mengambil data total cities per provinsi
         $this->data['total_cities_per_province'] = $this->Dpt1_model->get_total_cities_per_province($selected_province);
+
+        // Mengambil data total puskesmas per kabkota
+        $this->data['total_puskesmas_per_city'] = $this->Dpt1_model->get_total_puskesmas_per_city($selected_province);
+
 
         // Kirim data ke view dalam format array
         $this->data['dpt_under_5_data'] = $dpt_under_5_data;

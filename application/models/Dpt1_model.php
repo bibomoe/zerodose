@@ -155,6 +155,73 @@ class Dpt1_model extends CI_Model {
         return $dropout_rates; // Kembalikan hanya drop-out rate
     }
 
+    public function get_puskesmas_dropout_under_5_percent_per_city($year, $province_id = 'all', $city_id = 'all') {
+        $provinces = $this->get_targeted_provinces();
+        $province_ids = array_column($provinces, 'id');
+
+        $this->db->select("
+            puskesmas.city_id,
+            puskesmas.id AS puskesmas_id,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage
+        ");
+        $this->db->from('puskesmas');
+        $this->db->join('immunization_data', 'immunization_data.puskesmas_id = puskesmas.id AND immunization_data.year = ' . $this->db->escape($year), 'left');
+
+        // Filter province_id
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('puskesmas.province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('puskesmas.province_id', $province_id);
+        }
+
+        // Filter city_id
+        if ($city_id !== 'all') {
+            $this->db->where('puskesmas.city_id', $city_id);
+        }
+
+        // Group by puskesmas id supaya dapat data cakupan per puskesmas
+        $this->db->group_by('puskesmas.id');
+
+        $query = $this->db->get();
+        $rows = $query->result_array();
+
+        $counts_per_city = [];
+
+        foreach ($rows as $row) {
+            $dpt1 = $row['dpt1_coverage'];
+            $dpt3 = $row['dpt3_coverage'];
+            $city = $row['city_id'];
+
+            if ($dpt1 > 0) {
+                $not_received_dpt3 = $dpt1 - $dpt3;
+                $dropout_rate = ($not_received_dpt3 / $dpt1) * 100;
+            } else {
+                $dropout_rate = 100; // Jika DPT1 0 maka dropout dianggap 100%
+            }
+
+            if ($dropout_rate < 5) {
+                if (!isset($counts_per_city[$city])) {
+                    $counts_per_city[$city] = 0;
+                }
+                $counts_per_city[$city]++;
+            } else {
+                // Kalau mau bisa juga set city ke 0 dulu biar key tetap ada, tapi opsional
+                if (!isset($counts_per_city[$city])) {
+                    $counts_per_city[$city] = 0;
+                }
+            }
+        }
+
+        return $counts_per_city;
+    }
+
+
+
     // Menghitung dropout rate untuk tiap provinsi
     public function get_dropout_rates_per_province($year, $province_id) {
         // Ambil 10 provinsi dengan priority = 1
@@ -478,6 +545,33 @@ class Dpt1_model extends CI_Model {
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    // Mengambil total jumlah puskesmas per kabkota
+    public function get_total_puskesmas_per_city($province_id = 'all') {
+        $provinces = $this->get_targeted_provinces();
+        $province_ids = array_column($provinces, 'id');
+
+        $this->db->select('city_id, COUNT(id) AS total_puskesmas');
+        $this->db->from('puskesmas');
+
+        // Filter berdasarkan province_id
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
+        // Group by city_id
+        $this->db->group_by('city_id');
+
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
 
     public function get_district_details($province_id, $year, $quarter) {
         $provinces = $this->get_targeted_provinces();
