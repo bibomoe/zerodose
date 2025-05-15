@@ -391,7 +391,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             ? `Total Districts: ${totalCities.total_cities}<br>`
                             : `Total Puskesmas: ${totalCities.total_puskesmas}<br>`;
                 popupContent += `Dropout Rate: ${averageDropoutRate}%<br>`;
-                popupContent += `Total Districts with DO (DPT1-DPT3) < 5%: ${dptUnder5} (${percentDptUnder5}%)<br>`;
+                popupContent += isProvinceLevel 
+                            ? `Total Districts `
+                            : `Total Puskesmas `;
+                popupContent += `with DO (DPT1-DPT3) < 5%: ${dptUnder5} (${percentDptUnder5}%)<br>`;
                 popupContent += `DPT1 Coverage: ${dptCoverage.dpt1_coverage} (${percentDptCoverage}%)<br>`;
                 popupContent += `DPT1 Target: ${dptTarget.dpt1_target}`;
 
