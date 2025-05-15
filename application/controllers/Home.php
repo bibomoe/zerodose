@@ -897,36 +897,44 @@ class Home extends CI_Controller {
         $user_category = $this->session->userdata('user_category');
         $user_province = $this->session->userdata('province_id');
         $user_city = $this->session->userdata('city_id');
-    
-        // Ambil filter dari dropdown
-        $selected_province = $this->input->get('province') ?? 'all';
-        $selected_district = $this->input->get('district') ?? 'all';
-        $selected_year = $this->input->get('year') ?? date("Y");
+
+        // Ambil filter provinsi dari dropdown, cek dari POST atau GET (default: all)
+        $selected_province = $this->input->post('province') ?? $this->input->get('province') ?? 'all';
+        $selected_district = $this->input->post('district') ?? $this->input->get('district') ?? 'all';
+        $selected_year = $this->input->post('year') ?? $this->input->get('year') ?? date("Y"); // Default tahun 2025
 
         // Ambil parameter dari URL
         $get_detail = $this->input->get('get_detail') ?? 0; // Default 0 jika tidak ada parameter
 
         // Kirim data ke view
         $this->data['get_detail'] = $get_detail;
-    
-        // Jika user PHO atau DHO, sesuaikan wilayah default
+
+        // Jika user PHO, atur provinsi default sesuai wilayahnya
         if ($user_category == 7 && empty($this->input->get('province'))) { 
             $selected_province = $user_province;
+            $this->data['selected_province2'] = $selected_province;
         }
+
+        // Jika user DHO, atur provinsi & district sesuai wilayahnya
         if ($user_category == 8 && empty($this->input->get('province'))) {
             $selected_province = $user_province;
             $selected_district = $user_city;
+            $this->data['selected_province2'] = $selected_province;
         }
-    
-        // Ambil data jumlah puskesmas & imunisasi dari model baru
-        $puskesmas_data = $this->Puskesmas_model->get_puskesmas_data($selected_province, $selected_district, $selected_year);
-
-        // Ambil daftar provinsi untuk dropdown + targeted provinces
-        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
 
         $this->data['selected_province'] = $selected_province;
         $this->data['selected_district'] = $selected_district;
         $this->data['selected_year'] = $selected_year;
+
+        // Ambil daftar provinsi untuk dropdown + targeted provinces
+        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
+
+        // Ambil daftar kabkota untuk dropdown + targeted provinces
+        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province);
+    
+        // Ambil data jumlah puskesmas & imunisasi dari model baru
+        $puskesmas_data = $this->Puskesmas_model->get_puskesmas_data($selected_province, $selected_district, $selected_year);
+
         $this->data['total_puskesmas'] = $puskesmas_data['total_puskesmas'];
         $this->data['total_immunized_puskesmas'] = $puskesmas_data['total_immunized_puskesmas'];
         $this->data['percentage_puskesmas'] = $puskesmas_data['percentage'];
@@ -987,7 +995,7 @@ class Home extends CI_Controller {
             'en' => [
                 'page_title' => 'PHC Immunization Performance',
                 'page_subtitle' => 'Percentage of Primary Health Facility to Conduct Immunization Service as Planned',
-                'filter_label' => 'Select Province',
+                'filter_label' => 'Select Filter',
                 'text1' => 'Total number of Puskesmas',
                 'text2' => 'Total Puskesmas that have conducted immunization',
                 'text3' => 'Percentage of Puskesmas that have conducted immunization',
@@ -1005,7 +1013,7 @@ class Home extends CI_Controller {
             'id' => [
                 'page_title' => 'Kinerja Imunisasi',
                 'page_subtitle' => 'Persentase Fasilitas Kesehatan Primer untuk Melaksanakan Layanan Imunisasi',
-                'filter_label' => 'Pilih Provinsi',
+                'filter_label' => 'Pilih Filter',
                 'text1' => 'Jumlah Puskesmas',
                 'text2' => 'Jumlah Puskesmas yang telah melaksanakan imunisasi',
                 'text3' => 'Persentase Puskesmas yang telah melaksanakan imunisasi',
