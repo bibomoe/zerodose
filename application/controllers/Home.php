@@ -387,10 +387,12 @@ class Home extends CI_Controller {
             if($this->session->userdata('language') == 'en'){
                 // Hitung persentase ZD dari baseline 2023
                 if ($this->data["zero_dose_$year"] <= $this->data['national_baseline_zd']) {
-                    $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% reduction from 2024 national baseline for $year";
+                    // $this->data["zd_narrative_$year"] = round((($this->data['national_baseline_zd'] - $this->data["zero_dose_$year"]) / $this->data['national_baseline_zd']) * 100, 1) . "% reduction from 2024 national baseline for $year";
+                    $this->data["zd_narrative_$year"] = "";
                 // } elseif ($this->data["zero_dose_$year"] > 2 * $this->data['national_baseline_zd']) {
                 } else {
-                    $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% increase from 2024 national baseline for $year";
+                    // $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% increase from 2024 national baseline for $year";
+                    $this->data["zd_narrative_$year"] = "";
                 // } else {
                 //     $this->data["zd_narrative_$year"] = round((($this->data["zero_dose_$year"] - $this->data['national_baseline_zd']) / $this->data['national_baseline_zd']) * 100, 1) . "% change from 2023 national baseline for $year";
                 }
