@@ -316,7 +316,9 @@
                                                         } else {
                                                     ?>
                                                         <?php foreach ($supportive_supervision_table_puskesmas as $row) : ?>
-                                                            <td><?= $row['puskesmas_name']; ?></td>
+                                                            <tr>
+                                                                <td><?= $row['puskesmas_name']; ?></td>
+                                                            </tr>
                                                         <?php endforeach; ?>
                                                     <?php
                                                         } 
