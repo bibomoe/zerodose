@@ -288,7 +288,7 @@
                                                         <!-- <div class="card-subtext"><?= ${"zd_narrative_$year"}; ?></div> -->
                                                         
                                                         <div class="card-subtext">
-                                                        <?= $translations['text5_2'] ?>
+                                                        <?= $translations['text5_2'] ?> <?= $year; ?>
                                                             <?php if ($year == 2025): ?>
                                                                 <?= number_format($national_baseline_zd * 0.85) ?>
                                                                 <?php echo " (15% " . $translations['text5_4'] . ")"; ?>
