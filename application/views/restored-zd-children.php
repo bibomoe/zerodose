@@ -290,10 +290,12 @@
                                                         <div class="card-subtext">
                                                         <?= $translations['text5_2'] ?> <?= $year; ?>
                                                             <?php if ($year == 2025): ?>
+                                                                <?php echo " = "; ?>
                                                                 <?= number_format($national_baseline_zd * 0.85) ?>
                                                                 <?php echo " (15% " . $translations['text5_4'] . ")"; ?>
                                                                 
                                                             <?php elseif ($year == 2026): ?>
+                                                                <?php echo " = "; ?>
                                                                 <?= number_format($national_baseline_zd * 0.75) ?>
                                                                 <?php echo " (25% " . $translations['text5_4'] . ")"; ?>
                                                                 
