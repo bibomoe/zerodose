@@ -326,11 +326,20 @@
                                     </a>
                                 </li>
 
+                                <?php
+                                    $user_category = $this->session->userdata('user_category');
+                                    if ($user_category != 8) { 
+                                ?>
+
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('home/policy'); ?>" class='sidebar-link' id="intermediate-submenu5-label">
                                         District Policy and Financing
                                     </a>
                                 </li>
+
+                                <?php
+                                    }
+                                ?>
                                 
                             </ul>
                             
