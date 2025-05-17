@@ -578,6 +578,7 @@ class Dpt1_model extends CI_Model {
 
         $this->db->select('city_id, COUNT(id) AS total_puskesmas');
         $this->db->from('puskesmas');
+        $this->db->where('active', 1); // Hanya hitung puskesmas yang aktif (jika perlu)
 
         // Filter berdasarkan province_id
         if ($province_id === 'targeted') {

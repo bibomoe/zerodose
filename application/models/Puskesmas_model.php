@@ -13,6 +13,7 @@ class Puskesmas_model extends CI_Model {
         // **1. Ambil total jumlah puskesmas berdasarkan filter**
         $this->db->select('COUNT(id) as total_puskesmas');
         $this->db->from('puskesmas');
+        $this->db->where('active', 1); // Hanya hitung puskesmas yang aktif (jika perlu)
     
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
