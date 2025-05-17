@@ -1483,6 +1483,9 @@
 
 </script>
 
+<!-- Buttons HTML5 untuk export CSV & Excel -->
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+
 <script>
 $(document).ready(function () {
     $('#provinceFilter').change(function () {
@@ -1504,5 +1507,22 @@ $(document).ready(function () {
             $('#city_id').html('<option value="all">-- Kab/Kota --</option>');
         }
     });
+
+    $('#table1').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ]
+    });
+
 });
 </script>
