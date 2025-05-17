@@ -1509,19 +1509,11 @@ $(document).ready(function () {
     });
 
     $('#table1').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            {
-                extend: 'csvHtml5',
-                text: 'Download CSV',
-                className: 'btn btn-primary btn-sm'
-            },
-            {
-                extend: 'excelHtml5',
-                text: 'Download Excel',
-                className: 'btn btn-success btn-sm'
+        layout: {
+        topStart: {
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
             }
-        ]
+        }
     });
 
 });
