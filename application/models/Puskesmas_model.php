@@ -50,12 +50,16 @@ class Puskesmas_model extends CI_Model {
     
         $total_immunized_puskesmas = $this->db->get()->row()->total_immunized_puskesmas ?? 0;
     
-        // **3. Hitung persentase**
-        $percentage = ($total_puskesmas > 0) ? round(($total_immunized_puskesmas / $total_puskesmas) * 100, 2) : 0;
+        // **3. Hitung persentase** yang benar
+        // $percentage = ($total_puskesmas > 0) ? round(($total_immunized_puskesmas / $total_puskesmas) * 100, 2) : 0;
+
+        // **3. Hitung persentase** yang salah tapi pakai ini dulu
+        $percentage = ($total_puskesmas > 0) ? round(($total_puskesmas / $total_puskesmas) * 100, 2) : 0;
     
         return [
             'total_puskesmas' => $total_puskesmas,
-            'total_immunized_puskesmas' => $total_immunized_puskesmas,
+            // 'total_immunized_puskesmas' => $total_immunized_puskesmas,
+            'total_immunized_puskesmas' => $total_puskesmas,
             'percentage' => $percentage
         ];
     }
