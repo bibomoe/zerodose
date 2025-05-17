@@ -287,6 +287,11 @@
                                                         <div class="card-number font-extrabold mb-0"><?= number_format(${"zero_dose_$year"}); ?></div>
                                                         <!-- <div class="card-subtext"><?= ${"zd_narrative_$year"}; ?></div> -->
                                                         
+                                                        <?php
+                                                            $user_category = $this->session->userdata('user_category'); // Ambil kategori pengguna yang login
+
+                                                            if($user_category != 7 && $user_category != 8){
+                                                        ?>
                                                         <div class="card-subtext">
                                                         <?= $translations['text5_2'] ?> <?= $year; ?>
                                                             <?php if ($year == 2025): ?>
@@ -304,6 +309,9 @@
                                                                 <?= number_format($national_baseline_zd) ?>
                                                             <?php endif; ?>
                                                         </div>
+                                                        <?php
+                                                            }
+                                                        ?>
 
                                                     </div>
                                                 </div>
