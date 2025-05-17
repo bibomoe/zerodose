@@ -691,13 +691,13 @@ class Dpt1_model extends CI_Model {
             puskesmas.name AS puskesmas_name,
             provinces.name_id AS province_name,
             COALESCE(target_immunization_per_puskesmas.dpt_hb_hib_1_target, 0) AS target,
-            COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
-            COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage
+            COALESCE(SUM(immunization_data_per_puskesmas.dpt_hb_hib_1), 0) AS dpt1_coverage,
+            COALESCE(SUM(immunization_data_per_puskesmas.dpt_hb_hib_3), 0) AS dpt3_coverage
         ");
         $this->db->from('puskesmas');
         $this->db->join('provinces', 'provinces.id = puskesmas.province_id', 'left'); // Join to provinces table
-        $this->db->join('immunization_data', 'immunization_data.puskesmas_id = puskesmas.id', 'left'); // Join to immunization data
-        $this->db->join('target_immunization_per_puskesmas', 'target_immunization_per_puskesmas.puskesmas_id = puskesmas.id AND target_immunization_per_puskesmas.year = immunization_data.year', 'left'); // Join to target immunization table
+        $this->db->join('immunization_data_per_puskesmas', 'immunization_data_per_puskesmas.puskesmas_id = puskesmas.id', 'left'); // Join to immunization data
+        $this->db->join('target_immunization_per_puskesmas', 'target_immunization_per_puskesmas.puskesmas_id = puskesmas.id AND target_immunization_per_puskesmas.year = immunization_data_per_puskesmas.year', 'left'); // Join to target immunization table
         // Filter by province if provided
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
@@ -713,7 +713,7 @@ class Dpt1_model extends CI_Model {
             $this->db->where('puskesmas.city_id', $city_id);
         }
 
-        $this->db->where('immunization_data.year', $year); // Filter by year
+        $this->db->where('immunization_data_per_puskesmas.year', $year); // Filter by year
         $this->db->group_by('puskesmas.id'); // Group by to avoid duplicate puskesmas entries
 
         // Execute query
