@@ -514,7 +514,7 @@
                                                 </div>
                                             </div>
                                             <div class="table-responsive">
-                                                <table class="table table-striped" id="table1">
+                                                <table class="table table-striped" id="table2">
                                                     <thead>
                                                         <tr>
                                                             <!-- <th><?= $translations['tabelcoloumn1'] ?></th>
@@ -1508,7 +1508,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#table1').DataTable({
+    $('#table2').DataTable({
         layout: {
         topStart: {
             buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
