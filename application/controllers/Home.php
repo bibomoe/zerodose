@@ -541,7 +541,7 @@ class Home extends CI_Controller {
                 'children' => ' children',
                 'text1' => 'Target Year ',
                 'text1_quarter' => ' Quarter ',
-                'text2' => 'Based on the Population Census Survey (SUPAS) Year',
+                'text2' => 'Based on the Pusdatin Kemenkes Target Year',
                 'text3' => 'DPT-1 Coverage Year ',
                 'text4' => '% of the target',
                 'text5' => 'Not Immunized with DPT-1 Year ',
@@ -572,9 +572,9 @@ class Home extends CI_Controller {
                 'text18' => 'Zero Dose Children Mapping',
                 'text19' => 'Zero-Dose Children Outreach Trend',
                 'text20' => 'Zero Dose Children by Region Type',
-                'text21' => 'Data is sourced from Ministry of Health Administration Data',
-                'text22' => 'Data is sourced from Ministry of Health Administration Data',
-                'text23' => 'Data is sourced from Ministry of Health Administration Data, last updated on ',
+                'text21' => 'Data is sourced from Routine Report of the Immunization Directorate, Ministry of Health',
+                'text22' => 'Data is sourced from Routine Report of the Immunization Directorate, Ministry of Health',
+                'text23' => 'Data is sourced from Routine Report of the Immunization Directorate, Ministry of Health, last updated on ',
                 'text24' => 'DPT-1 Target and Coverage Trend per Quarter'
             ],
             'id' => [
@@ -586,7 +586,7 @@ class Home extends CI_Controller {
                 'children' => ' anak',
                 'text1' => 'Sasaran Tahun ',
                 'text1_quarter' => ' Triwulan ',
-                'text2' => 'Survei Penduduk Antar Sensus Tahun',
+                'text2' => 'Sasaran Pusdatin Kemenkes Tahun',
                 'text3' => 'Cakupan DPT-1 Tahun ',
                 'text4' => '% dari sasaran',
                 'text5' => 'Jumlah Anak Belum di Imunisasi DPT-1 Tahun ',
@@ -617,9 +617,10 @@ class Home extends CI_Controller {
                 'text18' => 'Pemetaan Anak Zero Dose',
                 'text19' => 'Tren Penjangkauan Anak Zero-Dose',
                 'text20' => 'Jumlah Anak Zero Dose Berdasarkan Jenis Wilayah',
-                'text21' => 'Data bersumber dari Data Administrasi Kemenkes',
-                'text22' => 'Data bersumber dari Data Administrasi Kemenkes',
-                'text23' => 'Data bersumber dari Data Administrasi Kemenkes terakhir diperbaharui pada ',
+                'text21' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes',
+                'text22' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes',
+                'text23' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes terakhir diperbaharui pada ',
+                
                 'text24' => 'Tren Sasaran dan Cakupan DPT-1 per Triwulan'
             ]
         ];
@@ -1146,6 +1147,7 @@ class Home extends CI_Controller {
                 'filter_label' => 'Select Filter',
                 'text1' => 'Stock Out by Duration',
                 'text2' => 'Details of Primary Health Facility experiencing stockouts Year ',
+                'text3' => 'Data is sourced from SMILE Ministry of Health Application',
                 'tabelcoloumn1' => 'Province',
                 'tabelcoloumn2' => 'District',
                 'tabelcoloumn3' => 'Subdistrict',
@@ -1158,6 +1160,7 @@ class Home extends CI_Controller {
                 'filter_label' => 'Pilih Filter',
                 'text1' => 'Stock Out Berdasarkan Durasi',
                 'text2' => 'Detail Puskesmas yang mengalami Stock Out Tahun ',
+                'text3' => 'Data bersumber dari Aplikasi SMILE',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Kab/Kota',
                 'tabelcoloumn3' => 'Kecamatan',

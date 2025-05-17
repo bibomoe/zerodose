@@ -213,7 +213,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                        <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> <?= $year; ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></h6>
+                                                        <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> <?= $year; ?> <b> <?= $translations['text1_quarter'] ?> <?= $quarter; ?> </b> </h6>
                                                         <?php
                                                             // Get the total target for the given year
                                                             $total_target = ${"total_target_dpt_1_$year"};  // We assume the variable already contains a valid value
@@ -257,7 +257,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                        <h6 class="text-muted font-semibold"><?= $translations['text3'] ?> <?= $year; ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></h6>
+                                                        <h6 class="text-muted font-semibold"><?= $translations['text3'] ?> <?= $year; ?> <b> <?= $translations['text1_quarter'] ?> <?= $quarter; ?> </b> </h6>
                                                         <div class="card-number font-extrabold mb-0"><?= number_format(${"total_dpt_1_$year"}); ?></div>
                                                         <div class="card-subtext">
                                                             <?= ${"total_target_dpt_1_$year"} > 0 
@@ -283,7 +283,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                        <h6 class="text-muted font-semibold"><?= $translations['text5'] ?> <?= $year; ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></h6>
+                                                        <h6 class="text-muted font-semibold"><?= $translations['text5'] ?> <?= $year; ?> <b> <?= $translations['text1_quarter'] ?> <?= $quarter; ?> </b></h6>
                                                         <div class="card-number font-extrabold mb-0"><?= number_format(${"zero_dose_$year"}); ?></div>
                                                         <!-- <div class="card-subtext"><?= ${"zd_narrative_$year"}; ?></div> -->
                                                         

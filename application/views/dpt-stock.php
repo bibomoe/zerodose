@@ -23,7 +23,20 @@
                 <div class="page-content"> 
                     <section class="row">
                         <div class="col-12 col-lg-12">
-                        <div class="row">
+                            <!-- LAST UPDATE -->
+                            <div class="row">
+                                <div class="col-12" style="margin-bottom: 20px; text-align: left;">
+                                    <!-- <div class="card">
+                                        <div class="card-header"></div>
+                                        <div class="card-body"> -->
+                                            
+                                                <span  class="form-label" style="font-size: 14px;"><?= $translations['text3'] ?>​ </span>
+                                                
+                                        <!-- </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-12" style="margin-bottom: 20px;">
                                     <!-- <div class="card">
                                         <div class="card-header"></div>
