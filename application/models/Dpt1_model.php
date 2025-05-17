@@ -430,13 +430,13 @@ class Dpt1_model extends CI_Model {
     
         $this->db->select("
             puskesmas.id AS puskesmas_id,
-            SUM(immunization_data.dpt_hb_hib_1) AS dpt1,
-            SUM(immunization_data.dpt_hb_hib_3) AS dpt3
+            SUM(immunization_data_per_puskesmas.dpt_hb_hib_1) AS dpt1,
+            SUM(immunization_data_per_puskesmas.dpt_hb_hib_3) AS dpt3
         ");
         $this->db->from('puskesmas');
-        $this->db->join('immunization_data', 'immunization_data.puskesmas_id = puskesmas.id', 'left');
+        $this->db->join('immunization_data_per_puskesmas', 'immunization_data_per_puskesmas.puskesmas_id = puskesmas.id', 'left');
         $this->db->where('puskesmas.city_id', $city_id);
-        $this->db->where('immunization_data.year', $year);
+        $this->db->where('immunization_data_per_puskesmas.year', $year);
     
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
