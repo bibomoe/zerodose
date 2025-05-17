@@ -203,7 +203,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table class="table table-striped" id="table1">
+                                                <table class="table table-striped" id="table2">
                                                     <thead>
                                                         <tr>
                                                             <?php
@@ -452,6 +452,37 @@ $(document).ready(function () {
         } else {
             $('#city_id').html('<option value="all">-- Kab/Kota --</option>');
         }
+    });
+
+    var table = $('#table2').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ]
+    });
+
+    // Fungsi untuk update jumlah baris yang tampil
+    function updateRowCount() {
+        // api.rows({ filter: 'applied' }) -> baris yg sudah difilter (search)
+        var count = table.rows({ filter: 'applied' }).count();
+        $('#rowCount').text('Jumlah baris yang tampil: ' + count);
+    }
+
+    // Update saat inisialisasi
+    updateRowCount();
+
+    // Update tiap kali tabel di draw ulang (filter, paging, dll)
+    table.on('draw', function() {
+        updateRowCount();
     });
 });
 </script>
