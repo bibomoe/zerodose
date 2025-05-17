@@ -1508,8 +1508,8 @@ $(document).ready(function () {
         }
     });
 
-    $('#table2').DataTable({
-        dom: 'Bfrtip',  // Menampilkan tombol di atas tabel
+    var table = $('#table2').DataTable({
+        dom: 'Bfrtip',
         buttons: [
             {
                 extend: 'csvHtml5',
@@ -1522,6 +1522,21 @@ $(document).ready(function () {
                 className: 'btn btn-success btn-sm'
             }
         ]
+    });
+
+    // Fungsi untuk update jumlah baris yang tampil
+    function updateRowCount() {
+        // api.rows({ filter: 'applied' }) -> baris yg sudah difilter (search)
+        var count = table.rows({ filter: 'applied' }).count();
+        $('#rowCount').text('Jumlah baris yang tampil: ' + count);
+    }
+
+    // Update saat inisialisasi
+    updateRowCount();
+
+    // Update tiap kali tabel di draw ulang (filter, paging, dll)
+    table.on('draw', function() {
+        updateRowCount();
     });
 
 });
