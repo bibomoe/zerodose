@@ -1509,11 +1509,19 @@ $(document).ready(function () {
     });
 
     $('#table2').DataTable({
-        layout: {
-        topStart: {
-            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+        dom: 'Bfrtip',  // Menampilkan tombol di atas tabel
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
             }
-        }
+        ]
     });
 
 });
