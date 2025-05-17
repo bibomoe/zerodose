@@ -313,18 +313,18 @@ class Immunization_model extends CI_Model {
         // Now, fetch the data for each puskesmas
         $this->db->select("
             puskesmas.name AS district, 
-            SUM(immunization_data.dpt_hb_hib_1) AS total_dpt1,
+            SUM(immunization_data_per_puskesmas.dpt_hb_hib_1) AS total_dpt1,
             target_immunization_per_puskesmas.dpt_hb_hib_1_target AS target_district,
-            (SUM(immunization_data.dpt_hb_hib_1) / NULLIF(target_immunization_per_puskesmas.dpt_hb_hib_1_target, 0)) * 100 AS percentage_target,  -- Persentase target DPT-1
-            (target_immunization_per_puskesmas.dpt_hb_hib_1_target - SUM(immunization_data.dpt_hb_hib_1)) AS zero_dose_children,  -- Anak zero dose
-            ((target_immunization_per_puskesmas.dpt_hb_hib_1_target - SUM(immunization_data.dpt_hb_hib_1)) / NULLIF(target_immunization_per_puskesmas.dpt_hb_hib_1_target, 0)) * 100 AS percent_zero_dose  -- Persentase zero dose
+            (SUM(immunization_data_per_puskesmas.dpt_hb_hib_1) / NULLIF(target_immunization_per_puskesmas.dpt_hb_hib_1_target, 0)) * 100 AS percentage_target,  -- Persentase target DPT-1
+            (target_immunization_per_puskesmas.dpt_hb_hib_1_target - SUM(immunization_data_per_puskesmas.dpt_hb_hib_1)) AS zero_dose_children,  -- Anak zero dose
+            ((target_immunization_per_puskesmas.dpt_hb_hib_1_target - SUM(immunization_data_per_puskesmas.dpt_hb_hib_1)) / NULLIF(target_immunization_per_puskesmas.dpt_hb_hib_1_target, 0)) * 100 AS percent_zero_dose  -- Persentase zero dose
         ", false);
 
         // Join with immunization data and target table
-        $this->db->from('immunization_data');
-        $this->db->join('puskesmas', 'puskesmas.id = immunization_data.puskesmas_id', 'left');
-        $this->db->join('target_immunization_per_puskesmas', 'target_immunization_per_puskesmas.puskesmas_id = immunization_data.puskesmas_id AND target_immunization_per_puskesmas.year = immunization_data.year', 'left');
-        $this->db->where('immunization_data.year', $year);
+        $this->db->from('immunization_data_per_puskesmas');
+        $this->db->join('puskesmas', 'puskesmas.id = immunization_data_per_puskesmas.puskesmas_id', 'left');
+        $this->db->join('target_immunization_per_puskesmas', 'target_immunization_per_puskesmas.puskesmas_id = immunization_data_per_puskesmas.puskesmas_id AND target_immunization_per_puskesmas.year = immunization_data_per_puskesmas.year', 'left');
+        $this->db->where('immunization_data_per_puskesmas.year', $year);
 
         // Apply the province filter
         if ($province_id === 'targeted' && !empty($province_ids)) {
@@ -338,7 +338,7 @@ class Immunization_model extends CI_Model {
         } 
 
         // Group by puskesmas and order by the total DPT-1
-        $this->db->group_by('immunization_data.puskesmas_id, puskesmas.name');
+        $this->db->group_by('immunization_data_per_puskesmas.puskesmas_id, puskesmas.name');
         $this->db->order_by('total_dpt1', 'DESC');
 
         return $this->db->get()->result_array();
