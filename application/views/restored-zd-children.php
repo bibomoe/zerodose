@@ -213,7 +213,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                        <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> <?= $year; ?> <b> <?= $translations['text1_quarter'] ?> <?= $quarter; ?> </b> </h6>
+                                                        <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> <?= $year; ?> <br> <b> <?= $translations['text1_quarter'] ?> <?= $quarter; ?> </b> </h6>
                                                         <?php
                                                             // Get the total target for the given year
                                                             $total_target = ${"total_target_dpt_1_$year"};  // We assume the variable already contains a valid value
@@ -589,9 +589,9 @@
                                         <div class="card-body">
                                             <!-- Tombol Filter Grafik (Hanya jika provinsi ≠ "All" atau "Targeted") -->
                                             <?php if ($show_chart_filter): ?>
-                                                <button class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#chartFilter">
+                                                <!-- <button class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#chartFilter">
                                                     <i class="bi bi-funnel"></i> Filter
-                                                </button>
+                                                </button> -->
 
                                                 <div class="modal fade text-left" id="chartFilter" tabindex="-1" role="dialog">
                                                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
