@@ -32,20 +32,23 @@ class Puskesmas_model extends CI_Model {
         $total_puskesmas = $this->db->get()->row()->total_puskesmas ?? 0;
     
         // **2. Ambil jumlah puskesmas yang telah melakukan imunisasi setidaknya 1 kali**
-        $this->db->select('COUNT(DISTINCT puskesmas_id) as total_immunized_puskesmas');
-        $this->db->from('puskesmas_do_immunization');
-        $this->db->where('year', $year);
+        $this->db->select('COUNT(DISTINCT pdi.puskesmas_id) as total_immunized_puskesmas');
+        $this->db->from('puskesmas_do_immunization pdi');
+        $this->db->join('puskesmas p', 'pdi.puskesmas_id = p.id', 'left');  // Gabungkan dengan tabel puskesmas
+
+        $this->db->where('pdi.year', $year);
+        $this->db->where('p.active', 1);
     
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
-                $this->db->where_in('province_id', $province_ids);
+                $this->db->where_in('pdi.province_id', $province_ids);
             }
         } elseif ($province_id !== 'all') {
-            $this->db->where('province_id', $province_id);
+            $this->db->where('pdi.province_id', $province_id);
         }
     
         if ($district_id !== 'all') {
-            $this->db->where('city_id', $district_id);
+            $this->db->where('pdi.city_id', $district_id);
         }
     
         $total_immunized_puskesmas = $this->db->get()->row()->total_immunized_puskesmas ?? 0;
