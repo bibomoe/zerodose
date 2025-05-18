@@ -34,7 +34,7 @@ class Puskesmas_model extends CI_Model {
         // **2. Ambil jumlah puskesmas yang telah melakukan imunisasi setidaknya 1 kali**
         $this->db->select('COUNT(DISTINCT pdi.puskesmas_id) as total_immunized_puskesmas');
         $this->db->from('puskesmas_do_immunization pdi');
-        $this->db->join('puskesmas p', 'pdi.puskesmas_id = p.id', 'left');  // Gabungkan dengan tabel puskesmas
+        $this->db->join('puskesmas p', 'pdi.puskesmas_id = p.id', 'inner');  // Gabungkan dengan tabel puskesmas
 
         $this->db->where('pdi.year', $year);
         $this->db->where('p.active', 1);
