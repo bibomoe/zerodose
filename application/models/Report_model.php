@@ -668,8 +668,9 @@ class Report_model extends CI_Model {
         $total_puskesmas = $this->db->get()->row()->total_puskesmas ?? 0;
     
         // **2. Ambil jumlah puskesmas yang telah melakukan imunisasi setidaknya 1 kali**
-        $this->db->select('COUNT(DISTINCT puskesmas_id) as total_immunized_puskesmas');
-        $this->db->from('immunization_data');
+        $this->db->select('SUM(total_puskesmas) as total_immunized_puskesmas');
+        $this->db->from('total_immunized_puskesmas_per_city');
+
         $this->db->where('year', $year);
 
         // Menambahkan kondisi untuk filter bulan

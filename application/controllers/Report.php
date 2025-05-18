@@ -51,8 +51,8 @@ class Report extends CI_Controller {
 
         // Ambil tahun dan bulan dalam bentuk array
         $this->data['year_options'] = [
-            '2024' => '2024',
-            '2025' => '2025'
+            '2025' => '2025',
+            '2026' => '2026'
         ];
 
         $this->data['month_options'] = [
@@ -924,14 +924,14 @@ class Report extends CI_Controller {
                         <tr>
                             <th style="background-color: green; color: white; font-weight: bold;">Cakupan DPT-3</th>
                             <th style="background-color: green; color: white; font-weight: bold;">Cakupan MR-1</th>
-                            <th style="background-color: green; color: white; font-weight: bold;">Jumlah Anak Zero Dose</th>
+                            <th style="background-color: green; color: white; font-weight: bold;">Jumlah anak yang belum diimunisasi DPT-1</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td style="font-size:12pt; ">' . $data['cumulative_dpt3'] . '</td>
                             <td style="font-size:12pt; ">' . $data['cumulative_mr1'] . '</td>
-                            <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['children_zero_dose'] . $data['baseline_zd'] . '</td>
+                            <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['children_zero_dose'] . '</td>
                         </tr>
                     </tbody>
                 </table>';
@@ -1100,12 +1100,13 @@ class Report extends CI_Controller {
                             </thead>
                             <tbody>';
                 $no = 0;
-                foreach ($data['puskesmas_do_immunization'] as $item) {
-                    $no++;
-                    $html2 .= "<tr>
-                                <td>{$item['puskesmas_name']}</td>
-                            </tr>";
-                }
+                // foreach ($data['puskesmas_do_immunization'] as $item) {
+                //     $no++;
+                //     $html2 .= "
+                //             <tr>
+                //                 <td>{$item['puskesmas_name']}</td>
+                //             </tr>";
+                // }
                 $html2 .= '</tbody></table>';
             
                 // Menambahkan jarak antara tabel ketiga dan keempat
