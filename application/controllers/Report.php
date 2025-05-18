@@ -1228,11 +1228,14 @@ class Report extends CI_Controller {
         // Menentukan baseline ZD
         if ($selected_province == 'all') {
             // Ambil baseline ZD 2023 dari tabel target_baseline
-            $this->data['national_baseline_zd'] = $this->Immunization_model->get_baseline_zd(2023);
+            $this->data['national_baseline_zd'] = $this->Immunization_model->get_baseline_zd(2024);
         } else {
             // Ambil total ZD dari tabel zd_cases_2023 berdasarkan provinsi yang dipilih
             $this->data['national_baseline_zd'] = $this->Report_model->get_zero_dose_by_province($selected_province, $selected_district);
         }
+
+        // Menentukan baseline DPT 3 dan MR 1
+        $this->data['national_baseline_dpt_mr'] = $this->Report_model->get_baseline_by_province($selected_province);
 
         // Ambil target dari target_immunization untuk provinsi tertentu atau targeted
         $this->data["total_target_dpt_1_$year"] = $this->Report_model->get_total_target('dpt_hb_hib_1', $selected_province, $selected_district, $year);
@@ -1264,12 +1267,25 @@ class Report extends CI_Controller {
         // exit;
 
         $zero_dose = $this->data["zero_dose_$year"];
+        $baseline_zd = $this->data['national_baseline_zd'];
+        $baseline_zd = ($year <= 2025 ) ? number_format($baseline_zd * 0.85, 0, ',', '.') : number_format($baseline_zd * 0.75, 0, ',', '.');
         $percent_dpt3_coverage = $this->data["percent_dpt_3_$year"];
         $total_dpt3_coverage = $this->data["total_dpt_3_$year"];
+
+        //Baseline DPT 3
+        // $total_dpt3_target = $this->data["total_target_dpt_3_$year"];
+        $total_dpt3_target = $this->data['national_baseline_dpt_mr']['dpt3'];
+
         $total_mr1_coverage = $this->data["total_mr_1_$year"];
         $percent_mr1_coverage = $this->data["percent_mr_1_$year"];
 
+        //Baseline MR 1
+        // $total_mr1_target = $this->data["total_target_mr_1_$year"];
+        $total_mr1_target = $this->data['national_baseline_dpt_mr']['mr1'];
+
         $total_dpt1_coverage = $this->data["total_dpt_1_$year"];
+        $total_dpt1_target = $this->data["total_target_dpt_1_$year"];
+
         $percent_dpt1_coverage = $this->data["percent_dpt_1_$year"];
 
         // TABLE 2 
@@ -1302,20 +1318,65 @@ class Report extends CI_Controller {
         // Menambahkan rata-rata dropout rate ke data view
         $this->data['dropout_rate_all_provinces'] = round($average_dropout_rate_all_provinces, 2);
 
-        $total_district_under_5_DO = $this->data['total_dropout_rate']; //Jumlah Kab/Kota dengan %DO dibawah 5%
+        if ($selected_district === 'all'){
+            
+            $total_district_under_5_DO = $this->data['total_dropout_rate']; //Jumlah Kab/Kota dengan %DO dibawah 5%
+            
+            $total_cities = $this->Report_model->get_total_regencies_cities($selected_province);
+
+            // Menghitung Persen KabKota dengan DO Rate dibawah 5%
+            $percentage_under_5_DO = ($total_cities > 0) 
+                ? round(($total_district_under_5_DO / $total_cities) * 100, 2)
+                : 0;
+
+            $percentage_under_5_DO = number_format($percentage_under_5_DO, 1, ',', '.');
+        } else {
+            // Mendapatkan dropout rates per distrik
+            $dropout_rates = $this->Report_model->get_puskesmas_under_5_percent_in_district($selected_province,$selected_district,$selected_year, $selected_month);
+            
+            $total_district_under_5_DO =  $dropout_rates; //Jumlah Puskesmas dengan %DO dibawah 5%
+            
+            $total_cities = $this->Report_model->get_total_puskesmas_in_district($selected_district);
+
+            // Menghitung Persen KabKota dengan DO Rate dibawah 5%
+            $percentage_under_5_DO = ($total_cities > 0) 
+                ? round(($total_district_under_5_DO / $total_cities) * 100, 2)
+                : 0;
+
+            $percentage_under_5_DO = number_format($percentage_under_5_DO, 1, ',', '.');
+        }
+
+        // var_dump($total_cities);
+        // var_dump($total_district_under_5_DO);
+        // var_dump($percentage_under_5_DO);
+        // exit;
+
         $dropout_rate_all_provinces = $this->data['dropout_rate_all_provinces'];
 
         // Ambil data jumlah puskesmas & imunisasi dari model baru
         $puskesmas_data = $this->Report_model->get_puskesmas_data($selected_province, $selected_district, $selected_year, $selected_month);
         $this->data['total_immunized_puskesmas'] = $puskesmas_data['total_immunized_puskesmas'];
         $this->data['percentage_puskesmas'] = $puskesmas_data['percentage'];
+        $this->data['total_puskesmas'] = $puskesmas_data['total_puskesmas'];
 
         $puskesmas_conduct_immunization = $this->data['total_immunized_puskesmas'];
         $percentage_puskesmas_conduct_immunization = $this->data['percentage_puskesmas'];
+        $total_puskesmas = $this->data['total_puskesmas'];
 
-        $this->data["total_dpt_stockout_$year"] = $this->Report_model->get_total_dpt_stock_out($selected_province, $selected_district, $selected_year, $selected_month);
+        // Ambil data jumlah Supportive Supervision
+        $ss_data = $this->Report_model->get_supportive_supervision_targeted_summary($selected_province, $selected_district, $selected_year, $selected_month);
 
-        $total_dpt_stockout = $this->data["total_dpt_stockout_$year"];
+        $ss_category_good = $ss_data['total_good_puskesmas'];
+        $ss_total_ss = $ss_data['total_ss'];
+        $ss_percentage_good = $ss_data['percentage_good'];
+        $ss_total_puskesmas = $ss_data['total_puskesmas'];
+
+        // $this->data["total_dpt_stockout_$year"] = $this->Report_model->get_total_dpt_stock_out($selected_province, $selected_district, $selected_year, $selected_month);
+        $this->data["total_dpt_stockout_$year"] = $this->Report_model->get_stockout_summary($selected_province, $selected_district, $selected_year, $selected_month);
+
+        $total_dpt_stockout = $this->data["total_dpt_stockout_$year"]['total_stockout'];
+        $stockout_total_puskesmas = $this->data["total_dpt_stockout_$year"]['total_puskesmas'];
+        $stockout_percentage = $this->data["total_dpt_stockout_$year"]['percentage_stockout'];
         
         // TABLE 3
 
@@ -1364,6 +1425,21 @@ class Report extends CI_Controller {
                     'cities_do_under_5' => $cities_do_under_5,
                     'percentage_cities_do_under_5' => number_format($percentage_cities_do_under_5, 2, ',', '.') . '%',  // Persentase dengan format %
                 ];
+
+                // Fungsi pembanding untuk mengurutkan berdasarkan persentase (dalam bentuk numerik)
+                usort($table_do, function($a, $b) {
+                    // Menghapus tanda persen dan mengkonversi ke angka
+                    $percentage_a = (float) str_replace('%', '', $a['percentage_cities_do_under_5']);
+                    $percentage_b = (float) str_replace('%', '', $b['percentage_cities_do_under_5']);
+
+                    // Urutkan dari yang terbesar
+                    if ($percentage_a == $percentage_b) {
+                        return 0;
+                    }
+                    return ($percentage_a > $percentage_b) ? -1 : 1;
+                });
+
+                // Sekarang $table_do sudah terurut berdasarkan 'percentage_cities_do_under_5' dari yang terbesar
             }
         } else {
             if ($selected_district !== 'all'){
@@ -1395,6 +1471,22 @@ class Report extends CI_Controller {
                     ];
                 }
             }
+
+            // Fungsi pembanding untuk mengurutkan berdasarkan dropout_rate (dalam bentuk numerik)
+            usort($table_do, function($a, $b) {
+                // Mengonversi dropout_rate dari format string ke angka desimal
+                $dropout_rate_a = (float) str_replace(',', '.', $a['dropout_rate']);
+                $dropout_rate_b = (float) str_replace(',', '.', $b['dropout_rate']);
+
+                // Urutkan dari yang terbesar
+                if ($dropout_rate_a == $dropout_rate_b) {
+                    return 0;
+                }
+                return ($dropout_rate_a > $dropout_rate_b) ? -1 : 1;
+            });
+
+            // Sekarang $table_do sudah terurut berdasarkan 'dropout_rate' dari yang terbesar
+
         }
         
 
@@ -1415,6 +1507,7 @@ class Report extends CI_Controller {
                 $total_puskesmas_with_immunization = 0;
                 $total_puskesmas = 0;
                 $percentage_immunization = 0;
+
                 $total_ss = 0;
                 $total_good_puskesmas = 0;
                 $percentage_good = 0;
@@ -1430,6 +1523,13 @@ class Report extends CI_Controller {
                         // Hitung persentase imunisasi
                         $percentage_immunization = $data['percentage_immunization'];
 
+                        // Ambil total puskesmas yang sudah di ss
+                        $total_ss = $data['total_ss'];
+                        // Ambil total puskesmas dengan kategori baik
+                        $total_good_puskesmas = $data['total_good_puskesmas'];
+                        // Hitung persentase kategori baik
+                        $percentage_good = $data['percentage_good'];
+
                         break;  // Setelah ditemukan data untuk provinsi ini, keluar dari loop
                     }
                 }
@@ -1440,12 +1540,17 @@ class Report extends CI_Controller {
                     'province_name' => $province_name,
                     'total_puskesmas_with_immunization' => $total_puskesmas_with_immunization,
                     'total_puskesmas' => $total_puskesmas,
-                    'percentage_immunization' => number_format($percentage_immunization, 2, ',', '.')
+                    'percentage_immunization' => number_format($percentage_immunization, 2, ',', '.'),
+                    'total_ss' => $total_ss,
+                    'total_good_puskesmas' => $total_good_puskesmas,
+                    'percentage_good' => number_format($percentage_good, 2, ',', '.')
                 ];
+                
             }
         } else {
             if ($selected_district !== 'all'){
                 $immunization_data = $this->Report_model->get_immunization_puskesmas_table_by_district($selected_province,$selected_district,$selected_year, $selected_month);
+                
                 foreach ($immunization_data as $row) {
                     // Masukkan data ke dalam array $table_puskesmas_immunization
                     $table_puskesmas_immunization[] = [
@@ -1454,12 +1559,16 @@ class Report extends CI_Controller {
                 }
             } else {
                 $immunization_data = $this->Report_model->get_immunization_puskesmas_table_by_province($selected_province,$selected_district,$selected_year, $selected_month);
+
                 foreach ($immunization_data as $row){
                     $table_puskesmas_immunization[] = [
                         'city_name' => $row['city_name'],
                         'total_puskesmas_with_immunization' => $row['total_puskesmas_with_immunization'],
                         'total_puskesmas' => $row['total_puskesmas'],
-                        'percentage_immunization' => number_format($row['percentage_immunization'], 2, ',', '.')
+                        'percentage_immunization' => number_format($row['percentage_immunization'], 2, ',', '.'),
+                        'total_ss' => $row['total_ss'],
+                        'total_good_puskesmas' => $row['total_good_puskesmas'],
+                        'percentage_good' => number_format($row['percentage_good'], 2, ',', '.')
                     ];
                 }
             }
@@ -1472,53 +1581,17 @@ class Report extends CI_Controller {
 
         if($selected_province === 'all' || $selected_province === 'targeted'){
             $puskesmas_dpt_stock_out_data = $this->Report_model->get_puskesmas_dpt_stock_out_table($selected_province,$selected_district,$selected_year, $selected_month);
-                foreach ($list_province as $province) {
-                    $province_id = $province['id'];  // ID Provinsi
-                    $province_name = $province['name_id'];  // Nama Provinsi (gunakan 'name_id' jika nama provinsi dalam bahasa Indonesia)
-
-                    // Inisialisasi variabel untuk menyimpan data
-                    $total_stock_out_1_month = 0;
-                    $total_stock_out_2_months = 0;
-                    $total_stock_out_3_months = 0;
-                    $total_stock_out_more_than_3_months = 0;
-                    $total_stock_out = 0;
-                    $total_puskesmas = 0;
-                    $percentage_stock_out = 0;
-
-                    // Cari data puskesmas dengan DPT stock out berdasarkan provinsi
-                    foreach ($puskesmas_dpt_stock_out_data as $data) {
-                        // Cek jika province_id dari data sama dengan id provinsi di $list_province
-                        if ($data['province_id'] == $province_id) {
-                            // Ambil data stock out berdasarkan durasi
-                            $total_stock_out_1_month = $data['total_stock_out_1_month'];
-                            $total_stock_out_2_months = $data['total_stock_out_2_months'];
-                            $total_stock_out_3_months = $data['total_stock_out_3_months'];
-                            $total_stock_out_more_than_3_months = $data['total_stock_out_more_than_3_months'];
-                            // Ambil total puskesmas aktif di provinsi
-                            $total_puskesmas = $data['total_puskesmas'];
-
-                            // Hitung total puskesmas yang mengalami DPT stock out
-                            $total_stock_out = $total_stock_out_1_month + $total_stock_out_2_months + $total_stock_out_3_months + $total_stock_out_more_than_3_months;
-
-                            // Hitung persentase Puskesmas dengan DPT stock out
-                            $percentage_stock_out = ($total_puskesmas > 0)
-                                ? round(($total_stock_out / $total_puskesmas) * 100, 2)
-                                : 0;
-                            break;  // Setelah ditemukan data untuk provinsi ini, keluar dari loop
-                        }
-                    }
-
+                
+                // var_dump($puskesmas_dpt_stock_out_data);
+                // exit;
+                foreach ($puskesmas_dpt_stock_out_data as $row){
                     // Masukkan data ke dalam array $table_puskesmas_stock_out
                     $table_puskesmas_stock_out[] = [
-                        'province_id' => $province_id,
-                        'province_name' => $province_name,
-                        'total_stock_out_1_month' => $total_stock_out_1_month,
-                        'total_stock_out_2_months' => $total_stock_out_2_months,
-                        'total_stock_out_3_months' => $total_stock_out_3_months,
-                        'total_stock_out_more_than_3_months' => $total_stock_out_more_than_3_months,
-                        'total_stock_out' => $total_stock_out,
-                        'total_puskesmas' => $total_puskesmas,
-                        'percentage_stock_out' => number_format($percentage_stock_out, 2, ',', '.')
+                        'province_id' => $row['province_id'],
+                        'province_name' => $row['province_name'],
+                        'total_stock_out' => $row['total_stockout'],
+                        'total_puskesmas' => $row['total_puskesmas'],
+                        'percentage_stock_out' => number_format($row['percentage_stockout'], 2, ',', '.')
                     ];
                 }
         } else {
@@ -1528,44 +1601,25 @@ class Report extends CI_Controller {
                 // Cari data puskesmas dengan DPT stock out berdasarkan provinsi
                 foreach ($puskesmas_dpt_stock_out_data as $data) {
 
-                // Masukkan data ke dalam array $table_puskesmas_stock_out
-                $table_puskesmas_stock_out[] = [
-                    'puskesmas_name' => $data['puskesmas_name'],
-                    'month' => $data['month']
-                ];
-            }
+                    // Masukkan data ke dalam array $table_puskesmas_stock_out
+                    $table_puskesmas_stock_out[] = [
+                        'puskesmas_name' => $data['puskesmas_name']
+                        // 'month' => $data['month']
+                    ];
+                }
             } else {
                 $puskesmas_dpt_stock_out_data = $this->Report_model->get_puskesmas_dpt_stock_out_table_by_province($selected_province,$selected_district,$selected_year, $selected_month);
 
                 // Cari data puskesmas dengan DPT stock out berdasarkan provinsi
-                foreach ($puskesmas_dpt_stock_out_data as $data) {
+                foreach ($puskesmas_dpt_stock_out_data as $row) {
                     
-                        // Ambil data stock out berdasarkan durasi
-                        $total_stock_out_1_month = $data['total_stock_out_1_month'];
-                        $total_stock_out_2_months = $data['total_stock_out_2_months'];
-                        $total_stock_out_3_months = $data['total_stock_out_3_months'];
-                        $total_stock_out_more_than_3_months = $data['total_stock_out_more_than_3_months'];
-                        // Ambil total puskesmas aktif di provinsi
-                        $total_puskesmas = $data['total_puskesmas'];
-
-                        // Hitung total puskesmas yang mengalami DPT stock out
-                        $total_stock_out = $total_stock_out_1_month + $total_stock_out_2_months + $total_stock_out_3_months + $total_stock_out_more_than_3_months;
-
-                        // Hitung persentase Puskesmas dengan DPT stock out
-                        $percentage_stock_out = ($total_puskesmas > 0)
-                            ? round(($total_stock_out / $total_puskesmas) * 100, 2)
-                            : 0;
-
-                    // Masukkan data ke dalam array $table_puskesmas_stock_out
                     $table_puskesmas_stock_out[] = [
-                        'city_name' => $data['city_name'],
-                        'total_stock_out_1_month' => $total_stock_out_1_month,
-                        'total_stock_out_2_months' => $total_stock_out_2_months,
-                        'total_stock_out_3_months' => $total_stock_out_3_months,
-                        'total_stock_out_more_than_3_months' => $total_stock_out_more_than_3_months,
-                        'total_stock_out' => $total_stock_out,
-                        'total_puskesmas' => $total_puskesmas,
-                        'percentage_stock_out' => number_format($percentage_stock_out, 2, ',', '.')
+                        'province_name' => $row['province_name'],
+                        'city_id' => $row['city_id'],
+                        'city_name' => $row['city_name'],
+                        'total_stock_out' => $row['total_stockout'],
+                        'total_puskesmas' => $row['total_puskesmas'],
+                        'percentage_stock_out' => number_format($row['percentage_stockout'], 2, ',', '.')
                     ];
                 }
 
@@ -1584,15 +1638,29 @@ class Report extends CI_Controller {
         $province_name = "Indonesia";
     
         $data = [
-            'cumulative_dpt3' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt3_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_dpt3_coverage, 1, ',', '.') . '%',
-            'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_mr1_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_mr1_coverage, 1, ',', '.') . '%',
+            'cumulative_dpt3' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt3_coverage, 0, ',', '.') 
+                                        . '</span> <br><br>' . number_format($percent_dpt3_coverage, 1, ',', '.') . '% dari sasaran'
+                                        . '<br> Baseline : ' . number_format($total_dpt3_target, 0, ',', '.'),
+            'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_mr1_coverage, 0, ',', '.') 
+                                        . '</span> <br><br>' . number_format($percent_mr1_coverage, 1, ',', '.') . '% dari sasaran'
+                                        . '<br> Baseline : ' . number_format($total_mr1_target, 0, ',', '.'),
             'children_zero_dose' => number_format($zero_dose, 0, ',', '.'),
-            'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt1_coverage, 0, ',', '.') . '</span> <br><br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '%',
+            'baseline_zd' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> Target ' . (($year <= 2025 ) ? '15% : ' : '25% : ') . $baseline_zd . ' </span>',
+            'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt1_coverage, 0, ',', '.') 
+                                    . '</span> <br><br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '% dari sasaran'
+                                    . '<br> Sasaran : ' . number_format($total_dpt1_target, 0, ',', '.') ,
             'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
             'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
-            'puskesmas_conduct_immunization' => number_format($puskesmas_conduct_immunization, 0, ',', '.'),
+            'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . (($selected_district === 'all') ? '% dari total Kab/Kota' : '% dari total puskesmas') . ' </span>',
+            'puskesmas_conduct_immunization' => number_format($ss_category_good, 0, ',', '.'),
+            'total_ss' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($ss_percentage_good, 1, ',', '.') . '% dari total Puskesmas'
+                                                        . '<br> Total SS : ' . number_format($ss_total_ss, 0, ',', '.') . '</span>',
             'percentage_puskesmas_conduct_immunization' => number_format($percentage_puskesmas_conduct_immunization, 1, ',', '.') . '%',
+            'total_puskesmas_conduct_immunization' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> ' . number_format($puskesmas_conduct_immunization, 0, ',', '.') . ' Puskesmas'
+                                                        . '<br>' . (($year <= 2025 ) ? 'Tanpa Target' : 'Target 80%') . '</span>',
             'total_dpt_stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
+            'percentage_stockout' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($stockout_percentage, 1, ',', '.') . '% dari total Puskesmas'
+                                                        . '<br> Total Puskesmas : ' . number_format($stockout_total_puskesmas, 0, ',', '.') . '</span>',
             'province_do' => $table_do,
             'puskesmas_do_immunization' => $table_puskesmas_immunization,
             'puskesmas_dpt_stock_out_data' => $table_puskesmas_stock_out
@@ -1614,7 +1682,7 @@ class Report extends CI_Controller {
             12 => 'Desember'
         ];
 
-        if ($selected_month !== 'all'){
+        if ($this->input->post('month')){
             if (isset($months[$selected_month])) {
                 $title_month = ' Bulan ' . $months[$selected_month];  // Gunakan nama bulan
             } else {
@@ -1677,7 +1745,7 @@ class Report extends CI_Controller {
 
         // Menambahkan jarak antara gambar dan judul (gunakan Ln untuk jarak)
         $pdf->Ln(20);  // Menambah jarak 25 unit antara gambar dan judul
-    
+
         // Judul laporan
         $html = '<h2 style="text-align:center; font-size:18pt;">Laporan Kerangka Kerja Penurunan Zero Dose di <br>'. $title_area .'</h2>';
 
@@ -1691,7 +1759,7 @@ class Report extends CI_Controller {
                         <tr>
                             <th style="background-color: green; color: white; font-weight: bold;">Cakupan DPT-3</th>
                             <th style="background-color: green; color: white; font-weight: bold;">Cakupan MR-1</th>
-                            <th style="background-color: green; color: white; font-weight: bold;">Jumlah Anak Zero Dose</th>
+                            <th style="background-color: green; color: white; font-weight: bold;">Jumlah anak yang belum diimunisasi DPT-1</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1704,7 +1772,7 @@ class Report extends CI_Controller {
                 </table>';
 
         // Menambahkan jarak antara tabel pertama dan kedua
-        $html .= '<br><br>';
+        $html .= '<br>';
         
             // Tabel 2: Indikator Jangka Menengah
             $html .= '<h3 style="font-size:14pt;">Indikator Jangka Menengah</h3>';
@@ -1712,15 +1780,24 @@ class Report extends CI_Controller {
                         <thead>
                             <tr>
                                 <th style="background-color: blue; color: white; font-weight: bold;">Cakupan DPT-1</th>
-                                <th style="background-color: blue; color: white; font-weight: bold;">% Drop Out</th>
-                                <th style="background-color: blue; color: white; font-weight: bold;">Jumlah Kab/Kota dengan %DO dibawah 5%</th>
-                            </tr>
+                                <th style="background-color: blue; color: white; font-weight: bold;">% Drop Out</th>';
+
+                
+                if ($selected_district === 'all') {
+                    $html .=    '<th style="background-color: blue; color: white; font-weight: bold;">Jumlah Kab/Kota dengan %DO dibawah 5%</th>';
+                } else {
+                    $html .=    '<th style="background-color: blue; color: white; font-weight: bold;">Jumlah Puskesmas dengan %DO dibawah 5%</th>';
+                }
+
+            $html .=       '</tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td style="font-size:12pt; ">' . $data['cumulative_dpt1'] . '</td>
                                 <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['drop_out_percentage'] . '</td>
-                                <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_percentage'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_percentage'] 
+                                                                                    . $data['district_under_5_puskesmas'] 
+                                                                                    . '</td>
                             </tr>
     
                             <tr>
@@ -1730,9 +1807,9 @@ class Report extends CI_Controller {
                             </tr>
     
                             <tr>
-                                <td style="font-size:22pt; font-weight: bold; ">' . $data['percentage_puskesmas_conduct_immunization'] . '</td>
-                                <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_conduct_immunization'] . '</td>
-                                <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['total_dpt_stockout'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; ">' . $data['percentage_puskesmas_conduct_immunization'] . $data['total_puskesmas_conduct_immunization'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; ">' . $data['puskesmas_conduct_immunization'] . $data['total_ss'] . '</td>
+                                <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['total_dpt_stockout'] . $data['percentage_stockout'] . '</td>
                             </tr>
                         </tbody>
                     </table>';
@@ -1746,8 +1823,6 @@ class Report extends CI_Controller {
 
         // Tambahkan halaman baru sebelum menampilkan gambar grafik
         $pdf->AddPage();
-
-        $html2 = '';
 
         if($selected_province === 'all' || $selected_province === 'targeted'){
         
@@ -1784,6 +1859,9 @@ class Report extends CI_Controller {
                                 <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Provinsi</th>
                                 <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
                                 <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
+                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
+                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
+                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
                             </tr>
                         </thead>
                         <tbody>';
@@ -1792,6 +1870,9 @@ class Report extends CI_Controller {
                             <td><b>{$item['province_name']}</b></td>
                             <td>{$item['total_puskesmas_with_immunization']}</td>
                             <td>{$item['percentage_immunization']}%</td>
+                            <td>{$item['total_ss']}</td>
+                            <td>{$item['total_good_puskesmas']}</td>
+                            <td>{$item['percentage_good']}%</td>
                         </tr>";
             }
             $html2 .= '</tbody></table>';
@@ -1854,12 +1935,13 @@ class Report extends CI_Controller {
                             </thead>
                             <tbody>';
                 $no = 0;
-                foreach ($data['puskesmas_do_immunization'] as $item) {
-                    $no++;
-                    $html2 .= "<tr>
-                                <td>{$item['puskesmas_name']}</td>
-                            </tr>";
-                }
+                // foreach ($data['puskesmas_do_immunization'] as $item) {
+                //     $no++;
+                //     $html2 .= "
+                //             <tr>
+                //                 <td>{$item['puskesmas_name']}</td>
+                //             </tr>";
+                // }
                 $html2 .= '</tbody></table>';
             
                 // Menambahkan jarak antara tabel ketiga dan keempat
@@ -1871,14 +1953,13 @@ class Report extends CI_Controller {
                             <thead>
                                 <tr>
                                     <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Nama Puskesmas</th>
-                                    <th style="background-color: rgb(100, 56, 161); color: white; font-weight: bold;">Bulan</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>';
                 foreach ($data['puskesmas_dpt_stock_out_data'] as $item) {
                     $html2 .= "<tr>
                                 <td><b>{$item['puskesmas_name']}</b></td>
-                                <td>{$item['month']}</td>
                             </tr>";
                 }
                 $html2 .= '</tbody></table>';
@@ -1915,6 +1996,9 @@ class Report extends CI_Controller {
                                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Kab/Kota</th>
                                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
                                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
+                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
                                 </tr>
                             </thead>
                             <tbody>';
@@ -1923,6 +2007,9 @@ class Report extends CI_Controller {
                                 <td><b>{$item['city_name']}</b></td>
                                 <td>{$item['total_puskesmas_with_immunization']}</td>
                                 <td>{$item['percentage_immunization']}%</td>
+                                <td>{$item['total_ss']}</td>
+                                <td>{$item['total_good_puskesmas']}</td>
+                                <td>{$item['percentage_good']}%</td>
                             </tr>";
                 }
                 $html2 .= '</tbody></table>';
@@ -1954,6 +2041,7 @@ class Report extends CI_Controller {
         
         // Menulis HTML ke PDF
         $pdf->writeHTML($html2, true, false, true, false, '');
+    
     
         // Menyelesaikan PDF dan menampilkan di browser
         // ob_end_clean(); // Membersihkan output buffer sebelum mengirim PDF
