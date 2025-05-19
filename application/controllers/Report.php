@@ -1017,33 +1017,33 @@ class Report extends CI_Controller {
             $html2 .= '<br><br>';
         
             // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-            $html2 .= '<h3 style="font-size:14pt;">Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
-            $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
-                        <thead>
-                            <tr>
-                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Provinsi</th>
-                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
-                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
-                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
-                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
-                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
-                            </tr>
-                        </thead>
-                        <tbody>';
-            foreach ($data['puskesmas_do_immunization'] as $item) {
-                $html2 .= "<tr>
-                            <td><b>{$item['province_name']}</b></td>
-                            <td>{$item['total_puskesmas_with_immunization']}</td>
-                            <td>{$item['percentage_immunization']}%</td>
-                            <td>{$item['total_ss']}</td>
-                            <td>{$item['total_good_puskesmas']}</td>
-                            <td>{$item['percentage_good']}%</td>
-                        </tr>";
-            }
-            $html2 .= '</tbody></table>';
+            // // $html2 .= '<h3 style="font-size:14pt;">Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
+            // // $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
+            // //             <thead>
+            // //                 <tr>
+            // //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Provinsi</th>
+            // //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+            // //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
+            // //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
+            // //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
+            // //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
+            // //                 </tr>
+            // //             </thead>
+            // //             <tbody>';
+            // // foreach ($data['puskesmas_do_immunization'] as $item) {
+            // //     $html2 .= "<tr>
+            // //                 <td><b>{$item['province_name']}</b></td>
+            // //                 <td>{$item['total_puskesmas_with_immunization']}</td>
+            // //                 <td>{$item['percentage_immunization']}%</td>
+            // //                 <td>{$item['total_ss']}</td>
+            // //                 <td>{$item['total_good_puskesmas']}</td>
+            // //                 <td>{$item['percentage_good']}%</td>
+            // //             </tr>";
+            // // }
+            // // $html2 .= '</tbody></table>';
         
-            // Menambahkan jarak antara tabel ketiga dan keempat
-            $html2 .= '<br><br>';
+            // // Menambahkan jarak antara tabel ketiga dan keempat
+            // $html2 .= '<br><br>';
         
             // Tabel 5: Puskesmas dengan status DPT stock out
             $html2 .= '<h3 style="font-size:14pt;">Jumlah Puskesmas dengan status DPT stock out</h3>';
@@ -1091,26 +1091,26 @@ class Report extends CI_Controller {
                 $html2 .= '<br><br>';
             
                 // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-                $html2 .= '<h3 style="font-size:14pt;">Puskesmas yang melakukan pelayanan imunisasi</h3>';
-                $html2 .= '<table border="1" cellpadding="10" style="text-align: left;">
-                            <thead>
-                                <tr align="center">
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">NAMA PUSKESMAS</th>
-                                </tr>
-                            </thead>
-                            <tbody>';
-                $no = 0;
-                // foreach ($data['puskesmas_do_immunization'] as $item) {
-                //     $no++;
-                //     $html2 .= "
-                //             <tr>
-                //                 <td>{$item['puskesmas_name']}</td>
-                //             </tr>";
-                // }
-                $html2 .= '</tbody></table>';
+                // $html2 .= '<h3 style="font-size:14pt;">Puskesmas yang melakukan pelayanan imunisasi</h3>';
+                // $html2 .= '<table border="1" cellpadding="10" style="text-align: left;">
+                //             <thead>
+                //                 <tr align="center">
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">NAMA PUSKESMAS</th>
+                //                 </tr>
+                //             </thead>
+                //             <tbody>';
+                // $no = 0;
+                // // foreach ($data['puskesmas_do_immunization'] as $item) {
+                // //     $no++;
+                // //     $html2 .= "
+                // //             <tr>
+                // //                 <td>{$item['puskesmas_name']}</td>
+                // //             </tr>";
+                // // }
+                // $html2 .= '</tbody></table>';
             
-                // Menambahkan jarak antara tabel ketiga dan keempat
-                $html2 .= '<br><br>';
+                // // Menambahkan jarak antara tabel ketiga dan keempat
+                // $html2 .= '<br><br>';
 
                 // Tabel 5: Puskesmas dengan status DPT stock out
                 $html2 .= '<h3 style="font-size:14pt;">Puskesmas dengan status DPT stock out</h3>';
@@ -1154,33 +1154,33 @@ class Report extends CI_Controller {
                 $html2 .= '<br><br>';
             
                 // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-                $html2 .= '<h3 style="font-size:14pt;"> Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
-                $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
-                            <thead>
-                                <tr>
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Kab/Kota</th>
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
-                                </tr>
-                            </thead>
-                            <tbody>';
-                foreach ($data['puskesmas_do_immunization'] as $item) {
-                    $html2 .= "<tr>
-                                <td><b>{$item['city_name']}</b></td>
-                                <td>{$item['total_puskesmas_with_immunization']}</td>
-                                <td>{$item['percentage_immunization']}%</td>
-                                <td>{$item['total_ss']}</td>
-                                <td>{$item['total_good_puskesmas']}</td>
-                                <td>{$item['percentage_good']}%</td>
-                            </tr>";
-                }
-                $html2 .= '</tbody></table>';
+                // $html2 .= '<h3 style="font-size:14pt;"> Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
+                // $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
+                //             <thead>
+                //                 <tr>
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Kab/Kota</th>
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
+                //                 </tr>
+                //             </thead>
+                //             <tbody>';
+                // foreach ($data['puskesmas_do_immunization'] as $item) {
+                //     $html2 .= "<tr>
+                //                 <td><b>{$item['city_name']}</b></td>
+                //                 <td>{$item['total_puskesmas_with_immunization']}</td>
+                //                 <td>{$item['percentage_immunization']}%</td>
+                //                 <td>{$item['total_ss']}</td>
+                //                 <td>{$item['total_good_puskesmas']}</td>
+                //                 <td>{$item['percentage_good']}%</td>
+                //             </tr>";
+                // }
+                // $html2 .= '</tbody></table>';
             
-                // Menambahkan jarak antara tabel ketiga dan keempat
-                $html2 .= '<br><br>';
+                // // Menambahkan jarak antara tabel ketiga dan keempat
+                // $html2 .= '<br><br>';
             
                 // Tabel 5: Puskesmas dengan status DPT stock out
                 $html2 .= '<h3 style="font-size:14pt;"> Jumlah Puskesmas dengan status DPT stock out</h3>';
@@ -1852,19 +1852,19 @@ class Report extends CI_Controller {
             $html2 .= '<br><br>';
         
             // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-            $html2 .= '<h3 style="font-size:14pt;">Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
-            $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
-                        <thead>
-                            <tr>
-                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Provinsi</th>
-                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
-                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
-                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
-                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
-                                <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
-                            </tr>
-                        </thead>
-                        <tbody>';
+            // $html2 .= '<h3 style="font-size:14pt;">Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
+            // $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
+            //             <thead>
+            //                 <tr>
+            //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Provinsi</th>
+            //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+            //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
+            //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
+            //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
+            //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
+            //                 </tr>
+            //             </thead>
+            //             <tbody>';
             // foreach ($data['puskesmas_do_immunization'] as $item) {
                 // $html2 .= "<tr>
                 //             <td><b>{$item['province_name']}</b></td>
@@ -1875,10 +1875,10 @@ class Report extends CI_Controller {
                 //             <td>{$item['percentage_good']}%</td>
                 //         </tr>";
             // }
-            $html2 .= '</tbody></table>';
+            // $html2 .= '</tbody></table>';
         
-            // Menambahkan jarak antara tabel ketiga dan keempat
-            $html2 .= '<br><br>';
+            // // Menambahkan jarak antara tabel ketiga dan keempat
+            // $html2 .= '<br><br>';
         
             // Tabel 5: Puskesmas dengan status DPT stock out
             $html2 .= '<h3 style="font-size:14pt;">Jumlah Puskesmas dengan status DPT stock out</h3>';
@@ -1926,15 +1926,15 @@ class Report extends CI_Controller {
                 $html2 .= '<br><br>';
             
                 // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-                $html2 .= '<h3 style="font-size:14pt;">Puskesmas yang melakukan pelayanan imunisasi</h3>';
-                $html2 .= '<table border="1" cellpadding="10" style="text-align: left;">
-                            <thead>
-                                <tr align="center">
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">NAMA PUSKESMAS</th>
-                                </tr>
-                            </thead>
-                            <tbody>';
-                $no = 0;
+                // $html2 .= '<h3 style="font-size:14pt;">Puskesmas yang melakukan pelayanan imunisasi</h3>';
+                // $html2 .= '<table border="1" cellpadding="10" style="text-align: left;">
+                //             <thead>
+                //                 <tr align="center">
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">NAMA PUSKESMAS</th>
+                //                 </tr>
+                //             </thead>
+                //             <tbody>';
+                // $no = 0;
                 // foreach ($data['puskesmas_do_immunization'] as $item) {
                 //     $no++;
                 //     $html2 .= "
@@ -1942,10 +1942,10 @@ class Report extends CI_Controller {
                 //                 <td>{$item['puskesmas_name']}</td>
                 //             </tr>";
                 // }
-                $html2 .= '</tbody></table>';
+                // $html2 .= '</tbody></table>';
             
-                // Menambahkan jarak antara tabel ketiga dan keempat
-                $html2 .= '<br><br>';
+                // // Menambahkan jarak antara tabel ketiga dan keempat
+                // $html2 .= '<br><br>';
 
                 // Tabel 5: Puskesmas dengan status DPT stock out
                 $html2 .= '<h3 style="font-size:14pt;">Puskesmas dengan status DPT stock out</h3>';
@@ -1989,19 +1989,19 @@ class Report extends CI_Controller {
                 $html2 .= '<br><br>';
             
                 // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-                $html2 .= '<h3 style="font-size:14pt;"> Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
-                $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
-                            <thead>
-                                <tr>
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Kab/Kota</th>
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
-                                    <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
-                                </tr>
-                            </thead>
-                            <tbody>';
+                // $html2 .= '<h3 style="font-size:14pt;"> Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
+                // $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
+                //             <thead>
+                //                 <tr>
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Kab/Kota</th>
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
+                //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
+                //                 </tr>
+                //             </thead>
+                //             <tbody>';
                 // foreach ($data['puskesmas_do_immunization'] as $item) {
                 //     $html2 .= "<tr>
                 //                 <td><b>{$item['city_name']}</b></td>
@@ -2012,10 +2012,10 @@ class Report extends CI_Controller {
                 //                 <td>{$item['percentage_good']}%</td>
                 //             </tr>";
                 // }
-                $html2 .= '</tbody></table>';
+                // $html2 .= '</tbody></table>';
             
-                // Menambahkan jarak antara tabel ketiga dan keempat
-                $html2 .= '<br><br>';
+                // // Menambahkan jarak antara tabel ketiga dan keempat
+                // $html2 .= '<br><br>';
             
                 // Tabel 5: Puskesmas dengan status DPT stock out
                 $html2 .= '<h3 style="font-size:14pt;"> Jumlah Puskesmas dengan status DPT stock out</h3>';
