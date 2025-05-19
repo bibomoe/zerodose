@@ -520,7 +520,7 @@
                                                             <!-- <th><?= $translations['tabelcoloumn1'] ?></th>
                                                             <th><?= $translations['tabelcoloumn6'] ?></th> -->
                                                             <th><?= $selected_district == 'all' ? $translations['tabelcoloumn1'] : $translations['tabelcoloumn1_2'] ?></th>
-                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn6'] : $translations['tabelcoloumn6_2'] ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></th>
+                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn6'] : $translations['tabelcoloumn6_2'] ?></th>
                                                             <th><?= $translations['tabelcoloumn2'] ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></th>
                                                             <th><?= $translations['tabelcoloumn3'] ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></th>
                                                             <th><?= $translations['tabelcoloumn4'] ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></th>
