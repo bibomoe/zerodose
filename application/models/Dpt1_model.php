@@ -340,9 +340,9 @@ class Dpt1_model extends CI_Model {
         }
 
         // Filter kota jika diberikan
-        if ($city_id !== 'all') {
-            $this->db->where('cities.id', $city_id);
-        }
+        // if ($city_id !== 'all') {
+        //     $this->db->where('cities.id', $city_id);
+        // }
 
         $this->db->where('immunization_data.year', $year);
         $this->db->group_by('cities.id');

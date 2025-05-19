@@ -333,6 +333,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Ambil Dropout Rate per provinsi
                 let dropoutRate = dropout_rate_per_provinces[regionId] || 0;
 
+                dropoutRate = isProvinceLevel 
+                        ? dropoutRate  
+                        : dropout_rate_per_city[regionId] || 0;
+
                 // Safely access average and handle undefined values
                 let averageDropoutRate = dropoutRate.average ? dropoutRate.average.toFixed(2) : '0';  // Default to '100' if undefined
 
@@ -371,6 +375,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Ambil Dropout Rate per provinsi
                 let dropoutRate = dropout_rate_per_provinces[regionId] || 0;
+
+                dropoutRate = isProvinceLevel 
+                        ? dropoutRate  
+                        : dropout_rate_per_city[regionId] || 0;
 
                 // Safely access average and handle undefined values
                 let averageDropoutRate = dropoutRate.average ? dropoutRate.average.toFixed(2) : '0';  // Default to '100' if undefined
