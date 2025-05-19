@@ -386,10 +386,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Jika nilai averageDropoutRate kurang dari 0, set ke 0
                 averageDropoutRate = parseFloat(averageDropoutRate) < 0 ? '0' : averageDropoutRate;
 
-                averageDropoutRate = isProvinceLevel 
-                        ? averageDropoutRate
-                        : feature.properties.NAMOBJ;  
-
                 // Ambil persentase districts dengan coverage (DPT1-DPT3) < 5% per provinsi
                 let percentDptUnder5 = percentDptUnder5Data[regionId] || 0;
 
