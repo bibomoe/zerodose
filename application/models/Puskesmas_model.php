@@ -131,7 +131,7 @@ class Puskesmas_model extends CI_Model {
             p.province_id AS province_id,
             p.city_id AS city_id,
             COUNT(p.id) AS total_puskesmas,  -- Total puskesmas di tabel puskesmas
-            COALESCE(SUM(t.total_puskesmas), 0) AS conducted_puskesmas -- Ambil total puskesmas yang imunisasi dari tabel lain
+            COALESCE(t.total_puskesmas, 0) AS conducted_puskesmas -- Ambil total puskesmas yang imunisasi dari tabel lain
         ', false);
 
         $this->db->from('puskesmas p');
