@@ -381,6 +381,7 @@ class Immunization_model extends CI_Model {
                 $quarter_target = $total_target;
             }
 
+            $row['target_district'] = $quarter_target;
             $row['percentage_target'] = $quarter_target > 0 ? ($row['total_dpt1'] / $quarter_target) * 100 : 0;
             $row['zero_dose_children'] = $quarter_target - $row['total_dpt1'];
             $row['percent_zero_dose'] = $quarter_target > 0 ? ($row['zero_dose_children'] / $quarter_target) * 100 : 0;
