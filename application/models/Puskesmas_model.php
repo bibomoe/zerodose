@@ -115,57 +115,133 @@ class Puskesmas_model extends CI_Model {
     // }
     
     // Ambil data total Puskesmas & yang sudah imunisasi per wilayah
+    // public function get_puskesmas_coverage($province_id = 'all', $year = 2025) {
+    //     $province_ids = $this->get_targeted_province_ids(); // Jika ada targeted province
+
+    //     // $this->db->select('
+    //     //     p.province_id AS province_id,
+    //     //     p.city_id AS city_id,
+    //     //     COUNT(p.id) AS total_puskesmas,  -- ✅ Hitung total puskesmas dari tabel puskesmas
+    //     //     COUNT(DISTINCT i.puskesmas_id) AS conducted_puskesmas -- ✅ Hitung hanya puskesmas unik yang sudah imunisasi
+    //     // ', false);
+
+    //     // $this->db->from('puskesmas p');
+    //     // $this->db->join('immunization_data i', 'i.puskesmas_id = p.id AND i.year = ' . $this->db->escape($year), 'left');
+    //     $this->db->select('
+    //         p.province_id AS province_id,
+    //         p.city_id AS city_id,
+    //         COUNT(p.id) AS total_puskesmas,  -- Total puskesmas di tabel puskesmas
+    //         COALESCE(SUM(t.total_puskesmas), 0) AS conducted_puskesmas -- Total puskesmas yang imunisasi
+    //     ', false);
+
+    //     $this->db->from('puskesmas p');
+    //     $this->db->join('total_immunized_puskesmas_per_city t', "t.city_id = p.city_id AND t.year = " . $this->db->escape($year), 'left');
+
+    //     if ($province_id === 'targeted') {
+    //         if (!empty($province_ids)) {
+    //             $this->db->where_in('p.province_id', $province_ids);
+    //         } else {
+    //             return [];
+    //         }
+    //     } elseif ($province_id !== 'all') {
+    //         $this->db->where('p.province_id', $province_id);
+    //     }
+
+    //     // Grouping berdasarkan province atau city
+    //     $this->db->group_by(($province_id !== 'all' && $province_id !== 'targeted') ? 'p.city_id' : 'p.province_id');
+
+    //     $query = $this->db->get();
+    //     $result = [];
+
+    //     foreach ($query->result_array() as $row) {
+    //         // Hitung persentase
+    //         $percentage_immunization = ($row['total_puskesmas'] != 0) ? ($row['conducted_puskesmas'] / $row['total_puskesmas']) * 100 : 0;
+
+    //         $result_key = ($province_id !== 'all' && $province_id !== 'targeted') ? $row['city_id'] : $row['province_id'];
+
+    //         $result[$result_key] = array_merge($row, [
+    //             'percentage_immunization' => $percentage_immunization
+    //         ]);
+    //     }
+
+    //     return $result;
+    // }
+
     public function get_puskesmas_coverage($province_id = 'all', $year = 2025) {
-        $province_ids = $this->get_targeted_province_ids(); // Jika ada targeted province
+        $province_ids = $this->get_targeted_province_ids(); // Targeted province list jika ada
 
-        // $this->db->select('
-        //     p.province_id AS province_id,
-        //     p.city_id AS city_id,
-        //     COUNT(p.id) AS total_puskesmas,  -- ✅ Hitung total puskesmas dari tabel puskesmas
-        //     COUNT(DISTINCT i.puskesmas_id) AS conducted_puskesmas -- ✅ Hitung hanya puskesmas unik yang sudah imunisasi
-        // ', false);
-
-        // $this->db->from('puskesmas p');
-        // $this->db->join('immunization_data i', 'i.puskesmas_id = p.id AND i.year = ' . $this->db->escape($year), 'left');
-        $this->db->select('
-            p.province_id AS province_id,
-            p.city_id AS city_id,
-            COUNT(p.id) AS total_puskesmas,  -- Total puskesmas di tabel puskesmas
-            COALESCE(SUM(t.total_puskesmas), 0) AS conducted_puskesmas -- Total puskesmas yang imunisasi
-        ', false);
-
-        $this->db->from('puskesmas p');
-        $this->db->join('total_immunized_puskesmas_per_city t', "t.city_id = p.city_id AND t.year = " . $this->db->escape($year), 'left');
+        // 1. Ambil total puskesmas per provinsi atau city
+        $this->db->select([
+            'province_id',
+            'city_id',
+            'COUNT(id) AS total_puskesmas',
+        ]);
+        $this->db->from('puskesmas');
 
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
-                $this->db->where_in('p.province_id', $province_ids);
+                $this->db->where_in('province_id', $province_ids);
             } else {
                 return [];
             }
         } elseif ($province_id !== 'all') {
-            $this->db->where('p.province_id', $province_id);
+            $this->db->where('province_id', $province_id);
         }
 
-        // Grouping berdasarkan province atau city
-        $this->db->group_by(($province_id !== 'all' && $province_id !== 'targeted') ? 'p.city_id' : 'p.province_id');
+        $group_by = ($province_id !== 'all' && $province_id !== 'targeted') ? 'city_id' : 'province_id';
+        $this->db->group_by($group_by);
 
-        $query = $this->db->get();
+        $total_puskesmas_data = $this->db->get()->result_array();
+
+        // 2. Ambil conducted puskesmas dari tabel total_immunized_puskesmas_per_city dengan group yang sama
+        $this->db->select([
+            'province_id',
+            'city_id',
+            'SUM(total_puskesmas) AS conducted_puskesmas',
+        ]);
+        $this->db->from('total_immunized_puskesmas_per_city');
+        $this->db->where('year', $year);
+
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
+        $this->db->group_by($group_by);
+
+        $conducted_puskesmas_data = $this->db->get()->result_array();
+
+        // 3. Gabungkan data total_puskesmas dan conducted_puskesmas berdasarkan key (province_id atau city_id)
         $result = [];
+        $conducted_map = [];
+        foreach ($conducted_puskesmas_data as $row) {
+            $key = ($group_by === 'city_id') ? $row['city_id'] : $row['province_id'];
+            $conducted_map[$key] = (int)$row['conducted_puskesmas'];
+        }
 
-        foreach ($query->result_array() as $row) {
-            // Hitung persentase
-            $percentage_immunization = ($row['total_puskesmas'] != 0) ? ($row['conducted_puskesmas'] / $row['total_puskesmas']) * 100 : 0;
+        foreach ($total_puskesmas_data as $row) {
+            $key = ($group_by === 'city_id') ? $row['city_id'] : $row['province_id'];
+            $total = (int)$row['total_puskesmas'];
+            $conducted = isset($conducted_map[$key]) ? $conducted_map[$key] : 0;
+            $percentage = ($total > 0) ? ($conducted / $total) * 100 : 0;
 
-            $result_key = ($province_id !== 'all' && $province_id !== 'targeted') ? $row['city_id'] : $row['province_id'];
-
-            $result[$result_key] = array_merge($row, [
-                'percentage_immunization' => $percentage_immunization
-            ]);
+            $result[$key] = [
+                'province_id' => $row['province_id'],
+                'city_id' => $row['city_id'],
+                'total_puskesmas' => $total,
+                'conducted_puskesmas' => $conducted,
+                'percentage_immunization' => round($percentage, 2),
+            ];
         }
 
         return $result;
     }
+
 
 
     public function get_targeted_province_ids() {
