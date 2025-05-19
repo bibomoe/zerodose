@@ -832,6 +832,8 @@ class Home extends CI_Controller {
         //DO per Provinces untuk peta
         $this->data['dropout_rate_per_provinces'] = $dropout_rates_per_province;
 
+        $this->data['dropout_rate_per_city'] = $this->Dpt1_model->get_dropout_rates_per_city($selected_year, $selected_province, $selected_district);
+
         // $this->data['geojson_file'] = base_url('assets/geojson/targeted.geojson');  // File GeoJSON untuk targeted provinces
         // Ambil file GeoJSON berdasarkan provinsi
         if ($selected_province !== 'all' && $selected_province !== 'targeted') {

@@ -296,11 +296,12 @@ document.addEventListener("DOMContentLoaded", function () {
     let percentDptCoverageData = <?= json_encode($percent_dpt1_coverage_per_province, JSON_NUMERIC_CHECK); ?>;
     let dropout_rate_per_provinces = <?= json_encode($dropout_rate_per_provinces, JSON_NUMERIC_CHECK); ?>;
     let percentDptUnder5Data = <?= json_encode($percent_dpt_under_5_per_province, JSON_NUMERIC_CHECK); ?>;
+    let dropout_rate_per_city = <?= json_encode($dropout_rate_per_city, JSON_NUMERIC_CHECK); ?>;
 
     //Data Perkabkota
     let totalPuskesmasData = <?= json_encode($total_puskesmas_per_city, JSON_NUMERIC_CHECK); ?>;
     
-    console.log(dropout_rate_per_provinces);
+    console.log(dropout_rate_per_city);
 
     function getColor(dpt, doRate) {
         return (doRate < 5 && dpt != 0) ? '#1A9850' : '#D73027'; // Hijau jika do < 5 dan dpt != 0, merah jika tidak
@@ -376,6 +377,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Jika nilai averageDropoutRate kurang dari 0, set ke 0
                 averageDropoutRate = parseFloat(averageDropoutRate) < 0 ? '0' : averageDropoutRate;
+
+                averageDropoutRate = isProvinceLevel 
+                        ? averageDropoutRate
+                        : feature.properties.NAMOBJ;  
 
                 // Ambil persentase districts dengan coverage (DPT1-DPT3) < 5% per provinsi
                 let percentDptUnder5 = percentDptUnder5Data[regionId] || 0;

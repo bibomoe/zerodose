@@ -314,6 +314,70 @@ class Dpt1_model extends CI_Model {
         return $dropout_rates_per_province;
     }
 
+    public function get_dropout_rates_per_city($year, $province_id = 'all', $city_id = 'all') {
+        // Ambil 10 provinsi dengan priority = 1 (jika dibutuhkan)
+        $provinces = $this->get_targeted_provinces();
+        $province_ids = array_column($provinces, 'id'); // Array ID provinsi
+
+        $this->db->select("
+            cities.id AS city_id,
+            cities.name_en AS city_name,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage
+        ");
+        $this->db->from('cities');
+        $this->db->join('immunization_data', 'immunization_data.city_id = cities.id', 'left');
+
+        // Filter provinsi jika diperlukan
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('cities.province_id', $province_ids);
+            } else {
+                return []; // Tidak ada provinsi targeted
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('cities.province_id', $province_id);
+        }
+
+        // Filter kota jika diberikan
+        if ($city_id !== 'all') {
+            $this->db->where('cities.id', $city_id);
+        }
+
+        $this->db->where('immunization_data.year', $year);
+        $this->db->group_by('cities.id');
+
+        $query = $this->db->get();
+        $cities = $query->result_array();
+
+        $dropout_rates_per_city = [];
+
+        foreach ($cities as $city) {
+            $dpt1_coverage = $city['dpt1_coverage'];
+            $dpt3_coverage = $city['dpt3_coverage'];
+
+            if ($dpt1_coverage > 0) {
+                if ($dpt3_coverage > $dpt1_coverage) {
+                    $dropout_rate = 0;
+                } else {
+                    $not_received_dpt3 = $dpt1_coverage - $dpt3_coverage;
+                    $dropout_rate = ($not_received_dpt3 / $dpt1_coverage) * 100;
+                }
+            } else {
+                $dropout_rate = 0;
+            }
+
+            if ($dropout_rate < 0) {
+                $dropout_rate = 0;
+            }
+
+            // Langsung assign dropout rate sebagai nilai saja
+            $dropout_rates_per_city[$city['city_id']] = $dropout_rate;
+        }
+
+        return $dropout_rates_per_city;
+    }
+
     // Mengambil total jumlah regencies/cities untuk 10 provinsi priority
     public function get_total_regencies_cities($province_id) {
         $provinces = $this->get_targeted_provinces();
