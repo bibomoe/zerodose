@@ -675,9 +675,9 @@ class Report_model extends CI_Model {
 
         // Menambahkan kondisi untuk filter bulan
         // Jika bulan bukan 'all', maka ambil data dari bulan 1 sampai bulan yang ditentukan
-        if ($month !== 'all') {
-            $this->db->where('month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
-        }
+        // if ($month !== 'all') {
+        //     $this->db->where('month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
+        // }
     
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
