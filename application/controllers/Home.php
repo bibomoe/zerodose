@@ -704,9 +704,14 @@ class Home extends CI_Controller {
         // Hitung rata-rata dropout rate dari semua provinsi
         $average_dropout_rate_all_provinces = ($total_provinces > 0) ? $total_dropout_rate / $total_provinces : 0;
 
-        // Menambahkan rata-rata dropout rate ke data view
-        $this->data['dropout_rate_all_provinces'] = round($average_dropout_rate_all_provinces, 2);
+        if ($selected_district === 'all'){
+            // Menambahkan rata-rata dropout rate ke data view
+            $this->data['dropout_rate_all_provinces'] = round($average_dropout_rate_all_provinces, 2);
+        } else {
+            $dropout_rate_all_district = $this->Dpt1_model->get_dropout_rates_per_city($selected_year, $selected_province, $selected_district);
 
+            $this->data['dropout_rate_all_provinces'] = $dropout_rate_all_district[$selected_district];
+        }
 
         $this->data['total_dpt1_coverage'] = $this->Dpt1_model->get_total_dpt1_coverage($selected_year, $selected_province, $selected_district);
         $this->data['total_dpt1_target'] = $this->Dpt1_model->get_total_dpt1_target($selected_year, $selected_province, $selected_district);
