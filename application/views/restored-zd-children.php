@@ -711,7 +711,7 @@
                 id: {
                     title: `Jumlah Anak ZD 2024 yang dikejar di Tahun ${year}`,
                     scaleX: 'Bulan',
-                    scaleY: 'Penjangkauan Anak ZD'
+                    scaleY: 'Jumlah Anak ZD'
                 }
         };
 

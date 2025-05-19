@@ -616,7 +616,7 @@ class Home extends CI_Controller {
                 'tabelcoloumn5' => '% dari Anak Belum di Imunisasi DPT-1',
                 'text18' => 'Pemetaan Anak Zero Dose',
                 'text19' => 'Tren Penjangkauan Anak Zero-Dose',
-                'text20' => 'Jumlah Anak Zero Dose Berdasarkan Jenis Wilayah',
+                'text20' => 'Penjangkauan Anak Zero Dose Berdasarkan Jenis Wilayah',
                 'text21' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes',
                 'text22' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes',
                 'text23' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes terakhir diperbaharui pada ',
