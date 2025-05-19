@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //Data Perkabkota
     let totalPuskesmasData = <?= json_encode($total_puskesmas_per_city, JSON_NUMERIC_CHECK); ?>;
     
-    console.log(dropout_rate_per_city);
+    // console.log(dropout_rate_per_city);
 
     function getColor(dpt, doRate) {
         return (doRate < 5 && dpt != 0) ? '#1A9850' : '#D73027'; // Hijau jika do < 5 dan dpt != 0, merah jika tidak
@@ -380,7 +380,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         ? dropoutRate  
                         : dropout_rate_per_city[regionId] || 0;
 
-                console.log(dropoutRate);
+                // console.log(dropoutRate);
 
                 // Safely access average and handle undefined values
                 let averageDropoutRate = dropoutRate.average ? dropoutRate.average.toFixed(2) : '0';  // Default to '100' if undefined
@@ -401,7 +401,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 popupContent += isProvinceLevel 
                             ? `Total Districts: ${totalCities.total_cities}<br>`
                             : `Total Puskesmas: ${totalCities.total_puskesmas}<br>`;
-                popupContent += `Dropout Rate: ${averageDropoutRate}%<br>`;
+                popupContent += isProvinceLevel 
+                            ? `Dropout Rate: ${averageDropoutRate}%<br>`
+                            : `Dropout Rate: ${dropoutRate}%<br>`;
                 popupContent += isProvinceLevel 
                             ? `Total Districts `
                             : `Total Puskesmas `;
