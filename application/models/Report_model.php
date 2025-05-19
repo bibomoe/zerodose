@@ -1010,14 +1010,14 @@ class Report_model extends CI_Model {
             (SELECT COUNT(id) FROM puskesmas WHERE province_id = p.id AND active = 1) AS total_puskesmas,  -- Jumlah total Puskesmas aktif di provinsi
 
             -- Subquery untuk mendapatkan total_good_puskesmas dengan filter yang sama
-            (SELECT SUM(ss.good_category_puskesmas) 
+            (SELECT COALESCE(SUM(ss.good_category_puskesmas), 0)
                 FROM supportive_supervision ss 
                 WHERE ss.year = {$year} 
                 AND ss.province_id = p.id
             ) AS total_good_puskesmas,
             
             -- Subquery untuk mendapatkan total_ss dengan filter yang sama
-            (SELECT SUM(ss.total_ss) 
+            (SELECT COALESCE(SUM(ss.total_ss), 0)
                 FROM supportive_supervision ss 
                 WHERE ss.year = {$year} 
                 AND ss.province_id = p.id
