@@ -309,7 +309,7 @@ class Immunization_model extends CI_Model {
     }
 
     // Data total DPT-1 per distrik berdasarkan kabkota
-    public function get_dpt1_by_puskesmas($province_id = 'all', $city_id = 'all', $year = 2025) {
+    public function get_dpt1_by_puskesmas($province_id = 'all', $city_id = 'all', $year = 2025, $quarter = 1 ) {
         // Fetch province IDs based on the target condition (if needed)
         $province_ids = $this->get_targeted_province_ids();
         
