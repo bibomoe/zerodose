@@ -237,7 +237,7 @@ class Immunization_model extends CI_Model {
 
 
     // Data total DPT-1 per distrik berdasarkan provinsi
-    public function get_dpt1_by_district($province_id = 'all', $year = 2025) {
+    public function get_dpt1_by_district($province_id = 'all', $year = 2025, $quarter = 1) {
         $province_ids = $this->get_targeted_province_ids();
     
         // Ambil total target berdasarkan provinsi & tahun
@@ -282,8 +282,30 @@ class Immunization_model extends CI_Model {
         $this->db->order_by('total_dpt1', 'DESC');
         // var_dump($this->db->get()->result_array());
         // exit;
-    
-        return $this->db->get()->result_array();
+        // return $this->db->get()->result_array();
+
+        $query = $this->db->get();
+        $result = $query->result_array();
+
+        foreach ($result as &$row) {
+            $total_target = $row['target_district'];
+            if ($quarter == 1) {
+                $quarter_target = $total_target / 4;
+            } elseif ($quarter == 2) {
+                $quarter_target = 2 * $total_target / 4;
+            } elseif ($quarter == 3) {
+                $quarter_target = 3 * $total_target / 4;
+            } else {
+                $quarter_target = $total_target;
+            }
+
+            $row['target_district'] = $quarter_target;
+            $row['percentage_target'] = ($row['total_dpt1'] / $quarter_target) * 100;
+            $row['zero_dose_children'] = $quarter_target - $row['total_dpt1'];
+            $row['percent_zero_dose'] = ($row['zero_dose_children'] / $quarter_target) * 100;
+        }
+
+        return $result;
     }
 
     // Data total DPT-1 per distrik berdasarkan kabkota
@@ -341,7 +363,30 @@ class Immunization_model extends CI_Model {
         $this->db->group_by('immunization_data_per_puskesmas.puskesmas_id, puskesmas.name');
         $this->db->order_by('total_dpt1', 'DESC');
 
-        return $this->db->get()->result_array();
+        // return $this->db->get()->result_array();
+        $query = $this->db->get();
+        $result = $query->result_array();
+
+        // Hitung ulang target per kuartal dan persentasenya
+        foreach ($result as &$row) {
+            $total_target = $row['target_district'] ?? 0;
+
+            if ($quarter == 1) {
+                $quarter_target = $total_target / 4;
+            } elseif ($quarter == 2) {
+                $quarter_target = 2 * $total_target / 4;
+            } elseif ($quarter == 3) {
+                $quarter_target = 3 * $total_target / 4;
+            } else {
+                $quarter_target = $total_target;
+            }
+
+            $row['percentage_target'] = $quarter_target > 0 ? ($row['total_dpt1'] / $quarter_target) * 100 : 0;
+            $row['zero_dose_children'] = $quarter_target - $row['total_dpt1'];
+            $row['percent_zero_dose'] = $quarter_target > 0 ? ($row['zero_dose_children'] / $quarter_target) * 100 : 0;
+        }
+
+        return $result;
     }
 
 

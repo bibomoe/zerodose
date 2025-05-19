@@ -124,7 +124,7 @@ class PublicDashboard extends CI_Controller {
         }
 
         // Data imunisasi DPT-1 per distrik
-        $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year);
+        $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year, 4);
 
         // Urutkan array berdasarkan 'zero_dose_children' secara menurun
         usort($this->data['district_data'], function($a, $b) {

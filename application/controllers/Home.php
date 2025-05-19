@@ -427,9 +427,9 @@ class Home extends CI_Controller {
 
         // Data imunisasi DPT-1 per distrik
         if ($selected_district == 'all'){
-            $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year);
+            $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year, $this->data['quarter']);
         } else {
-            $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_puskesmas($selected_province, $selected_district, $selected_year);
+            $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_puskesmas($selected_province, $selected_district, $selected_year, $this->data['quarter']);
         }
         
 
