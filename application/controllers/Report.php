@@ -1865,16 +1865,16 @@ class Report extends CI_Controller {
                             </tr>
                         </thead>
                         <tbody>';
-            foreach ($data['puskesmas_do_immunization'] as $item) {
-                $html2 .= "<tr>
-                            <td><b>{$item['province_name']}</b></td>
-                            <td>{$item['total_puskesmas_with_immunization']}</td>
-                            <td>{$item['percentage_immunization']}%</td>
-                            <td>{$item['total_ss']}</td>
-                            <td>{$item['total_good_puskesmas']}</td>
-                            <td>{$item['percentage_good']}%</td>
-                        </tr>";
-            }
+            // foreach ($data['puskesmas_do_immunization'] as $item) {
+                // $html2 .= "<tr>
+                //             <td><b>{$item['province_name']}</b></td>
+                //             <td>{$item['total_puskesmas_with_immunization']}</td>
+                //             <td>{$item['percentage_immunization']}%</td>
+                //             <td>{$item['total_ss']}</td>
+                //             <td>{$item['total_good_puskesmas']}</td>
+                //             <td>{$item['percentage_good']}%</td>
+                //         </tr>";
+            // }
             $html2 .= '</tbody></table>';
         
             // Menambahkan jarak antara tabel ketiga dan keempat
@@ -2002,16 +2002,16 @@ class Report extends CI_Controller {
                                 </tr>
                             </thead>
                             <tbody>';
-                foreach ($data['puskesmas_do_immunization'] as $item) {
-                    $html2 .= "<tr>
-                                <td><b>{$item['city_name']}</b></td>
-                                <td>{$item['total_puskesmas_with_immunization']}</td>
-                                <td>{$item['percentage_immunization']}%</td>
-                                <td>{$item['total_ss']}</td>
-                                <td>{$item['total_good_puskesmas']}</td>
-                                <td>{$item['percentage_good']}%</td>
-                            </tr>";
-                }
+                // foreach ($data['puskesmas_do_immunization'] as $item) {
+                //     $html2 .= "<tr>
+                //                 <td><b>{$item['city_name']}</b></td>
+                //                 <td>{$item['total_puskesmas_with_immunization']}</td>
+                //                 <td>{$item['percentage_immunization']}%</td>
+                //                 <td>{$item['total_ss']}</td>
+                //                 <td>{$item['total_good_puskesmas']}</td>
+                //                 <td>{$item['percentage_good']}%</td>
+                //             </tr>";
+                // }
                 $html2 .= '</tbody></table>';
             
                 // Menambahkan jarak antara tabel ketiga dan keempat
