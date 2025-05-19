@@ -519,19 +519,19 @@
                                                         <tr>
                                                             <!-- <th><?= $translations['tabelcoloumn1'] ?></th>
                                                             <th><?= $translations['tabelcoloumn6'] ?></th> -->
-                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn1'] : $translations['tabelcoloumn1_2'] ?></th>
-                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn6'] : $translations['tabelcoloumn6_2'] ?></th>
-                                                            <th><?= $translations['tabelcoloumn2'] ?></th>
-                                                            <th><?= $translations['tabelcoloumn3'] ?></th>
-                                                            <th><?= $translations['tabelcoloumn4'] ?></th>
-                                                            <th><?= $translations['tabelcoloumn5'] ?></th>
+                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn1'] : $translations['tabelcoloumn1_2'] ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></th>
+                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn6'] : $translations['tabelcoloumn6_2'] ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></th>
+                                                            <th><?= $translations['tabelcoloumn2'] ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></th>
+                                                            <th><?= $translations['tabelcoloumn3'] ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></th>
+                                                            <th><?= $translations['tabelcoloumn5'] ?> <?= $translations['text1_quarter'] ?> <?= $quarter; ?></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <?php foreach ($district_data as $district): ?>
                                                             <tr>
                                                                 <td><?= $district['district'] ?></td>
-                                                                <td><?= number_format($district['target_district']) ?></td>
+                                                                <td><?= number_format($district['target_district']) ?> </td>
                                                                 <td><?= number_format($district['total_dpt1']) ?></td>
                                                                 <td><?= number_format($district['percentage_target'], 2) ?>%</td>
                                                                 <td><?= number_format($district['zero_dose_children']) ?></td>
