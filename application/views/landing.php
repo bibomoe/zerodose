@@ -415,7 +415,7 @@
                                     <h1 class="fw-bold" id="title">Zero Dose</h1>
                                     <p class="text-muted" id="subtitle"></p>
                                     <p id="description"></p>
-                                    <button class="btn btn-primary" id="download-btn">Download Panduan</button>
+                                    <a href="https://drive.google.com/file/d/19ia24-1UMzp6qbq6GdKRl37uef6IiaNo/view?usp=sharing"><button class="btn btn-primary" id="download-btn">Download Panduan</button></a>
                                     <!-- <a href="<?= base_url('PublicDashboard'); ?>" id="public-dashboard-button"class="btn btn-primary">Public Dashboard</a> -->
                                 </div>
                             <!-- </div> -->
