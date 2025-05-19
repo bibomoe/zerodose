@@ -1002,7 +1002,7 @@ class Report_model extends CI_Model {
             p.id AS province_id,
             p.name_id AS province_name,
             (
-                SELECT SUM(tipc.total_puskesmas)
+                SELECT COALESCE(SUM(tipc.total_puskesmas), 0)
                 FROM total_immunized_puskesmas_per_city tipc
                 WHERE tipc.year = {$year}
                 AND tipc.province_id = p.id
@@ -1011,22 +1011,16 @@ class Report_model extends CI_Model {
 
             -- Subquery untuk mendapatkan total_good_puskesmas dengan filter yang sama
             (SELECT SUM(ss.good_category_puskesmas) 
-            FROM supportive_supervision ss 
-            WHERE ss.year = {$year} 
-            " . ($month !== 'all' ? "AND ss.month <= {$month}" : "") . "  -- Kondisi bulan yang sama dengan query utama
-            " . ($province_id === 'targeted' && !empty($province_ids) ? "AND ss.province_id IN (" . implode(",", $province_ids) . ")" : "") . "
-            " . ($province_id !== 'all' && $province_id !== 'targeted' ? "AND ss.province_id = {$province_id}" : "") . "
-            " . ($city_id !== 'all' ? "AND ss.city_id = {$city_id}" : "") . "
+                FROM supportive_supervision ss 
+                WHERE ss.year = {$year} 
+                AND ss.province_id = p.id
             ) AS total_good_puskesmas,
             
             -- Subquery untuk mendapatkan total_ss dengan filter yang sama
             (SELECT SUM(ss.total_ss) 
-            FROM supportive_supervision ss 
-            WHERE ss.year = {$year} 
-            " . ($month !== 'all' ? "AND ss.month <= {$month}" : "") . "  -- Kondisi bulan yang sama dengan query utama
-            " . ($province_id === 'targeted' && !empty($province_ids) ? "AND ss.province_id IN (" . implode(",", $province_ids) . ")" : "") . "
-            " . ($province_id !== 'all' && $province_id !== 'targeted' ? "AND ss.province_id = {$province_id}" : "") . "
-            " . ($city_id !== 'all' ? "AND ss.city_id = {$city_id}" : "") . "
+                FROM supportive_supervision ss 
+                WHERE ss.year = {$year} 
+                AND ss.province_id = p.id
             ) AS total_ss
         ");
         $this->db->from('immunization_data id');
