@@ -118,15 +118,24 @@ class Puskesmas_model extends CI_Model {
     public function get_puskesmas_coverage($province_id = 'all', $year = 2025) {
         $province_ids = $this->get_targeted_province_ids(); // Jika ada targeted province
 
+        // $this->db->select('
+        //     p.province_id AS province_id,
+        //     p.city_id AS city_id,
+        //     COUNT(p.id) AS total_puskesmas,  -- ✅ Hitung total puskesmas dari tabel puskesmas
+        //     COUNT(DISTINCT i.puskesmas_id) AS conducted_puskesmas -- ✅ Hitung hanya puskesmas unik yang sudah imunisasi
+        // ', false);
+
+        // $this->db->from('puskesmas p');
+        // $this->db->join('immunization_data i', 'i.puskesmas_id = p.id AND i.year = ' . $this->db->escape($year), 'left');
         $this->db->select('
             p.province_id AS province_id,
             p.city_id AS city_id,
-            COUNT(p.id) AS total_puskesmas,  -- ✅ Hitung total puskesmas dari tabel puskesmas
-            COUNT(DISTINCT i.puskesmas_id) AS conducted_puskesmas -- ✅ Hitung hanya puskesmas unik yang sudah imunisasi
+            COUNT(p.id) AS total_puskesmas,  -- Total puskesmas di tabel puskesmas
+            COALESCE(t.total_immunized_puskesmas, 0) AS conducted_puskesmas -- Ambil total puskesmas yang imunisasi dari tabel lain
         ', false);
 
         $this->db->from('puskesmas p');
-        $this->db->join('immunization_data i', 'i.puskesmas_id = p.id AND i.year = ' . $this->db->escape($year), 'left');
+        $this->db->join('total_immunized_puskesmas_per_city t', "t.city_id = p.city_id AND t.year = " . $this->db->escape($year), 'left');
 
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
