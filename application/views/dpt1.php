@@ -403,7 +403,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             : `Total Puskesmas: ${totalCities.total_puskesmas}<br>`;
                 popupContent += isProvinceLevel 
                             ? `Dropout Rate: ${averageDropoutRate}%<br>`
-                            `Dropout Rate: ${dropoutRate.toFixed(2)}%<br>`;
+                            : `Dropout Rate: ${dropoutRate.toFixed(2)}%<br>`;
                 popupContent += isProvinceLevel 
                             ? `Total Districts `
                             : `Total Puskesmas `;
