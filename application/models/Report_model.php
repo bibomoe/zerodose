@@ -279,16 +279,16 @@ class Report_model extends CI_Model {
     
         $this->db->select("
             puskesmas.id AS puskesmas_id,
-            SUM(immunization_data.dpt_hb_hib_1) AS dpt1,
-            SUM(immunization_data.dpt_hb_hib_3) AS dpt3
+            SUM(immunization_data_per_puskesmas.dpt_hb_hib_1) AS dpt1,
+            SUM(immunization_data_per_puskesmas.dpt_hb_hib_3) AS dpt3
         ");
         $this->db->from('puskesmas');
-        $this->db->join('immunization_data', 'immunization_data.puskesmas_id = puskesmas.id', 'left');
+        $this->db->join('immunization_data_per_puskesmas', 'immunization_data_per_puskesmas.puskesmas_id = puskesmas.id', 'left');
         $this->db->where('puskesmas.city_id', $city_id);
-        $this->db->where('immunization_data.year', $year);
+        $this->db->where('immunization_data_per_puskesmas.year', $year);
     
         if ($month !== 'all') {
-            $this->db->where('immunization_data.month <=', $month);
+            $this->db->where('immunization_data_per_puskesmas.month <=', $month);
         }
     
         if ($province_id === 'targeted') {
@@ -478,11 +478,11 @@ class Report_model extends CI_Model {
         $this->db->select("
             puskesmas.id AS puskesmas_id,
             puskesmas.name AS puskesmas_name,
-            COALESCE(immunization_data.dpt_hb_hib_1, 0) AS dpt1_coverage,
-            COALESCE(immunization_data.dpt_hb_hib_3, 0) AS dpt3_coverage
+            COALESCE(immunization_data_per_puskesmas.dpt_hb_hib_1, 0) AS dpt1_coverage,
+            COALESCE(immunization_data_per_puskesmas.dpt_hb_hib_3, 0) AS dpt3_coverage
         ");
         $this->db->from('puskesmas');
-        $this->db->join('immunization_data', 'immunization_data.puskesmas_id = puskesmas.id', 'left');
+        $this->db->join('immunization_data_per_puskesmas', 'immunization_data_per_puskesmas.puskesmas_id = puskesmas.id', 'left');
         
         // Kondisi untuk filter provinsi atau kota
         if ($province_id === 'targeted') {
@@ -499,11 +499,11 @@ class Report_model extends CI_Model {
             $this->db->where('puskesmas.city_id', $city_id);
         } 
     
-        $this->db->where('immunization_data.year', $year); // Filter berdasarkan tahun
+        $this->db->where('immunization_data_per_puskesmas.year', $year); // Filter berdasarkan tahun
     
         // Menambahkan kondisi untuk filter bulan
         if ($month !== 'all') {
-            $this->db->where('immunization_data.month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
+            $this->db->where('immunization_data_per_puskesmas.month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
         }
     
         // $this->db->group_by('cities.id'); // Group by city_id untuk perhitungan tiap kota/distrik
