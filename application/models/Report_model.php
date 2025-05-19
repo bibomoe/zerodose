@@ -1001,7 +1001,14 @@ class Report_model extends CI_Model {
         $this->db->select("
             p.id AS province_id,
             p.name_id AS province_name,
-            COUNT(DISTINCT pd.id) AS total_puskesmas_with_immunization,  -- Jumlah Puskesmas yang melakukan imunisasi
+            (
+                SELECT SUM(tipc.total_puskesmas)
+                FROM total_immunized_puskesmas_per_city tipc
+                WHERE tipc.year = {$year}
+            " . ($province_id === 'targeted' && !empty($province_ids) ? "AND tipc.province_id IN (" . implode(",", $province_ids) . ")" : "") . "
+            " . ($province_id !== 'all' && $province_id !== 'targeted' ? "AND tipc.province_id = {$province_id}" : "") . "
+            " . ($city_id !== 'all' ? "AND tipc.city_id = {$city_id}" : "") . "
+            ) AS total_puskesmas_with_immunization,
             (SELECT COUNT(id) FROM puskesmas WHERE province_id = p.id AND active = 1) AS total_puskesmas,  -- Jumlah total Puskesmas aktif di provinsi
 
             -- Subquery untuk mendapatkan total_good_puskesmas dengan filter yang sama
