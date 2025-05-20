@@ -322,11 +322,11 @@ class Dpt1_model extends CI_Model {
         $this->db->select("
             cities.id AS city_id,
             cities.name_en AS city_name,
-            COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
-            COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage
+            COALESCE(SUM(immunization_data_per_puskesmas.dpt_hb_hib_1), 0) AS dpt1_coverage,
+            COALESCE(SUM(immunization_data_per_puskesmas.dpt_hb_hib_3), 0) AS dpt3_coverage
         ");
         $this->db->from('cities');
-        $this->db->join('immunization_data', 'immunization_data.city_id = cities.id', 'left');
+        $this->db->join('immunization_data_per_puskesmas', 'immunization_data_per_puskesmas.city_id = cities.id', 'left');
 
         // Filter provinsi jika diperlukan
         if ($province_id === 'targeted') {
@@ -344,7 +344,7 @@ class Dpt1_model extends CI_Model {
         //     $this->db->where('cities.id', $city_id);
         // }
 
-        $this->db->where('immunization_data.year', $year);
+        $this->db->where('immunization_data_per_puskesmas.year', $year);
         $this->db->group_by('cities.id');
 
         $query = $this->db->get();
