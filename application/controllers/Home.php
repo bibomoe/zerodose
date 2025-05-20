@@ -710,8 +710,8 @@ class Home extends CI_Controller {
         } else {
             $dropout_rate_all_district = $this->Dpt1_model->get_dropout_rates_per_city($selected_year, $selected_province, $selected_district);
 
-            // var_dump($dropout_rate_all_district);
-            // exit;
+            var_dump($dropout_rate_all_district);
+            exit;
             $this->data['dropout_rate_all_provinces'] = $dropout_rate_all_district[$selected_district];
         }
 
