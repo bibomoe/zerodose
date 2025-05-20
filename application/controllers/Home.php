@@ -712,7 +712,11 @@ class Home extends CI_Controller {
 
             // var_dump($dropout_rate_all_district);
             // exit;
-            $this->data['dropout_rate_all_provinces'] = $dropout_rate_all_district[$selected_district];
+            // $this->data['dropout_rate_all_provinces'] = $dropout_rate_all_district[$selected_district];
+            $this->data['dropout_rate_all_provinces'] = array_key_exists($selected_district, $dropout_rate_all_district) 
+                ? $dropout_rate_all_district[$selected_district] 
+                : 0;
+
         }
 
         $this->data['total_dpt1_coverage'] = $this->Dpt1_model->get_total_dpt1_coverage($selected_year, $selected_province, $selected_district);
