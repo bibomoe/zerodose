@@ -455,7 +455,7 @@
                     {
                         label: '1 Month',
                         data: overStock1,
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)', // Red-pink, cukup tegas
+                        backgroundColor: 'rgba(93, 232, 153, 0.6)', // Red-pink, cukup tegas
                     },
                     {
                         label: '2 Months',
@@ -465,7 +465,7 @@
                     {
                         label: '3 Months',
                         data: overStock3,
-                        backgroundColor: 'rgba(20, 102, 102, 0.6)', // Teal-biru, netral
+                        backgroundColor: 'rgba(218, 0, 243, 0.6)', // Teal-biru, netral
                     },
                     {
                         label: '> 3 Months',
