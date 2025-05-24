@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //Data Perkabkota
     let totalPuskesmasData = <?= json_encode($total_puskesmas_per_city, JSON_NUMERIC_CHECK); ?>;
     
-    console.log(dropout_rate_per_city);
+    //console.log(dropout_rate_per_city);
 
     function getColor(dpt, doRate) {
         return (doRate < 5 && dpt != 0) ? '#1A9850' : '#D73027'; // Hijau jika do < 5 dan dpt != 0, merah jika tidak
