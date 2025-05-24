@@ -455,24 +455,25 @@
                     {
                         label: '1 Month',
                         data: overStock1,
-                        backgroundColor: 'rgba(255, 159, 64, 0.7)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)', // Red-pink, cukup tegas
                     },
                     {
                         label: '2 Months',
                         data: overStock2,
-                        backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                        backgroundColor: 'rgba(255, 159, 64, 0.6)', // Orange lembut tapi kontras
                     },
                     {
                         label: '3 Months',
                         data: overStock3,
-                        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                        backgroundColor: 'rgba(20, 102, 102, 0.6)', // Teal-biru, netral
                     },
                     {
                         label: '> 3 Months',
                         data: overStock4,
-                        backgroundColor: 'rgba(153, 102, 255, 0.7)',
+                        backgroundColor: 'rgba(0, 0, 0, 0.6)', // Ungu sedang
                     }
                 ]
+
             },
             options: {
                 responsive: true,
