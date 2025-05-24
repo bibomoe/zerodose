@@ -177,18 +177,19 @@
                                                             <td><?= $row['puskesmas_name']; ?></td>
 
                                                             <!-- Monthly Stockout Data -->
-                                                            <td><?= $row['month_1'] > 0 ? '✔' : ''; ?></td>
-                                                            <td><?= $row['month_2'] > 0 ? '✔' : ''; ?></td>
-                                                            <td><?= $row['month_3'] > 0 ? '✔' : ''; ?></td>
-                                                            <td><?= $row['month_4'] > 0 ? '✔' : ''; ?></td>
-                                                            <td><?= $row['month_5'] > 0 ? '✔' : ''; ?></td>
-                                                            <td><?= $row['month_6'] > 0 ? '✔' : ''; ?></td>
-                                                            <td><?= $row['month_7'] > 0 ? '✔' : ''; ?></td>
-                                                            <td><?= $row['month_8'] > 0 ? '✔' : ''; ?></td>
-                                                            <td><?= $row['month_9'] > 0 ? '✔' : ''; ?></td>
-                                                            <td><?= $row['month_10'] > 0 ? '✔' : ''; ?></td>
-                                                            <td><?= $row['month_11'] > 0 ? '✔' : ''; ?></td>
-                                                            <td><?= $row['month_12'] > 0 ? '✔' : ''; ?></td>
+                                                            <!-- <td><?= $row['month_1'] > 0 ? '✔' : ''; ?></td> -->
+                                                            <td><?= $row['month_1'] > 0 ? '✘' : ''; ?></td>
+                                                            <td><?= $row['month_2'] > 0 ? '✘' : ''; ?></td>
+                                                            <td><?= $row['month_3'] > 0 ? '✘' : ''; ?></td>
+                                                            <td><?= $row['month_4'] > 0 ? '✘' : ''; ?></td>
+                                                            <td><?= $row['month_5'] > 0 ? '✘' : ''; ?></td>
+                                                            <td><?= $row['month_6'] > 0 ? '✘' : ''; ?></td>
+                                                            <td><?= $row['month_7'] > 0 ? '✘' : ''; ?></td>
+                                                            <td><?= $row['month_8'] > 0 ? '✘' : ''; ?></td>
+                                                            <td><?= $row['month_9'] > 0 ? '✘' : ''; ?></td>
+                                                            <td><?= $row['month_10'] > 0 ? '✘' : ''; ?></td>
+                                                            <td><?= $row['month_11'] > 0 ? '✘' : ''; ?></td>
+                                                            <td><?= $row['month_12'] > 0 ? '✘' : ''; ?></td>
                                                         </tr>
                                                     <?php endforeach; ?>
                                                 </tbody>
