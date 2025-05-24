@@ -340,6 +340,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Safely access average and handle undefined values
                 let averageDropoutRate = dropoutRate.average ? dropoutRate.average.toFixed(2) : '0';  // Default to '100' if undefined
 
+                averageDropoutRate = isProvinceLevel 
+                        ? averageDropoutRate  
+                        : dropoutRate;
 
                 return {
                     fillColor: getColor(dptUnder5, averageDropoutRate),
