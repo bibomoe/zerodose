@@ -132,7 +132,21 @@
                             </div>
                         </div>
 
-                        <!-- table -->
+                        <!-- Graph Over stock-->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title"><?= $translations['text4'] ?></h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="overStockByDurationChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- table Stock Out-->
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
@@ -200,6 +214,74 @@
                             </div>
                         </div>
 
+                        <!-- table Over stock-->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4><?= $translations['text5']; ?> <?= $selected_year; ?></h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped" id="table3">
+                                                <thead>
+                                                    <tr>
+                                                        <th><?= $translations['tabelcoloumn1'] ?></th> <!-- Province Name -->
+                                                        <th><?= $translations['tabelcoloumn2'] ?></th> <!-- City Name -->
+                                                        <th><?= $translations['tabelcoloumn3'] ?></th> <!-- Subdistrict Name -->
+                                                        <th><?= $translations['tabelcoloumn4'] ?></th> <!-- Puskesmas Name -->
+                                                        <th colspan="12" class="text-center"><?= $translations['tabelcoloumn5'] ?></th> <!-- Column for months -->
+                                                    </tr>
+                                                    <tr>
+                                                        <!-- Columns for months -->
+                                                        <th colspan="4"></th> <!-- Empty space for Province, City, Subdistrict, Puskesmas -->
+                                                        <th>Jan</th>
+                                                        <th>Feb</th>
+                                                        <th>Mar</th>
+                                                        <th>Apr</th>
+                                                        <th>May</th>
+                                                        <th>Jun</th>
+                                                        <th>Jul</th>
+                                                        <th>Aug</th>
+                                                        <th>Sep</th>
+                                                        <th>Oct</th>
+                                                        <th>Nov</th>
+                                                        <th>Dec</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($puskesmas_overstock_table as $row): ?>
+                                                        <tr>
+                                                            <!-- Province, City, Subdistrict, Puskesmas Name -->
+                                                            <td><?= $row['province_name']; ?></td>
+                                                            <td><?= $row['city_name']; ?></td>
+                                                            <td><?= $row['subdistrict_name']; ?></td>
+                                                            <td><?= $row['puskesmas_name']; ?></td>
+
+                                                            <!-- Monthly Stockout Data -->
+                                                            <!-- <td><?= $row['month_1'] > 0 ? '✔' : ''; ?></td> -->
+                                                            <td><?= $row['month_1'] > 0 ? '✔' : ''; ?></td>
+                                                            <td><?= $row['month_2'] > 0 ? '✔' : ''; ?></td>
+                                                            <td><?= $row['month_3'] > 0 ? '✔' : ''; ?></td>
+                                                            <td><?= $row['month_4'] > 0 ? '✔' : ''; ?></td>
+                                                            <td><?= $row['month_5'] > 0 ? '✔' : ''; ?></td>
+                                                            <td><?= $row['month_6'] > 0 ? '✔' : ''; ?></td>
+                                                            <td><?= $row['month_7'] > 0 ? '✔' : ''; ?></td>
+                                                            <td><?= $row['month_8'] > 0 ? '✔' : ''; ?></td>
+                                                            <td><?= $row['month_9'] > 0 ? '✔' : ''; ?></td>
+                                                            <td><?= $row['month_10'] > 0 ? '✔' : ''; ?></td>
+                                                            <td><?= $row['month_11'] > 0 ? '✔' : ''; ?></td>
+                                                            <td><?= $row['month_12'] > 0 ? '✔' : ''; ?></td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </section>
                 </div>
             </div>
@@ -209,415 +291,260 @@
                     <div class="float-start">
                         <p>2025 &copy; CHAI</p>
                     </div>
-                    <!-- <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart-fill icon-mid"></i></span>
-                            by <a href="https://saugi.me">Saugi</a></p>
-                    </div> -->
                 </div>
             </footer>
         </div>
     </div>
-    
-    
 
-    <!-- <script>
-        // Chart.js setup for monthStockChart
-        const monthStockCtx = document.getElementById('monthStockChart').getContext('2d');
-        new Chart(monthStockCtx, {
-            type: 'bar',
-            data: {
-                labels: ['HBO', 'BCG', 'DPT', 'MR', 'PCV', 'RV'],
-                datasets: [{
-                    label: 'Month of Stock',
-                    data: [2.5, 2.8, 1.2, 3.4, 2, 1.1],
-                    backgroundColor: 'rgba(0, 86, 179, 0.7)',
-                    borderColor: 'rgba(0, 86, 179, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Month of Stock'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Vaccine Type'
-                        }
-                    }
-                }
-            }
-        });
-
-        // Function to create buttons dynamically for monthStockChart
-        function addMonthStockDownloadButtons() {
-            const container = monthStockCtx.canvas.parentNode;
-
-            // Create a wrapper for the buttons
-            const buttonWrapper = document.createElement('div');
-            buttonWrapper.className = 'd-flex mb-3 gap-2'; // Bootstrap classes
-
-            // Create CSV download button
-            const csvButton = document.createElement('button');
-            csvButton.textContent = 'Download CSV';
-            csvButton.className = 'btn btn-primary btn-sm'; // Smaller button
-            csvButton.addEventListener('click', () => downloadMonthStockCSV());
-
-            // Create Excel download button
-            const excelButton = document.createElement('button');
-            excelButton.textContent = 'Download Excel';
-            excelButton.className = 'btn btn-success btn-sm'; // Smaller button
-            excelButton.addEventListener('click', () => downloadMonthStockExcel());
-
-            // Append buttons to the wrapper
-            buttonWrapper.appendChild(csvButton);
-            buttonWrapper.appendChild(excelButton);
-
-            // Insert the wrapper above the chart
-            container.insertBefore(buttonWrapper, monthStockCtx.canvas);
-        }
-
-        // Function to download CSV for monthStockChart
-        function downloadMonthStockCSV() {
-            const labels = ['HBO', 'BCG', 'DPT', 'MR', 'PCV', 'RV'];
-            const data = [2.5, 2.8, 1.2, 3.4, 2, 1.1];
-
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Vaccine Type,Month of Stock\n"; // Header
-            labels.forEach((label, index) => {
-                csvContent += `${label},${data[index]}\n`;
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
-            link.setAttribute('download', 'month_stock_chart_data.csv');
-            link.click();
-        }
-
-        // Function to download Excel for monthStockChart
-        function downloadMonthStockExcel() {
-            const labels = ['HBO', 'BCG', 'DPT', 'MR', 'PCV', 'RV'];
-            const data = [2.5, 2.8, 1.2, 3.4, 2, 1.1];
-
-            // Create Excel content using XLSX.js
-            const workbook = XLSX.utils.book_new();
-            const worksheetData = [['Vaccine Type', 'Month of Stock'], ...labels.map((label, index) => [label, data[index]])];
-            const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-
-            // Generate Excel file and download
-            XLSX.writeFile(workbook, 'month_stock_chart_data.xlsx');
-        }
-
-        // Add buttons to the DOM for monthStockChart
-        addMonthStockDownloadButtons();
-
-
-        // Chart.js setup for stockoutChart
-        const stockoutCtx = document.getElementById('stockoutChart').getContext('2d');
-        new Chart(stockoutCtx, {
-            type: 'bar',
-            data: {
-                labels: ['HBO', 'BCG', 'DPT', 'MR', 'PCV', 'RV'],
-                datasets: [{
-                    label: 'Number of Facilities',
-                    data: [7, 3, 4, 5, 3, 2],
-                    backgroundColor: 'rgba(0, 86, 179, 0.7)',
-                    borderColor: 'rgba(0, 86, 179, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Number of Facilities'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Vaccine Type'
-                        }
-                    }
-                }
-            }
-        });
-
-        // Function to create buttons dynamically for stockoutChart
-        function addStockoutDownloadButtons() {
-            const container = stockoutCtx.canvas.parentNode;
-
-            // Create a wrapper for the buttons
-            const buttonWrapper = document.createElement('div');
-            buttonWrapper.className = 'd-flex mb-3 gap-2'; // Bootstrap classes
-
-            // Create CSV download button
-            const csvButton = document.createElement('button');
-            csvButton.textContent = 'Download CSV';
-            csvButton.className = 'btn btn-primary btn-sm'; // Smaller button
-            csvButton.addEventListener('click', () => downloadStockoutCSV());
-
-            // Create Excel download button
-            const excelButton = document.createElement('button');
-            excelButton.textContent = 'Download Excel';
-            excelButton.className = 'btn btn-success btn-sm'; // Smaller button
-            excelButton.addEventListener('click', () => downloadStockoutExcel());
-
-            // Append buttons to the wrapper
-            buttonWrapper.appendChild(csvButton);
-            buttonWrapper.appendChild(excelButton);
-
-            // Insert the wrapper above the chart
-            container.insertBefore(buttonWrapper, stockoutCtx.canvas);
-        }
-
-        // Function to download CSV for stockoutChart
-        function downloadStockoutCSV() {
-            const labels = ['HBO', 'BCG', 'DPT', 'MR', 'PCV', 'RV'];
-            const data = [7, 3, 4, 5, 3, 2];
-
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Vaccine Type,Number of Facilities\n"; // Header
-            labels.forEach((label, index) => {
-                csvContent += `${label},${data[index]}\n`;
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
-            link.setAttribute('download', 'stockout_chart_data.csv');
-            link.click();
-        }
-
-        // Function to download Excel for stockoutChart
-        function downloadStockoutExcel() {
-            const labels = ['HBO', 'BCG', 'DPT', 'MR', 'PCV', 'RV'];
-            const data = [7, 3, 4, 5, 3, 2];
-
-            // Create Excel content using XLSX.js
-            const workbook = XLSX.utils.book_new();
-            const worksheetData = [['Vaccine Type', 'Number of Facilities'], ...labels.map((label, index) => [label, data[index]])];
-            const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-
-            // Generate Excel file and download
-            XLSX.writeFile(workbook, 'stockout_chart_data.xlsx');
-        }
-
-        // Add buttons to the DOM for stockoutChart
-        addStockoutDownloadButtons();
-
-    </script> -->
-    <script>
-        // Chart.js setup for stockOutByDurationChart
-            // const stockOutByDurationCtx = document.getElementById('stockOutByDurationChart').getContext('2d');
-
-            // new Chart(stockOutByDurationCtx, {
-            //     type: 'bar',
-            //     data: {
-            //         labels: ['HBO', 'BCG', 'DPT', 'MR', 'PCV', 'RV'], // Vaccine types
-            //         datasets: [
-            //             {
-            //                 label: '1 Month',
-            //                 data: [5, 4, 3, 2, 1, 0], // Example: number of facilities stockout for 1 month
-            //                 backgroundColor: 'rgba(255, 99, 132, 0.7)',
-            //             },
-            //             {
-            //                 label: '2 Months',
-            //                 data: [3, 6, 4, 1, 2, 1], // Example: number of facilities stockout for 2 months
-            //                 backgroundColor: 'rgba(54, 162, 235, 0.7)',
-            //             },
-            //             {
-            //                 label: '3 Months',
-            //                 data: [2, 1, 2, 4, 0, 1], // Example: number of facilities stockout for 3 months
-            //                 backgroundColor: 'rgba(75, 192, 192, 0.7)',
-            //             }
-            //         ]
-            //     },
-            //     options: {
-            //         responsive: true,
-            //         plugins: {
-            //             legend: {
-            //                 position: 'top',
-            //             },
-            //             title: {
-            //                 display: true,
-            //                 text: 'Stock Out by Duration and Vaccine Type'
-            //             }
-            //         },
-            //         scales: {
-            //             x: {
-            //                 stacked: true,
-            //                 title: {
-            //                     display: true,
-            //                     text: 'Vaccine Type'
-            //                 }
-            //             },
-            //             y: {
-            //                 stacked: true,
-            //                 beginAtZero: true,
-            //                 title: {
-            //                     display: true,
-            //                     text: 'Number of Facilities'
-            //                 }
-            //             }
-            //         }
-            //     }
-            // });
-
-    </script>
-
+<!-- Stockout Graph -->
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    let stockOutData = <?= json_encode($stock_out_data); ?>; // Data dari PHP
-    
-    let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    
-    let stockOut1 = new Array(12).fill(0);
-    let stockOut2 = new Array(12).fill(0);
-    let stockOut3 = new Array(12).fill(0);
-    let stockOut4 = new Array(12).fill(0); // Untuk stock out >3 bulan
-
-    // Mapping data dari database ke array bulan
-    stockOutData.forEach(item => {
-        let monthIndex = item.month - 1; // Bulan di DB 1-12, tapi array mulai dari 0
-        stockOut1[monthIndex] = item.stock_out_1;
-        stockOut2[monthIndex] = item.stock_out_2;
-        stockOut3[monthIndex] = item.stock_out_3;
-        stockOut4[monthIndex] = item.stock_out_4; // Assign data lebih dari 3 bulan
-    });
-
-    const ctx = document.getElementById('stockOutByDurationChart').getContext('2d');
-    const stockoutChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: months, 
-            datasets: [
-                {
-                    label: '1 Month',
-                    data: stockOut1,
-                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
-                },
-                {
-                    label: '2 Months',
-                    data: stockOut2,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                },
-                {
-                    label: '3 Months',
-                    data: stockOut3,
-                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
-                },
-                {
-                    label: '> 3 Months',
-                    data: stockOut4,
-                    backgroundColor: 'rgba(153, 102, 255, 0.7)',
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'top' },
-                title: { display: true, text: 'DPT Stock Out by Month' }
-            },
-            scales: {
-                x: {
-                    stacked: true,
-                    title: { display: true, text: 'Month' }
-                },
-                y: {
-                    stacked: true,
-                    beginAtZero: true,
-                    title: { display: true, text: 'Number of Facilities' }
-                }
-            }
-        }
-    });
-
-    // Function to create buttons dynamically
-    function addDownloadButtons() {
-        const container = ctx.canvas.parentNode;
-
-        // Create a wrapper for the buttons
-        const buttonWrapper = document.createElement('div');
-        buttonWrapper.className = 'd-flex mb-3 gap-2';
-
-        // Create CSV download button
-        const csvButton = document.createElement('button');
-        csvButton.textContent = 'Download CSV';
-        csvButton.className = 'btn btn-primary btn-sm';
-        csvButton.addEventListener('click', () => downloadCSV());
-
-        // Create Excel download button
-        const excelButton = document.createElement('button');
-        excelButton.textContent = 'Download Excel';
-        excelButton.className = 'btn btn-success btn-sm';
-        excelButton.addEventListener('click', () => downloadExcel());
-
-        // Append buttons to the wrapper
-        buttonWrapper.appendChild(csvButton);
-        buttonWrapper.appendChild(excelButton);
-
-        // Insert the wrapper above the chart
-        container.insertBefore(buttonWrapper, ctx.canvas);
-    }
-
-    // Function to download CSV
-    function downloadCSV() {
-        let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += "Month,Stock Out 1 Month,Stock Out 2 Months,Stock Out 3 Months,Stock Out >3 Months\n";
+    document.addEventListener("DOMContentLoaded", function () {
+        let stockOutData = <?= json_encode($stock_out_data); ?>; // Data dari PHP
         
-        months.forEach((month, index) => {
-            csvContent += `${month},${stockOut1[index]},${stockOut2[index]},${stockOut3[index]},${stockOut4[index]}\n`;
+        let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        
+        let stockOut1 = new Array(12).fill(0);
+        let stockOut2 = new Array(12).fill(0);
+        let stockOut3 = new Array(12).fill(0);
+        let stockOut4 = new Array(12).fill(0); // Untuk stock out >3 bulan
+
+        // Mapping data dari database ke array bulan
+        stockOutData.forEach(item => {
+            let monthIndex = item.month - 1; // Bulan di DB 1-12, tapi array mulai dari 0
+            stockOut1[monthIndex] = item.stock_out_1;
+            stockOut2[monthIndex] = item.stock_out_2;
+            stockOut3[monthIndex] = item.stock_out_3;
+            stockOut4[monthIndex] = item.stock_out_4; // Assign data lebih dari 3 bulan
         });
 
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement('a');
-        link.setAttribute('href', encodedUri);
-        link.setAttribute('download', 'dpt_stockout_data.csv');
-        link.click();
-    }
+        const ctx = document.getElementById('stockOutByDurationChart').getContext('2d');
+        const stockoutChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months, 
+                datasets: [
+                    {
+                        label: '1 Month',
+                        data: stockOut1,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                    },
+                    {
+                        label: '2 Months',
+                        data: stockOut2,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    },
+                    {
+                        label: '3 Months',
+                        data: stockOut3,
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                    },
+                    {
+                        label: '> 3 Months',
+                        data: stockOut4,
+                        backgroundColor: 'rgba(153, 102, 255, 0.7)',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'DPT Stock Out by Month' }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: { display: true, text: 'Month' }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        title: { display: true, text: 'Number of Facilities' }
+                    }
+                }
+            }
+        });
 
-    // Function to download Excel
-    function downloadExcel() {
-        const workbook = XLSX.utils.book_new();
-        const worksheetData = [
-            ['Month', 'Stock Out 1 Month', 'Stock Out 2 Months', 'Stock Out 3 Months', 'Stock Out >3 Months'],
-            ...months.map((month, index) => [month, stockOut1[index], stockOut2[index], stockOut3[index], stockOut4[index]])
-        ];
-        const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'DPT_StockOut_Data');
-        XLSX.writeFile(workbook, 'dpt_stockout_data.xlsx');
-    }
+        // Function to create buttons dynamically
+        function addDownloadButtons() {
+            const container = ctx.canvas.parentNode;
 
-    // Add buttons to the DOM
-    addDownloadButtons();
-});
+            // Create a wrapper for the buttons
+            const buttonWrapper = document.createElement('div');
+            buttonWrapper.className = 'd-flex mb-3 gap-2';
+
+            // Create CSV download button
+            const csvButton = document.createElement('button');
+            csvButton.textContent = 'Download CSV';
+            csvButton.className = 'btn btn-primary btn-sm';
+            csvButton.addEventListener('click', () => downloadCSV());
+
+            // Create Excel download button
+            const excelButton = document.createElement('button');
+            excelButton.textContent = 'Download Excel';
+            excelButton.className = 'btn btn-success btn-sm';
+            excelButton.addEventListener('click', () => downloadExcel());
+
+            // Append buttons to the wrapper
+            buttonWrapper.appendChild(csvButton);
+            buttonWrapper.appendChild(excelButton);
+
+            // Insert the wrapper above the chart
+            container.insertBefore(buttonWrapper, ctx.canvas);
+        }
+
+        // Function to download CSV
+        function downloadCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Month,Stock Out 1 Month,Stock Out 2 Months,Stock Out 3 Months,Stock Out >3 Months\n";
+            
+            months.forEach((month, index) => {
+                csvContent += `${month},${stockOut1[index]},${stockOut2[index]},${stockOut3[index]},${stockOut4[index]}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', 'dpt_stockout_data.csv');
+            link.click();
+        }
+
+        // Function to download Excel
+        function downloadExcel() {
+            const workbook = XLSX.utils.book_new();
+            const worksheetData = [
+                ['Month', 'Stock Out 1 Month', 'Stock Out 2 Months', 'Stock Out 3 Months', 'Stock Out >3 Months'],
+                ...months.map((month, index) => [month, stockOut1[index], stockOut2[index], stockOut3[index], stockOut4[index]])
+            ];
+            const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'DPT_StockOut_Data');
+            XLSX.writeFile(workbook, 'dpt_stockout_data.xlsx');
+        }
+
+        // Add buttons to the DOM
+        addDownloadButtons();
+    });
 </script>
+
+<!-- Over Stock Graph -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let overStockData = <?= json_encode($over_stock_data); ?>; // Data dari PHP
+
+        let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        
+        let overStock1 = new Array(12).fill(0);
+        let overStock2 = new Array(12).fill(0);
+        let overStock3 = new Array(12).fill(0);
+        let overStock4 = new Array(12).fill(0); // Overstock >3 bulan
+
+        overStockData.forEach(item => {
+            let monthIndex = item.month - 1;
+            overStock1[monthIndex] = item.over_stock_1;
+            overStock2[monthIndex] = item.over_stock_2;
+            overStock3[monthIndex] = item.over_stock_3;
+            overStock4[monthIndex] = item.over_stock_4;
+        });
+
+        const ctx = document.getElementById('overStockByDurationChart').getContext('2d');
+        const overstockChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: '1 Month',
+                        data: overStock1,
+                        backgroundColor: 'rgba(255, 159, 64, 0.7)',
+                    },
+                    {
+                        label: '2 Months',
+                        data: overStock2,
+                        backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                    },
+                    {
+                        label: '3 Months',
+                        data: overStock3,
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                    },
+                    {
+                        label: '> 3 Months',
+                        data: overStock4,
+                        backgroundColor: 'rgba(153, 102, 255, 0.7)',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'DPT Over Stock by Month' }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: { display: true, text: 'Month' }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        title: { display: true, text: 'Number of Facilities' }
+                    }
+                }
+            }
+        });
+
+        function addDownloadButtons() {
+            const container = ctx.canvas.parentNode;
+
+            const buttonWrapper = document.createElement('div');
+            buttonWrapper.className = 'd-flex mb-3 gap-2';
+
+            const csvButton = document.createElement('button');
+            csvButton.textContent = 'Download CSV';
+            csvButton.className = 'btn btn-primary btn-sm';
+            csvButton.addEventListener('click', () => downloadCSV());
+
+            const excelButton = document.createElement('button');
+            excelButton.textContent = 'Download Excel';
+            excelButton.className = 'btn btn-success btn-sm';
+            excelButton.addEventListener('click', () => downloadExcel());
+
+            buttonWrapper.appendChild(csvButton);
+            buttonWrapper.appendChild(excelButton);
+            container.insertBefore(buttonWrapper, ctx.canvas);
+        }
+
+        function downloadCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Month,Over Stock 1 Month,Over Stock 2 Months,Over Stock 3 Months,Over Stock >3 Months\n";
+            
+            months.forEach((month, index) => {
+                csvContent += `${month},${overStock1[index]},${overStock2[index]},${overStock3[index]},${overStock4[index]}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', 'dpt_overstock_data.csv');
+            link.click();
+        }
+
+        function downloadExcel() {
+            const workbook = XLSX.utils.book_new();
+            const worksheetData = [
+                ['Month', 'Over Stock 1 Month', 'Over Stock 2 Months', 'Over Stock 3 Months', 'Over Stock >3 Months'],
+                ...months.map((month, index) => [month, overStock1[index], overStock2[index], overStock3[index], overStock4[index]])
+            ];
+            const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'DPT_OverStock_Data');
+            XLSX.writeFile(workbook, 'dpt_overstock_data.xlsx');
+        }
+
+        addDownloadButtons();
+    });
+</script>
+
 
 <script>
 $(document).ready(function () {
@@ -657,11 +584,30 @@ $(document).ready(function () {
         ]
     });
 
+    var table2 = $('#table3').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ]
+    });
+
     // Fungsi untuk update jumlah baris yang tampil
     function updateRowCount() {
         // api.rows({ filter: 'applied' }) -> baris yg sudah difilter (search)
         var count = table.rows({ filter: 'applied' }).count();
         $('#rowCount').text('Jumlah baris yang tampil: ' + count);
+
+        var count2 = table2.rows({ filter: 'applied' }).count();
+        $('#rowCount2').text('Jumlah baris yang tampil: ' + count2);
     }
 
     // Update saat inisialisasi
@@ -669,6 +615,11 @@ $(document).ready(function () {
 
     // Update tiap kali tabel di draw ulang (filter, paging, dll)
     table.on('draw', function() {
+        updateRowCount();
+    });
+
+    // Update tiap kali tabel di draw ulang (filter, paging, dll)
+    table2.on('draw', function() {
         updateRowCount();
     });
 });
