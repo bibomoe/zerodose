@@ -1138,6 +1138,19 @@ class Home extends CI_Controller {
         // $this->data['stock_out_data'] = $stock_out_data; // Kirim dalam bentuk JSON
         $this->data['stock_out_data'] = $monthly_stock_out_categories; // Kirim dalam bentuk JSON
 
+        // Ambil data over stock per bulan dan puskesmas
+        $over_stock_data = $this->StockOut_model->get_dpt_over_stock_by_month($selected_province, $selected_district, $selected_year);
+
+        // Menghitung kategori durasi over stock per bulan
+        $monthly_over_stock_categories = $this->StockOut_model->calculate_over_stock_category($over_stock_data, $selected_year);
+
+        // **Menambahkan Tabel Puskesmas yang Pernah Overstock**
+        $puskesmas_overstock_table = $this->StockOut_model->get_puskesmas_overstock_table($selected_province, $selected_district, $selected_year);
+        $this->data['puskesmas_overstock_table'] = $puskesmas_overstock_table;
+
+        // Kirim data ke view
+        $this->data['over_stock_data'] = $monthly_over_stock_categories;
+
 
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia

@@ -469,113 +469,113 @@ class StockOut_model extends CI_Model {
     // }
 
     public function calculate_stock_out_category($data, $selected_year) {
-    $monthly_stock_out = [];
+        $monthly_stock_out = [];
 
-    // Build lookup table for quick status_stockout query by puskesmas, year, month
-    $status_map = [];
-    foreach ($data as $row) {
-        $status_map[$row['puskesmas_id']][$row['year']][$row['month']] = $row['status_stockout'];
-    }
-
-    // For each data row in selected year, calculate consecutive stockout months
-    foreach ($data as $row) {
-        $month = $row['month'];
-        $year = $row['year'];
-        $puskesmas_id = $row['puskesmas_id'];
-
-        if ($year != $selected_year) {
-            continue; // only process selected year
+        // Build lookup table for quick status_stockout query by puskesmas, year, month
+        $status_map = [];
+        foreach ($data as $row) {
+            $status_map[$row['puskesmas_id']][$row['year']][$row['month']] = $row['status_stockout'];
         }
 
-        if (!isset($status_map[$puskesmas_id])) {
-            continue;
-        }
+        // For each data row in selected year, calculate consecutive stockout months
+        foreach ($data as $row) {
+            $month = $row['month'];
+            $year = $row['year'];
+            $puskesmas_id = $row['puskesmas_id'];
 
-        if (!isset($status_map[$puskesmas_id][$year][$month])) {
-            continue;
-        }
+            if ($year != $selected_year) {
+                continue; // only process selected year
+            }
 
-        $current_status = $status_map[$puskesmas_id][$year][$month];
+            if (!isset($status_map[$puskesmas_id])) {
+                continue;
+            }
 
-        if ($current_status != 1) {
-            $category = 'No Stock Out';
-        } else {
-            // Count consecutive months backward starting from current month
-            $count_consecutive = 0;
-            for ($i = 0; $i < 4; $i++) { // count up to 4 months (current + 3 previous)
-                $check_month = $month - $i;
-                $check_year = $year;
-                if ($check_month < 1) {
-                    $check_month += 12;
-                    $check_year -= 1;
+            if (!isset($status_map[$puskesmas_id][$year][$month])) {
+                continue;
+            }
+
+            $current_status = $status_map[$puskesmas_id][$year][$month];
+
+            if ($current_status != 1) {
+                $category = 'No Stock Out';
+            } else {
+                // Count consecutive months backward starting from current month
+                $count_consecutive = 0;
+                for ($i = 0; $i < 4; $i++) { // count up to 4 months (current + 3 previous)
+                    $check_month = $month - $i;
+                    $check_year = $year;
+                    if ($check_month < 1) {
+                        $check_month += 12;
+                        $check_year -= 1;
+                    }
+                    if (isset($status_map[$puskesmas_id][$check_year][$check_month]) &&
+                        $status_map[$puskesmas_id][$check_year][$check_month] == 1) {
+                        $count_consecutive++;
+                    } else {
+                        break; // break on first month without stockout
+                    }
                 }
-                if (isset($status_map[$puskesmas_id][$check_year][$check_month]) &&
-                    $status_map[$puskesmas_id][$check_year][$check_month] == 1) {
-                    $count_consecutive++;
-                } else {
-                    break; // break on first month without stockout
+
+                // Assign category based on count
+                if ($count_consecutive >= 4) {
+                    $category = '> 3 Months';
+                } elseif ($count_consecutive == 3) {
+                    $category = '3 Months';
+                } elseif ($count_consecutive == 2) {
+                    $category = '2 Months';
+                } elseif ($count_consecutive == 1) {
+                    $category = '1 Month';
                 }
             }
 
-            // Assign category based on count
-            if ($count_consecutive >= 4) {
-                $category = '> 3 Months';
-            } elseif ($count_consecutive == 3) {
-                $category = '3 Months';
-            } elseif ($count_consecutive == 2) {
-                $category = '2 Months';
-            } elseif ($count_consecutive == 1) {
-                $category = '1 Month';
+            // Initialize month aggregation if not exists
+            if (!isset($monthly_stock_out[$month])) {
+                $monthly_stock_out[$month] = [
+                    'stock_out_1' => 0,
+                    'stock_out_2' => 0,
+                    'stock_out_3' => 0,
+                    'stock_out_4' => 0,
+                    'stock_out_no' => 0
+                ];
+            }
+
+            // Increment category count
+            switch ($category) {
+                case '1 Month':
+                    $monthly_stock_out[$month]['stock_out_1']++;
+                    break;
+                case '2 Months':
+                    $monthly_stock_out[$month]['stock_out_2']++;
+                    break;
+                case '3 Months':
+                    $monthly_stock_out[$month]['stock_out_3']++;
+                    break;
+                case '> 3 Months':
+                    $monthly_stock_out[$month]['stock_out_4']++;
+                    break;
+                case 'No Stock Out':
+                default:
+                    $monthly_stock_out[$month]['stock_out_no']++;
+                    break;
             }
         }
 
-        // Initialize month aggregation if not exists
-        if (!isset($monthly_stock_out[$month])) {
-            $monthly_stock_out[$month] = [
-                'stock_out_1' => 0,
-                'stock_out_2' => 0,
-                'stock_out_3' => 0,
-                'stock_out_4' => 0,
-                'stock_out_no' => 0
+        // Format result as array with string month keys
+        $result = [];
+        foreach ($monthly_stock_out as $month => $counts) {
+            $result[] = [
+                'month' => (string)$month,
+                'stock_out_1' => $counts['stock_out_1'],
+                'stock_out_2' => $counts['stock_out_2'],
+                'stock_out_3' => $counts['stock_out_3'],
+                'stock_out_4' => $counts['stock_out_4'],
+                'stock_out_no' => $counts['stock_out_no']
             ];
         }
 
-        // Increment category count
-        switch ($category) {
-            case '1 Month':
-                $monthly_stock_out[$month]['stock_out_1']++;
-                break;
-            case '2 Months':
-                $monthly_stock_out[$month]['stock_out_2']++;
-                break;
-            case '3 Months':
-                $monthly_stock_out[$month]['stock_out_3']++;
-                break;
-            case '> 3 Months':
-                $monthly_stock_out[$month]['stock_out_4']++;
-                break;
-            case 'No Stock Out':
-            default:
-                $monthly_stock_out[$month]['stock_out_no']++;
-                break;
-        }
+        return $result;
     }
-
-    // Format result as array with string month keys
-    $result = [];
-    foreach ($monthly_stock_out as $month => $counts) {
-        $result[] = [
-            'month' => (string)$month,
-            'stock_out_1' => $counts['stock_out_1'],
-            'stock_out_2' => $counts['stock_out_2'],
-            'stock_out_3' => $counts['stock_out_3'],
-            'stock_out_4' => $counts['stock_out_4'],
-            'stock_out_no' => $counts['stock_out_no']
-        ];
-    }
-
-    return $result;
-}
 
     
     public function get_puskesmas_stockout_table($province_id, $city_id, $year) {
@@ -664,5 +664,226 @@ class StockOut_model extends CI_Model {
         return $result;
     }
     
+    public function get_puskesmas_overstock_table($province_id, $city_id, $year) {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil daftar targeted provinces
+
+        $this->db->select('
+            puskesmas.province_id, 
+            provinces.name_id AS province_name, 
+            puskesmas.city_id, 
+            cities.name_id AS city_name, 
+            puskesmas.subdistrict_id, 
+            subdistricts.name AS subdistrict_name,
+            puskesmas.name AS puskesmas_name,
+            SUM(CASE WHEN psd.month = 1 AND psd.status_overstock = "1" THEN 1 ELSE 0 END) AS month_1,
+            SUM(CASE WHEN psd.month = 2 AND psd.status_overstock = "1" THEN 1 ELSE 0 END) AS month_2,
+            SUM(CASE WHEN psd.month = 3 AND psd.status_overstock = "1" THEN 1 ELSE 0 END) AS month_3,
+            SUM(CASE WHEN psd.month = 4 AND psd.status_overstock = "1" THEN 1 ELSE 0 END) AS month_4,
+            SUM(CASE WHEN psd.month = 5 AND psd.status_overstock = "1" THEN 1 ELSE 0 END) AS month_5,
+            SUM(CASE WHEN psd.month = 6 AND psd.status_overstock = "1" THEN 1 ELSE 0 END) AS month_6,
+            SUM(CASE WHEN psd.month = 7 AND psd.status_overstock = "1" THEN 1 ELSE 0 END) AS month_7,
+            SUM(CASE WHEN psd.month = 8 AND psd.status_overstock = "1" THEN 1 ELSE 0 END) AS month_8,
+            SUM(CASE WHEN psd.month = 9 AND psd.status_overstock = "1" THEN 1 ELSE 0 END) AS month_9,
+            SUM(CASE WHEN psd.month = 10 AND psd.status_overstock = "1" THEN 1 ELSE 0 END) AS month_10,
+            SUM(CASE WHEN psd.month = 11 AND psd.status_overstock = "1" THEN 1 ELSE 0 END) AS month_11,
+            SUM(CASE WHEN psd.month = 12 AND psd.status_overstock = "1" THEN 1 ELSE 0 END) AS month_12
+        ');
+
+        $this->db->from('puskesmas_over_stock_details psd');
+
+        $this->db->join('puskesmas', 'psd.puskesmas_id = puskesmas.id');
+        $this->db->join('provinces', 'puskesmas.province_id = provinces.id');
+        $this->db->join('cities', 'puskesmas.city_id = cities.id');
+        $this->db->join('subdistricts', 'puskesmas.subdistrict_id = subdistricts.id');
+
+        $this->db->where('psd.year', $year);
+
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('psd.province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('psd.province_id', $province_id);
+        }
+
+        if ($city_id !== 'all') {
+            $this->db->where('psd.city_id', $city_id);
+        }
+
+        $this->db->group_by('puskesmas.province_id, 
+                            provinces.name_id, 
+                            puskesmas.city_id, 
+                            cities.name_id, 
+                            puskesmas.subdistrict_id, 
+                            subdistricts.name, 
+                            puskesmas.name');
+
+        $this->db->having('month_1 > 0 
+                        OR month_2 > 0 
+                        OR month_3 > 0 
+                        OR month_4 > 0 
+                        OR month_5 > 0 
+                        OR month_6 > 0 
+                        OR month_7 > 0 
+                        OR month_8 > 0 
+                        OR month_9 > 0 
+                        OR month_10 > 0 
+                        OR month_11 > 0 
+                        OR month_12 > 0');
+
+        $this->db->order_by('puskesmas.province_id', 'ASC');
+        $this->db->order_by('cities.name_id', 'ASC');
+        $this->db->order_by('subdistricts.name', 'ASC');
+        $this->db->order_by('puskesmas.name', 'ASC');
+
+        $result = $this->db->get()->result_array();
+
+        return $result;
+    }
+
+    public function get_dpt_over_stock_by_month($province_id, $city_id, $year) {
+        $province_ids = $this->get_targeted_province_ids(); // Ambil daftar targeted provinces
+
+        $this->db->select('month, 
+                        year,
+                        province_id, 
+                        city_id, 
+                        subdistrict_id, 
+                        puskesmas_id, 
+                        status_overstock'); // Ganti status_stockout jadi status_overstock
+        $this->db->from('puskesmas_over_stock_details'); // Ganti tabel ke overstock
+
+        // Filter tahun sekarang
+        $this->db->where('year', $year);
+
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        }
+
+        // Ambil data tahun sebelumnya juga
+        $this->db->or_where('year', $year - 1);
+
+        $this->db->order_by('year', 'ASC');
+        $this->db->order_by('month', 'ASC');
+        $this->db->order_by('puskesmas_id', 'ASC');
+
+        $result = $this->db->get()->result_array();
+
+        return $result;
+    }
+
+    public function calculate_over_stock_category($data, $selected_year) {
+        $monthly_over_stock = [];
+
+        // Build lookup table status_overstock untuk akses cepat per puskesmas, tahun, bulan
+        $status_map = [];
+        foreach ($data as $row) {
+            $status_map[$row['puskesmas_id']][$row['year']][$row['month']] = $row['status_overstock'];
+        }
+
+        foreach ($data as $row) {
+            $month = $row['month'];
+            $year = $row['year'];
+            $puskesmas_id = $row['puskesmas_id'];
+
+            if ($year != $selected_year) {
+                continue; // hanya proses tahun terpilih
+            }
+
+            if (!isset($status_map[$puskesmas_id][$year][$month])) {
+                continue;
+            }
+
+            $current_status = $status_map[$puskesmas_id][$year][$month];
+
+            if ($current_status != 1) {
+                $category = 'No Over Stock';
+            } else {
+                // Hitung bulan overstock berturut-turut mundur dari bulan sekarang (max 4 bulan)
+                $count_consecutive = 0;
+                for ($i = 0; $i < 4; $i++) {
+                    $check_month = $month - $i;
+                    $check_year = $year;
+                    if ($check_month < 1) {
+                        $check_month += 12;
+                        $check_year -= 1;
+                    }
+                    if (isset($status_map[$puskesmas_id][$check_year][$check_month]) &&
+                        $status_map[$puskesmas_id][$check_year][$check_month] == 1) {
+                        $count_consecutive++;
+                    } else {
+                        break;
+                    }
+                }
+
+                if ($count_consecutive >= 4) {
+                    $category = '> 3 Months';
+                } elseif ($count_consecutive == 3) {
+                    $category = '3 Months';
+                } elseif ($count_consecutive == 2) {
+                    $category = '2 Months';
+                } elseif ($count_consecutive == 1) {
+                    $category = '1 Month';
+                }
+            }
+
+            if (!isset($monthly_over_stock[$month])) {
+                $monthly_over_stock[$month] = [
+                    'over_stock_1' => 0,
+                    'over_stock_2' => 0,
+                    'over_stock_3' => 0,
+                    'over_stock_4' => 0,
+                    'over_stock_no' => 0
+                ];
+            }
+
+            switch ($category) {
+                case '1 Month':
+                    $monthly_over_stock[$month]['over_stock_1']++;
+                    break;
+                case '2 Months':
+                    $monthly_over_stock[$month]['over_stock_2']++;
+                    break;
+                case '3 Months':
+                    $monthly_over_stock[$month]['over_stock_3']++;
+                    break;
+                case '> 3 Months':
+                    $monthly_over_stock[$month]['over_stock_4']++;
+                    break;
+                case 'No Over Stock':
+                default:
+                    $monthly_over_stock[$month]['over_stock_no']++;
+                    break;
+            }
+        }
+
+        // Format hasil dalam array dengan key bulan bertipe string
+        $result = [];
+        foreach ($monthly_over_stock as $month => $counts) {
+            $result[] = [
+                'month' => (string)$month,
+                'over_stock_1' => $counts['over_stock_1'],
+                'over_stock_2' => $counts['over_stock_2'],
+                'over_stock_3' => $counts['over_stock_3'],
+                'over_stock_4' => $counts['over_stock_4'],
+                'over_stock_no' => $counts['over_stock_no']
+            ];
+        }
+
+        return $result;
+    }
+
     
 }
