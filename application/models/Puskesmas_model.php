@@ -334,6 +334,11 @@ class Puskesmas_model extends CI_Model {
     // Ambil daftar province yang ditargetkan
     $province_ids = $this->get_targeted_province_ids();
 
+    // Pastikan $month valid (angka)
+    if ($month === 'all' || !is_numeric($month)) {
+        $month = 12;
+    }
+
     $this->db->select("
         p.id AS puskesmas_id,
         p.name AS puskesmas_name,
@@ -341,10 +346,21 @@ class Puskesmas_model extends CI_Model {
         s.name AS subdistrict_name
     ");
     $this->db->from('puskesmas p');
+
+    // LEFT JOIN ke tabel imunisasi dengan kondisi tahun dan bulan
+    $this->db->join('immunization_data_per_puskesmas id', 
+        "p.id = id.puskesmas_id AND id.year = ".$this->db->escape($year)." AND id.month <= ".$this->db->escape($month),
+        'left'
+    );
+
+    // Join tabel kota dan kecamatan
     $this->db->join('cities c', 'p.city_id = c.id', 'left');
     $this->db->join('subdistricts s', 'p.subdistrict_id = s.id', 'left');
 
-    // Filter provinsi jika diberikan
+    // Filter puskesmas yang **belum ada data imunisasi** (id.puskesmas_id harus null)
+    $this->db->where('id.puskesmas_id IS NULL');
+
+    // Filter provinsi
     if ($province_id === 'targeted') {
         if (!empty($province_ids)) {
             $this->db->where_in('p.province_id', $province_ids);
@@ -355,33 +371,18 @@ class Puskesmas_model extends CI_Model {
         $this->db->where('p.province_id', $province_id);
     }
 
-    // Filter kota jika diberikan
+    // Filter kota
     if ($city_id !== 'all') {
         $this->db->where('p.city_id', $city_id);
     }
 
-    // Pastikan month adalah angka, jika bukan set ke 12 (desember)
-    if ($month === 'all' || !is_numeric($month)) {
-        $month = 12;
-    }
-
-    // Buat query builder baru untuk subquery NOT EXISTS
-    $subquery = $this->db->select('1')
-        ->from('immunization_data_per_puskesmas id')
-        ->where('id.puskesmas_id = p.id', NULL, FALSE)
-        ->where('id.year', $year)
-        ->where('id.month <=', $month)
-        ->limit(1)
-        ->get_compiled_select();
-
-    // Tambahkan kondisi NOT EXISTS dengan subquery yang sudah dibuat
-    $this->db->where("NOT EXISTS ($subquery)", NULL, FALSE);
-
     $this->db->order_by('c.name_en, s.name, p.name');
 
     $query = $this->db->get()->result_array();
+
     return $query;
 }
+
 
 
 }
