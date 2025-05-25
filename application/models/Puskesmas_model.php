@@ -289,7 +289,7 @@ class Puskesmas_model extends CI_Model {
             pd.id AS puskesmas_id,
             pd.name AS puskesmas_name
         ");
-        $this->db->from('immunization_data id');
+        $this->db->from('immunization_data_per_puskesmas id');
         $this->db->join('puskesmas pd', 'id.puskesmas_id = pd.id', 'left');  // Gabungkan dengan tabel puskesmas
         
 
@@ -329,4 +329,51 @@ class Puskesmas_model extends CI_Model {
         // Kembalikan hasil query
         return $query;
     }
+
+    public function get_puskesmas_without_immunization($province_id = 'all', $city_id = 'all', $year = 2025, $month = 12) {
+        // Ambil daftar province yang ditargetkan
+        $province_ids = $this->get_targeted_province_ids();
+
+        $this->db->select("
+            p.id AS puskesmas_id,
+            p.name AS puskesmas_name,
+            c.name_en AS city_name,
+            s.name AS subdistrict_name
+        ");
+        $this->db->from('puskesmas p');
+        
+        // Join dengan tabel imunisasi, left join supaya bisa ambil puskesmas yang belum ada imunisasi
+        $this->db->join('immunization_data_per_puskesmas id', 'p.id = id.puskesmas_id AND id.year = '.$this->db->escape($year).' AND id.month <= '.$this->db->escape($month), 'left');
+        
+        // Join ke tabel cities untuk nama kota
+        $this->db->join('cities c', 'p.city_id = c.id', 'left');
+        
+        // Join ke tabel subdistricts untuk nama kecamatan
+        $this->db->join('subdistricts s', 'p.subdistrict_id = s.id', 'left');
+
+        // Hanya pilih puskesmas yang belum melakukan imunisasi, yaitu yang di tabel immunization null
+        $this->db->where('id.puskesmas_id IS NULL');
+
+        // Filter provinsi jika diberikan
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('p.province_id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('p.province_id', $province_id);
+        }
+
+        // Filter kota jika diberikan
+        if ($city_id !== 'all') {
+            $this->db->where('p.city_id', $city_id);
+        }
+
+        $this->db->order_by('c.name_en, s.name, p.name');
+
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+
 }

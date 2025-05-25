@@ -329,6 +329,45 @@
                                     </div>
                                 </div>
                             </div>
+                            <?php if ($selected_province !== 'all' && $selected_province !== 'targeted') : ?>
+
+                                <!-- Tabel Puskesmas belum melakukan pelayanan imunisasi -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4><?= $translations['text8'] ?></h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <table class="table table-striped" id="table_puskesmas_belum_imunisasi">
+                                                    <thead>
+                                                        <tr>
+                                                            <th><?= $translations['tabelcoloumn2'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn8'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn7'] ?></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php if (!empty($puskesmas_belum_imunisasi)) : ?>
+                                                            <?php foreach ($puskesmas_belum_imunisasi as $row) : ?>
+                                                                <tr>
+                                                                    <td><?= htmlspecialchars($row['city_name']) ?></td>
+                                                                    <td><?= htmlspecialchars($row['subdistrict_name']) ?></td>
+                                                                    <td><?= htmlspecialchars($row['puskesmas_name']) ?></td>
+                                                                </tr>
+                                                            <?php endforeach; ?>
+                                                        <?php else : ?>
+                                                            <tr>
+                                                                <td colspan="3" class="text-center">No data available</td>
+                                                            </tr>
+                                                        <?php endif; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
 
                             <!-- MAP -->
                             <div class="row">
