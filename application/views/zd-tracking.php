@@ -329,7 +329,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <?php if ($selected_province !== 'all' || $selected_province !== 'targeted') : ?>
+                            <?php if ($selected_province !== 'all' && $selected_province !== 'targeted') : ?>
 
                                 <!-- Tabel Puskesmas belum melakukan pelayanan imunisasi -->
                                 <div class="row">
