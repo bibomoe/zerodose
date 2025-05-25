@@ -360,15 +360,21 @@ class Puskesmas_model extends CI_Model {
         $this->db->where('p.city_id', $city_id);
     }
 
-    // Tambahkan kondisi NOT EXISTS (subquery) untuk mengecualikan puskesmas yang sudah punya data imunisasi
+    // Pastikan month adalah angka, jika bukan set ke 12 (desember)
+    if ($month === 'all' || !is_numeric($month)) {
+        $month = 12;
+    }
+
+    // Buat query builder baru untuk subquery NOT EXISTS
     $subquery = $this->db->select('1')
         ->from('immunization_data_per_puskesmas id')
-        ->where('id.puskesmas_id = p.id')
+        ->where('id.puskesmas_id = p.id', NULL, FALSE)
         ->where('id.year', $year)
         ->where('id.month <=', $month)
         ->limit(1)
         ->get_compiled_select();
 
+    // Tambahkan kondisi NOT EXISTS dengan subquery yang sudah dibuat
     $this->db->where("NOT EXISTS ($subquery)", NULL, FALSE);
 
     $this->db->order_by('c.name_en, s.name, p.name');
@@ -376,5 +382,6 @@ class Puskesmas_model extends CI_Model {
     $query = $this->db->get()->result_array();
     return $query;
 }
+
 
 }
