@@ -339,7 +339,7 @@
                                                 <h4><?= $translations['text8'] ?></h4>
                                             </div>
                                             <div class="card-body">
-                                                <table class="table table-striped" id="table_puskesmas_belum_imunisasi">
+                                                <table class="table table-striped" id="table1">
                                                     <thead>
                                                         <tr>
                                                             <th><?= $translations['tabelcoloumn2'] ?></th>
