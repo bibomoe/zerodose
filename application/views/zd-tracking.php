@@ -261,7 +261,7 @@
                                             <div id="chart-profile-visit"></div>
                                         </div> -->
                                         <div class="card-body">
-                                            <table class="table table-striped" id="table1">
+                                            <table class="table table-striped" id="table2">
                                                 <thead>
                                                     <tr>
                                                         <?php
@@ -339,7 +339,7 @@
                                                 <h4><?= $translations['text8'] ?></h4>
                                             </div>
                                             <div class="card-body">
-                                                <table class="table table-striped" id="table1">
+                                                <table class="table table-striped" id="table3">
                                                     <thead>
                                                         <tr>
                                                             <th><?= $translations['tabelcoloumn2'] ?></th>
@@ -641,5 +641,61 @@ $(document).ready(function () {
             $('#city_id').html('<option value="all">-- Kab/Kota --</option>');
         }
     });
+
+    var table = $('#table2').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ]
+    });
+
+    var table2 = $('#table3').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ]
+    });
+
+    // Fungsi untuk update jumlah baris yang tampil
+    function updateRowCount() {
+        // api.rows({ filter: 'applied' }) -> baris yg sudah difilter (search)
+        var count = table.rows({ filter: 'applied' }).count();
+        $('#rowCount').text('Jumlah baris yang tampil: ' + count);
+
+        var count2 = table2.rows({ filter: 'applied' }).count();
+        $('#rowCount2').text('Jumlah baris yang tampil: ' + count2);
+    }
+
+    // Update saat inisialisasi
+    updateRowCount();
+
+    // Update tiap kali tabel di draw ulang (filter, paging, dll)
+    table.on('draw', function() {
+        updateRowCount();
+    });
+
+    // Update tiap kali tabel di draw ulang (filter, paging, dll)
+    table2.on('draw', function() {
+        updateRowCount();
+    });
 });
 </script>
+
