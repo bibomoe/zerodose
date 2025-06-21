@@ -222,6 +222,21 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <!-- Grafik Bar Budget per Objective -->
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Budget Disbursement Sub-National CSO Graph</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="chartWrapper" class="d-flex justify-content-center">
+                                                <canvas id="budgetPerObjectiveChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
                     </section>
                 </div>
             </div>
@@ -236,3 +251,52 @@
         </div>
     </div>
 
+<!-- SCRIPT FOR BAR BUDGET BY OBJECTIVE -->
+<script>
+
+    const budgetPerObjectiveChart = new Chart(budgetPerObjectiveCtx, {
+        type: 'bar',
+        data: {
+            labels: ['HUDA', 'AISYIYAH', 'PERDHAKI', 'PELKESI', 'MUSLIMAT NU', 'PKK'],
+            datasets: [
+                {
+                    label: 'Target Budget (USD)',
+                    data: [171902000],
+                    backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Absorbed Budget (USD)',
+                    data: [],
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const usd = context.raw;
+                            const idr = usd * 14500;
+                            return `${context.dataset.label}: ${usd.toLocaleString()} USD | ${idr.toLocaleString()} IDR`;
+                        }
+                    }
+                },
+                legend: { display: true }
+            },
+            scales: {
+                x: { title: { display: true, text: 'Objectives' } },
+                y: {
+                    title: { display: true, text: 'Budget (USD)' },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+</script>
