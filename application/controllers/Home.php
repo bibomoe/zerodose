@@ -1673,7 +1673,7 @@ class Home extends CI_Controller {
         $this->data['selected_year'] = $selected_year;
 
 
-        $this->data['title'] = 'Grants Implementation and Budget Disbursement';
+        $this->data['title'] = 'Budget Disbursement National & Sub-National (CSO)';
         load_template('budget-disbursement-sub-national', $this->data);
     }
     

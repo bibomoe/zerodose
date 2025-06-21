@@ -26,12 +26,12 @@
                             
                         </div> -->
 
-                        <!-- table Provinces Budget Disbursed-->
+                        <!-- table Budget Disbursement National-->
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <!-- <h4></h4> -->
+                                        <h4>Budget Disbursement National</h4>
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
@@ -144,6 +144,75 @@
                                                         <td class="text-right">Rp 7.936.000</th>
                                                         <td class="text-right">Rp 10.196.000</th>
                                                         <td class="text-right">Rp 16.352.000</th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- table Budget Disbursement Sub-National (CSO)-->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4>Budget Disbursement Sub-National CSO</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped" id="table2">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">No</th> <!--  Name -->
+                                                        <th class="text-center">Kegiatan</th> <!--  Name -->
+                                                        <th class="text-center">Volume</th> <!--  Name -->
+                                                        <th class="text-center">Biaya</th> <!-- Column for months -->
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-center">1.</th>
+                                                        <td class="text-left">HUDA - (Provinsi Aceh)</th>
+                                                        <td class="text-center">1 PT</th>
+                                                        <td class="text-right">Rp. 171.902.000</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-center">2.</th>
+                                                        <td class="text-left">AISYIYAH - (Provinsi Jawa Barat)</th>
+                                                        <td class="text-center">1 PT</th>
+                                                        <td class="text-right">Rp. 609.430.000</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-center">3.</th>
+                                                        <td class="text-left">PERDHAKI - (Provinsi Kalimantan Barat dan Nusa Tenggara Timur)</th>
+                                                        <td class="text-center">1 PT</th>
+                                                        <td class="text-right">Rp. 474.450.000</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-center">4.</th>
+                                                        <td class="text-left">PELKESI - (Provinsi Lampung dan Sumatera Utara)</th>
+                                                        <td class="text-center">1 PT</th>
+                                                        <td class="text-right">Rp. 445.410.000</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-center">5.</th>
+                                                        <td class="text-left">MUSLIMAT NU - (Provinsi Nusa Tenggara Barat)</th>
+                                                        <td class="text-center">1 PT</th>
+                                                        <td class="text-right">Rp. 194.753.000</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-center">6.</th>
+                                                        <td class="text-left">PKK - (Provinsi Sumatera Barat, Riau, Papua Tengah, Sumatera Utara (Kota Binjai) dan Jawa Barat (Kota Tasikmalaya))</th>
+                                                        <td class="text-center">1 PT</th>
+                                                        <td class="text-right">Rp. 1.212.412.300</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-center"></th>
+                                                        <td class="text-center"><b>TOTAL</b></th>
+                                                        <td class="text-center"></th>
+                                                        <td class="text-right">Rp. 3.108.357.300</th>
                                                     </tr>
                                                 </tbody>
                                             </table>
