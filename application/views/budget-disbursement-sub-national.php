@@ -261,14 +261,14 @@
             labels: ['HUDA', 'AISYIYAH', 'PERDHAKI', 'PELKESI', 'MUSLIMAT NU', 'PKK'],
             datasets: [
                 {
-                    label: 'Target Budget (USD)',
-                    data: [171902000],
+                    label: 'Budget Disbursement (IDR)',
+                    data: [171902000, 609430000, 474450000, 445410000, 194753000, 1212412300],
                     backgroundColor: 'rgba(255, 206, 86, 0.7)',
                     borderColor: 'rgba(255, 206, 86, 1)',
                     borderWidth: 1
                 },
                 {
-                    label: 'Absorbed Budget (USD)',
+                    label: 'Absorbed Budget (IDR)',
                     data: [],
                     backgroundColor: 'rgba(54, 162, 235, 0.7)',
                     borderColor: 'rgba(54, 162, 235, 1)',
