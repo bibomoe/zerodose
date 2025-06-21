@@ -381,7 +381,12 @@
                             <ul class="submenu ">
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('home/grant_implementation'); ?>" class='sidebar-link'>
-                                        Activity and Budget Realization
+                                        National Level
+                                    </a>
+                                </li>
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('home/grant_implementation_sub_national'); ?>" class='sidebar-link'>
+                                        Sub-National Level
                                     </a>
                                 </li>
                                 <!-- <li class="submenu-item  ">
