@@ -253,7 +253,8 @@
 
 <!-- SCRIPT FOR BAR BUDGET BY OBJECTIVE -->
 <script>
-
+    const budgetPerObjectiveCtx = document.getElementById('budgetPerObjectiveChart').getContext('2d');
+    
     const budgetPerObjectiveChart = new Chart(budgetPerObjectiveCtx, {
         type: 'bar',
         data: {
