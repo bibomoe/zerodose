@@ -290,9 +290,9 @@
                 legend: { display: true }
             },
             scales: {
-                x: { title: { display: true, text: 'Objectives' } },
+                x: { title: { display: true, text: 'CSO' } },
                 y: {
-                    title: { display: true, text: 'Budget (USD)' },
+                    title: { display: true, text: 'Budget (IDR)' },
                     beginAtZero: true
                 }
             }
