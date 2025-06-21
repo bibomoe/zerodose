@@ -254,7 +254,7 @@
 <!-- SCRIPT FOR BAR BUDGET BY OBJECTIVE -->
 <script>
     const budgetPerObjectiveCtx = document.getElementById('budgetPerObjectiveChart').getContext('2d');
-    
+
     const budgetPerObjectiveChart = new Chart(budgetPerObjectiveCtx, {
         type: 'bar',
         data: {
@@ -282,9 +282,8 @@
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            const usd = context.raw;
-                            const idr = usd * 14500;
-                            return `${context.dataset.label}: ${usd.toLocaleString()} USD | ${idr.toLocaleString()} IDR`;
+                            const idr = context.raw;
+                            return `${context.dataset.label}: Rp. ${idr.toLocaleString()}`;
                         }
                     }
                 },
