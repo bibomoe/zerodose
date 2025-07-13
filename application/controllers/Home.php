@@ -340,6 +340,9 @@ class Home extends CI_Controller {
         // Menentukan quarter
         $this->data['quarter'] = $this->Immunization_model->get_max_quarter($selected_year);
 
+        // Menentukan Maks Bulan Data Kumulatif DPT
+        $this->data['max_month'] = $this->Immunization_model->get_max_dpt1_month($selected_year);
+
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
 
@@ -362,17 +365,19 @@ class Home extends CI_Controller {
             // if ($this->data["total_target_dpt_1_$year"] == 0) {
             //     $quarter_target = 0;
             // } else {
-                // Calculate based on the quarter if total target is not zero
-                if ($this->data['quarter'] == 1) {
-                    $this->data["total_target_dpt_1_$year"] = $this->data["total_target_dpt_1_$year"] / 4; // Quarter 1: 1/4 of total target
-                } elseif ($this->data['quarter'] == 2) {
-                    $this->data["total_target_dpt_1_$year"] = 2 * $this->data["total_target_dpt_1_$year"] / 4; // Quarter 2: 2/4 of total target
-                } elseif ($this->data['quarter'] == 3) {
-                    $this->data["total_target_dpt_1_$year"] = 3 * $this->data["total_target_dpt_1_$year"] / 4; // Quarter 3: 3/4 of total target
-                } elseif ($this->data['quarter'] == 4) {
-                    $this->data["total_target_dpt_1_$year"] = $this->data["total_target_dpt_1_$year"]; // Quarter 4: Full total target
-                }
+                // // Calculate based on the quarter if total target is not zero
+                // if ($this->data['quarter'] == 1) {
+                //     $this->data["total_target_dpt_1_$year"] = $this->data["total_target_dpt_1_$year"] / 4; // Quarter 1: 1/4 of total target
+                // } elseif ($this->data['quarter'] == 2) {
+                //     $this->data["total_target_dpt_1_$year"] = 2 * $this->data["total_target_dpt_1_$year"] / 4; // Quarter 2: 2/4 of total target
+                // } elseif ($this->data['quarter'] == 3) {
+                //     $this->data["total_target_dpt_1_$year"] = 3 * $this->data["total_target_dpt_1_$year"] / 4; // Quarter 3: 3/4 of total target
+                // } elseif ($this->data['quarter'] == 4) {
+                //     $this->data["total_target_dpt_1_$year"] = $this->data["total_target_dpt_1_$year"]; // Quarter 4: Full total target
+                // }
             // }
+
+            $this->data["total_target_dpt_1_$year"] = $this->data["total_target_dpt_1_$year"] * $this->data['max_month'] / 12;
 
             // Ambil data cakupan imunisasi dari immunization_data
             $this->data["total_dpt_1_$year"] = $this->Immunization_model->get_total_vaccine('dpt_hb_hib_1', $selected_province, $selected_district, $year);

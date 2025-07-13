@@ -127,6 +127,17 @@ class Immunization_model extends CI_Model {
         return $query->row()->max_quarter ?? 1;
     }
 
+    //Ambil data maks Bulan saat ini
+    public function get_max_dpt1_month($year) {
+        // Select the maximum quarter for the given year
+        $query = $this->db->select('MAX(month) as max_month')
+                          ->where('year', $year)
+                          ->get('immunization_data');
+    
+        // Return the maximum quarter value, or 0 if no data is found
+        return $query->row()->max_month ?? 1;
+    }
+
     // Ambil total target dari target_coverage (All Provinces) dengan filter tahun
     public function get_total_target_coverage($vaccine_type, $year) {
         $query = $this->db->select('SUM(target_population) AS total_target')
