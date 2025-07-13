@@ -621,7 +621,7 @@ class Home extends CI_Controller {
                 'filter_label' => 'Pilih Filter',
                 'text_baseline' => 'Jumlah Anak Zero Dose Tahun 2024 (National Baseline)',
                 'text_baseline2' => 'Jumlah Anak Zero Dose Tahun 2024 yang dikejar (ASIK)',
-                'text_baseline3' => 'Target Cakupan DPT-1 Tahun ',
+                'text_baseline3' => 'Sasaran Cakupan DPT-1 Tahun ',
                 'children' => ' anak',
                 'text1' => 'Sasaran Tahun ',
                 'text1_quarter' => ' Triwulan ',
