@@ -184,6 +184,24 @@
                                 ?>
                             </div>
 
+                            <!-- Target DPT1 in Year -->
+                            <div class="row">
+                                <!-- National Baseline -->
+                                <div class="col-12 col-lg-12 col-md-12">
+                                    <div class="card">
+                                        <div class="card-body px-4 py-4-5 text-center">
+                                            <h6 class="text-muted font-semibold"><?= $translations['text_baseline2'] ?></h6>
+                                            <h6 class="font-extrabold mb-0 highlight">
+                                                <?= number_format(${"total_target_dpt_1_in_$selected_year"}) ?> 
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                                    // }
+                                ?>
+                            </div>
+
                             <!-- LAST UPDATE -->
                             <div class="row">
                                 <div class="col-12" style="margin-bottom: 20px; text-align: left;">
