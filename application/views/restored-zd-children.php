@@ -260,8 +260,8 @@
                                                         <h6 class="text-muted font-semibold"><?= $translations['text3'] ?> <?= $year; ?> <b> <?= $translations['text1_quarter'] ?> <?= $quarter; ?> </b> </h6>
                                                         <div class="card-number font-extrabold mb-0"><?= number_format(${"total_dpt_1_$year"}); ?></div>
                                                         <div class="card-subtext">
-                                                            <?= ${"total_target_dpt_1_$year"} > 0 
-                                                                ? round((${"total_dpt_1_$year"} / ${"total_target_dpt_1_$year"}) * 100, 1) . $translations['text4']
+                                                            <?= ${"total_target_dpt_1_in_$year"} > 0 
+                                                                ? round((${"total_dpt_1_$year"} / ${"total_target_dpt_1_in_$year"}) * 100, 1) . $translations['text4']
                                                                 : '0% of the target'; 
                                                             ?>
 

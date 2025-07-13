@@ -377,6 +377,10 @@ class Home extends CI_Controller {
                 // }
             // }
 
+            // Total Target Tahunan DPT 1
+            $this->data["total_target_dpt_1_in_$year"] = $this->data["total_target_dpt_1_$year"];
+
+            // Menentukan Total Target Kumulatif Sampai Bulan terakhir
             $this->data["total_target_dpt_1_$year"] = $this->data["total_target_dpt_1_$year"] * $this->data['max_month'] / 12;
 
             // Ambil data cakupan imunisasi dari immunization_data
