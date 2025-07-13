@@ -345,15 +345,6 @@ class Home extends CI_Controller {
 
         // Metode 1: Menggunakan Array Asosiatif (Direkomendasikan)
         $month_number = $this->data['max_month'];
-        $month_names = array(
-            1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June',
-            7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
-        );
-        if (isset($month_names[$month_number])) {
-            $this->data['max_month_name'] = $month_names[$month_number];
-        } else {
-            $this->data['max_month_name'] = 'Invalid Month';
-        }
 
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
@@ -546,6 +537,15 @@ class Home extends CI_Controller {
 
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
+
+        // Dapatkan nama bulan yang diterjemahkan dari array $this->data['translations']['months']
+
+        if (isset($this->data['translations']['months'][$month_number])) {
+            $this->data['max_month_name'] = $this->data['translations']['months'][$month_number];
+        } else {
+            // Penanganan jika bulan tidak valid, gunakan teks default atau statis
+            $this->data['max_month_name'] = 'Invalid Month'; 
+        }
 
 
         load_template('restored-zd-children', $this->data);
