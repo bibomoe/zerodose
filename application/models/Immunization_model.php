@@ -248,7 +248,7 @@ class Immunization_model extends CI_Model {
 
 
     // Data total DPT-1 per distrik berdasarkan provinsi
-    public function get_dpt1_by_district($province_id = 'all', $year = 2025, $quarter = 1) {
+    public function get_dpt1_by_district($province_id = 'all', $year = 2025, $max_month = 1) {
         $province_ids = $this->get_targeted_province_ids();
     
         // Ambil total target berdasarkan provinsi & tahun
@@ -300,27 +300,34 @@ class Immunization_model extends CI_Model {
 
         foreach ($result as &$row) {
             $total_target = $row['target_district'];
-            if ($quarter == 1) {
-                $quarter_target = $total_target / 4;
-            } elseif ($quarter == 2) {
-                $quarter_target = 2 * $total_target / 4;
-            } elseif ($quarter == 3) {
-                $quarter_target = 3 * $total_target / 4;
-            } else {
-                $quarter_target = $total_target;
-            }
+            // if ($quarter == 1) {
+            //     $quarter_target = $total_target / 4;
+            // } elseif ($quarter == 2) {
+            //     $quarter_target = 2 * $total_target / 4;
+            // } elseif ($quarter == 3) {
+            //     $quarter_target = 3 * $total_target / 4;
+            // } else {
+            //     $quarter_target = $total_target;
+            // }
 
-            $row['target_district'] = $quarter_target;
-            $row['percentage_target'] = ($row['total_dpt1'] / $quarter_target) * 100;
-            $row['zero_dose_children'] = $quarter_target - $row['total_dpt1'];
-            $row['percent_zero_dose'] = ($row['zero_dose_children'] / $quarter_target) * 100;
+            // $row['target_district'] = $quarter_target;
+            // $row['percentage_target'] = ($row['total_dpt1'] / $quarter_target) * 100;
+            // $row['zero_dose_children'] = $quarter_target - $row['total_dpt1'];
+            // $row['percent_zero_dose'] = ($row['zero_dose_children'] / $quarter_target) * 100;
+
+            $total_target_cumulative_month = $total_target * $max_month / 12;
+
+            $row['target_district'] = $total_target_cumulative_month;
+            $row['percentage_target'] = ($row['total_dpt1'] / $total_target) * 100;
+            $row['zero_dose_children'] = $total_target_cumulative_month - $row['total_dpt1'];
+            $row['percent_zero_dose'] = ($row['zero_dose_children'] / $total_target_cumulative_month) * 100;
         }
 
         return $result;
     }
 
     // Data total DPT-1 per distrik berdasarkan kabkota
-    public function get_dpt1_by_puskesmas($province_id = 'all', $city_id = 'all', $year = 2025, $quarter = 1 ) {
+    public function get_dpt1_by_puskesmas($province_id = 'all', $city_id = 'all', $year = 2025, $max_month = 1 ) {
         // Fetch province IDs based on the target condition (if needed)
         $province_ids = $this->get_targeted_province_ids();
         
@@ -382,20 +389,27 @@ class Immunization_model extends CI_Model {
         foreach ($result as &$row) {
             $total_target = $row['target_district'] ?? 0;
 
-            if ($quarter == 1) {
-                $quarter_target = $total_target / 4;
-            } elseif ($quarter == 2) {
-                $quarter_target = 2 * $total_target / 4;
-            } elseif ($quarter == 3) {
-                $quarter_target = 3 * $total_target / 4;
-            } else {
-                $quarter_target = $total_target;
-            }
+            // if ($quarter == 1) {
+            //     $quarter_target = $total_target / 4;
+            // } elseif ($quarter == 2) {
+            //     $quarter_target = 2 * $total_target / 4;
+            // } elseif ($quarter == 3) {
+            //     $quarter_target = 3 * $total_target / 4;
+            // } else {
+            //     $quarter_target = $total_target;
+            // }
 
-            $row['target_district'] = $quarter_target;
-            $row['percentage_target'] = $quarter_target > 0 ? ($row['total_dpt1'] / $quarter_target) * 100 : 0;
-            $row['zero_dose_children'] = $quarter_target - $row['total_dpt1'];
-            $row['percent_zero_dose'] = $quarter_target > 0 ? ($row['zero_dose_children'] / $quarter_target) * 100 : 0;
+            // $row['target_district'] = $quarter_target;
+            // $row['percentage_target'] = $quarter_target > 0 ? ($row['total_dpt1'] / $quarter_target) * 100 : 0;
+            // $row['zero_dose_children'] = $quarter_target - $row['total_dpt1'];
+            // $row['percent_zero_dose'] = $quarter_target > 0 ? ($row['zero_dose_children'] / $quarter_target) * 100 : 0;
+
+            $total_target_cumulative_month = $total_target * $max_month / 12;
+
+            $row['target_district'] = $total_target_cumulative_month;
+            $row['percentage_target'] = $total_target > 0 ? ($row['total_dpt1'] / $total_target) * 100 : 0;
+            $row['zero_dose_children'] = $total_target_cumulative_month - $row['total_dpt1'];
+            $row['percent_zero_dose'] = $total_target_cumulative_month > 0 ? ($row['zero_dose_children'] / $total_target_cumulative_month) * 100 : 0;
         }
 
         return $result;
