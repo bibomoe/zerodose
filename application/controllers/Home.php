@@ -343,6 +343,18 @@ class Home extends CI_Controller {
         // Menentukan Maks Bulan Data Kumulatif DPT
         $this->data['max_month'] = $this->Immunization_model->get_max_dpt1_month($selected_year);
 
+        // Metode 1: Menggunakan Array Asosiatif (Direkomendasikan)
+        $month_number = $this->data['max_month'];
+        $month_names = array(
+            1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June',
+            7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
+        );
+        if (isset($month_names[$month_number])) {
+            $this->data['max_month_name'] = $month_names[$month_number];
+        } else {
+            $this->data['max_month_name'] = 'Invalid Month';
+        }
+
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
 
@@ -550,9 +562,10 @@ class Home extends CI_Controller {
                 'children' => ' children',
                 'text1' => 'Target Year ',
                 'text1_quarter' => ' Quarter ',
+                'text1_cumulative' => ' Cumulative up to ',
                 'text2' => 'Based on the Pusdatin Kemenkes Target Year',
                 'text3' => 'DPT-1 Coverage Year ',
-                'text4' => '% of the target',
+                'text4' => '% of the target Year ',
                 'text5' => 'Number of children who are not yet immunized with DPT-1 Year ',
                 'text5_2' => 'The maximum number of ZD children Year',
                 'text5_4' => 'of the baseline',
@@ -584,7 +597,22 @@ class Home extends CI_Controller {
                 'text21' => 'Data source:  Routine Administrative Report, Directorate of Immunization, MOH',
                 'text22' => 'Data source:  Routine Administrative Report, Directorate of Immunization, MOH',
                 'text23' => 'Data source:  Routine Administrative Report, Directorate of Immunization, MOH, last updated on ',
-                'text24' => 'DPT-1 Target and Coverage Trend per Quarter'
+                'text24' => 'DPT-1 Target and Coverage Trend per Quarter',
+                // --- Tambahkan terjemahan bulan di sini untuk bahasa Inggris ---
+                'months' => [
+                    1 => 'January',
+                    2 => 'February',
+                    3 => 'March',
+                    4 => 'April',
+                    5 => 'May',
+                    6 => 'June',
+                    7 => 'July',
+                    8 => 'August',
+                    9 => 'September',
+                    10 => 'October',
+                    11 => 'November',
+                    12 => 'December'
+                ]
             ],
             'id' => [
                 'page_title' => 'Mitigasi',
@@ -595,9 +623,10 @@ class Home extends CI_Controller {
                 'children' => ' anak',
                 'text1' => 'Sasaran Tahun ',
                 'text1_quarter' => ' Triwulan ',
+                'text1_cumulative' => ' Kumulatif sampai bulan ',
                 'text2' => 'Sasaran Pusdatin Kemenkes Tahun',
                 'text3' => 'Cakupan DPT-1 Tahun ',
-                'text4' => '% dari sasaran',
+                'text4' => '% dari sasaran Tahun ',
                 'text5' => 'Jumlah Anak Belum di Imunisasi DPT-1 Tahun ',
                 'text5_2' => 'Jumlah Maksimal Anak ZD Tahun ',
                 'text5_4' => 'dari Baseline',
@@ -630,7 +659,22 @@ class Home extends CI_Controller {
                 'text22' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes',
                 'text23' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes terakhir diperbaharui pada ',
                 
-                'text24' => 'Tren Sasaran dan Cakupan DPT-1 per Triwulan'
+                'text24' => 'Tren Sasaran dan Cakupan DPT-1 per Triwulan',
+                // --- Tambahkan terjemahan bulan di sini untuk bahasa Indonesia ---
+                'months' => [
+                    1 => 'Januari',
+                    2 => 'Februari',
+                    3 => 'Maret',
+                    4 => 'April',
+                    5 => 'Mei',
+                    6 => 'Juni',
+                    7 => 'Juli',
+                    8 => 'Agustus',
+                    9 => 'September',
+                    10 => 'Oktober',
+                    11 => 'November',
+                    12 => 'Desember'
+                ]
             ]
         ];
     
