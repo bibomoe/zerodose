@@ -239,66 +239,24 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            layout: {
-                padding: { top: 30, bottom: 30 }
-            },
-            plugins: {
-                datalabels: {
-                    display: false
-                },
-                legend: {
-                    position: 'top',
-                    labels: {
-                        usePointStyle: true,
-                        boxWidth: 12,
-                        padding: 15,
-                        font: {
-                            size: 10
-                        }
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            if (context.dataset.type === 'scatter') {
-                                return context.raw.y + '%';
-                            }
-                            return context.formattedValue;
-                        }
-                    }
-                }
-            },
             scales: {
                 x: {
-                    stacked: true,
-                    ticks: {
-                        autoSkip: false,
-                        maxRotation: 45,
-                        minRotation: 45
-                    }
+                stacked: true
                 },
                 y: {
-                    stacked: true,
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: t.y_title
-                    }
+                stacked: true
                 },
                 y1: {
-                    beginAtZero: true,
-                    position: 'right',
-                    max: 100,
-                    title: {
-                        display: true,
-                        text: t.y1_title
-                    },
-                    grid: {
-                        drawOnChartArea: false
-                    }
+                position: 'right',
+                beginAtZero: true,
+                max: 100,
+                grid: {
+                    drawOnChartArea: false
+                }
                 }
             }
         },
+
         plugins: [ChartDataLabels]
     });
 </script>
