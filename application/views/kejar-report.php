@@ -162,6 +162,11 @@
     const labels = data.map(item => item.name);
     const coverage = data.map(item => parseInt(item.coverage));
     const zdTotal = data.map(item => parseInt(item.zd_total));
+    const belumDikejar = data.map((item, i) => {
+        const total = parseInt(item.zd_total);
+        const capai = parseInt(item.coverage);
+        return Math.max(total - capai, 0);
+    });
     const percentage = data.map((item, index) => {
         const zd = parseInt(item.zd_total);
         const cov = parseInt(item.coverage);
@@ -173,14 +178,14 @@
     const t = {
         en: {
             label_dikejar: "Number of Zero Dose Children in 2024 Reached (Manual Data)",
-            label_total: "Total Number of Zero Dose Children in 2024",
-            label_percent: "% of Reached from Total ZD 2024",
+            label_sisa: "Remaining Zero Dose Children in 2024",
+            label_percent: "% Reached from Total ZD 2024",
             y1_title: "% of ZD",
             y_title: "Number of Children"
         },
         id: {
             label_dikejar: "Jumlah Anak Zero Dose Tahun 2024 yang dikejar (manual data)",
-            label_total: "Jumlah Anak Zero Dose Tahun 2024",
+            label_sisa: "Sisa Anak Zero Dose Tahun 2024",
             label_percent: "% yang Dikejar dari Total ZD 2024",
             y1_title: "% dari ZD",
             y_title: "Jumlah Anak"
@@ -193,15 +198,17 @@
             labels: labels,
             datasets: [
                 {
-                    label: t.label_total,
-                    data: zdTotal,
-                    backgroundColor: 'rgba(135, 206, 235, 0.7)', // biru muda
-                    yAxisID: 'y'
-                },
-                {
                     label: t.label_dikejar,
                     data: coverage,
                     backgroundColor: 'rgba(0, 86, 179, 1)', // biru tua
+                    stack: 'total',
+                    yAxisID: 'y'
+                },
+                {
+                    label: t.label_sisa,
+                    data: belumDikejar,
+                    backgroundColor: 'rgba(135, 206, 235, 0.7)', // biru muda
+                    stack: 'total',
                     yAxisID: 'y'
                 },
                 {
@@ -232,16 +239,18 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: { top: 30, bottom: 30 }
+            },
             plugins: {
                 datalabels: {
                     display: false
                 },
                 legend: {
-                    display: true,
                     position: 'top',
                     labels: {
                         usePointStyle: true,
-                        boxWidth: 10,
+                        boxWidth: 12,
                         padding: 15,
                         font: {
                             size: 10
@@ -261,14 +270,15 @@
             },
             scales: {
                 x: {
-                    stacked: false,
+                    stacked: true,
                     ticks: {
-                        callback: function (value, index) {
-                            return labels[index];
-                        }
+                        autoSkip: false,
+                        maxRotation: 45,
+                        minRotation: 45
                     }
                 },
                 y: {
+                    stacked: true,
                     beginAtZero: true,
                     title: {
                         display: true,
@@ -277,8 +287,8 @@
                 },
                 y1: {
                     beginAtZero: true,
-                    max: 100,
                     position: 'right',
+                    max: 100,
                     title: {
                         display: true,
                         text: t.y1_title
@@ -292,6 +302,7 @@
         plugins: [ChartDataLabels]
     });
 </script>
+
 
 
 
