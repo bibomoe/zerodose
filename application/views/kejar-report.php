@@ -124,7 +124,7 @@
                                             <h4>Imunisasi Kejar DPT1 (<?= $selected_year ?>)</h4>
                                         </div>
                                         <div class="card-body">
-                                            <canvas id="kejarChart"></canvas>
+                                            <canvas id="kejarChart" style="height: 500px; width: 100%;"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -239,24 +239,66 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: { top: 30, bottom: 30 }
+            },
+            plugins: {
+                datalabels: {
+                    display: false
+                },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        boxWidth: 12,
+                        padding: 15,
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            if (context.dataset.type === 'scatter') {
+                                return context.raw.y + '%';
+                            }
+                            return context.formattedValue;
+                        }
+                    }
+                }
+            },
             scales: {
                 x: {
-                stacked: true
+                    stacked: true,
+                    ticks: {
+                        autoSkip: false,
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
                 },
                 y: {
-                stacked: true
+                    stacked: true,
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: t.y_title
+                    }
                 },
                 y1: {
-                position: 'right',
-                beginAtZero: true,
-                max: 100,
-                grid: {
-                    drawOnChartArea: false
-                }
+                    beginAtZero: true,
+                    position: 'right',
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: t.y1_title
+                    },
+                    grid: {
+                        drawOnChartArea: false
+                    }
                 }
             }
         },
-
         plugins: [ChartDataLabels]
     });
 </script>
