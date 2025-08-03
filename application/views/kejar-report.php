@@ -260,10 +260,20 @@
                 tooltip: {
                     callbacks: {
                         label: function (context) {
+                            const label = context.dataset.label || '';
+                            let value = context.raw;
+
+                            // Jika titik (dot persen)
                             if (context.dataset.type === 'scatter') {
-                                return context.raw.y + '%';
+                                return `${label}: ${value.y}%`;
                             }
-                            return context.formattedValue;
+
+                            // Format angka biasa (ribuan)
+                            if (typeof value === 'number') {
+                                value = value.toLocaleString('id-ID'); // atau en-US jika pakai English
+                            }
+
+                            return `${label}: ${value}`;
                         }
                     }
                 }
