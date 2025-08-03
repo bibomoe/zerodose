@@ -155,138 +155,62 @@
 
 <!-- Grafik Bar -->
 <script>
+    const data = <?= json_encode($chart_data) ?>;
+    const labels = data.map(item => item.name);
+    const coverage = data.map(item => parseInt(item.coverage));
+    const percentage = data.map(item => {
+        let zd = parseInt(item.zd_total);
+        return zd > 0 ? Math.round((item.coverage / zd) * 1000) / 10 : 0;
+    });
 
-            // Fetch data from PHP
-            const restoredData = <?= json_encode($restored_data); ?>;
-
-            // Use clearer labels in English
-            const regency = restoredData.kabupaten ?? 0;
-            const city = restoredData.kota ?? 0;
-
-            let scaleXlabel2 ='';
-            let scaleYlabel2 ='';
-            let titleBarChart ='';
-            let valueLabel =[];
-
-            // Object untuk menyimpan terjemahan
-            const translationsBarChart = {
-                    en: {
-                        title: `Number of Restored Children`,
-                        scaleX: 'Region Type',
-                        scaleY: 'ZD Children',
-                        valueLabel : ['Regency', 'City']
-                    },
-                    id: {
-                        title: `Jumlah Anak Terimunisasi`,
-                        scaleX: 'Jenis Wilayah',
-                        scaleY: 'Jumlah Anak Terimunisasi',
-                        valueLabel : ['Kabupaten', 'Kota']
-                    }
-            };
-
-            function setLanguageBarChart(lang) {
-                titleBarChart = translationsBarChart[lang].title;
-                scaleXlabel2 = translationsBarChart[lang].scaleX;
-                scaleYlabel2 = translationsBarChart[lang].scaleY;
-                valueLabel = translationsBarChart[lang].valueLabel;
-            }
-
-            // Inisialisasi bahasa berdasarkan localStorage
-            // let savedLang = localStorage.getItem("selectedLanguage");
-            setLanguageBarChart(savedLang);
-
-            // Chart.js setup for locationChart
-            const locationCtx = document.getElementById('locationChart').getContext('2d');
-            new Chart(locationCtx, {
-                type: 'bar',
-                data: {
-                    labels: valueLabel, // Replacing Kabupaten/Kota with English terms
-                    datasets: [{
-                        label: titleBarChart, // More descriptive label
-                        data: [regency, city], // Data from backend
-                        backgroundColor: ['rgba(0, 86, 179, 0.7)', 'rgba(0, 179, 230, 0.7)']
-                    }]
+    new Chart(document.getElementById('kejarChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Jumlah Anak Dikejar (DPT1)',
+                    data: coverage,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    yAxisID: 'y',
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: scaleXlabel2 // Replacing "Place of Residence" with a more accurate term
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: scaleYlabel2
-                            }
-                        }
-                    }
+                {
+                    type: 'line',
+                    label: 'Persentase dari ZD 2024 (%)',
+                    data: percentage,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    yAxisID: 'y1',
+                    tension: 0.4,
+                    fill: false,
+                    pointRadius: 4
                 }
-            });
-
-
-
-            // Function to create buttons dynamically for locationChart
-            function addLocationDownloadButtons() {
-                const container = locationCtx.canvas.parentNode;
-
-                // Create a wrapper for the buttons
-                const buttonWrapper = document.createElement('div');
-                buttonWrapper.className = 'd-flex mb-3 gap-2'; // Bootstrap classes
-
-                // Create CSV download button
-                const csvButton = document.createElement('button');
-                csvButton.textContent = 'Download CSV';
-                csvButton.className = 'btn btn-primary btn-sm'; // Smaller button
-                csvButton.addEventListener('click', () => downloadLocationCSV());
-
-                // Create Excel download button
-                const excelButton = document.createElement('button');
-                excelButton.textContent = 'Download Excel';
-                excelButton.className = 'btn btn-success btn-sm'; // Smaller button
-                excelButton.addEventListener('click', () => downloadLocationExcel());
-
-                // Append buttons to the wrapper
-                buttonWrapper.appendChild(csvButton);
-                buttonWrapper.appendChild(excelButton);
-
-                // Insert the wrapper above the chart
-                container.insertBefore(buttonWrapper, locationCtx.canvas);
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Jumlah Anak Dikejar'
+                    }
+                },
+                y1: {
+                    beginAtZero: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Persentase dari ZD (%)'
+                    },
+                    grid: {
+                        drawOnChartArea: false
+                    },
+                    max: 100
+                }
             }
-
-            // Function to download CSV for locationChart
-            function downloadLocationCSV() {
-                let csvContent = "data:text/csv;charset=utf-8,";
-                csvContent += "Region Type,Number of Restored Children\n"; // Header
-                csvContent += `Regency,${regency}\n`;
-                csvContent += `City,${city}\n`;
-
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement('a');
-                link.setAttribute('href', encodedUri);
-                link.setAttribute('download', 'restored_children_data.csv');
-                link.click();
-            }
-
-            // Function to download Excel for locationChart
-            function downloadLocationExcel() {
-                const workbook = XLSX.utils.book_new();
-                const worksheetData = [['Region Type', 'Number of Restored Children'], ['Regency', regency], ['City', city]];
-                const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-                XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-
-                XLSX.writeFile(workbook, 'restored_children_data.xlsx');
-            }
-
-            // Add buttons to the DOM for locationChart
-            addLocationDownloadButtons();
+        }
+    });
 </script>
 
 <!-- Buttons HTML5 untuk export CSV & Excel -->
