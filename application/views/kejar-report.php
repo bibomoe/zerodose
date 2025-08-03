@@ -156,7 +156,6 @@
 
 <!-- Grafik Bar -->
 <script>
-    // WAJIB: Daftarkan plugin
     Chart.register(ChartDataLabels);
 
     const data = <?= json_encode($chart_data) ?>;
@@ -167,20 +166,41 @@
         return zd > 0 ? Math.round((item.coverage / zd) * 1000) / 10 : 0;
     });
 
+    // Deteksi bahasa dari localStorage (default ke id jika tidak ada)
+    const lang = localStorage.getItem("selectedLanguage") || "id";
+
+    // Translations untuk chart
+    const translationsKejarChart = {
+        en: {
+            barLabel: "Number of Children Reached (DPT1)",
+            lineLabel: "Percentage of ZD 2024 (%)",
+            yAxisLeft: "Number of Children Reached",
+            yAxisRight: "Percentage of ZD (%)"
+        },
+        id: {
+            barLabel: "Jumlah Anak Dikejar (DPT1)",
+            lineLabel: "Persentase dari ZD 2024 (%)",
+            yAxisLeft: "Jumlah Anak Dikejar",
+            yAxisRight: "Persentase dari ZD (%)"
+        }
+    };
+
+    const t = translationsKejarChart[lang];
+
     new Chart(document.getElementById('kejarChart').getContext('2d'), {
         type: 'bar',
         data: {
             labels: labels,
             datasets: [
                 {
-                    label: 'Jumlah Anak Dikejar (DPT1)',
+                    label: t.barLabel,
                     data: coverage,
                     backgroundColor: 'rgba(54, 162, 235, 0.7)',
                     yAxisID: 'y',
                 },
                 {
                     type: 'line',
-                    label: 'Persentase dari ZD 2024 (%)',
+                    label: t.lineLabel,
                     data: percentage,
                     borderColor: 'rgba(255, 99, 132, 1)',
                     backgroundColor: 'rgba(255, 99, 132, 1)',
@@ -211,10 +231,20 @@
             responsive: true,
             plugins: {
                 datalabels: {
-                    display: false // default global off, override per dataset
+                    display: false
                 },
                 legend: {
                     display: true
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            if (context.dataset.label === t.lineLabel) {
+                                return context.formattedValue + '%';
+                            }
+                            return context.formattedValue;
+                        }
+                    }
                 }
             },
             scales: {
@@ -222,7 +252,7 @@
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Jumlah Anak Dikejar'
+                        text: t.yAxisLeft
                     }
                 },
                 y1: {
@@ -230,7 +260,7 @@
                     position: 'right',
                     title: {
                         display: true,
-                        text: 'Persentase dari ZD (%)'
+                        text: t.yAxisRight
                     },
                     grid: {
                         drawOnChartArea: false
