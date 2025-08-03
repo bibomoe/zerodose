@@ -33,7 +33,7 @@
                                             <?php
                                                 // var_dump($selected_province);
                                             ?>
-                                            <?= form_open('home/restored', ['method' => 'post']) ?>
+                                            <?= form_open('home/kejar_report', ['method' => 'post']) ?>
                                                 <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?>​</label>
                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                     <?php
