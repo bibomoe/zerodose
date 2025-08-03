@@ -697,6 +697,12 @@ class Home extends CI_Controller {
         $selected_district = $this->input->post('district') ?? $this->input->get('district') ?? 'all';
         $selected_year = $this->input->post('year') ?? $this->input->get('year') ?? date('Y');
 
+        // Ambil daftar provinsi untuk dropdown + targeted provinces
+        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
+
+        // Ambil daftar kabkota untuk dropdown + targeted provinces
+        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province);
+        
         // Jika PHO
         if ($user_category == 7 && $selected_province == 'all') {
             $selected_province = $user_province;
@@ -724,12 +730,15 @@ class Home extends CI_Controller {
         $this->data['provinces'] = $this->Immunization_model->get_province_names();
         $this->data['districts'] = ($selected_province !== 'all') ? $this->Immunization_model->get_cities_name_by_province($selected_province) : [];
 
+        // Menentukan bahasa yang dipilih
+        $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
+
         // Memuat data terjemahan
         $translations = $this->load_translation_restored($selected_language);
 
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
-        
+
         load_template('kejar-report', $this->data);
     }
 
