@@ -161,27 +161,29 @@
     const data = <?= json_encode($chart_data) ?>;
     const labels = data.map(item => item.name);
     const coverage = data.map(item => parseInt(item.coverage));
-    const percentage = data.map(item => {
-        let zd = parseInt(item.zd_total);
-        return zd > 0 ? Math.round((item.coverage / zd) * 1000) / 10 : 0;
+    const zdTotal = data.map(item => parseInt(item.zd_total));
+    const percentage = data.map((item, index) => {
+        const zd = parseInt(item.zd_total);
+        const cov = parseInt(item.coverage);
+        return zd > 0 ? Math.round((cov / zd) * 1000) / 10 : 0;
     });
 
-    // Deteksi bahasa dari localStorage (default ke id jika tidak ada)
     const lang = localStorage.getItem("selectedLanguage") || "id";
 
-    // Translations untuk chart
     const translationsKejarChart = {
         en: {
-            barLabel: "Number of Children Reached (DPT1)",
-            lineLabel: "Percentage of ZD 2024 (%)",
-            yAxisLeft: "Number of Children Reached",
-            yAxisRight: "Percentage of ZD (%)"
+            barLabel1: "Children Reached (Manual Data)",
+            barLabel2: "Total Zero Dose Children in 2024",
+            lineLabel: "% Reached from ZD 2024",
+            yLeft: "Number of Children",
+            yRight: "% of ZD"
         },
         id: {
-            barLabel: "Jumlah Anak Dikejar (DPT1)",
-            lineLabel: "Persentase dari ZD 2024 (%)",
-            yAxisLeft: "Jumlah Anak Dikejar",
-            yAxisRight: "Persentase dari ZD (%)"
+            barLabel1: "Jumlah Anak Zero Dose Tahun 2024 yang dikejar (manual)",
+            barLabel2: "Jumlah Anak Zero Dose Tahun 2024",
+            lineLabel: "Persentase yang Dikejar dari ZD 2024",
+            yLeft: "Jumlah Anak",
+            yRight: "% dari ZD"
         }
     };
 
@@ -193,23 +195,28 @@
             labels: labels,
             datasets: [
                 {
-                    label: t.barLabel,
+                    label: t.barLabel2, // Total ZD
+                    data: zdTotal,
+                    backgroundColor: 'rgba(135, 206, 235, 0.7)', // biru muda
+                    yAxisID: 'y'
+                },
+                {
+                    label: t.barLabel1, // Dikejar (manual)
                     data: coverage,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                    yAxisID: 'y',
+                    backgroundColor: 'rgba(0, 86, 179, 1)', // biru tua
+                    yAxisID: 'y'
                 },
                 {
                     type: 'line',
                     label: t.lineLabel,
                     data: percentage,
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                    borderColor: 'rgba(255, 0, 0, 1)',
+                    backgroundColor: 'rgba(255, 0, 0, 1)',
                     yAxisID: 'y1',
                     tension: 0.4,
                     fill: false,
                     pointRadius: 2,
                     pointHoverRadius: 3,
-                    showLine: false,
                     datalabels: {
                         display: true,
                         anchor: 'end',
@@ -217,12 +224,12 @@
                         formatter: function(value) {
                             return value > 0 ? value + '%' : '';
                         },
-                        color: '#ff6384',
+                        color: '#ff0000',
                         font: {
                             weight: 'bold',
-                            size: 6
+                            size: 8
                         },
-                        offset: 4
+                        offset: 6
                     }
                 }
             ]
@@ -231,14 +238,14 @@
             responsive: true,
             plugins: {
                 datalabels: {
-                    display: false
+                    display: false // default, override per dataset
                 },
                 legend: {
                     display: true
                 },
                 tooltip: {
                     callbacks: {
-                        label: function (context) {
+                        label: function(context) {
                             if (context.dataset.label === t.lineLabel) {
                                 return context.formattedValue + '%';
                             }
@@ -252,7 +259,7 @@
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: t.yAxisLeft
+                        text: t.yLeft
                     }
                 },
                 y1: {
@@ -260,7 +267,7 @@
                     position: 'right',
                     title: {
                         display: true,
-                        text: t.yAxisRight
+                        text: t.yRight
                     },
                     grid: {
                         drawOnChartArea: false
@@ -272,6 +279,7 @@
         plugins: [ChartDataLabels]
     });
 </script>
+
 
 <!-- Buttons HTML5 untuk export CSV & Excel -->
 <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
