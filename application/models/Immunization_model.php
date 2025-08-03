@@ -1125,7 +1125,7 @@ class Immunization_model extends CI_Model {
             SUM(k.dpt1_coverage) as coverage,
             (SELECT SUM(z.zd_cases) FROM zd_cases_2023 z WHERE z.year = 2024 AND z.province_id = p.id) as zd_total');
         $this->db->from('provinces p');
-        $this->db->join('immunization_data_kejar_manual k', 'k.province_id = p.id AND k.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar k', 'k.province_id = p.id AND k.year = ' . (int)$year, 'left');
         $this->db->group_by('p.id');
         return $this->db->get()->result_array();
     }
