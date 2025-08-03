@@ -193,14 +193,14 @@
                     datalabels: {
                         display: true,
                         anchor: 'end',
-                        align: 'right',
+                        align: 'top',
                         formatter: function(value) {
                             return value > 0 ? value + '%' : '';
                         },
                         color: '#ff6384',
                         font: {
                             weight: 'bold',
-                            size: 10
+                            size: 6
                         },
                         offset: 4
                     }
