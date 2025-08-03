@@ -729,10 +729,19 @@ class Home extends CI_Controller {
 
         // Load data tergantung kondisi
         if ($selected_province === 'all') {
-            $chart_data = $this->Immunization_model->get_kejar_data_group_by_province($selected_year);
+            // Per provinsi nasional
+            $chart_data = $this->Immunization_model->get_kejar_manual_group_by_province($selected_year);
+        } elseif ($selected_province === 'targeted') {
+            // Per kabupaten/kota dari provinsi targeted
+            $chart_data = $this->Immunization_model->get_kejar_manual_group_by_targeted_provinces($selected_year);
+        } elseif ($selected_district === 'all') {
+            // Per kota di dalam satu provinsi
+            $chart_data = $this->Immunization_model->get_kejar_manual_group_by_city($selected_province, $selected_year);
         } else {
-            $chart_data = $this->Immunization_model->get_kejar_data_group_by_city($selected_province, $selected_year, $selected_district);
+            // Per puskesmas dalam kabupaten
+            $chart_data = $this->Immunization_model->get_kejar_manual_group_by_puskesmas($selected_province, $selected_district, $selected_year);
         }
+
 
         $this->data['chart_data'] = $chart_data;
         $this->data['selected_province'] = $selected_province;

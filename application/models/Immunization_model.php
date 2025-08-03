@@ -1119,41 +1119,76 @@ class Immunization_model extends CI_Model {
     }
 
     //Kejar 03 Agustus 2025
-    public function get_kejar_data_group_by_province($year)
+    public function get_kejar_manual_group_by_province($year)
     {
         $this->db->select('p.id as region_id, p.name_id as name, 
             SUM(k.dpt1_coverage) as coverage,
             (SELECT SUM(z.zd_cases) FROM zd_cases_2023 z WHERE z.year = 2024 AND z.province_id = p.id) as zd_total');
         $this->db->from('provinces p');
-        $this->db->join('immunization_data_kejar k', 'k.province_id = p.id AND k.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar_manual k', 'k.province_id = p.id AND k.year = ' . (int)$year, 'left');
         $this->db->group_by('p.id');
         return $this->db->get()->result_array();
     }
 
-    public function get_kejar_data_group_by_city($province_id, $year, $city_id = 'all')
+
+    public function get_kejar_manual_group_by_city($province_id, $year)
     {
         $this->db->select('c.id as region_id, c.name_id as name, 
             SUM(k.dpt1_coverage) as coverage,
             (SELECT SUM(z.zd_cases) FROM zd_cases_2023 z WHERE z.year = 2024 AND z.city_id = c.id) as zd_total');
         $this->db->from('cities c');
-        $this->db->join('immunization_data_kejar k', 'k.city_id = c.id AND k.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar_manual k', 'k.city_id = c.id AND k.year = ' . (int)$year, 'left');
         $this->db->where('c.province_id', $province_id);
-        if ($city_id !== 'all') {
-            $this->db->where('c.id', $city_id);
-        }
         $this->db->group_by('c.id');
         return $this->db->get()->result_array();
     }
 
-    public function get_province_names()
+    public function get_kejar_manual_group_by_puskesmas($province_id, $city_id, $year)
     {
-        return $this->db->select('id, name_id')->from('provinces')->where('active', 1)->get()->result_array();
+        $this->db->select('p.id as region_id, p.name as name,
+            SUM(k.dpt1_coverage) as coverage,
+            (SELECT SUM(z.zd_cases) FROM zd_cases_2023 z WHERE z.year = 2024 AND z.puskesmas_id = p.id) as zd_total');
+        $this->db->from('puskesmas p');
+        $this->db->join('immunization_data_kejar_manual_per_puskesmas k', 'k.puskesmas_id = p.id AND k.year = ' . (int)$year, 'left');
+        $this->db->where('p.province_id', $province_id);
+        $this->db->where('p.city_id', $city_id);
+        $this->db->group_by('p.id');
+        return $this->db->get()->result_array();
     }
 
-    public function get_cities_name_by_province($province_id)
+    public function get_kejar_manual_group_by_targeted_provinces($year)
     {
-        return $this->db->select('id, name_id')->from('cities')->where('province_id', $province_id)->where('active', 1)->get()->result_array();
+        $province_ids = $this->get_targeted_province_ids(); // Pastikan function ini ada dan return array provinsi
+
+        if (empty($province_ids)) return [];
+
+        $this->db->select('
+            c.id AS region_id,
+            c.name_id AS name,
+            SUM(k.dpt1_coverage) AS coverage,
+            (
+                SELECT SUM(z.zd_cases)
+                FROM zd_cases_2023 z
+                WHERE z.year = 2024 AND z.city_id = c.id
+            ) AS zd_total
+        ');
+        $this->db->from('cities c');
+        $this->db->join('puskesmas p', 'p.city_id = c.id');
+        $this->db->join('immunization_data_kejar_manual_per_puskesmas k', 'k.puskesmas_id = p.id AND k.year = ' . (int)$year, 'left');
+        $this->db->where_in('c.province_id', $province_ids);
+        $this->db->group_by('c.id');
+        return $this->db->get()->result_array();
     }
+
+    // public function get_province_names()
+    // {
+    //     return $this->db->select('id, name_id')->from('provinces')->where('active', 1)->get()->result_array();
+    // }
+
+    // public function get_cities_name_by_province($province_id)
+    // {
+    //     return $this->db->select('id, name_id')->from('cities')->where('province_id', $province_id)->where('active', 1)->get()->result_array();
+    // }
     
 }
 ?>
