@@ -179,10 +179,13 @@
                     label: 'Persentase dari ZD 2024 (%)',
                     data: percentage,
                     borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 1)', // untuk warna titik
                     yAxisID: 'y1',
                     tension: 0.4,
                     fill: false,
-                    pointRadius: 4
+                    pointRadius: 5,
+                    pointHoverRadius: 6,
+                    showLine: false // <- HANYA TAMPILKAN TITIK
                 }
             ]
         },
