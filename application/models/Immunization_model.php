@@ -1118,7 +1118,42 @@ class Immunization_model extends CI_Model {
         return $this->db->get()->row_array();
     }
 
-    
+    //Kejar 03 Agustus 2025
+    public function get_kejar_data_group_by_province($year)
+    {
+        $this->db->select('p.id as region_id, p.name_id as name, 
+            SUM(k.dpt1_coverage) as coverage,
+            (SELECT SUM(z.zd_cases) FROM zd_cases_2023 z WHERE z.year = 2024 AND z.province_id = p.id) as zd_total');
+        $this->db->from('provinces p');
+        $this->db->join('immunization_data_kejar k', 'k.province_id = p.id AND k.year = ' . (int)$year, 'left');
+        $this->db->group_by('p.id');
+        return $this->db->get()->result_array();
+    }
+
+    public function get_kejar_data_group_by_city($province_id, $year, $city_id = 'all')
+    {
+        $this->db->select('c.id as region_id, c.name_id as name, 
+            SUM(k.dpt1_coverage) as coverage,
+            (SELECT SUM(z.zd_cases) FROM zd_cases_2023 z WHERE z.year = 2024 AND z.city_id = c.id) as zd_total');
+        $this->db->from('cities c');
+        $this->db->join('immunization_data_kejar k', 'k.city_id = c.id AND k.year = ' . (int)$year, 'left');
+        $this->db->where('c.province_id', $province_id);
+        if ($city_id !== 'all') {
+            $this->db->where('c.id', $city_id);
+        }
+        $this->db->group_by('c.id');
+        return $this->db->get()->result_array();
+    }
+
+    public function get_province_names()
+    {
+        return $this->db->select('id, name_id')->from('provinces')->where('active', 1)->get()->result_array();
+    }
+
+    public function get_cities_name_by_province($province_id)
+    {
+        return $this->db->select('id, name_id')->from('cities')->where('province_id', $province_id)->where('active', 1)->get()->result_array();
+    }
     
 }
 ?>

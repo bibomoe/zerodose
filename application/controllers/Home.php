@@ -685,6 +685,53 @@ class Home extends CI_Controller {
         return $translations[$lang] ?? $translations['id']; // Default ke bahasa Indonesia
     }
     
+    //Kejar 03 Agustus 2025
+    public function kejar_report()
+    {
+        $user_category = $this->session->userdata('user_category');
+        $user_province = $this->session->userdata('province_id');
+        $user_city = $this->session->userdata('city_id');
+
+        // Ambil filter
+        $selected_province = $this->input->post('province') ?? $this->input->get('province') ?? 'all';
+        $selected_district = $this->input->post('district') ?? $this->input->get('district') ?? 'all';
+        $selected_year = $this->input->post('year') ?? $this->input->get('year') ?? date('Y');
+
+        // Jika PHO
+        if ($user_category == 7 && $selected_province == 'all') {
+            $selected_province = $user_province;
+        }
+
+        // Jika DHO
+        if ($user_category == 8) {
+            $selected_province = $user_province;
+            $selected_district = $user_city;
+        }
+
+        // Load data tergantung kondisi
+        if ($selected_province === 'all') {
+            $chart_data = $this->Immunization_model->get_kejar_data_group_by_province($selected_year);
+        } else {
+            $chart_data = $this->Immunization_model->get_kejar_data_group_by_city($selected_province, $selected_year, $selected_district);
+        }
+
+        $this->data['chart_data'] = $chart_data;
+        $this->data['selected_province'] = $selected_province;
+        $this->data['selected_district'] = $selected_district;
+        $this->data['selected_year'] = $selected_year;
+
+        // Dropdowns
+        $this->data['provinces'] = $this->Immunization_model->get_province_names();
+        $this->data['districts'] = ($selected_province !== 'all') ? $this->Immunization_model->get_cities_name_by_province($selected_province) : [];
+
+        // Memuat data terjemahan
+        $translations = $this->load_translation_restored($selected_language);
+
+        // Mengirim data terjemahan ke view
+        $this->data['translations'] = $translations;
+        
+        load_template('kejar-report', $this->data);
+    }
 
     // public function lost() {
     //     $this->data['title'] = 'Lost Children';
