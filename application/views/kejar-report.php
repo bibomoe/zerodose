@@ -162,6 +162,11 @@
     const labels = data.map(item => item.name);
     const coverage = data.map(item => parseInt(item.coverage));
     const zdTotal = data.map(item => parseInt(item.zd_total));
+    const belumDikejar = data.map((item, i) => {
+        const zd = parseInt(item.zd_total);
+        const cov = parseInt(item.coverage);
+        return Math.max(zd - cov, 0);
+    });
     const percentage = data.map((item, index) => {
         const zd = parseInt(item.zd_total);
         const cov = parseInt(item.coverage);
@@ -170,24 +175,22 @@
 
     const lang = localStorage.getItem("selectedLanguage") || "id";
 
-    const translationsKejarChart = {
+    const t = {
         en: {
-            barLabel1: "Children Reached (Manual Data)",
-            barLabel2: "Total Zero Dose Children in 2024",
-            lineLabel: "% Reached from ZD 2024",
-            yLeft: "Number of Children",
-            yRight: "% of ZD"
+            label_dikejar: "Reached (Manual Data)",
+            label_sisa: "Not Yet Reached",
+            label_percent: "% Reached",
+            y1_title: "% of ZD",
+            y_title: "Zero Dose Children"
         },
         id: {
-            barLabel1: "Jumlah Anak Zero Dose Tahun 2024 yang dikejar (manual)",
-            barLabel2: "Jumlah Anak Zero Dose Tahun 2024",
-            lineLabel: "Persentase yang Dikejar dari ZD 2024",
-            yLeft: "Jumlah Anak",
-            yRight: "% dari ZD"
+            label_dikejar: "Dikejar (Manual)",
+            label_sisa: "Belum Dikejar",
+            label_percent: "% Dikejar",
+            y1_title: "% dari ZD",
+            y_title: "Jumlah Anak ZD"
         }
-    };
-
-    const t = translationsKejarChart[lang];
+    }[lang];
 
     new Chart(document.getElementById('kejarChart').getContext('2d'), {
         type: 'bar',
@@ -195,36 +198,35 @@
             labels: labels,
             datasets: [
                 {
-                    label: t.barLabel2, // Total ZD
-                    data: zdTotal,
+                    label: t.label_sisa,
+                    data: belumDikejar,
                     backgroundColor: 'rgba(135, 206, 235, 0.7)', // biru muda
+                    stack: 'Stack 0',
                     yAxisID: 'y'
                 },
                 {
-                    label: t.barLabel1, // Dikejar (manual)
+                    label: t.label_dikejar,
                     data: coverage,
                     backgroundColor: 'rgba(0, 86, 179, 1)', // biru tua
+                    stack: 'Stack 0',
                     yAxisID: 'y'
                 },
                 {
-                    type: 'line',
-                    label: t.lineLabel,
-                    data: percentage,
-                    borderColor: 'rgba(255, 0, 0, 1)',
-                    backgroundColor: 'rgba(255, 0, 0, 1)',
+                    type: 'scatter',
+                    label: t.label_percent,
+                    data: percentage.map((val, i) => ({ x: i, y: val })),
+                    backgroundColor: 'red',
+                    borderColor: 'red',
+                    pointRadius: 4,
+                    pointHoverRadius: 5,
+                    showLine: false,
                     yAxisID: 'y1',
-                    tension: 0.4,
-                    fill: false,
-                    pointRadius: 2,
-                    pointHoverRadius: 3,
                     datalabels: {
                         display: true,
                         anchor: 'end',
                         align: 'top',
-                        formatter: function(value) {
-                            return value > 0 ? value + '%' : '';
-                        },
-                        color: '#ff0000',
+                        formatter: (value) => value.y > 0 ? value.y + '%' : '',
+                        color: 'red',
                         font: {
                             weight: 'bold',
                             size: 8
@@ -238,16 +240,16 @@
             responsive: true,
             plugins: {
                 datalabels: {
-                    display: false // default, override per dataset
+                    display: false
                 },
                 legend: {
                     display: true
                 },
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
-                            if (context.dataset.label === t.lineLabel) {
-                                return context.formattedValue + '%';
+                        label: function (context) {
+                            if (context.dataset.type === 'scatter') {
+                                return context.raw.y + '%';
                             }
                             return context.formattedValue;
                         }
@@ -255,24 +257,33 @@
                 }
             },
             scales: {
+                x: {
+                    stacked: true,
+                    ticks: {
+                        callback: function (value, index) {
+                            return labels[index];
+                        }
+                    }
+                },
                 y: {
+                    stacked: true,
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: t.yLeft
+                        text: t.y_title
                     }
                 },
                 y1: {
                     beginAtZero: true,
                     position: 'right',
+                    max: 100,
                     title: {
                         display: true,
-                        text: t.yRight
+                        text: t.y1_title
                     },
                     grid: {
                         drawOnChartArea: false
-                    },
-                    max: 100
+                    }
                 }
             }
         },
