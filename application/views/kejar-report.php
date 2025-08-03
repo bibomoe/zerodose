@@ -162,11 +162,6 @@
     const labels = data.map(item => item.name);
     const coverage = data.map(item => parseInt(item.coverage));
     const zdTotal = data.map(item => parseInt(item.zd_total));
-    const belumDikejar = data.map((item, i) => {
-        const zd = parseInt(item.zd_total);
-        const cov = parseInt(item.coverage);
-        return Math.max(zd - cov, 0);
-    });
     const percentage = data.map((item, index) => {
         const zd = parseInt(item.zd_total);
         const cov = parseInt(item.coverage);
@@ -177,18 +172,18 @@
 
     const t = {
         en: {
-            label_dikejar: "Reached (Manual Data)",
-            label_sisa: "Not Yet Reached",
-            label_percent: "% Reached",
+            label_dikejar: "Number of Zero Dose Children in 2024 Reached (Manual Data)",
+            label_total: "Total Number of Zero Dose Children in 2024",
+            label_percent: "% of Reached from Total ZD 2024",
             y1_title: "% of ZD",
-            y_title: "Zero Dose Children"
+            y_title: "Number of Children"
         },
         id: {
-            label_dikejar: "Dikejar (Manual)",
-            label_sisa: "Belum Dikejar",
-            label_percent: "% Dikejar",
+            label_dikejar: "Jumlah Anak Zero Dose Tahun 2024 yang dikejar (manual data)",
+            label_total: "Jumlah Anak Zero Dose Tahun 2024",
+            label_percent: "% yang Dikejar dari Total ZD 2024",
             y1_title: "% dari ZD",
-            y_title: "Jumlah Anak ZD"
+            y_title: "Jumlah Anak"
         }
     }[lang];
 
@@ -198,17 +193,15 @@
             labels: labels,
             datasets: [
                 {
-                    label: t.label_sisa,
-                    data: belumDikejar,
+                    label: t.label_total,
+                    data: zdTotal,
                     backgroundColor: 'rgba(135, 206, 235, 0.7)', // biru muda
-                    stack: 'Stack 0',
                     yAxisID: 'y'
                 },
                 {
                     label: t.label_dikejar,
                     data: coverage,
                     backgroundColor: 'rgba(0, 86, 179, 1)', // biru tua
-                    stack: 'Stack 0',
                     yAxisID: 'y'
                 },
                 {
@@ -217,8 +210,8 @@
                     data: percentage.map((val, i) => ({ x: i, y: val })),
                     backgroundColor: 'red',
                     borderColor: 'red',
-                    pointRadius: 4,
-                    pointHoverRadius: 5,
+                    pointRadius: 2,
+                    pointHoverRadius: 3,
                     showLine: false,
                     yAxisID: 'y1',
                     datalabels: {
@@ -238,12 +231,22 @@
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 datalabels: {
                     display: false
                 },
                 legend: {
-                    display: true
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        boxWidth: 10,
+                        padding: 15,
+                        font: {
+                            size: 10
+                        }
+                    }
                 },
                 tooltip: {
                     callbacks: {
@@ -258,7 +261,7 @@
             },
             scales: {
                 x: {
-                    stacked: true,
+                    stacked: false,
                     ticks: {
                         callback: function (value, index) {
                             return labels[index];
@@ -266,7 +269,6 @@
                     }
                 },
                 y: {
-                    stacked: true,
                     beginAtZero: true,
                     title: {
                         display: true,
@@ -275,8 +277,8 @@
                 },
                 y1: {
                     beginAtZero: true,
-                    position: 'right',
                     max: 100,
+                    position: 'right',
                     title: {
                         display: true,
                         text: t.y1_title
@@ -290,6 +292,7 @@
         plugins: [ChartDataLabels]
     });
 </script>
+
 
 
 <!-- Buttons HTML5 untuk export CSV & Excel -->
