@@ -121,7 +121,7 @@
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4>Imunisasi Kejar DPT1 (<?= $selected_year ?>)</h4>
+                                            <h4 class="card-title"><?= $translations['text1'] ?></h4>
                                         </div>
                                         <div class="card-body">
                                             <canvas id="kejarChart" style="height: 500px; width: 100%;"></canvas>

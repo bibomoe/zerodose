@@ -756,12 +756,69 @@ class Home extends CI_Controller {
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
 
         // Memuat data terjemahan
-        $translations = $this->load_translation_restored($selected_language);
+        $translations = $this->load_translation_kejar($selected_language);
 
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
 
         load_template('kejar-report', $this->data);
+    }
+
+    private function load_translation_kejar($lang) {
+        $translations = [
+            'en' => [
+                'page_title' => 'Mitigate',
+                'page_subtitle' => 'Coverage rates restored, including by reaching zero-dose children',
+                'filter_label' => 'Select Filter',
+                'text1' => 'Zero Dose Children in 2024 who Get Vaccinated (Manual data)',
+                'tabelcoloumn1' => 'District',
+                'tabelcoloumn2' => 'Total Coverage DPT1',
+                'tabelcoloumn3' => '% of Total Target',
+                'tabelcoloumn4' => 'Number of Children Not Immunized with DPT-1',
+                // --- Tambahkan terjemahan bulan di sini untuk bahasa Inggris ---
+                'months' => [
+                    1 => 'January',
+                    2 => 'February',
+                    3 => 'March',
+                    4 => 'April',
+                    5 => 'May',
+                    6 => 'June',
+                    7 => 'July',
+                    8 => 'August',
+                    9 => 'September',
+                    10 => 'October',
+                    11 => 'November',
+                    12 => 'December'
+                ]
+            ],
+            'id' => [
+                'page_title' => 'Mitigasi',
+                'page_subtitle' => 'Tingkat cakupan yang dipulihkan, termasuk mencapai anak zero-dose',
+                'filter_label' => 'Pilih Filter',
+                'text1' => 'Anak Zero Dose yang berhasil dikejar (data Manual)',
+                'tabelcoloumn1' => 'Kab/Kota',
+                'tabelcoloumn2' => 'Total Cakupan DPT1',
+                'tabelcoloumn3' => '% dari Total Sasaran',
+                'tabelcoloumn4' => 'Jumlah Anak Belum di Imunisasi DPT-1',
+                // --- Tambahkan terjemahan bulan di sini untuk bahasa Indonesia ---
+                'months' => [
+                    1 => 'Januari',
+                    2 => 'Februari',
+                    3 => 'Maret',
+                    4 => 'April',
+                    5 => 'Mei',
+                    6 => 'Juni',
+                    7 => 'Juli',
+                    8 => 'Agustus',
+                    9 => 'September',
+                    10 => 'Oktober',
+                    11 => 'November',
+                    12 => 'Desember'
+                ]
+            ]
+        ];
+    
+        return $translations[$lang] ?? $translations['id']; // Default ke bahasa Indonesia
     }
 
     // public function lost() {
