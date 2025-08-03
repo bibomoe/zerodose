@@ -156,6 +156,9 @@
 
 <!-- Grafik Bar -->
 <script>
+    // WAJIB: Daftarkan plugin
+    Chart.register(ChartDataLabels);
+
     const data = <?= json_encode($chart_data) ?>;
     const labels = data.map(item => item.name);
     const coverage = data.map(item => parseInt(item.coverage));
@@ -188,16 +191,18 @@
                     pointHoverRadius: 3,
                     showLine: false,
                     datalabels: {
+                        display: true,
                         anchor: 'end',
                         align: 'right',
                         formatter: function(value) {
-                            return value + '%';
+                            return value > 0 ? value + '%' : '';
                         },
                         color: '#ff6384',
                         font: {
                             weight: 'bold',
                             size: 10
-                        }
+                        },
+                        offset: 4
                     }
                 }
             ]
@@ -206,7 +211,7 @@
             responsive: true,
             plugins: {
                 datalabels: {
-                    display: false // default global off
+                    display: false // default global off, override per dataset
                 },
                 legend: {
                     display: true
@@ -236,7 +241,6 @@
         },
         plugins: [ChartDataLabels]
     });
-
 </script>
 
 <!-- Buttons HTML5 untuk export CSV & Excel -->
