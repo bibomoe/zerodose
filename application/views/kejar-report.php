@@ -183,8 +183,8 @@
                     yAxisID: 'y1',
                     tension: 0.4,
                     fill: false,
-                    pointRadius: 5,
-                    pointHoverRadius: 6,
+                    pointRadius: 2,
+                    pointHoverRadius: 3,
                     showLine: false // <- HANYA TAMPILKAN TITIK
                 }
             ]
