@@ -152,6 +152,7 @@
 
 
 
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 
 <!-- Grafik Bar -->
 <script>
@@ -179,18 +180,38 @@
                     label: 'Persentase dari ZD 2024 (%)',
                     data: percentage,
                     borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'rgba(255, 99, 132, 1)', // untuk warna titik
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
                     yAxisID: 'y1',
                     tension: 0.4,
                     fill: false,
                     pointRadius: 2,
                     pointHoverRadius: 3,
-                    showLine: false // <- HANYA TAMPILKAN TITIK
+                    showLine: false,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'right',
+                        formatter: function(value) {
+                            return value + '%';
+                        },
+                        color: '#ff6384',
+                        font: {
+                            weight: 'bold',
+                            size: 10
+                        }
+                    }
                 }
             ]
         },
         options: {
             responsive: true,
+            plugins: {
+                datalabels: {
+                    display: false // default global off
+                },
+                legend: {
+                    display: true
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true,
@@ -212,8 +233,10 @@
                     max: 100
                 }
             }
-        }
+        },
+        plugins: [ChartDataLabels]
     });
+
 </script>
 
 <!-- Buttons HTML5 untuk export CSV & Excel -->
