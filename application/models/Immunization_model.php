@@ -1145,16 +1145,22 @@ class Immunization_model extends CI_Model {
 
     public function get_kejar_manual_group_by_puskesmas($province_id, $city_id, $year)
     {
-        $this->db->select('p.id as region_id, p.name as name,
-            SUM(k.dpt1_coverage) as coverage,
-            (SELECT SUM(z.zd_cases) FROM zd_cases_2023 z WHERE z.year = 2024 AND z.puskesmas_id = p.id) as zd_total');
+        $this->db->select('
+            p.id AS region_id,
+            p.name AS name,
+            COALESCE(SUM(k.dpt1_coverage), 0) AS coverage,
+            COALESCE(z.zd_cases, 0) AS zd_total,
+            ROUND((COALESCE(SUM(k.dpt1_coverage), 0) / NULLIF(z.zd_cases, 0)) * 100, 1) AS percentage
+        ');
         $this->db->from('puskesmas p');
         $this->db->join('immunization_data_kejar_manual_per_puskesmas k', 'k.puskesmas_id = p.id AND k.year = ' . (int)$year, 'left');
+        $this->db->join('zd_cases_per_puskesmas z', 'z.puskesmas_id = p.id AND z.year = 2024', 'left');
         $this->db->where('p.province_id', $province_id);
         $this->db->where('p.city_id', $city_id);
         $this->db->group_by('p.id');
         return $this->db->get()->result_array();
     }
+
 
     public function get_kejar_manual_group_by_targeted_provinces($year)
     {
