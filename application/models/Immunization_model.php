@@ -1158,27 +1158,27 @@ class Immunization_model extends CI_Model {
 
     public function get_kejar_manual_group_by_targeted_provinces($year)
     {
-        $province_ids = $this->get_targeted_province_ids(); // Pastikan function ini ada dan return array provinsi
+        $province_ids = $this->get_targeted_province_ids();
 
         if (empty($province_ids)) return [];
 
         $this->db->select('
-            c.id AS region_id,
-            c.name_id AS name,
+            p.id AS region_id,
+            p.name_id AS name,
             SUM(k.dpt1_coverage) AS coverage,
             (
                 SELECT SUM(z.zd_cases)
                 FROM zd_cases_2023 z
-                WHERE z.year = 2024 AND z.city_id = c.id
+                WHERE z.year = 2024 AND z.province_id = p.id
             ) AS zd_total
         ');
-        $this->db->from('cities c');
-        $this->db->join('puskesmas p', 'p.city_id = c.id');
-        $this->db->join('immunization_data_kejar_manual_per_puskesmas k', 'k.puskesmas_id = p.id AND k.year = ' . (int)$year, 'left');
-        $this->db->where_in('c.province_id', $province_ids);
-        $this->db->group_by('c.id');
+        $this->db->from('provinces p');
+        $this->db->join('immunization_data_kejar_manual k', 'k.province_id = p.id AND k.year = ' . (int)$year, 'left');
+        $this->db->where_in('p.id', $province_ids);
+        $this->db->group_by('p.id');
         return $this->db->get()->result_array();
     }
+
 
     // public function get_province_names()
     // {
