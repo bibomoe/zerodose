@@ -178,14 +178,16 @@
     const t = {
         en: {
             label_dikejar: "Number of Zero Dose Children in 2024 Reached (Manual Data)",
-            label_sisa: "Remaining Zero Dose Children in 2024",
+            // label_sisa: "Remaining Zero Dose Children in 2024",
+            label_sisa: "Zero Dose Children in 2024",
             label_percent: "% Reached from Total ZD 2024",
             y1_title: "% of ZD",
             y_title: "Number of Children"
         },
         id: {
             label_dikejar: "Jumlah Anak Zero Dose Tahun 2024 yang dikejar (manual data)",
-            label_sisa: "Sisa Anak Zero Dose Tahun 2024",
+            // label_sisa: "Sisa Anak Zero Dose Tahun 2024",
+            label_sisa: "Jumlah Anak Zero Dose Tahun 2024",
             label_percent: "% yang Dikejar dari Total ZD 2024",
             y1_title: "% dari ZD",
             y_title: "Jumlah Anak"
@@ -206,7 +208,8 @@
                 },
                 {
                     label: t.label_sisa,
-                    data: belumDikejar,
+                    // data: belumDikejar,
+                    data: zdTotal,
                     backgroundColor: 'rgba(135, 206, 235, 0.7)', // biru muda
                     stack: 'total',
                     yAxisID: 'y'
