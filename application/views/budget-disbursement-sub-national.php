@@ -54,7 +54,7 @@
                                                             ['class' => 'form-select', 'id' => 'menuFilter',
                                                             'style' => 'width:100%;max-width:260px;height:48px;font-size:1rem;']
                                                         ); ?>
-                                                        
+
                                                     <?= form_dropdown(
                                                             'year', 
                                                             [2025 => '2025', 2026 => '2026'], 
@@ -71,6 +71,58 @@
                                 </div>
                             </div>
 
+                        <!-- Graphic for Budget Disbursement -->
+                        <div class="row">
+                            <!-- Grafik Bar Budget per Objective -->
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Budget Disbursement Sub-National CSO Graph</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="chartWrapper" class="d-flex justify-content-center">
+                                                <canvas id="budgetProvChart" style="height:460px;width:100%"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+
+                        <!-- table -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4></h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped" id="table2">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:35%"><?= $translations['tabelcoloumn1']; ?></th>
+                                                            <th><?= $translations['tabelcoloumn2'] ?> </th>
+                                                            <th><?= $translations['tabelcoloumn3'] ?> </th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?> </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($chart_data as $r): ?>
+                                                        <tr>
+                                                            <td><?= $r['name']; ?></td>
+                                                            <td style="text-align:right">Rp <?= number_format($r['allocation'], 0, ',', '.'); ?></td>
+                                                            <td style="text-align:right">Rp <?= number_format($r['realization'], 0, ',', '.'); ?></td>
+                                                            <td style="text-align:center"><?= (int)$r['percentage']; ?>%</td>
+                                                        </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                         <!-- table Budget Disbursement National-->
                         <div class="row">
                             <div class="col-12">
@@ -283,57 +335,7 @@
                                 </div>
                         </div>
 
-                        <!-- Graphic for Budget Disbursement -->
-                        <div class="row">
-                            <!-- Grafik Bar Budget per Objective -->
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4 class="card-title">Budget Disbursement Sub-National CSO Graph</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div id="chartWrapper" class="d-flex justify-content-center">
-                                                <canvas id="budgetProvChart" style="height:460px;width:100%"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
-
-                        <!-- table -->
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4></h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table table-striped" id="table2">
-                                                    <thead>
-                                                        <tr>
-                                                            <th style="width:35%"><?= $translations['tabelcoloumn1']; ?></th>
-                                                            <th><?= $translations['tabelcoloumn2'] ?> </th>
-                                                            <th><?= $translations['tabelcoloumn3'] ?> </th>
-                                                            <th><?= $translations['tabelcoloumn4'] ?> </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($chart_data as $r): ?>
-                                                        <tr>
-                                                            <td><?= $r['name']; ?></td>
-                                                            <td style="text-align:right">Rp <?= number_format($r['allocation'], 0, ',', '.'); ?></td>
-                                                            <td style="text-align:right">Rp <?= number_format($r['realization'], 0, ',', '.'); ?></td>
-                                                            <td style="text-align:center"><?= (int)$r['percentage']; ?>%</td>
-                                                        </tr>
-                                                        <?php endforeach; ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        
 
                     </section>
                 </div>
