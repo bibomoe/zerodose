@@ -303,6 +303,55 @@
             </footer>
         </div>
     </div>
+<!-- SCRIPT FOR BAR BUDGET BY OBJECTIVE -->
+<script>
+    const budgetPerObjectiveCtx = document.getElementById('budgetPerObjectiveChart').getContext('2d');
+
+    const budgetPerObjectiveChart = new Chart(budgetPerObjectiveCtx, {
+        type: 'bar',
+        data: {
+            labels: ['HUDA', 'AISYIYAH', 'PERDHAKI', 'PELKESI', 'MUSLIMAT NU', 'PKK'],
+            datasets: [
+                {
+                    label: 'Budget Disbursement (IDR)',
+                    data: [171902000, 609430000, 474450000, 445410000, 194753000, 1212412300],
+                    backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Absorbed Budget (IDR)',
+                    data: [],
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const idr = context.raw;
+                            return `${context.dataset.label}: Rp. ${idr.toLocaleString()}`;
+                        }
+                    }
+                },
+                legend: { display: true }
+            },
+            scales: {
+                x: { title: { display: true, text: 'CSO' } },
+                y: {
+                    title: { display: true, text: 'Budget (IDR)' },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 
@@ -382,55 +431,7 @@ Chart.register(ChartDataLabels);
     });
 </script>
 
-<!-- SCRIPT FOR BAR BUDGET BY OBJECTIVE -->
-<script>
-    const budgetPerObjectiveCtx = document.getElementById('budgetPerObjectiveChart').getContext('2d');
 
-    const budgetPerObjectiveChart = new Chart(budgetPerObjectiveCtx, {
-        type: 'bar',
-        data: {
-            labels: ['HUDA', 'AISYIYAH', 'PERDHAKI', 'PELKESI', 'MUSLIMAT NU', 'PKK'],
-            datasets: [
-                {
-                    label: 'Budget Disbursement (IDR)',
-                    data: [171902000, 609430000, 474450000, 445410000, 194753000, 1212412300],
-                    backgroundColor: 'rgba(255, 206, 86, 0.7)',
-                    borderColor: 'rgba(255, 206, 86, 1)',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Absorbed Budget (IDR)',
-                    data: [],
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const idr = context.raw;
-                            return `${context.dataset.label}: Rp. ${idr.toLocaleString()}`;
-                        }
-                    }
-                },
-                legend: { display: true }
-            },
-            scales: {
-                x: { title: { display: true, text: 'CSO' } },
-                y: {
-                    title: { display: true, text: 'Budget (IDR)' },
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-
-</script>
 
 <!-- Buttons HTML5 untuk export CSV & Excel -->
 <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
