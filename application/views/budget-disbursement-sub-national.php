@@ -309,77 +309,77 @@
 <script>
 Chart.register(ChartDataLabels);
 
-    const rows   = <?= json_encode($chart_data); ?>;
-    const labels = rows.map(r => r.name);
-    const alloc  = rows.map(r => +r.allocation);
-    const real   = rows.map(r => +r.realization);
-    const pct    = rows.map(r => +r.percentage);
+const rows   = <?= json_encode($chart_data); ?>;
+const labels = rows.map(r => r.name);
+const alloc  = rows.map(r => +r.allocation);
+const real   = rows.map(r => +r.realization);
+const pct    = rows.map(r => +r.percentage);
 
-    new Chart(document.getElementById('budgetProvChart').getContext('2d'), {
-        type: 'bar',
-        data: {
-            labels,
-            datasets: [
-            {
-                label: 'Alokasi',
-                data: alloc,
-                backgroundColor: 'rgba(0,86,179,0.85)',
-                borderColor: 'rgba(0,86,179,1)',
-                borderWidth: 1,
-                yAxisID: 'y',
-            },
-            {
-                label: 'Serapan',
-                data: real,
-                backgroundColor: 'rgba(135,206,235,0.75)',
-                borderColor: 'rgba(135,206,235,1)',
-                borderWidth: 1,
-                yAxisID: 'y',
-            },
-            {
-                type: 'scatter',
-                label: '%',
-                data: pct.map((v,i)=>({x:i,y:v})),
-                backgroundColor: 'orange',
-                borderColor: 'orange',
-                pointRadius: 3,
-                yAxisID: 'y1',
-                datalabels:{
-                display:true, anchor:'end', align:'top',
-                formatter:(v)=>v.y>0? v.y+'%':'',
-                color:'orange', font:{weight:'bold', size:9}, offset:6
-                }
-            }
-            ]
-        },
-        options: {
-            responsive:true, maintainAspectRatio:false,
-            plugins:{
-            legend:{ position:'top' },
-            datalabels:{ display:false },
-            tooltip:{ callbacks:{
-                label:(ctx)=>{
-                if(ctx.dataset.type==='scatter') return `%: ${ctx.raw.y}%`;
-                return `${ctx.dataset.label}: Rp ${ctx.raw.toLocaleString('id-ID')}`;
-                }
-            }}
-            },
-            scales:{
-            x:{ ticks:{ autoSkip:false, maxRotation:45, minRotation:45 } },
-            y:{
-                beginAtZero:true,
-                title:{ display:true, text:'Rupiah' },
-                ticks:{ callback:(v)=>'Rp '+Number(v).toLocaleString('id-ID') }
-            },
-            y1:{
-                beginAtZero:true, max:100, position:'right',
-                grid:{ drawOnChartArea:false },
-                title:{ display:true, text:'Persentase' }
-            }
-            }
-        },
-        plugins:[ChartDataLabels]
-    });
+new Chart(document.getElementById('budgetProvChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: 'Alokasi',
+        data: alloc,
+        backgroundColor: 'rgba(0,86,179,0.85)',
+        borderColor: 'rgba(0,86,179,1)',
+        borderWidth: 1,
+        yAxisID: 'y',
+      },
+      {
+        label: 'Serapan',
+        data: real,
+        backgroundColor: 'rgba(135,206,235,0.75)',
+        borderColor: 'rgba(135,206,235,1)',
+        borderWidth: 1,
+        yAxisID: 'y',
+      },
+      {
+        type: 'scatter',
+        label: '%',
+        data: pct.map((v,i)=>({x:i,y:v})),
+        backgroundColor: 'orange',
+        borderColor: 'orange',
+        pointRadius: 3,
+        yAxisID: 'y1',
+        datalabels:{
+          display:true, anchor:'end', align:'top',
+          formatter:(v)=>v.y>0? v.y+'%':'',
+          color:'orange', font:{weight:'bold', size:9}, offset:6
+        }
+      }
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{ position:'top' },
+      datalabels:{ display:false },
+      tooltip:{ callbacks:{
+        label:(ctx)=>{
+          if(ctx.dataset.type==='scatter') return `%: ${ctx.raw.y}%`;
+          return `${ctx.dataset.label}: Rp ${ctx.raw.toLocaleString('id-ID')}`;
+        }
+      }}
+    },
+    scales:{
+      x:{ ticks:{ autoSkip:false, maxRotation:45, minRotation:45 } },
+      y:{
+        beginAtZero:true,
+        title:{ display:true, text:'Rupiah' },
+        ticks:{ callback:(v)=>'Rp '+Number(v).toLocaleString('id-ID') }
+      },
+      y1:{
+        beginAtZero:true, max:100, position:'right',
+        grid:{ drawOnChartArea:false },
+        title:{ display:true, text:'Persentase' }
+      }
+    }
+  },
+  plugins:[ChartDataLabels]
+});
 </script>
 
 <!-- SCRIPT FOR BAR BUDGET BY OBJECTIVE -->
