@@ -14,7 +14,9 @@ class Budget_model extends CI_Model
             ->from('budget_allocation')
             ->where('year', (int)$year);
 
-        if ($menu_id !== 'all') { $alloc->where('menu_id', (int)$menu_id); }
+        if ($menu_id !== 'all') { 
+            $alloc->where('menu_id', (int)$menu_id); 
+        }
         $alloc = $alloc->group_by('province_id')->get_compiled_select();
 
         // Subquery serapan per provinsi (akumulasi bulanan)
@@ -22,10 +24,12 @@ class Budget_model extends CI_Model
             ->from('budget_realization')
             ->where('year', (int)$year);
 
-        if ($menu_id !== 'all') { $real->where('menu_id', (int)$menu_id); }
+        if ($menu_id !== 'all') { 
+            $real->where('menu_id', (int)$menu_id); 
+        }
         $real = $real->group_by('province_id')->get_compiled_select();
 
-        // Main query
+        // Main query – hanya provinsi yang ada di allocation
         $this->db->select("
             p.id AS region_id,
             p.name_id AS name,
@@ -37,13 +41,14 @@ class Budget_model extends CI_Model
                 ELSE 0
             END AS percentage
         ", false)
-        ->from('provinces p')
-        ->join("({$alloc}) a", 'a.province_id = p.id', 'left')
+        ->from("({$alloc}) a") // ganti source utama jadi allocation
+        ->join('provinces p', 'p.id = a.province_id', 'inner')
         ->join("({$real}) r", 'r.province_id = p.id', 'left')
         ->order_by('p.name_id', 'asc');
 
         return $this->db->get()->result_array();
     }
+
 }
 
 ?>
