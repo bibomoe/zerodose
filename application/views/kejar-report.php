@@ -129,6 +129,58 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- table -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4></h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped" id="table2">
+                                                    <thead>
+                                                        <tr>
+                                                            <th> 
+                                                                <?php
+                                                                    if( $selected_province === 'all' || $selected_province === 'targeted' ) {
+                                                                ?>
+                                                                    <?= $translations['tabelcoloumn1'] ?>
+                                                                <?php
+                                                                    } else if ($selected_district == 'all'){
+                                                                ?>
+                                                                    <?= $translations['tabelcoloumn1_b'] ?>
+                                                                <?php
+                                                                    } else {
+                                                                ?>
+                                                                    <?= $translations['tabelcoloumn1_c'] ?>
+                                                                <?php
+                                                                    }
+                                                                ?>
+                                                            </th>
+                                                            <th><?= $translations['tabelcoloumn2'] ?> </th>
+                                                            <th><?= $translations['tabelcoloumn3'] ?> </th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?> </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($chart_data as $data): ?>
+                                                            <tr>
+                                                                <td><?= $data['name'] ?></td>
+                                                                <td><?= number_format($data['coverage']) ?> </td>
+                                                                <td><?= number_format($data['zd_total']) ?></td>
+                                                                <td><?= number_format($data['percentage'], 2) ?>%</td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </section>
                 </div>

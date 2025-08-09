@@ -771,10 +771,12 @@ class Home extends CI_Controller {
                 'page_subtitle' => 'Coverage rates restored, including by reaching zero-dose children',
                 'filter_label' => 'Select Filter',
                 'text1' => 'Zero Dose Children in 2024 who Get Vaccinated (Manual data)',
-                'tabelcoloumn1' => 'District',
-                'tabelcoloumn2' => 'Total Coverage DPT1',
-                'tabelcoloumn3' => '% of Total Target',
-                'tabelcoloumn4' => 'Number of Children Not Immunized with DPT-1',
+                'tabelcoloumn1' => 'Province',
+                'tabelcoloumn1_b' => 'District',
+                'tabelcoloumn1_c' => 'Puskesmas',
+                'tabelcoloumn2' => 'Number of Zero Dose Children in 2024 Reached (Manual Data)',
+                'tabelcoloumn3' => 'Zero Dose Children in 2024',
+                'tabelcoloumn4' => '%',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Inggris ---
                 'months' => [
                     1 => 'January',
@@ -796,10 +798,12 @@ class Home extends CI_Controller {
                 'page_subtitle' => 'Tingkat cakupan yang dipulihkan, termasuk mencapai anak zero-dose',
                 'filter_label' => 'Pilih Filter',
                 'text1' => 'Anak Zero Dose yang berhasil dikejar (data Manual)',
-                'tabelcoloumn1' => 'Kab/Kota',
-                'tabelcoloumn2' => 'Total Cakupan DPT1',
-                'tabelcoloumn3' => '% dari Total Sasaran',
-                'tabelcoloumn4' => 'Jumlah Anak Belum di Imunisasi DPT-1',
+                'tabelcoloumn1' => 'Provinsi',
+                'tabelcoloumn1_b' => 'Kab/Kota',
+                'tabelcoloumn1_c' => 'Puskesmas',
+                'tabelcoloumn2' => 'Jumlah Anak Zero Dose Tahun 2024 yang dikejar (manual data)',
+                'tabelcoloumn3' => 'Jumlah Anak Zero Dose Tahun 2024',
+                'tabelcoloumn4' => '%',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Indonesia ---
                 'months' => [
                     1 => 'Januari',
