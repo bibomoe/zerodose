@@ -77,30 +77,69 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
+                                                <?php
+                                                    // summary per CSO dari data grafik (allocation, total realization, percentage)
+                                                    $summaryMap = [];
+                                                    foreach ($chart_data as $s) {
+                                                        $summaryMap[$s['cso_id']] = $s;
+                                                    }
+
+                                                    // hitung jumlah baris per CSO untuk rowspan
+                                                    $rowCountByCso = [];
+                                                    foreach ($table_data as $r) {
+                                                        $rowCountByCso[$r['cso_id']] = ($rowCountByCso[$r['cso_id']] ?? 0) + 1;
+                                                    }
+
+                                                    function rupiah($v){ return 'Rp '.number_format((float)$v,0,',','.'); }
+                                                ?>
+
                                                 <table class="table table-striped" id="table2">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width:50px"><?= $translations['col_no'] ?></th>
-                                                            <th style="width:20%"><?= $translations['col_act'] ?></th>
-                                                            <th style="width:25%"><?= $translations['col_wil'] ?></th>
-                                                            <th><?= $translations['col_vol'] ?></th>
-                                                            <th><?= $translations['col_biaya'] ?></th>
-                                                            <th><?= $translations['col_serap'] ?></th>
-                                                            <th><?= $translations['col_pct'] ?></th>
+                                                            <th style="width:60px">No</th>
+                                                            <th style="width:18%">Kegiatan (CSO)</th>
+                                                            <th style="width:24%">Wilayah</th>
+                                                            <th style="width:10%">Volume</th>
+                                                            <th style="width:12%">Biaya</th>
+                                                            <th style="width:12%">Serapan (Provinsi)</th>
+                                                            <th style="width:12%">Serapan (Total CSO)</th>
+                                                            <th style="width:6%">%</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php $no=1; foreach ($table_data as $r): ?>
+                                                        <?php
+                                                        $no=1; $printedCols=[]; // penanda baris pertama per CSO utk kolom merge
+                                                        foreach ($table_data as $r):
+                                                            $csoId   = $r['cso_id'];
+                                                            $isFirst = empty($printedCols[$csoId]);
+                                                            $rowspan = $rowCountByCso[$csoId] ?? 1;
+
+                                                            $sum  = $summaryMap[$csoId] ?? ['allocation'=>0,'realization'=>0,'percentage'=>0];
+                                                        ?>
                                                         <tr>
-                                                        <td><?= $no++ ?></td>
-                                                        <td><?= $r['cso_name'] ?></td>
-                                                        <td><?= $r['province_name'] ?: '-' ?></td>
-                                                        <td><?= $r['volume'] ?: '-' ?></td>
-                                                        <td style="text-align:right">Rp <?= number_format($r['allocation'],0,',','.') ?></td>
-                                                        <td style="text-align:right">Rp <?= number_format($r['realization'],0,',','.') ?></td>
-                                                        <td style="text-align:center"><?= (int)$r['percentage'] ?>%</td>
+                                                            <td><?= $no++ ?></td>
+                                                            <!-- CSO TIDAK di-merge -->
+                                                            <td><?= $r['cso_name'] ?></td>
+                                                            <!-- Provinsi per baris -->
+                                                            <td><?= $r['province_name'] ?: '-' ?></td>
+
+                                                            <!-- Kolom yang di-merge hanya pada baris pertama CSO -->
+                                                            <?php if ($isFirst): ?>
+                                                            <td rowspan="<?= $rowspan ?>"><?= $r['volume'] ?: '-' ?></td>
+                                                            <td rowspan="<?= $rowspan ?>" style="text-align:right"><?= rupiah($r['allocation']) ?></td>
+                                                            <?php endif; ?>
+
+                                                            <!-- Serapan per provinsi -->
+                                                            <td style="text-align:right"><?= rupiah($r['realization']) ?></td>
+
+                                                            <?php if ($isFirst): ?>
+                                                            <td rowspan="<?= $rowspan ?>" style="text-align:right"><?= rupiah($sum['realization']) ?></td>
+                                                            <td rowspan="<?= $rowspan ?>" style="text-align:center"><?= (int)$sum['percentage'] ?>%</td>
+                                                            <?php endif; ?>
                                                         </tr>
-                                                        <?php endforeach; ?>
+                                                        <?php
+                                                            $printedCols[$csoId] = true;
+                                                        endforeach; ?>
                                                     </tbody>
                                                 </table>
                                             </div>
