@@ -1859,16 +1859,35 @@ class Home extends CI_Controller {
     }
 
     public function grant_implementation_sub_national() {
+        $this->load->model('Budget_model');
+
         // Definisikan daftar bulan
         $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
         
         // Ambil tahun dari request (default 2025)
         $selected_year = $this->input->get('year') ?? date("Y");
+        $selected_menu = $this->input->post('menu_id') ?? $this->input->get('menu_id') ?? 'all';
 
         $this->data['selected_year'] = $selected_year;
+        $this->data['selected_menu'] = $selected_menu;
 
+        
+        // Data chart & tabel
+        $this->data['chart_data'] = $this->Budget_model->get_budget_by_province($selected_year, $selected_menu);
 
+        // (opsional) dropdown menu objective
+        $this->data['menus'] = $this->db->get_where('menu_objective', ['active' => 1])->result_array();
+
+        // Terjemahan singkat
+        $this->data['translations'] = [
+            'title' => 'Budget Disbursement by Province',
+            'col1'  => 'Provinsi',
+            'col2'  => 'Alokasi',
+            'col3'  => 'Serapan',
+            'col4'  => '%',
+        ];
+        
         $this->data['title'] = 'Budget Disbursement National & Sub-National (CSO)';
         load_template('budget-disbursement-sub-national', $this->data);
     }

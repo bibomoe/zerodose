@@ -237,6 +237,59 @@
                                     </div>
                                 </div>
                         </div>
+
+                        <!-- Graphic for Budget Disbursement -->
+                        <div class="row">
+                            <!-- Grafik Bar Budget per Objective -->
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Budget Disbursement Sub-National CSO Graph</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="chartWrapper" class="d-flex justify-content-center">
+                                                <canvas id="budgetProvChart" style="height:460px;width:100%"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+
+                        <!-- table -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4></h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped" id="table2">
+                                                    <thead>
+                                                        <tr>
+                                                        <th style="width:35%"><?= $translations['col1']; ?></th>
+                                                        <th><?= $translations['col2']; ?></th>
+                                                        <th><?= $translations['col3']; ?></th>
+                                                        <th><?= $translations['col4']; ?></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($chart_data as $r): ?>
+                                                        <tr>
+                                                            <td><?= $r['name']; ?></td>
+                                                            <td style="text-align:right">Rp <?= number_format($r['allocation'], 0, ',', '.'); ?></td>
+                                                            <td style="text-align:right">Rp <?= number_format($r['realization'], 0, ',', '.'); ?></td>
+                                                            <td style="text-align:center"><?= (int)$r['percentage']; ?>%</td>
+                                                        </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                     </section>
                 </div>
             </div>
@@ -250,6 +303,84 @@
             </footer>
         </div>
     </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+
+<script>
+Chart.register(ChartDataLabels);
+
+    const rows   = <?= json_encode($chart_data); ?>;
+    const labels = rows.map(r => r.name);
+    const alloc  = rows.map(r => +r.allocation);
+    const real   = rows.map(r => +r.realization);
+    const pct    = rows.map(r => +r.percentage);
+
+    new Chart(document.getElementById('budgetProvChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [
+            {
+                label: 'Alokasi',
+                data: alloc,
+                backgroundColor: 'rgba(0,86,179,0.85)',
+                borderColor: 'rgba(0,86,179,1)',
+                borderWidth: 1,
+                yAxisID: 'y',
+            },
+            {
+                label: 'Serapan',
+                data: real,
+                backgroundColor: 'rgba(135,206,235,0.75)',
+                borderColor: 'rgba(135,206,235,1)',
+                borderWidth: 1,
+                yAxisID: 'y',
+            },
+            {
+                type: 'scatter',
+                label: '%',
+                data: pct.map((v,i)=>({x:i,y:v})),
+                backgroundColor: 'orange',
+                borderColor: 'orange',
+                pointRadius: 3,
+                yAxisID: 'y1',
+                datalabels:{
+                display:true, anchor:'end', align:'top',
+                formatter:(v)=>v.y>0? v.y+'%':'',
+                color:'orange', font:{weight:'bold', size:9}, offset:6
+                }
+            }
+            ]
+        },
+        options: {
+            responsive:true, maintainAspectRatio:false,
+            plugins:{
+            legend:{ position:'top' },
+            datalabels:{ display:false },
+            tooltip:{ callbacks:{
+                label:(ctx)=>{
+                if(ctx.dataset.type==='scatter') return `%: ${ctx.raw.y}%`;
+                return `${ctx.dataset.label}: Rp ${ctx.raw.toLocaleString('id-ID')}`;
+                }
+            }}
+            },
+            scales:{
+            x:{ ticks:{ autoSkip:false, maxRotation:45, minRotation:45 } },
+            y:{
+                beginAtZero:true,
+                title:{ display:true, text:'Rupiah' },
+                ticks:{ callback:(v)=>'Rp '+Number(v).toLocaleString('id-ID') }
+            },
+            y1:{
+                beginAtZero:true, max:100, position:'right',
+                grid:{ drawOnChartArea:false },
+                title:{ display:true, text:'Persentase' }
+            }
+            }
+        },
+        plugins:[ChartDataLabels]
+    });
+</script>
 
 <!-- SCRIPT FOR BAR BUDGET BY OBJECTIVE -->
 <script>
@@ -299,4 +430,43 @@
         }
     });
 
+</script>
+
+<!-- Buttons HTML5 untuk export CSV & Excel -->
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    var table = $('#table2').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ]
+    });
+
+    // Fungsi untuk update jumlah baris yang tampil
+    function updateRowCount() {
+        // api.rows({ filter: 'applied' }) -> baris yg sudah difilter (search)
+        var count = table.rows({ filter: 'applied' }).count();
+        $('#rowCount').text('Jumlah baris yang tampil: ' + count);
+    }
+
+    // Update saat inisialisasi
+    updateRowCount();
+
+    // Update tiap kali tabel di draw ulang (filter, paging, dll)
+    table.on('draw', function() {
+        updateRowCount();
+    });
+
+});
 </script>
