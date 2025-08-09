@@ -767,8 +767,8 @@ class Home extends CI_Controller {
     private function load_translation_kejar($lang) {
         $translations = [
             'en' => [
-                'page_title' => 'Mitigate',
-                'page_subtitle' => 'Coverage rates restored, including by reaching zero-dose children',
+                'page_title' => 'Number of Zero Dose Children in 2024 Reached (Manual Data)',
+                'page_subtitle' => '',
                 'filter_label' => 'Select Filter',
                 'text1' => 'Zero Dose Children in 2024 who Get Vaccinated (Manual data)',
                 'tabelcoloumn1' => 'Province',
@@ -794,8 +794,8 @@ class Home extends CI_Controller {
                 ]
             ],
             'id' => [
-                'page_title' => 'Mitigasi',
-                'page_subtitle' => 'Tingkat cakupan yang dipulihkan, termasuk mencapai anak zero-dose',
+                'page_title' => 'Jumlah Anak Zero Dose Tahun 2024 yang dikejar (manual data)',
+                'page_subtitle' => '',
                 'filter_label' => 'Pilih Filter',
                 'text1' => 'Anak Zero Dose yang berhasil dikejar (data Manual)',
                 'tabelcoloumn1' => 'Provinsi',

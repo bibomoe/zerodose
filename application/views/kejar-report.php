@@ -142,7 +142,7 @@
                                                 <table class="table table-striped" id="table2">
                                                     <thead>
                                                         <tr>
-                                                            <th> 
+                                                            <th style="width:40%"> 
                                                                 <?php
                                                                     if( $selected_province === 'all' || $selected_province === 'targeted' ) {
                                                                 ?>
@@ -168,9 +168,9 @@
                                                         <?php foreach ($chart_data as $data): ?>
                                                             <tr>
                                                                 <td><?= $data['name'] ?></td>
-                                                                <td><?= number_format($data['coverage']) ?> </td>
-                                                                <td><?= number_format($data['zd_total']) ?></td>
-                                                                <td><?= number_format($data['percentage'], 2) ?>%</td>
+                                                                <td style="text-align: center;"><?= number_format($data['coverage']) ?></td>
+                                                                <td style="text-align: center;"><?= number_format($data['zd_total']) ?></td>
+                                                                <td style="text-align: center;"><?= number_format($data['percentage'], 2) ?>%</td>
                                                             </tr>
                                                         <?php endforeach; ?>
                                                     </tbody>
@@ -396,6 +396,36 @@ $(document).ready(function () {
         }
     });
 
+    var table = $('#table2').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ]
+    });
+
+    // Fungsi untuk update jumlah baris yang tampil
+    function updateRowCount() {
+        // api.rows({ filter: 'applied' }) -> baris yg sudah difilter (search)
+        var count = table.rows({ filter: 'applied' }).count();
+        $('#rowCount').text('Jumlah baris yang tampil: ' + count);
+    }
+
+    // Update saat inisialisasi
+    updateRowCount();
+
+    // Update tiap kali tabel di draw ulang (filter, paging, dll)
+    table.on('draw', function() {
+        updateRowCount();
+    });
 
 });
 </script>
