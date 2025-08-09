@@ -1877,19 +1877,80 @@ class Home extends CI_Controller {
         $this->data['chart_data'] = $this->Budget_model->get_budget_by_province($selected_year, $selected_menu);
 
         // (opsional) dropdown menu objective
-        $this->data['menus'] = $this->db->get_where('menu_objective', ['active' => 1])->result_array();
+        // $this->data['menus'] = $this->db->get_where('menu_objective', ['active' => 1])->result_array();
+        // dropdown menu objective (aktif) – akan dipakai di view
+        $this->data['menus'] = $this->db
+            ->order_by('id','asc')
+            ->get_where('menu_objective', ['active' => 1])
+            ->result_array();
 
-        // Terjemahan singkat
-        $this->data['translations'] = [
-            'title' => 'Budget Disbursement by Province',
-            'col1'  => 'Provinsi',
-            'col2'  => 'Alokasi',
-            'col3'  => 'Serapan',
-            'col4'  => '%',
-        ];
-        
-        $this->data['title'] = 'Budget Disbursement National & Sub-National (CSO)';
+        // Menentukan bahasa yang dipilih
+        $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
+
+        // Memuat data terjemahan
+        $translations = $this->load_translation_kejar($selected_language);
+
+        // Mengirim data terjemahan ke view
+        $this->data['translations'] = $translations;
+
         load_template('budget-disbursement-sub-national', $this->data);
+    }
+
+    private function load_translation_grant_implementation_sub_national($lang) {
+        $translations = [
+            'en' => [
+                'page_title' => 'Budget Sub-National Disbursement',
+                'page_subtitle' => '',
+                'filter_label' => 'Select Menu',
+                'text1' => 'Budget Sub-National Disbursement',
+                'tabelcoloumn1' => 'Province',
+                'tabelcoloumn2' => 'Allocation',
+                'tabelcoloumn3' => 'Realization',
+                'tabelcoloumn4' => '%',
+                // --- Tambahkan terjemahan bulan di sini untuk bahasa Inggris ---
+                'months' => [
+                    1 => 'January',
+                    2 => 'February',
+                    3 => 'March',
+                    4 => 'April',
+                    5 => 'May',
+                    6 => 'June',
+                    7 => 'July',
+                    8 => 'August',
+                    9 => 'September',
+                    10 => 'October',
+                    11 => 'November',
+                    12 => 'December'
+                ]
+            ],
+            'id' => [
+                'page_title' => 'Budget Sub-National Disbursement',
+                'page_subtitle' => '',
+                'filter_label' => 'Pilih Menu',
+                'text1' => 'Budget Sub-National Disbursement',
+                'tabelcoloumn1' => 'Provinsi',
+                'tabelcoloumn2' => 'Alokasi',
+                'tabelcoloumn3' => 'Serapan',
+                'tabelcoloumn4' => '%',
+                // --- Tambahkan terjemahan bulan di sini untuk bahasa Indonesia ---
+                'months' => [
+                    1 => 'Januari',
+                    2 => 'Februari',
+                    3 => 'Maret',
+                    4 => 'April',
+                    5 => 'Mei',
+                    6 => 'Juni',
+                    7 => 'Juli',
+                    8 => 'Agustus',
+                    9 => 'September',
+                    10 => 'Oktober',
+                    11 => 'November',
+                    12 => 'Desember'
+                ]
+            ]
+        ];
+    
+        return $translations[$lang] ?? $translations['id']; // Default ke bahasa Indonesia
     }
     
     public function activity_tracker() {

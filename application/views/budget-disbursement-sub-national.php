@@ -4,8 +4,8 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3><?= $title ?></h3>
-                                <p class="text-subtitle text-muted">​</p>
+                                <h3><?= $translations['page_title'] ?></h3>
+                                <p class="text-subtitle text-muted"><?= $translations['page_subtitle'] ?>​</p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -26,6 +26,51 @@
                             
                         </div> -->
 
+                            <!-- Filter -->
+                            <div class="row">
+                                <div class="col-12" style="margin-bottom: 20px;">
+                                    <!-- <div class="card">
+                                        <div class="card-header"></div>
+                                        <div class="card-body"> -->
+                                            <?php
+                                                // var_dump($selected_province);
+                                            ?>
+                                            <?= form_open('home/grant_implementation_sub_national', ['method' => 'post']) ?>
+                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?>​</label>
+                                                <div class="d-flex flex-column flex-md-row align-items-center gap-2">
+                                                    <?php
+                                                        // opsi menu: 'all' + daftar dari DB
+                                                        $menu_options = ['all' => 'All Menu'];
+                                                        // tabel menu_objective kolomnya: id, name
+                                                        foreach ($menus as $m) {
+                                                            $menu_options[$m['id']] = $m['name'];
+                                                        }
+                                                    ?>
+
+                                                        <?= form_dropdown(
+                                                            'menu_id',
+                                                            $menu_options,
+                                                            set_value('menu_id', $selected_menu ?? 'all'),
+                                                            ['class' => 'form-select', 'id' => 'menuFilter',
+                                                            'style' => 'width:100%;max-width:260px;height:48px;font-size:1rem;']
+                                                        ); ?>
+                                                        
+                                                    <?= form_dropdown(
+                                                            'year', 
+                                                            [2025 => '2025', 2026 => '2026'], 
+                                                            set_value('year', $selected_year ?? 2025), 
+                                                            'class="form-select" style="width: 100%; max-width: 150px; height: 48px; font-size: 1rem;" required'
+                                                        ); ?>
+                                                    <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
+                                                        <i class="bi bi-filter"></i> Submit
+                                                    </button>
+                                                </div>
+                                            <?= form_close() ?>
+                                        <!-- </div>
+                                    </div> -->
+                                </div>
+                            </div>
+
                         <!-- table Budget Disbursement National-->
                         <div class="row">
                             <div class="col-12">
@@ -35,7 +80,7 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table class="table table-striped" id="table2">
+                                            <table class="table table-striped" id="table">
                                                 <thead>
                                                     <tr>
                                                         <th rowspan="2" class="text-center">No</th> <!--  Name -->
@@ -162,7 +207,7 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table class="table table-striped" id="table2">
+                                            <table class="table table-striped" id="table3">
                                                 <thead>
                                                     <tr>
                                                         <th class="text-center">No</th> <!--  Name -->
@@ -267,10 +312,10 @@
                                                 <table class="table table-striped" id="table2">
                                                     <thead>
                                                         <tr>
-                                                        <th style="width:35%"><?= $translations['col1']; ?></th>
-                                                        <th><?= $translations['col2']; ?></th>
-                                                        <th><?= $translations['col3']; ?></th>
-                                                        <th><?= $translations['col4']; ?></th>
+                                                            <th style="width:35%"><?= $translations['tabelcoloumn1']; ?></th>
+                                                            <th><?= $translations['tabelcoloumn2'] ?> </th>
+                                                            <th><?= $translations['tabelcoloumn3'] ?> </th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?> </th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
