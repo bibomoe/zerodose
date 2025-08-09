@@ -1888,7 +1888,7 @@ class Home extends CI_Controller {
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
 
         // Memuat data terjemahan
-        $translations = $this->load_translation_kejar($selected_language);
+        $translations = $this->load_translation_grant_implementation_sub_national($selected_language);
 
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
