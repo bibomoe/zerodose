@@ -1952,6 +1952,39 @@ class Home extends CI_Controller {
     
         return $translations[$lang] ?? $translations['id']; // Default ke bahasa Indonesia
     }
+
+    public function budget_subnational_cso()
+    {
+        $this->load->model('Cso_budget_model');
+
+        $selected_year = $this->input->post('year') ?? $this->input->get('year') ?? date('Y');
+        $sort_by       = $this->input->post('sort') ?? $this->input->get('sort') ?? 'cso'; // 'cso'|'wilayah'
+
+        $this->data['selected_year'] = $selected_year;
+        $this->data['sort_by']       = $sort_by;
+
+        // grafik (per CSO)
+        $this->data['chart_data'] = $this->Cso_budget_model->get_summary_by_cso($selected_year);
+
+        // tabel (CSO x provinsi)
+        $this->data['table_data']  = $this->Cso_budget_model->get_table_cso_province($selected_year, $sort_by);
+
+        // translations ringkas
+        $t = [
+            'title' => 'Menu Budget Subnational CSO',
+            'page_title' => 'Menu Budget Subnational CSO',
+            'page_subtitle' => '',
+            'filter' => 'Urutkan',
+            'opt_cso' => 'CSO',
+            'opt_wil' => 'Wilayah',
+            'col_no' => 'No', 'col_act'=>'Kegiatan', 'col_wil'=>'Wilayah',
+            'col_vol'=>'Volume', 'col_biaya'=>'Biaya', 'col_serap'=>'Serapan', 'col_pct'=>'%'
+        ];
+        $this->data['translations'] = $t;
+
+        load_template('budget-subnational-cso', $this->data);
+    }
+
     
     public function activity_tracker() {
         $this->data['title'] = 'Activity Tracker';
