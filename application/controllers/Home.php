@@ -774,8 +774,8 @@ class Home extends CI_Controller {
                 'tabelcoloumn1' => 'Province',
                 'tabelcoloumn1_b' => 'District',
                 'tabelcoloumn1_c' => 'Puskesmas',
-                'tabelcoloumn2' => 'Number of Zero Dose Children in 2024 Reached (Manual Data)',
-                'tabelcoloumn3' => 'Zero Dose Children in 2024',
+                'tabelcoloumn2' => 'Number of Zero Dose Children Reached (Manual Data)',
+                'tabelcoloumn3' => 'Zero Dose Children',
                 'tabelcoloumn4' => '%',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Inggris ---
                 'months' => [
@@ -801,8 +801,8 @@ class Home extends CI_Controller {
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn1_b' => 'Kab/Kota',
                 'tabelcoloumn1_c' => 'Puskesmas',
-                'tabelcoloumn2' => 'Jumlah Anak Zero Dose Tahun 2024 yang dikejar (manual data)',
-                'tabelcoloumn3' => 'Jumlah Anak Zero Dose Tahun 2024',
+                'tabelcoloumn2' => 'Jumlah Anak yang sudah dikejar',
+                'tabelcoloumn3' => 'Jumlah Anak Zero Dose',
                 'tabelcoloumn4' => '%',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Indonesia ---
                 'months' => [

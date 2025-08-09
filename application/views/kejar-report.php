@@ -142,7 +142,7 @@
                                                 <table class="table table-striped" id="table2">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width:40%"> 
+                                                            <th style="width:30%"> 
                                                                 <?php
                                                                     if( $selected_province === 'all' || $selected_province === 'targeted' ) {
                                                                 ?>
