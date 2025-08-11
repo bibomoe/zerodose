@@ -1927,7 +1927,7 @@ class Home extends CI_Controller {
                 'page_title' => 'Budget Sub-National Disbursement',
                 'page_subtitle' => '',
                 'filter_label' => 'Pilih Menu',
-                'text1' => 'Budget Sub-National Disbursement',
+                'text1' => 'Serapan Anggaran Sub-National',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Alokasi',
                 'tabelcoloumn3' => 'Serapan',

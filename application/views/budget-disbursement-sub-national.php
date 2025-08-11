@@ -77,7 +77,7 @@
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title">Budget Disbursement Sub-National CSO Graph</h4>
+                                            <h4 class="card-title"><?= $translations['text1'] ?>​</h4>
                                         </div>
                                         <div class="card-body">
                                             <div id="chartWrapper" class="d-flex justify-content-center">
@@ -124,7 +124,7 @@
                             </div>
                             
                         <!-- table Budget Disbursement National-->
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -135,13 +135,12 @@
                                             <table class="table table-striped" id="table">
                                                 <thead>
                                                     <tr>
-                                                        <th rowspan="2" class="text-center">No</th> <!--  Name -->
-                                                        <th rowspan="2" class="text-center">Menu</th> <!--  Name -->
-                                                        <th rowspan="2" class="text-center">Total</th> <!--  Name -->
-                                                        <th colspan="12" class="text-center">Jumlah Alokasi</th> <!-- Column for months -->
+                                                        <th rowspan="2" class="text-center">No</th> 
+                                                        <th rowspan="2" class="text-center">Menu</th> 
+                                                        <th rowspan="2" class="text-center">Total</th> 
+                                                        <th colspan="12" class="text-center">Jumlah Alokasi</th> 
                                                     </tr>
                                                     <tr>
-                                                        <!-- Columns for Province -->
                                                         <th class="text-center">1. Aceh</th>
                                                         <th class="text-center">2. Sumut</th>
                                                         <th class="text-center">3. Sumbar</th>
@@ -248,10 +247,10 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- table Budget Disbursement Sub-National (CSO)-->
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -262,10 +261,10 @@
                                             <table class="table table-striped" id="table3">
                                                 <thead>
                                                     <tr>
-                                                        <th class="text-center">No</th> <!--  Name -->
-                                                        <th class="text-center">Kegiatan</th> <!--  Name -->
-                                                        <th class="text-center">Volume</th> <!--  Name -->
-                                                        <th class="text-center">Biaya</th> <!-- Column for months -->
+                                                        <th class="text-center">No</th> 
+                                                        <th class="text-center">Kegiatan</th> 
+                                                        <th class="text-center">Volume</th> 
+                                                        <th class="text-center">Biaya</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -317,10 +316,11 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
-                        <div class="row">
-                            <!-- Grafik Bar Budget per Objective -->
+                        
+                        <!-- Grafik Bar Budget per Objective -->
+                        <!-- <div class="row">
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
@@ -333,7 +333,7 @@
                                         </div>
                                     </div>
                                 </div>
-                        </div>
+                        </div> -->
 
                         
 

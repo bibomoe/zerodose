@@ -36,11 +36,9 @@
                                                 // var_dump($selected_province);
                                             ?>
                                             <?= form_open('home/budget_subnational_cso', ['method'=>'get']) ?>
-                                            <div class="d-flex gap-2 align-items-center">
-                                                <label class="form-label mb-0"><?= $translations['filter'] ?>:</label>
-                                                <?= form_dropdown('sort',
-                                                    ['cso'=>$translations['opt_cso'],'wilayah'=>$translations['opt_wil']],
-                                                    $sort_by, 'class="form-select" style="max-width:160px;height:40px"'); ?>
+                                                <label for="provinceFilter" class="form-label" style="font-size: 1.2rem; font-weight: bold;"><?= $translations['filter_label'] ?>​</label>
+                                                <div class="d-flex flex-column flex-md-row align-items-center gap-2">
+                                                
                                                 <?= form_dropdown('year', [2025=>'2025', 2026=>'2026'],
                                                     $selected_year, 'class="form-select" style="max-width:120px;height:40px"'); ?>
                                                 <button class="btn btn-primary" style="height:40px">Submit</button>
@@ -57,7 +55,7 @@
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title">Budget Disbursement Sub-National CSO Graph</h4>
+                                            <h4 class="card-title">Budget Sub-National CSO Disbursement</h4>
                                         </div>
                                         <div class="card-body">
                                             <div id="chartWrapper" class="d-flex justify-content-center">
