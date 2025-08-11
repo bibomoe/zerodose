@@ -1974,6 +1974,7 @@ class Home extends CI_Controller {
             'title' => 'Menu Budget Subnational CSO',
             'page_title' => 'Menu Budget Subnational CSO',
             'page_subtitle' => '',
+            'filter_label' => 'Select Year',
             'filter' => 'Urutkan',
             'opt_cso' => 'CSO',
             'opt_wil' => 'Wilayah',
