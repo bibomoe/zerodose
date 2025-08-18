@@ -83,12 +83,12 @@
                                                     }
 
                                                     // hitung jumlah baris per CSO untuk rowspan
-                                                    $rowCountByCso = [];
-                                                    foreach ($table_data as $r) {
-                                                        $rowCountByCso[$r['cso_id']] = ($rowCountByCso[$r['cso_id']] ?? 0) + 1;
-                                                    }
+                                                    // $rowCountByCso = [];
+                                                    // foreach ($table_data as $r) {
+                                                    //     $rowCountByCso[$r['cso_id']] = ($rowCountByCso[$r['cso_id']] ?? 0) + 1;
+                                                    // }
 
-                                                    function rupiah($v){ return 'Rp '.number_format((float)$v,0,',','.'); }
+                                                    // function rupiah($v){ return 'Rp '.number_format((float)$v,0,',','.'); }
                                                 ?>
 
                                                 <table class="table table-striped" id="table2">
@@ -106,38 +106,23 @@
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                        $no=1; $printedCols=[]; // penanda baris pertama per CSO utk kolom merge
+                                                        $no = 1;
                                                         foreach ($table_data as $r):
-                                                            $csoId   = $r['cso_id'];
-                                                            $isFirst = empty($printedCols[$csoId]);
-                                                            $rowspan = $rowCountByCso[$csoId] ?? 1;
-
-                                                            $sum  = $summaryMap[$csoId] ?? ['allocation'=>0,'realization'=>0,'percentage'=>0];
+                                                            $csoId = $r['cso_id'];
+                                                            $sum = $summaryMap[$csoId] ?? ['allocation'=>0,'realization'=>0,'percentage'=>0];
                                                         ?>
                                                         <tr>
                                                             <td><?= $no++ ?></td>
-                                                            <!-- CSO TIDAK di-merge -->
                                                             <td><?= $r['cso_name'] ?></td>
-                                                            <!-- Provinsi per baris -->
                                                             <td><?= $r['province_name'] ?: '-' ?></td>
-
-                                                            <!-- Kolom yang di-merge hanya pada baris pertama CSO -->
-                                                            <?php if ($isFirst): ?>
-                                                            <td rowspan="<?= $rowspan ?>"><?= $r['volume'] ?: '-' ?></td>
-                                                            <td rowspan="<?= $rowspan ?>" style="text-align:right"><?= rupiah($r['allocation']) ?></td>
-                                                            <?php endif; ?>
-
-                                                            <!-- Serapan per provinsi -->
+                                                            <td><?= $r['volume'] ?: '-' ?></td>
+                                                            <td style="text-align:right"><?= rupiah($r['allocation']) ?></td>
                                                             <td style="text-align:right"><?= rupiah($r['realization']) ?></td>
-
-                                                            <?php if ($isFirst): ?>
-                                                            <td rowspan="<?= $rowspan ?>" style="text-align:right"><?= rupiah($sum['realization']) ?></td>
-                                                            <td rowspan="<?= $rowspan ?>" style="text-align:center"><?= (int)$sum['percentage'] ?>%</td>
-                                                            <?php endif; ?>
+                                                            <td style="text-align:right"><?= rupiah($sum['realization']) ?></td>
+                                                            <td style="text-align:center"><?= (int)$sum['percentage'] ?>%</td>
                                                         </tr>
-                                                        <?php
-                                                            $printedCols[$csoId] = true;
-                                                        endforeach; ?>
+                                                        <?php endforeach; ?>
+
                                                     </tbody>
                                                 </table>
                                             </div>

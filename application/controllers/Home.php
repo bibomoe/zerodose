@@ -1883,7 +1883,7 @@ class Home extends CI_Controller {
 
         
         // Ambil tahun dari request (default 2025)
-        $selected_year = $this->input->get('year') ?? date("Y");
+        $selected_year = $this->input->post('year') ?? $this->input->get('year') ?? date("Y");
         $selected_menu = $this->input->post('menu_id') ?? $this->input->get('menu_id') ?? 'all';
 
         $this->data['selected_year'] = $selected_year;
