@@ -54,22 +54,37 @@ class Budget_model extends CI_Model
         // Ambil semua menu aktif
         $menus = $this->db->get_where('menu_objective', ['active' => 1])->result_array();
 
-        // Ambil alokasi & realisasi total per provinsi
-        $this->db->select('
+        // Subquery alokasi per provinsi
+        $alloc = $this->db->select('province_id, SUM(amount) AS total_allocation', false)
+            ->from('budget_allocation')
+            ->where('year', (int)$year)
+            ->group_by('province_id')
+            ->get_compiled_select();
+
+        // Subquery realisasi per provinsi
+        $real = $this->db->select('province_id, SUM(amount) AS total_realization', false)
+            ->from('budget_realization')
+            ->where('year', (int)$year)
+            ->group_by('province_id')
+            ->get_compiled_select();
+
+        // Main query: hanya ambil provinsi yang ada di alokasi
+        $this->db->select("
             p.id AS region_id,
             p.name_id AS name,
-            COALESCE(SUM(b1.amount), 0) AS allocation,
-            COALESCE(SUM(b2.amount), 0) AS realization,
-            CASE
-                WHEN COALESCE(SUM(b1.amount), 0) > 0
-                THEN ROUND(SUM(b2.amount) / SUM(b1.amount) * 100, 0)
+            IFNULL(a.total_allocation, 0) AS allocation,
+            IFNULL(r.total_realization, 0) AS realization,
+            CASE 
+                WHEN IFNULL(a.total_allocation,0) > 0 
+                THEN ROUND(IFNULL(r.total_realization,0) / a.total_allocation * 100, 0)
                 ELSE 0
             END AS percentage
-        ');
-        $this->db->from('provinces p');
-        $this->db->join('budget_allocation b1', 'b1.province_id = p.id AND b1.year = ' . (int)$year, 'left');
-        $this->db->join('budget_realization b2', 'b2.province_id = p.id AND b2.year = ' . (int)$year, 'left');
-        $this->db->group_by('p.id');
+        ", false)
+        ->from("({$alloc}) a")
+        ->join('provinces p', 'p.id = a.province_id', 'inner')
+        ->join("({$real}) r", 'r.province_id = p.id', 'left')
+        ->order_by('p.name_id', 'asc');
+
         $results = $this->db->get()->result_array();
 
         // Ambil realisasi per provinsi per menu
@@ -106,6 +121,7 @@ class Budget_model extends CI_Model
 
         return $results;
     }
+
 
 
 }
