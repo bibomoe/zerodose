@@ -100,12 +100,12 @@
                                                 <table class="table table-striped" id="table2">
                                                     <thead>
                                                         <tr>
-                                                            <th>Provinsi</th>
-                                                            <th>Total Alokasi</th>
-                                                            <th>Total Serapan</th>
+                                                            <th style="width:20%">Provinsi</th>
+                                                            <th style="width:20%">Total Alokasi</th>
+                                                            <th style="width:20%">Total Serapan</th>
                                                             <th>%</th>
                                                             <?php foreach ($menus as $m): ?>
-                                                                <th><?= $m['name'] ?></th>
+                                                                <th style="width:20%"><?= $m['name'] ?></th>
                                                                 <th>%</th>
                                                             <?php endforeach; ?>
                                                         </tr>
