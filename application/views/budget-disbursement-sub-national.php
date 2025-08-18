@@ -100,19 +100,31 @@
                                                 <table class="table table-striped" id="table2">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width:35%"><?= $translations['tabelcoloumn1']; ?></th>
-                                                            <th><?= $translations['tabelcoloumn2'] ?> </th>
-                                                            <th><?= $translations['tabelcoloumn3'] ?> </th>
-                                                            <th><?= $translations['tabelcoloumn4'] ?> </th>
+                                                            <th>Provinsi</th>
+                                                            <th>Total Alokasi</th>
+                                                            <th>Total Serapan</th>
+                                                            <th>%</th>
+                                                            <?php foreach ($menus as $m): ?>
+                                                                <th><?= $m['name'] ?></th>
+                                                                <th>%</th>
+                                                            <?php endforeach; ?>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <?php foreach ($chart_data as $r): ?>
                                                         <tr>
-                                                            <td><?= $r['name']; ?></td>
+                                                            <td><?= $r['name'] ?></td>
                                                             <td style="text-align:right">Rp <?= number_format($r['allocation'], 0, ',', '.'); ?></td>
                                                             <td style="text-align:right">Rp <?= number_format($r['realization'], 0, ',', '.'); ?></td>
-                                                            <td style="text-align:center"><?= (int)$r['percentage']; ?>%</td>
+                                                            <td style="text-align:center"><?= $r['percentage']; ?>%</td>
+
+                                                            <?php foreach ($menus as $m): 
+                                                                $real = $r['menus'][$m['id']]['real'];
+                                                                $pct  = $r['menus'][$m['id']]['percentage'];
+                                                            ?>
+                                                                <td style="text-align:right">Rp <?= number_format($real, 0, ',', '.'); ?></td>
+                                                                <td style="text-align:center"><?= $pct; ?>%</td>
+                                                            <?php endforeach; ?>
                                                         </tr>
                                                         <?php endforeach; ?>
                                                     </tbody>
