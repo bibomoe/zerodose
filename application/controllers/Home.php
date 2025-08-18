@@ -770,10 +770,10 @@ class Home extends CI_Controller {
     private function load_translation_kejar($lang) {
         $translations = [
             'en' => [
-                'page_title' => 'Number of Zero Dose Children in 2024 Chased (Manual Data)',
+                'page_title' => 'Number of Zero Dose Children in 2024 Chased',
                 'page_subtitle' => '',
                 'filter_label' => 'Select Filter',
-                'text1' => 'Zero Dose Children in 2024 who Get Vaccinated (Manual data)',
+                'text1' => 'Zero Dose Children in 2024 who Get Vaccinated',
                 'tabelcoloumn1' => 'Province',
                 'tabelcoloumn1_b' => 'District',
                 'tabelcoloumn1_c' => 'Puskesmas',
@@ -784,6 +784,9 @@ class Home extends CI_Controller {
                 'tabelcoloumn6' => '% Chased (ASIK)',
                 'tabelcoloumn7' => '% Chased (Manual)',
                 'tabelcoloumn8' => '% Chased (Combined)',
+                'sort_kejar_asik' => 'Sort by Highest ASIK Chased',
+                'sort_kejar_manual' => 'Sort by Highest Manual Chased',
+                'sort_kejar_kombinasi' => 'Sort by Highest Combined Chased',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Inggris ---
                 'months' => [
                     1 => 'January',
@@ -801,10 +804,10 @@ class Home extends CI_Controller {
                 ]
             ],
             'id' => [
-                'page_title' => 'Jumlah Anak Zero Dose Tahun 2024 yang dikejar (manual data)',
+                'page_title' => 'Jumlah Anak Zero Dose Tahun 2024 yang dikejar',
                 'page_subtitle' => '',
                 'filter_label' => 'Pilih Filter',
-                'text1' => 'Anak Zero Dose yang berhasil dikejar (data Manual)',
+                'text1' => 'Anak Zero Dose yang berhasil dikejar',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn1_b' => 'Kab/Kota',
                 'tabelcoloumn1_c' => 'Puskesmas',
@@ -815,6 +818,9 @@ class Home extends CI_Controller {
                 'tabelcoloumn6' => '% Kejar (ASIK)',
                 'tabelcoloumn7' => '% Kejar (Manual)',
                 'tabelcoloumn8' => '% Kejar (Kombinasi)',
+                'sort_kejar_asik' => 'Urutkan Kejar ASIK Tertinggi',
+                'sort_kejar_manual' => 'Urutkan Kejar Manual Tertinggi',
+                'sort_kejar_kombinasi' => 'Urutkan Kejar Kombinasi Tertinggi',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Indonesia ---
                 'months' => [
                     1 => 'Januari',
