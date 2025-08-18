@@ -88,7 +88,7 @@
                                                     //     $rowCountByCso[$r['cso_id']] = ($rowCountByCso[$r['cso_id']] ?? 0) + 1;
                                                     // }
 
-                                                    // function rupiah($v){ return 'Rp '.number_format((float)$v,0,',','.'); }
+                                                    function rupiah($v){ return 'Rp '.number_format((float)$v,0,',','.'); }
                                                 ?>
 
                                                 <table class="table table-striped" id="table2">
