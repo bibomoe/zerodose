@@ -111,7 +111,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php foreach ($chart_data as $r): ?>
+                                                        <?php foreach ($chart_data2 as $r): ?>
                                                         <tr>
                                                             <td><?= $r['name'] ?></td>
                                                             <td style="text-align:right">Rp <?= number_format($r['allocation'], 0, ',', '.'); ?></td>

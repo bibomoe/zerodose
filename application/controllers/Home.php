@@ -1891,8 +1891,8 @@ class Home extends CI_Controller {
 
         
         // Data chart & tabel
-        // $this->data['chart_data'] = $this->Budget_model->get_budget_by_province($selected_year, $selected_menu);
-        $this->data['chart_data'] = $this->Budget_model->get_budget_by_province_breakdown($selected_year);
+        $this->data['chart_data'] = $this->Budget_model->get_budget_by_province($selected_year, $selected_menu);
+        $this->data['chart_data2'] = $this->Budget_model->get_budget_by_province_breakdown($selected_year);
 
 
         // (opsional) dropdown menu objective
