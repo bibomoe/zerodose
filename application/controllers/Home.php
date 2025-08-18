@@ -1894,6 +1894,13 @@ class Home extends CI_Controller {
         $this->data['chart_data'] = $this->Budget_model->get_budget_by_province($selected_year, $selected_menu);
         $this->data['chart_data2'] = $this->Budget_model->get_budget_by_province_breakdown($selected_year);
 
+        
+        // Tambahkan total realisasi semua provinsi
+        $total_absorbed = 0;
+        foreach ($this->data['chart_data2'] as $r) {
+            $total_absorbed += $r['realization'];
+        }
+        $this->data['total_absorbed'] = $total_absorbed;
 
         // (opsional) dropdown menu objective
         // $this->data['menus'] = $this->db->get_where('menu_objective', ['active' => 1])->result_array();

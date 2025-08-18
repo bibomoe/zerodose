@@ -134,7 +134,28 @@
                                     </div>
                                 </div>
                             </div>
-                            
+                        
+                            <!-- Card Total Budget Absorption -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="col-md-12 text-center">
+                                                <h5 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">
+                                                    <?= $translations['total_absorption_label'] ?? 'Total Budget Absorption'; ?>
+                                                </h5>
+                                                <p style="font-size: 1.2rem;">
+                                                    <strong style="color: <?= ($selected_year == 2024) ? '#0056b3' : (($selected_year == 2025) ? '#00b359' : '#ff9900'); ?>;">
+                                                        <?= $selected_year; ?>:
+                                                    </strong>
+                                                    Rp <?= number_format($total_absorbed ?? 0, 0, ',', '.'); ?>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         <!-- table Budget Disbursement National-->
                         <!-- <div class="row">
                             <div class="col-12">
