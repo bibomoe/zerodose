@@ -1119,75 +1119,125 @@ class Immunization_model extends CI_Model {
     }
 
     //Kejar 03 Agustus 2025
-    public function get_kejar_manual_group_by_province($year)
+    public function get_kejar_group_by_province($year)
     {
         $this->db->select('
-            p.id as region_id,
-            p.name_id as name,
-            SUM(k.dpt1_coverage) as coverage,
+            p.id AS region_id,
+            p.name_id AS name,
+
+            COALESCE(SUM(a.dpt1_coverage), 0) AS kejar_asik,
+            COALESCE(SUM(m.dpt1_coverage), 0) AS kejar_manual,
+            COALESCE(SUM(k.dpt1_coverage), 0) AS kejar_kombinasi,
+
             (
                 SELECT SUM(z.zd_cases)
                 FROM zd_cases_2023 z
                 WHERE z.year = 2024 AND z.province_id = p.id
-            ) as zd_total,
-            ROUND((SUM(k.dpt1_coverage) / NULLIF((
+            ) AS zd_total,
+
+            ROUND((COALESCE(SUM(a.dpt1_coverage), 0) / NULLIF((
                 SELECT SUM(z.zd_cases)
                 FROM zd_cases_2023 z
                 WHERE z.year = 2024 AND z.province_id = p.id
-            ), 0)) * 100, 1) AS percentage
+            ), 0)) * 100, 1) AS percentage_asik,
+
+            ROUND((COALESCE(SUM(m.dpt1_coverage), 0) / NULLIF((
+                SELECT SUM(z.zd_cases)
+                FROM zd_cases_2023 z
+                WHERE z.year = 2024 AND z.province_id = p.id
+            ), 0)) * 100, 1) AS percentage_manual,
+
+            ROUND((COALESCE(SUM(k.dpt1_coverage), 0) / NULLIF((
+                SELECT SUM(z.zd_cases)
+                FROM zd_cases_2023 z
+                WHERE z.year = 2024 AND z.province_id = p.id
+            ), 0)) * 100, 1) AS percentage_kombinasi
         ', false);
+
         $this->db->from('provinces p');
-        $this->db->join('immunization_data_kejar_manual k', 'k.province_id = p.id AND k.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar a', 'a.province_id = p.id AND a.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar_manual m', 'm.province_id = p.id AND m.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar_kombinasi k', 'k.province_id = p.id AND k.year = ' . (int)$year, 'left');
         $this->db->group_by('p.id');
+
         return $this->db->get()->result_array();
     }
 
-
-
-    public function get_kejar_manual_group_by_city($province_id, $year)
+    public function get_kejar_group_by_city($province_id, $year)
     {
         $this->db->select('
-            c.id as region_id,
-            c.name_id as name,
-            SUM(k.dpt1_coverage) as coverage,
+            c.id AS region_id,
+            c.name_id AS name,
+
+            COALESCE(SUM(a.dpt1_coverage), 0) AS kejar_asik,
+            COALESCE(SUM(m.dpt1_coverage), 0) AS kejar_manual,
+            COALESCE(SUM(k.dpt1_coverage), 0) AS kejar_kombinasi,
+
             (
                 SELECT SUM(z.zd_cases)
                 FROM zd_cases_2023 z
                 WHERE z.year = 2024 AND z.city_id = c.id
-            ) as zd_total,
-            ROUND((SUM(k.dpt1_coverage) / NULLIF((
+            ) AS zd_total,
+
+            ROUND((COALESCE(SUM(a.dpt1_coverage), 0) / NULLIF((
                 SELECT SUM(z.zd_cases)
                 FROM zd_cases_2023 z
                 WHERE z.year = 2024 AND z.city_id = c.id
-            ), 0)) * 100, 1) AS percentage
+            ), 0)) * 100, 1) AS percentage_asik,
+
+            ROUND((COALESCE(SUM(m.dpt1_coverage), 0) / NULLIF((
+                SELECT SUM(z.zd_cases)
+                FROM zd_cases_2023 z
+                WHERE z.year = 2024 AND z.city_id = c.id
+            ), 0)) * 100, 1) AS percentage_manual,
+
+            ROUND((COALESCE(SUM(k.dpt1_coverage), 0) / NULLIF((
+                SELECT SUM(z.zd_cases)
+                FROM zd_cases_2023 z
+                WHERE z.year = 2024 AND z.city_id = c.id
+            ), 0)) * 100, 1) AS percentage_kombinasi
         ', false);
+
         $this->db->from('cities c');
-        $this->db->join('immunization_data_kejar_manual k', 'k.city_id = c.id AND k.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar a', 'a.city_id = c.id AND a.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar_manual m', 'm.city_id = c.id AND m.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar_kombinasi k', 'k.city_id = c.id AND k.year = ' . (int)$year, 'left');
         $this->db->where('c.province_id', $province_id);
         $this->db->group_by('c.id');
+
         return $this->db->get()->result_array();
     }
 
-    public function get_kejar_manual_group_by_puskesmas($province_id, $city_id, $year)
+    public function get_kejar_group_by_puskesmas($province_id, $city_id, $year)
     {
         $this->db->select('
             p.id AS region_id,
             p.name AS name,
-            COALESCE(SUM(k.dpt1_coverage), 0) AS coverage,
+
+            COALESCE(SUM(a.dpt1_coverage), 0) AS kejar_asik,
+            COALESCE(SUM(m.dpt1_coverage), 0) AS kejar_manual,
+            COALESCE(SUM(k.dpt1_coverage), 0) AS kejar_kombinasi,
+
             COALESCE(z.zd_cases, 0) AS zd_total,
-            ROUND((COALESCE(SUM(k.dpt1_coverage), 0) / NULLIF(z.zd_cases, 0)) * 100, 1) AS percentage
+
+            ROUND((COALESCE(SUM(a.dpt1_coverage), 0) / NULLIF(z.zd_cases, 0)) * 100, 1) AS percentage_asik,
+            ROUND((COALESCE(SUM(m.dpt1_coverage), 0) / NULLIF(z.zd_cases, 0)) * 100, 1) AS percentage_manual,
+            ROUND((COALESCE(SUM(k.dpt1_coverage), 0) / NULLIF(z.zd_cases, 0)) * 100, 1) AS percentage_kombinasi
         ');
+
         $this->db->from('puskesmas p');
-        $this->db->join('immunization_data_kejar_manual_per_puskesmas k', 'k.puskesmas_id = p.id AND k.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar_per_puskesmas a', 'a.puskesmas_id = p.id AND a.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar_manual_per_puskesmas m', 'm.puskesmas_id = p.id AND m.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar_kombinasi_per_puskesmas k', 'k.puskesmas_id = p.id AND k.year = ' . (int)$year, 'left');
         $this->db->join('zd_cases_per_puskesmas z', 'z.puskesmas_id = p.id AND z.year = 2024', 'left');
         $this->db->where('p.province_id', $province_id);
         $this->db->where('p.city_id', $city_id);
         $this->db->group_by('p.id');
+
         return $this->db->get()->result_array();
     }
 
-
-    public function get_kejar_manual_group_by_targeted_provinces($year)
+    public function get_kejar_group_by_targeted_provinces($year)
     {
         $province_ids = $this->get_targeted_province_ids();
         if (empty($province_ids)) return [];
@@ -1195,26 +1245,45 @@ class Immunization_model extends CI_Model {
         $this->db->select('
             p.id AS region_id,
             p.name_id AS name,
-            SUM(k.dpt1_coverage) AS coverage,
+
+            COALESCE(SUM(a.dpt1_coverage), 0) AS kejar_asik,
+            COALESCE(SUM(m.dpt1_coverage), 0) AS kejar_manual,
+            COALESCE(SUM(k.dpt1_coverage), 0) AS kejar_kombinasi,
+
             (
                 SELECT SUM(z.zd_cases)
                 FROM zd_cases_2023 z
                 WHERE z.year = 2024 AND z.province_id = p.id
             ) AS zd_total,
-            ROUND((SUM(k.dpt1_coverage) / NULLIF((
+
+            ROUND((COALESCE(SUM(a.dpt1_coverage), 0) / NULLIF((
                 SELECT SUM(z.zd_cases)
                 FROM zd_cases_2023 z
                 WHERE z.year = 2024 AND z.province_id = p.id
-            ), 0)) * 100, 1) AS percentage
+            ), 0)) * 100, 1) AS percentage_asik,
+
+            ROUND((COALESCE(SUM(m.dpt1_coverage), 0) / NULLIF((
+                SELECT SUM(z.zd_cases)
+                FROM zd_cases_2023 z
+                WHERE z.year = 2024 AND z.province_id = p.id
+            ), 0)) * 100, 1) AS percentage_manual,
+
+            ROUND((COALESCE(SUM(k.dpt1_coverage), 0) / NULLIF((
+                SELECT SUM(z.zd_cases)
+                FROM zd_cases_2023 z
+                WHERE z.year = 2024 AND z.province_id = p.id
+            ), 0)) * 100, 1) AS percentage_kombinasi
         ', false);
+
         $this->db->from('provinces p');
-        $this->db->join('immunization_data_kejar k', 'k.province_id = p.id AND k.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar a', 'a.province_id = p.id AND a.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar_manual m', 'm.province_id = p.id AND m.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data_kejar_kombinasi k', 'k.province_id = p.id AND k.year = ' . (int)$year, 'left');
         $this->db->where_in('p.id', $province_ids);
         $this->db->group_by('p.id');
+
         return $this->db->get()->result_array();
     }
-
-
 
     // public function get_province_names()
     // {

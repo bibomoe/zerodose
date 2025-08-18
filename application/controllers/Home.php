@@ -729,19 +729,22 @@ class Home extends CI_Controller {
 
         // Load data tergantung kondisi
         if ($selected_province === 'all') {
-            // Per provinsi nasional
-            $chart_data = $this->Immunization_model->get_kejar_manual_group_by_province($selected_year);
+            $chart_data = $this->Immunization_model->get_kejar_group_by_province($selected_year);
         } elseif ($selected_province === 'targeted') {
-            // Per kabupaten/kota dari provinsi targeted
-            $chart_data = $this->Immunization_model->get_kejar_manual_group_by_targeted_provinces($selected_year);
+            $chart_data = $this->Immunization_model->get_kejar_group_by_targeted_provinces($selected_year);
         } elseif ($selected_district === 'all') {
-            // Per kota di dalam satu provinsi
-            $chart_data = $this->Immunization_model->get_kejar_manual_group_by_city($selected_province, $selected_year);
+            $chart_data = $this->Immunization_model->get_kejar_group_by_city($selected_province, $selected_year);
         } else {
-            // Per puskesmas dalam kabupaten
-            $chart_data = $this->Immunization_model->get_kejar_manual_group_by_puskesmas($selected_province, $selected_district, $selected_year);
+            $chart_data = $this->Immunization_model->get_kejar_group_by_puskesmas($selected_province, $selected_district, $selected_year);
         }
 
+        $sort_by = $this->input->post('sort_by') ?? $this->input->get('sort_by') ?? 'kejar_asik';
+        if (in_array($sort_by, ['kejar_asik', 'kejar_manual', 'kejar_kombinasi'])) {
+            usort($chart_data, function ($a, $b) use ($sort_by) {
+                return $b[$sort_by] <=> $a[$sort_by]; // Sort descending
+            });
+        }
+        $this->data['sort_by'] = $sort_by;
 
         $this->data['chart_data'] = $chart_data;
         $this->data['selected_province'] = $selected_province;
@@ -767,16 +770,20 @@ class Home extends CI_Controller {
     private function load_translation_kejar($lang) {
         $translations = [
             'en' => [
-                'page_title' => 'Number of Zero Dose Children in 2024 Reached (Manual Data)',
+                'page_title' => 'Number of Zero Dose Children in 2024 Chased (Manual Data)',
                 'page_subtitle' => '',
                 'filter_label' => 'Select Filter',
                 'text1' => 'Zero Dose Children in 2024 who Get Vaccinated (Manual data)',
                 'tabelcoloumn1' => 'Province',
                 'tabelcoloumn1_b' => 'District',
                 'tabelcoloumn1_c' => 'Puskesmas',
-                'tabelcoloumn2' => 'Number of Zero Dose Children Reached (Manual Data)',
-                'tabelcoloumn3' => 'Zero Dose Children',
-                'tabelcoloumn4' => '%',
+                'tabelcoloumn2' => 'Number of Zero Dose Children Chased (ASIK Data)',
+                'tabelcoloumn3' => 'Number of Zero Dose Children Chased (Manual Data)',
+                'tabelcoloumn4' => 'Number of Zero Dose Children Chased (Combined Data)',
+                'tabelcoloumn5' => 'Zero Dose Children in 2024',
+                'tabelcoloumn6' => '% Chased (ASIK)',
+                'tabelcoloumn7' => '% Chased (Manual)',
+                'tabelcoloumn8' => '% Chased (Combined)',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Inggris ---
                 'months' => [
                     1 => 'January',
@@ -801,9 +808,13 @@ class Home extends CI_Controller {
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn1_b' => 'Kab/Kota',
                 'tabelcoloumn1_c' => 'Puskesmas',
-                'tabelcoloumn2' => 'Jumlah Anak yang sudah dikejar',
-                'tabelcoloumn3' => 'Jumlah Anak Zero Dose',
-                'tabelcoloumn4' => '%',
+                'tabelcoloumn2' => 'Jumlah Anak yang sudah dikejar (ASIK)',
+                'tabelcoloumn3' => 'Jumlah Anak yang sudah dikejar (Manual)',
+                'tabelcoloumn4' => 'Jumlah Anak yang sudah dikejar (Kombinasi)',
+                'tabelcoloumn5' => 'Jumlah Anak Zero Dose Tahun 2024',
+                'tabelcoloumn6' => '% Kejar (ASIK)',
+                'tabelcoloumn7' => '% Kejar (Manual)',
+                'tabelcoloumn8' => '% Kejar (Kombinasi)',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Indonesia ---
                 'months' => [
                     1 => 'Januari',

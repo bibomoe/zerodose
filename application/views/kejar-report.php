@@ -74,6 +74,16 @@
                                                             set_value('year', $selected_year ?? 2025), 
                                                             'class="form-select" style="width: 100%; max-width: 150px; height: 48px; font-size: 1rem;" required'
                                                         ); ?>
+                                                    <?= form_dropdown(
+                                                            'sort_by',
+                                                            [
+                                                                'kejar_asik' => $translations['sort_kejar_asik'] ?? 'Urutkan Kejar ASIK Tertinggi',
+                                                                'kejar_manual' => $translations['sort_kejar_manual'] ?? 'Urutkan Kejar Manual Tertinggi',
+                                                                'kejar_kombinasi' => $translations['sort_kejar_kombinasi'] ?? 'Urutkan Kejar Kombinasi Tertinggi',
+                                                            ],
+                                                            $sort_by ?? '',
+                                                            'class="form-select" style="width: 100%; max-width: 250px; height: 48px; font-size: 1rem;"'
+                                                        ); ?>
                                                     <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
                                                         <i class="bi bi-filter"></i> Submit
                                                     </button>
@@ -162,15 +172,23 @@
                                                             <th><?= $translations['tabelcoloumn2'] ?> </th>
                                                             <th><?= $translations['tabelcoloumn3'] ?> </th>
                                                             <th><?= $translations['tabelcoloumn4'] ?> </th>
+                                                            <th><?= $translations['tabelcoloumn5'] ?> </th>
+                                                            <th><?= $translations['tabelcoloumn6'] ?> </th>
+                                                            <th><?= $translations['tabelcoloumn7'] ?> </th>
+                                                            <th><?= $translations['tabelcoloumn8'] ?> </th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <?php foreach ($chart_data as $data): ?>
                                                             <tr>
                                                                 <td><?= $data['name'] ?></td>
-                                                                <td style="text-align: center;"><?= number_format($data['coverage']) ?></td>
+                                                                <td style="text-align: center;"><?= number_format($data['kejar_asik']) ?></td>
+                                                                <td style="text-align: center;"><?= number_format($data['kejar_manual']) ?></td>
+                                                                <td style="text-align: center;"><?= number_format($data['kejar_kombinasi']) ?></td>
                                                                 <td style="text-align: center;"><?= number_format($data['zd_total']) ?></td>
-                                                                <td style="text-align: center;"><?= number_format($data['percentage'], 2) ?>%</td>
+                                                                <td style="text-align: center;"><?= number_format($data['percentage_asik'], 2) ?>%</td>
+                                                                <td style="text-align: center;"><?= number_format($data['percentage_manual'], 2) ?>%</td>
+                                                                <td style="text-align: center;"><?= number_format($data['percentage_kombinasi'], 2) ?>%</td>
                                                             </tr>
                                                         <?php endforeach; ?>
                                                     </tbody>
@@ -211,36 +229,39 @@
     Chart.register(ChartDataLabels);
 
     const data = <?= json_encode($chart_data) ?>;
+
     const labels = data.map(item => item.name);
-    const coverage = data.map(item => parseInt(item.coverage));
     const zdTotal = data.map(item => parseInt(item.zd_total));
-    const belumDikejar = data.map((item, i) => {
-        const total = parseInt(item.zd_total);
-        const capai = parseInt(item.coverage);
-        return Math.max(total - capai, 0);
-    });
-    const percentage = data.map((item, index) => {
-        const zd = parseInt(item.zd_total);
-        const cov = parseInt(item.coverage);
-        return zd > 0 ? Math.round((cov / zd) * 1000) / 10 : 0;
-    });
+    const kejarAsik = data.map(item => parseInt(item.kejar_asik));
+    const kejarManual = data.map(item => parseInt(item.kejar_manual));
+    const kejarKombinasi = data.map(item => parseInt(item.kejar_kombinasi));
+
+    const percentageAsik = data.map(item => parseFloat(item.percentage_asik));
+    const percentageManual = data.map(item => parseFloat(item.percentage_manual));
+    const percentageKombinasi = data.map(item => parseFloat(item.percentage_kombinasi));
 
     const lang = localStorage.getItem("selectedLanguage") || "id";
 
     const t = {
         en: {
-            label_dikejar: "Number of Zero Dose Children in 2024 Reached (Manual Data)",
-            // label_sisa: "Remaining Zero Dose Children in 2024",
-            label_sisa: "Zero Dose Children in 2024",
-            label_percent: "% Reached from Total ZD 2024",
+            kejar_asik: "ASIK Chased",
+            kejar_manual: "Manual Chased",
+            kejar_kombinasi: "Combined Chased",
+            zd_total: "Zero Dose Children in 2024",
+            percent_asik: "% Chased (ASIK)",
+            percent_manual: "% Chased (Manual)",
+            percent_kombinasi: "% Chased (Combined)",
             y1_title: "% of ZD",
             y_title: "Number of Children"
         },
         id: {
-            label_dikejar: "Jumlah Anak Zero Dose Tahun 2024 yang dikejar (manual data)",
-            // label_sisa: "Sisa Anak Zero Dose Tahun 2024",
-            label_sisa: "Jumlah Anak Zero Dose Tahun 2024",
-            label_percent: "% yang Dikejar dari Total ZD 2024",
+            kejar_asik: "Kejar ASIK",
+            kejar_manual: "Kejar Manual",
+            kejar_kombinasi: "Kejar Kombinasi",
+            zd_total: "Jumlah Anak Zero Dose Tahun 2024",
+            percent_asik: "% Kejar (ASIK)",
+            percent_manual: "% Kejar (Manual)",
+            percent_kombinasi: "% Kejar (Kombinasi)",
             y1_title: "% dari ZD",
             y_title: "Jumlah Anak"
         }
@@ -252,41 +273,73 @@
             labels: labels,
             datasets: [
                 {
-                    label: t.label_dikejar,
-                    data: coverage,
-                    backgroundColor: 'rgba(0, 86, 179, 1)', // biru tua
+                    label: t.kejar_asik,
+                    data: kejarAsik,
+                    backgroundColor: '#007bff', // Biru
                     stack: 'total',
                     yAxisID: 'y'
                 },
                 {
-                    label: t.label_sisa,
-                    // data: belumDikejar,
+                    label: t.kejar_manual,
+                    data: kejarManual,
+                    backgroundColor: '#28a745', // Hijau
+                    stack: 'total',
+                    yAxisID: 'y'
+                },
+                {
+                    label: t.kejar_kombinasi,
+                    data: kejarKombinasi,
+                    backgroundColor: '#ffc107', // Kuning
+                    stack: 'total',
+                    yAxisID: 'y'
+                },
+                {
+                    label: t.zd_total,
                     data: zdTotal,
-                    backgroundColor: 'rgba(135, 206, 235, 0.7)', // biru muda
+                    backgroundColor: '#dee2e6', // Abu
                     stack: 'total',
                     yAxisID: 'y'
                 },
                 {
                     type: 'scatter',
-                    label: t.label_percent,
-                    data: percentage.map((val, i) => ({ x: i, y: val })),
+                    label: t.percent_asik,
+                    data: percentageAsik.map((val, i) => ({ x: i, y: val })),
                     backgroundColor: 'red',
                     borderColor: 'red',
                     pointRadius: 2,
-                    pointHoverRadius: 3,
-                    showLine: false,
                     yAxisID: 'y1',
                     datalabels: {
                         display: true,
-                        anchor: 'end',
-                        align: 'top',
-                        formatter: (value) => value.y > 0 ? value.y + '%' : '',
-                        color: 'red',
-                        font: {
-                            weight: 'bold',
-                            size: 8
-                        },
-                        offset: 6
+                        formatter: value => value.y > 0 ? value.y + '%' : '',
+                        color: 'red'
+                    }
+                },
+                {
+                    type: 'scatter',
+                    label: t.percent_manual,
+                    data: percentageManual.map((val, i) => ({ x: i, y: val })),
+                    backgroundColor: 'orange',
+                    borderColor: 'orange',
+                    pointRadius: 2,
+                    yAxisID: 'y1',
+                    datalabels: {
+                        display: true,
+                        formatter: value => value.y > 0 ? value.y + '%' : '',
+                        color: 'orange'
+                    }
+                },
+                {
+                    type: 'scatter',
+                    label: t.percent_kombinasi,
+                    data: percentageKombinasi.map((val, i) => ({ x: i, y: val })),
+                    backgroundColor: 'purple',
+                    borderColor: 'purple',
+                    pointRadius: 2,
+                    yAxisID: 'y1',
+                    datalabels: {
+                        display: true,
+                        formatter: value => value.y > 0 ? value.y + '%' : '',
+                        color: 'purple'
                     }
                 }
             ]
