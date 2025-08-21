@@ -1915,6 +1915,7 @@ class Home extends CI_Controller {
         // grafik (per CSO)
         $this->data['chart_data_cso'] = $this->Cso_budget_model->get_summary_by_cso($selected_year);
 
+        $sort_by       = $this->input->post('sort') ?? $this->input->get('sort') ?? 'cso'; // 'cso'|'wilayah'
         // tabel (CSO x provinsi)
         $this->data['table_data']  = $this->Cso_budget_model->get_table_cso_province($selected_year, $sort_by);
 
@@ -1971,7 +1972,7 @@ class Home extends CI_Controller {
                 'page_subtitle' => '',
                 'filter_label' => 'Pilih Menu',
                 'text1' => 'Serapan Anggaran Sub-National',
-                'text1' => 'Serapan Anggaran Sub-National CSO',
+                'text2' => 'Serapan Anggaran Sub-National CSO',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Alokasi',
                 'tabelcoloumn3' => 'Serapan',

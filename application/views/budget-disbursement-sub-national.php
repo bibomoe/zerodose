@@ -100,10 +100,10 @@
                                                 <table class="table table-striped" id="table2">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width:20%"><?= $translations['tabel1coloumn1'] ?></th>
-                                                            <th style="width:20%"><?= $translations['tabel1coloumn2'] ?></th>
-                                                            <th style="width:20%"><?= $translations['tabel1coloumn3'] ?></th>
-                                                            <th><?= $translations['tabel1coloumn4'] ?></th>
+                                                            <th style="width:20%"><?= $translations['tabelcoloumn1'] ?></th>
+                                                            <th style="width:20%"><?= $translations['tabelcoloumn2'] ?></th>
+                                                            <th style="width:20%"><?= $translations['tabelcoloumn3'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?></th>
                                                             <?php foreach ($menus as $m): ?>
                                                                 <th style="width:20%"><?= $m['name'] ?></th>
                                                                 <th>%</th>
