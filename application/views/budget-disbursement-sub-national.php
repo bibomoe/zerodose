@@ -101,11 +101,11 @@
                                                     <thead>
                                                         <tr>
                                                             <th style="width:20%"><?= $translations['tabelcoloumn1'] ?></th>
-                                                            <th style="width:20%"><?= $translations['tabelcoloumn2'] ?></th>
-                                                            <th style="width:20%"><?= $translations['tabelcoloumn3'] ?></th>
+                                                            <th style="width:25%"><?= $translations['tabelcoloumn2'] ?></th>
+                                                            <th style="width:25%"><?= $translations['tabelcoloumn3'] ?></th>
                                                             <th><?= $translations['tabelcoloumn4'] ?></th>
                                                             <?php foreach ($menus as $m): ?>
-                                                                <th style="width:20%"><?= $m['name'] ?></th>
+                                                                <th style="width:25%"><?= $m['name'] ?></th>
                                                                 <th>%</th>
                                                             <?php endforeach; ?>
                                                         </tr>
@@ -202,12 +202,12 @@
                                                     <thead>
                                                         <tr>
                                                             <th style="width:60px"><?= $translations['tabel2coloumn1'] ?>​</th>
-                                                            <th style="width:18%"><?= $translations['tabel2coloumn2'] ?></th>
-                                                            <th style="width:24%"><?= $translations['tabel2coloumn3'] ?></th>
+                                                            <th style="width:12%"><?= $translations['tabel2coloumn2'] ?></th>
+                                                            <th style="width:15%"><?= $translations['tabel2coloumn3'] ?></th>
                                                             <th style="width:10%"><?= $translations['tabel2coloumn4'] ?></th>
-                                                            <th style="width:12%"><?= $translations['tabel2coloumn5'] ?></th>
-                                                            <th style="width:12%"><?= $translations['tabel2coloumn6'] ?></th>
-                                                            <th style="width:12%"><?= $translations['tabel2coloumn7'] ?></th>
+                                                            <th style="width:20%"><?= $translations['tabel2coloumn5'] ?></th>
+                                                            <th style="width:20%"><?= $translations['tabel2coloumn6'] ?></th>
+                                                            <th style="width:20%"><?= $translations['tabel2coloumn7'] ?></th>
                                                             <th style="width:6%"><?= $translations['tabel2coloumn8'] ?></th>
                                                         </tr>
                                                     </thead>
