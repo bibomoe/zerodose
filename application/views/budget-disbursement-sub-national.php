@@ -552,6 +552,11 @@ new Chart(document.getElementById('budgetProvChart').getContext('2d'), {
     const real2   = rows2.map(r => +r.realization);
     const pct2    = rows2.map(r => +r.percentage);
 
+    console.log(rows2);
+    console.log(alloc2);
+    console.log(real2);
+
+
     new Chart(document.getElementById('csoChart').getContext('2d'), {
     type:'bar',
     data:{ labels2,
