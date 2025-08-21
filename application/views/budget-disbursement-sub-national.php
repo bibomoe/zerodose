@@ -559,7 +559,7 @@ new Chart(document.getElementById('budgetProvChart').getContext('2d'), {
 
     new Chart(document.getElementById('csoChart').getContext('2d'), {
     type:'bar',
-    data:{ labels2,
+    data:{ labels: labels2,
         datasets:[
         {label:'Alokasi', data:alloc2, backgroundColor:'rgba(0,86,179,0.85)', borderColor:'rgba(0,86,179,1)', yAxisID:'y'},
         {label:'Serapan', data:real2,  backgroundColor:'rgba(135,206,235,0.75)', borderColor:'rgba(135,206,235,1)', yAxisID:'y'},
