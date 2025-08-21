@@ -101,11 +101,11 @@
                                                     <thead>
                                                         <tr>
                                                             <th style="width:20%"><?= $translations['tabelcoloumn1'] ?></th>
-                                                            <th style="width:25%"><?= $translations['tabelcoloumn2'] ?></th>
-                                                            <th style="width:25%"><?= $translations['tabelcoloumn3'] ?></th>
+                                                            <th style="width:30%"><?= $translations['tabelcoloumn2'] ?></th>
+                                                            <th style="width:30%"><?= $translations['tabelcoloumn3'] ?></th>
                                                             <th><?= $translations['tabelcoloumn4'] ?></th>
                                                             <?php foreach ($menus as $m): ?>
-                                                                <th style="width:25%"><?= $m['name'] ?></th>
+                                                                <th style="width:30%"><?= $m['name'] ?></th>
                                                                 <th>%</th>
                                                             <?php endforeach; ?>
                                                         </tr>
