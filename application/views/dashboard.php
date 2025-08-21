@@ -115,7 +115,7 @@
                                                                     </tr>
                                                                 </tbody>
                                                             </table> -->
-                                                            <table class="table table-hover" id="table">
+                                                            <table class="table table-hover" id="table2">
                                                                 <thead>
                                                                     <tr>
                                                                         <th rowspan="2"><?= $translations['text4'] ?></th>
@@ -647,4 +647,58 @@
         </div>
     </div>
     
-    
+
+<!-- Buttons HTML5 untuk export CSV & Excel -->
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    var table = $('#table2').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ]
+    });
+
+    var table2 = $('#table3').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ]
+    });
+
+    // Fungsi untuk update jumlah baris yang tampil
+    function updateRowCount() {
+        // api.rows({ filter: 'applied' }) -> baris yg sudah difilter (search)
+        var count = table.rows({ filter: 'applied' }).count();
+        $('#rowCount').text('Jumlah baris yang tampil: ' + count);
+    }
+
+    // Update saat inisialisasi
+    updateRowCount();
+
+    // Update tiap kali tabel di draw ulang (filter, paging, dll)
+    table.on('draw', function() {
+        updateRowCount();
+    });
+
+});
+</script>
