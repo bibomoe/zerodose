@@ -100,10 +100,10 @@
                                                 <table class="table table-striped" id="table2">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width:20%">Provinsi</th>
-                                                            <th style="width:20%">Total Alokasi</th>
-                                                            <th style="width:20%">Total Serapan</th>
-                                                            <th>%</th>
+                                                            <th style="width:20%"><?= $translations['tabel1coloumn1'] ?></th>
+                                                            <th style="width:20%"><?= $translations['tabel1coloumn2'] ?></th>
+                                                            <th style="width:20%"><?= $translations['tabel1coloumn3'] ?></th>
+                                                            <th><?= $translations['tabel1coloumn4'] ?></th>
                                                             <?php foreach ($menus as $m): ?>
                                                                 <th style="width:20%"><?= $m['name'] ?></th>
                                                                 <th>%</th>
@@ -150,6 +150,88 @@
                                                     </strong>
                                                     Rp <?= number_format($total_absorbed ?? 0, 0, ',', '.'); ?>
                                                 </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        <!-- Graphic for Budget Disbursement -->
+                        <div class="row">
+                            <!-- Grafik Bar Budget per Objective -->
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title"><?= $translations['text2'] ?>​</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="chartWrapper" class="d-flex justify-content-center">
+                                                <canvas id="csoChart" style="height:460px;width:100%"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+
+                            <!-- table -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4><?= $translations['text2'] ?>​</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <?php
+                                                    // summary per CSO dari data grafik (allocation, total realization, percentage)
+                                                    $summaryMap = [];
+                                                    foreach ($chart_data_cso as $s) {
+                                                        $summaryMap[$s['cso_id']] = $s;
+                                                    }
+
+                                                    // hitung jumlah baris per CSO untuk rowspan
+                                                    // $rowCountByCso = [];
+                                                    // foreach ($table_data as $r) {
+                                                    //     $rowCountByCso[$r['cso_id']] = ($rowCountByCso[$r['cso_id']] ?? 0) + 1;
+                                                    // }
+
+                                                    function rupiah($v){ return 'Rp '.number_format((float)$v,0,',','.'); }
+                                                ?>
+
+                                                <table class="table table-striped" id="table3">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:60px"><?= $translations['tabel2coloumn1'] ?>​</th>
+                                                            <th style="width:18%"><?= $translations['tabel2coloumn2'] ?></th>
+                                                            <th style="width:24%"><?= $translations['tabel2coloumn3'] ?></th>
+                                                            <th style="width:10%"><?= $translations['tabel2coloumn4'] ?></th>
+                                                            <th style="width:12%"><?= $translations['tabel2coloumn5'] ?></th>
+                                                            <th style="width:12%"><?= $translations['tabel2coloumn6'] ?></th>
+                                                            <th style="width:12%"><?= $translations['tabel2coloumn7'] ?></th>
+                                                            <th style="width:6%"><?= $translations['tabel2coloumn8'] ?></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                        $no = 1;
+                                                        foreach ($table_data as $r):
+                                                            $csoId = $r['cso_id'];
+                                                            $sum = $summaryMap[$csoId] ?? ['allocation'=>0,'realization'=>0,'percentage'=>0];
+                                                        ?>
+                                                        <tr>
+                                                            <td><?= $no++ ?></td>
+                                                            <td><?= $r['cso_name'] ?></td>
+                                                            <td><?= $r['province_name'] ?: '-' ?></td>
+                                                            <td><?= $r['volume'] ?: '-' ?></td>
+                                                            <td style="text-align:right"><?= rupiah($r['allocation']) ?></td>
+                                                            <td style="text-align:right"><?= rupiah($r['realization']) ?></td>
+                                                            <td style="text-align:right"><?= rupiah($sum['realization']) ?></td>
+                                                            <td style="text-align:center"><?= (int)$sum['percentage'] ?>%</td>
+                                                        </tr>
+                                                        <?php endforeach; ?>
+
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -462,6 +544,36 @@ new Chart(document.getElementById('budgetProvChart').getContext('2d'), {
 });
 </script>
 
+<script>
+    // Chart.register(ChartDataLabels);
+    const rows2   = <?= json_encode($chart_data_cso); ?>; // per CSO
+    const labels2 = rows2.map(r => r.name);
+    const alloc2  = rows2.map(r => +r.allocation);
+    const real2   = rows2.map(r => +r.realization);
+    const pct2    = rows2.map(r => +r.percentage);
+
+    new Chart(document.getElementById('csoChart').getContext('2d'), {
+    type:'bar',
+    data:{ labels2,
+        datasets:[
+        {label:'Alokasi', data:alloc2, backgroundColor:'rgba(0,86,179,0.85)', borderColor:'rgba(0,86,179,1)', yAxisID:'y'},
+        {label:'Serapan', data:real2,  backgroundColor:'rgba(135,206,235,0.75)', borderColor:'rgba(135,206,235,1)', yAxisID:'y'},
+        {type:'scatter', label:'%', data:pct2.map((v,i)=>({x:i,y:v})),
+            backgroundColor:'orange', borderColor:'orange', pointRadius:3, yAxisID:'y1',
+            datalabels:{display:true,anchor:'end',align:'top',formatter:(v)=>v.y>0? v.y+'%':'',color:'orange',font:{weight:'bold',size:9},offset:6}}
+        ]},
+    options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'top'}, datalabels:{display:false},
+        tooltip:{callbacks:{label:(ctx)=>ctx.dataset.type==='scatter'? `%: ${ctx.raw.y}%` : `${ctx.dataset.label}: Rp ${ctx.raw.toLocaleString('id-ID')}`}}},
+        scales:{ x:{ticks:{autoSkip:false,maxRotation:45,minRotation:45}},
+        y:{beginAtZero:true,title:{display:true,text:'Rupiah'},ticks:{callback:(v)=>'Rp '+Number(v).toLocaleString('id-ID')}},
+        y1:{beginAtZero:true,max:100,position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Persentase'}}}
+    },
+    plugins:[ChartDataLabels]
+    });
+</script>
+
 <!-- SCRIPT FOR BAR BUDGET BY OBJECTIVE -->
 <script>
     const budgetPerObjectiveCtx = document.getElementById('budgetPerObjectiveChart').getContext('2d');
@@ -518,6 +630,22 @@ new Chart(document.getElementById('budgetProvChart').getContext('2d'), {
 <script>
 $(document).ready(function () {
     var table = $('#table2').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ]
+    });
+
+    var table2 = $('#table3').DataTable({
         dom: 'Bfrtip',
         buttons: [
             {

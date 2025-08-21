@@ -1910,6 +1910,14 @@ class Home extends CI_Controller {
             ->get_where('menu_objective', ['active' => 1])
             ->result_array();
 
+        $this->load->model('Cso_budget_model');
+
+        // grafik (per CSO)
+        $this->data['chart_data_cso'] = $this->Cso_budget_model->get_summary_by_cso($selected_year);
+
+        // tabel (CSO x provinsi)
+        $this->data['table_data']  = $this->Cso_budget_model->get_table_cso_province($selected_year, $sort_by);
+
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
 
@@ -1929,10 +1937,19 @@ class Home extends CI_Controller {
                 'page_subtitle' => '',
                 'filter_label' => 'Select Menu',
                 'text1' => 'Budget Sub-National Disbursement',
+                'text2' => 'Budget Sub-National CSO Disbursement',
                 'tabelcoloumn1' => 'Province',
                 'tabelcoloumn2' => 'Allocation',
                 'tabelcoloumn3' => 'Realization',
                 'tabelcoloumn4' => '%',
+                'tabel2coloumn1' => 'No',
+                'tabel2coloumn2' => 'CSO',
+                'tabel2coloumn3' => 'Province',
+                'tabel2coloumn4' => 'Volume',
+                'tabel2coloumn5' => 'Allocation',
+                'tabel2coloumn6' => 'Realization (Province)',
+                'tabel2coloumn7' => 'Realization (Total CSO)',
+                'tabel2coloumn8' => '%',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Inggris ---
                 'months' => [
                     1 => 'January',
@@ -1954,10 +1971,19 @@ class Home extends CI_Controller {
                 'page_subtitle' => '',
                 'filter_label' => 'Pilih Menu',
                 'text1' => 'Serapan Anggaran Sub-National',
+                'text1' => 'Serapan Anggaran Sub-National CSO',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Alokasi',
                 'tabelcoloumn3' => 'Serapan',
                 'tabelcoloumn4' => '%',
+                'tabel2coloumn1' => 'No',
+                'tabel2coloumn2' => 'CSO',
+                'tabel2coloumn3' => 'Provinsi',
+                'tabel2coloumn4' => 'Volume',
+                'tabel2coloumn5' => 'Alokasi',
+                'tabel2coloumn6' => 'Serapan (Provinsi)',
+                'tabel2coloumn7' => 'Serapan (Total CSO)',
+                'tabel2coloumn8' => '%',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Indonesia ---
                 'months' => [
                     1 => 'Januari',
