@@ -283,6 +283,156 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="table-responsive">
+                                                        <table id="table_export_2" class="table table-bordered d-none">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th><?= $translations['text5'] ?></th> <!-- Program Area -->
+                                                                    <th><?= $translations['text8'] ?></th> <!-- Indicator -->
+                                                                    <th><?= $translations['text9'] ?></th> <!-- Sub-Indicator -->
+                                                                    <th>Baseline</th>
+                                                                    <th>2025</th>
+                                                                    <th>2026</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td><?= $translations['table2text1'] ?></td>
+                                                                    <td><?= $translations['table2text2'] ?></td>
+                                                                    <td><?= $translations['table2text3'] ?></td>
+                                                                    <td><?= $translations['table2text4'] ?></td>
+                                                                    <td>80%</td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><?= $translations['table2text1'] ?></td>
+                                                                    <td><?= $translations['table2text2'] ?></td>
+                                                                    <td><?= $translations['table2text3'] ?></td>
+                                                                    <td></td>
+                                                                    <td><?= number_format(0, 2) ?>%</td>
+                                                                    <td><?= number_format(0, 2) ?>%</td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td><?= $translations['table2text5'] ?></td>
+                                                                    <td><?= $translations['table2text6'] ?></td>
+                                                                    <td><?= $translations['table2text7'] ?></td>
+                                                                    <td></td>
+                                                                    <td>90%</td>
+                                                                    <td>93%</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><?= $translations['table2text5'] ?></td>
+                                                                    <td><?= $translations['table2text6'] ?></td>
+                                                                    <td><?= $translations['table2text7'] ?></td>
+                                                                    <td></td>
+                                                                    <td><?= number_format($percent_dpt1_coverage_2025, 2) ?>%</td>
+                                                                    <td><?= number_format($percent_dpt1_coverage_2026, 2) ?>%</td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td><?= $translations['table2text8'] ?></td>
+                                                                    <td><?= $translations['table2text9'] ?></td>
+                                                                    <td>62% (2021)</td>
+                                                                    <td></td>
+                                                                    <td>75%</td>
+                                                                    <td>85%</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><?= $translations['table2text8'] ?></td>
+                                                                    <td><?= $translations['table2text9'] ?></td>
+                                                                    <td>62% (2021)</td>
+                                                                    <td></td>
+                                                                    <td><?= number_format($percent_districts_under_5_2025, 0) ?>%</td>
+                                                                    <td><?= number_format($percent_districts_under_5_2026, 0) ?>%</td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td><?= $translations['table2text10'] ?></td>
+                                                                    <td><?= $translations['table2text11'] ?></td>
+                                                                    <td><?= $translations['table2text12'] ?></td>
+                                                                    <td></td>
+                                                                    <td>30%</td>
+                                                                    <td>50%</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><?= $translations['table2text10'] ?></td>
+                                                                    <td><?= $translations['table2text11'] ?></td>
+                                                                    <td><?= $translations['table2text12'] ?></td>
+                                                                    <td></td>
+                                                                    <td><?= number_format($percent_health_facilities_2025, 2) ?>%</td>
+                                                                    <td><?= number_format($percent_health_facilities_2026, 2) ?>%</td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td><?= $translations['table2text10'] ?></td>
+                                                                    <td><?= $translations['table2text13'] ?></td>
+                                                                    <td><?= $translations['table2text14'] ?></td>
+                                                                    <td>N/A</td>
+                                                                    <td><?= $translations['table2text15'] ?></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><?= $translations['table2text10'] ?></td>
+                                                                    <td><?= $translations['table2text13'] ?></td>
+                                                                    <td><?= $translations['table2text14'] ?></td>
+                                                                    <td></td>
+                                                                    <td><?= number_format($total_dpt_stockout_2025); ?></td>
+                                                                    <td><?= number_format($total_dpt_stockout_2026); ?></td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td><?= $translations['table2text10'] ?></td>
+                                                                    <td><?= $translations['table2text16'] ?></td>
+                                                                    <td><?= $translations['table2text17'] ?></td>
+                                                                    <td>350</td>
+                                                                    <td>235</td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><?= $translations['table2text10'] ?></td>
+                                                                    <td><?= $translations['table2text16'] ?></td>
+                                                                    <td><?= $translations['table2text17'] ?></td>
+                                                                    <td></td>
+                                                                    <td><?= number_format($private_facility_trained_2025) ?></td>
+                                                                    <td><?= number_format($private_facility_trained_2026) ?></td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td><?= $translations['table2text18'] ?></td>
+                                                                    <td><?= $translations['table2text19'] ?></td>
+                                                                    <td><?= $translations['table2text20'] ?></td>
+                                                                    <td>50%</td>
+                                                                    <td>90%</td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><?= $translations['table2text18'] ?></td>
+                                                                    <td><?= $translations['table2text19'] ?></td>
+                                                                    <td><?= $translations['table2text20'] ?></td>
+                                                                    <td></td>
+                                                                    <td><?= $percent_district_funding_2025 ?>%</td>
+                                                                    <td><?= $percent_district_funding_2026 ?>%</td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td><?= $translations['table2text21'] ?></td>
+                                                                    <td><?= $translations['table2text22'] ?></td>
+                                                                    <td><?= $translations['table2text20'] ?></td>
+                                                                    <td>50%</td>
+                                                                    <td>90%</td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><?= $translations['table2text21'] ?></td>
+                                                                    <td><?= $translations['table2text22'] ?></td>
+                                                                    <td><?= $translations['table2text20'] ?></td>
+                                                                    <td></td>
+                                                                    <td><?= $percent_district_policy_2025 ?>%</td>
+                                                                    <td><?= $percent_district_policy_2026 ?>%</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+
                                                         <table class="table table-hover" id="table">
                                                             <thead>
                                                                 <tr>
@@ -483,6 +633,31 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="table-responsive">
+                                                        <table id="table_export_3" class="table table-bordered d-none">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th><?= $translations['text8'] ?></th> <!-- Indicator -->
+                                                                    <th>2024</th>
+                                                                    <th>2025</th>
+                                                                    <th>2026</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td><?= $translations['table3text1'] ?></td>
+                                                                    <td>90%</td>
+                                                                    <td>90%</td>
+                                                                    <td>90%</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><?= $translations['table3text1'] ?></td>
+                                                                    <td><?= $budget_absorption_2024 ?>%</td>
+                                                                    <td><?= $budget_absorption_2025 ?>%</td>
+                                                                    <td><?= $budget_absorption_2026 ?>%</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+
                                                         <table class="table table-hover" id="table">
                                                             <thead >
                                                                 <tr>
@@ -584,6 +759,36 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="table-responsive">
+                                                        <table id="table_export_4" class="table table-bordered d-none">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th><?= $translations['table4text1'] ?></th> <!-- Objective -->
+                                                                    <th><?= $translations['text8'] ?></th>        <!-- Indicator -->
+                                                                    <th>2024</th>
+                                                                    <th>2025</th>
+                                                                    <th>2026</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <?php foreach ($objectives as $index => $objective): ?>
+                                                                    <tr>
+                                                                        <td><?= ($index + 1) . '. ' . $objective['objective_name']; ?></td>
+                                                                        <td><?= $translations['table4text2'] ?></td>
+                                                                        <td>90%</td>
+                                                                        <td>100%</td>
+                                                                        <td>100%</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><?= ($index + 1) . '. ' . $objective['objective_name']; ?></td>
+                                                                        <td><?= $translations['table4text2'] ?></td>
+                                                                        <td><?= isset($completed_activities_2024[$objective['id']]) ? $completed_activities_2024[$objective['id']] : '100'; ?>%</td>
+                                                                        <td><?= isset($completed_activities_2025[$objective['id']]) ? $completed_activities_2025[$objective['id']] : '100'; ?>%</td>
+                                                                        <td><?= isset($completed_activities_2026[$objective['id']]) ? $completed_activities_2026[$objective['id']] : '100'; ?>%</td>
+                                                                    </tr>
+                                                                <?php endforeach; ?>
+                                                            </tbody>
+                                                        </table>
+
                                                         <table class="table table-hover" id="table">
                                                             <thead>
                                                                 <tr>
@@ -742,9 +947,69 @@ $(document).ready(function () {
         ],
         paging: false,
         searching: false,
-        ordering: false
+        ordering: false,
+        info: false // 👉 Tambahkan baris ini untuk menyembunyikan "Showing x to y of z entries"
     });
+
+    $('#table_export_2').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'csvHtml5',
+                    text: 'Download CSV',
+                    className: 'btn btn-primary btn-sm'
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: 'Download Excel',
+                    className: 'btn btn-success btn-sm'
+                }
+            ],
+            paging: false,
+            searching: false,
+            ordering: false,
+            info: false
+        });
     
+    $('#table_export_3').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ],
+        paging: false,
+        searching: false,
+        ordering: false,
+        info: false
+    });
+    $('#table_export_4').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ],
+        paging: false,
+        searching: false,
+        ordering: false,
+        info: false
+    });
+
     var table = $('#table2').DataTable({
         dom: 'Bfrtip',
         buttons: [
