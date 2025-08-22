@@ -52,17 +52,158 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="table-responsive">
-                                                            
-                                                            <!-- Hapus dulu -->
-                                                            <!-- <table class="table table-hover" id="table2">
+                                                            <!-- <table class="table table-hover" id="table">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th rowspan="2"><?= $translations['text4'] ?></th>
-                                                                        <th rowspan="2"><?= $translations['text8'] ?></th>
+                                                                        <th rowspan="2">Long Term Outcome</th>
+                                                                        <th rowspan="2">Indicator</th>
+                                                                        <th colspan="3">Indicator Value</th>
+                                                                        <th rowspan="2">Data Source</th>
+                                                                        <th rowspan="2">Frequency of Reporting</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Baseline</th>
+                                                                        <th>2024</th>
+                                                                        <th>2025</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td rowspan="7">MITIGATE<br>Coverage rates restored, including by reaching zero-dose children</td>
+                                                                        <td rowspan="2">DPT3</td>
+                                                                        <td rowspan="2">4,199,289</td>
+                                                                        <td class="table-success">90%</td>
+                                                                        <td class="table-success">95%</td>
+                                                                        <td rowspan="2">Administrative Reports</td>
+                                                                        <td rowspan="2">Quarterly</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="table-warning"><?= number_format($long_term_outcomes['dpt3']['actual_y1'], 2) ?>%</td>
+                                                                        <td class="table-warning"><?= number_format($long_term_outcomes['dpt3']['actual_y2'], 2) ?>%</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td rowspan="2">MR1 Coverage (additional long term indicator)</td>
+                                                                        <td rowspan="2">4,244,731</td>
+                                                                        <td class="table-success">90%</td>
+                                                                        <td class="table-success">95%</td>
+                                                                        <td rowspan="2">Administrative Reports</td>
+                                                                        <td rowspan="2">Quarterly</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="table-warning"><?= number_format($long_term_outcomes['mr1']['actual_y1'], 2) ?>%</td>
+                                                                        <td class="table-warning"><?= number_format($long_term_outcomes['mr1']['actual_y2'], 2) ?>%</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td rowspan="2">Reduction in zero-dose</td>
+                                                                        <td rowspan="2">25% of 569,414 (per Dec 2022)</td>
+                                                                        <td class="table-success">Target reduction by end of year 1 (15%)</td>
+                                                                        <td class="table-success">Target reduction by end of year 2 (25%)</td>
+                                                                        <td rowspan="2">Administrative Reports</td>
+                                                                        <td rowspan="2">Quarterly</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="table-warning"><?= number_format($long_term_outcomes['reduction_zd']['actual_y1'], 2) ?>%</td>
+                                                                        <td class="table-warning"><?= number_format($long_term_outcomes['reduction_zd']['actual_y2'], 2) ?>%</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Reduction in zero-dose</td>
+                                                                        <td>10% of 569,414 (per Dec 2022)</td>
+                                                                        <td >Target reduction by end of year 1 (5%)</td>
+                                                                        <td >Target reduction by end of year 2 (10%)</td>
+                                                                        <td>Administrative Reports</td>
+                                                                        <td>Quarterly</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table> -->
+
+                                                            <table id="table_export" class="table table-bordered d-none">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th><?= $translations['text4'] ?></th> <!-- Indikator Jangka Panjang -->
+                                                                        <th><?= $translations['text8'] ?></th> <!-- Indikator -->
                                                                         <th>Baseline</th>
                                                                         <th>2025</th>
                                                                         <th>2026</th>
                                                                     </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <!-- DPT-3 -->
+                                                                    <tr>
+                                                                        <td><?= $translations['table1text1'] ?></td>
+                                                                        <td><?= $translations['table1text2'] ?></td>
+                                                                        <td><?= number_format($long_term_outcomes['dpt3']['baseline_y1']) ?> (2024)</td>
+                                                                        <td>90%</td>
+                                                                        <td>95%</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><?= $translations['table1text1'] ?></td>
+                                                                        <td><?= $translations['table1text2'] ?></td>
+                                                                        <td><?= number_format($long_term_outcomes['dpt3']['baseline_y2']) ?> (2025)</td>
+                                                                        <td><?= number_format($long_term_outcomes['dpt3']['actual_y1'], 1) ?>%</td>
+                                                                        <td><?= number_format($long_term_outcomes['dpt3']['actual_y2'], 1) ?>%</td>
+                                                                    </tr>
+
+                                                                    <!-- MR-1 -->
+                                                                    <tr>
+                                                                        <td><?= $translations['table1text1'] ?></td>
+                                                                        <td><?= $translations['table1text3'] ?></td>
+                                                                        <td><?= number_format($long_term_outcomes['mr1']['baseline_y1']) ?> (2024)</td>
+                                                                        <td>90%</td>
+                                                                        <td>95%</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><?= $translations['table1text1'] ?></td>
+                                                                        <td><?= $translations['table1text3'] ?></td>
+                                                                        <td><?= number_format($long_term_outcomes['mr1']['baseline_y2']) ?> (2025)</td>
+                                                                        <td><?= number_format($long_term_outcomes['mr1']['actual_y1'], 1) ?>%</td>
+                                                                        <td><?= number_format($long_term_outcomes['mr1']['actual_y2'], 1) ?>%</td>
+                                                                    </tr>
+
+                                                                    <!-- Penurunan Zero Dose (25%) -->
+                                                                    <tr>
+                                                                        <td><?= $translations['table1text1'] ?></td>
+                                                                        <td><?= $translations['table1text4'] ?></td>
+                                                                        <td>25% <?= $translations['table1text5'] ?> <?= $long_term_outcomes['reduction_zd']['baseline'] ?></td>
+                                                                        <td><?= $translations['table1text6'] ?></td>
+                                                                        <td><?= $translations['table1text7'] ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><?= $translations['table1text1'] ?></td>
+                                                                        <td><?= $translations['table1text4'] ?></td>
+                                                                        <td></td>
+                                                                        <td><?= number_format($long_term_outcomes['reduction_zd']['actual_y1'], 2) ?>%</td>
+                                                                        <td><?= number_format($long_term_outcomes['reduction_zd']['actual_y2'], 2) ?>%</td>
+                                                                    </tr>
+
+                                                                    <!-- Penurunan Zero Dose (10%) -->
+                                                                    <tr>
+                                                                        <td><?= $translations['table1text4'] ?></td>
+                                                                        <td>10% <?= $translations['table1text5'] ?> <?= $long_term_outcomes['reduction_zd']['baseline'] ?></td>
+                                                                        <td></td>
+                                                                        <td><?= $translations['table1text8'] ?></td>
+                                                                        <td><?= $translations['table1text9'] ?></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+
+                                                            <!-- Hapus dulu -->
+                                                            <table class="table table-hover" id="table2">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th rowspan="2"><?= $translations['text4'] ?></th>
+                                                                        <th rowspan="2"><?= $translations['text8'] ?></th>
+                                                                        <!-- <th colspan="3">Indicator Value</th> -->
+                                                                        <!-- <th rowspan="2">Data Source</th>
+                                                                        <th rowspan="2">Frequency of Reporting</th> -->
+                                                                        <th>Baseline</th>
+                                                                        <th>2025</th>
+                                                                        <th>2026</th>
+                                                                    </tr>
+                                                                    <!-- <tr>
+                                                                        <th>Baseline</th>
+                                                                        <th>2024</th>
+                                                                        <th>2025</th>
+                                                                    </tr> -->
                                                                 </thead>
                                                                 <tbody>
                                                                     <tr>
@@ -71,6 +212,8 @@
                                                                         <td ><?= number_format($long_term_outcomes['dpt3']['baseline_y1']) ?> (2024)</td>
                                                                         <td class="table-success" style="text-align: center">90%</td>
                                                                         <td class="table-success" style="text-align: center">95%</td>
+                                                                        <!-- <td rowspan="2">Administrative Reports</td>
+                                                                        <td rowspan="2">Quarterly</td> -->
                                                                     </tr>
                                                                     <tr>
                                                                         <td ><?= number_format($long_term_outcomes['dpt3']['baseline_y2']) ?> (2025)</td>
@@ -82,6 +225,8 @@
                                                                         <td ><?= number_format($long_term_outcomes['mr1']['baseline_y1']) ?> (2024)</td>
                                                                         <td class="table-success" style="text-align: center">90%</td>
                                                                         <td class="table-success" style="text-align: center">95%</td>
+                                                                        <!-- <td rowspan="2">Administrative Reports</td>
+                                                                        <td rowspan="2">Quarterly</td> -->
                                                                     </tr>
                                                                     <tr>
                                                                         <td ><?= number_format($long_term_outcomes['mr1']['baseline_y2']) ?> (2025)</td>
@@ -93,6 +238,8 @@
                                                                         <td rowspan="2">25% <?= $translations['table1text5'] ?> <?= $long_term_outcomes['reduction_zd']['baseline'] ?></td>
                                                                         <td class="table-success"><?= $translations['table1text6'] ?></td>
                                                                         <td class="table-success"><?= $translations['table1text7'] ?></td>
+                                                                        <!-- <td rowspan="2">Administrative Reports</td>
+                                                                        <td rowspan="2">Quarterly</td> -->
                                                                     </tr>
                                                                     <tr>
                                                                         <td class="table-warning" style="text-align: center"><?= number_format($long_term_outcomes['reduction_zd']['actual_y1'], 2) ?>%</td>
@@ -103,68 +250,8 @@
                                                                         <td>10% <?= $translations['table1text5'] ?> <?= $long_term_outcomes['reduction_zd']['baseline'] ?></td>
                                                                         <td ><?= $translations['table1text8'] ?></td>
                                                                         <td ><?= $translations['table1text9'] ?></td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table> -->
-                                                            <table class="table table-hover" id="table2">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th><?= $translations['text4'] ?></th>
-                                                                        <th><?= $translations['text8'] ?></th>
-                                                                        <th>Baseline</th>
-                                                                        <th>2025</th>
-                                                                        <th>2026</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td><?= $translations['table1text1'] ?></td>
-                                                                        <td><?= $translations['table1text2'] ?></td>
-                                                                        <td><?= number_format($long_term_outcomes['dpt3']['baseline_y1']) ?> (2024)</td>
-                                                                        <td class="table-success" style="text-align: center">90%</td>
-                                                                        <td class="table-success" style="text-align: center">95%</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td><?= number_format($long_term_outcomes['dpt3']['baseline_y2']) ?> (2025)</td>
-                                                                        <td class="table-warning" style="text-align: center"><?= number_format($long_term_outcomes['dpt3']['actual_y1'], 1) ?>%</td>
-                                                                        <td class="table-warning" style="text-align: center"><?= number_format($long_term_outcomes['dpt3']['actual_y2'], 1) ?>%</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><?= $translations['table1text1'] ?></td>
-                                                                        <td><?= $translations['table1text3'] ?></td>
-                                                                        <td><?= number_format($long_term_outcomes['mr1']['baseline_y1']) ?> (2024)</td>
-                                                                        <td class="table-success" style="text-align: center">90%</td>
-                                                                        <td class="table-success" style="text-align: center">95%</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td><?= number_format($long_term_outcomes['mr1']['baseline_y2']) ?> (2025)</td>
-                                                                        <td class="table-warning" style="text-align: center"><?= number_format($long_term_outcomes['mr1']['actual_y1'], 1) ?>%</td>
-                                                                        <td class="table-warning" style="text-align: center"><?= number_format($long_term_outcomes['mr1']['actual_y2'], 1) ?>%</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><?= $translations['table1text1'] ?></td>
-                                                                        <td><?= $translations['table1text4'] ?></td>
-                                                                        <td>25% <?= $translations['table1text5'] ?> <?= $long_term_outcomes['reduction_zd']['baseline'] ?></td>
-                                                                        <td class="table-success"><?= $translations['table1text6'] ?></td>
-                                                                        <td class="table-success"><?= $translations['table1text7'] ?></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td class="table-warning" style="text-align: center"><?= number_format($long_term_outcomes['reduction_zd']['actual_y1'], 2) ?>%</td>
-                                                                        <td class="table-warning" style="text-align: center"><?= number_format($long_term_outcomes['reduction_zd']['actual_y2'], 2) ?>%</td>
-                                                                        <td></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><?= $translations['table1text4'] ?></td>
-                                                                        <td>10% <?= $translations['table1text5'] ?> <?= $long_term_outcomes['reduction_zd']['baseline'] ?></td>
-                                                                        <td><?= $translations['table1text8'] ?></td>
-                                                                        <td><?= $translations['table1text9'] ?></td>
-                                                                        <td></td> <!-- Tambahan agar kolom = 5 -->
+                                                                        <!-- <td>Administrative Reports</td>
+                                                                        <td>Quarterly</td> -->
                                                                     </tr>
                                                                 </tbody>
                                                             </table>
@@ -639,6 +726,25 @@
 
 <script>
 $(document).ready(function () {
+    $('#table_export').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ],
+        paging: false,
+        searching: false,
+        ordering: false
+    });
+    
     var table = $('#table2').DataTable({
         dom: 'Bfrtip',
         buttons: [
