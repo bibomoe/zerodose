@@ -312,8 +312,8 @@
                     yAxisID: 'y1',
                     datalabels: {
                         display: true,
-                        anchor: 'end',
-                        align: 'right',
+                        anchor: 'start',    // mulai dari kiri
+                        align: 'bottom',    // TAMPIL DI BAWAH bar
                         // formatter: value => value.y > 0 ? value.y + '%' : '',
                         formatter: value => value.x > 0 ? value.x + '%' : '',
                         color: 'red'
@@ -330,8 +330,8 @@
                     yAxisID: 'y1',
                     datalabels: {
                         display: true,
-                        anchor: 'end',
-                        align: 'right',
+                        anchor: 'start',    // mulai dari kiri
+                        align: 'bottom',    // TAMPIL DI BAWAH bar
                         // formatter: value => value.y > 0 ? value.y + '%' : '',
                         formatter: value => value.x > 0 ? value.x + '%' : '',
                         color: 'orange'
@@ -348,8 +348,8 @@
                     yAxisID: 'y1',
                     datalabels: {
                         display: true,
-                        anchor: 'end',
-                        align: 'right',
+                        anchor: 'start',    // mulai dari kiri
+                        align: 'bottom',    // TAMPIL DI BAWAH bar
                         // formatter: value => value.y > 0 ? value.y + '%' : '',
                         formatter: value => value.x > 0 ? value.x + '%' : '',
                         color: 'purple'
@@ -387,7 +387,8 @@
 
                             // Jika titik (dot persen)
                             if (context.dataset.type === 'scatter') {
-                                return `${label}: ${value.y}%`;
+                                // return `${label}: ${value.y}%`;
+                                return `${label}: ${value.x.toFixed(1)}%`;
                             }
 
                             // Format angka biasa (ribuan)
@@ -400,16 +401,38 @@
                     }
                 }
             },
+            // scales: {
+            //     x: {
+            //         stacked: true,
+            //         ticks: {
+            //             autoSkip: false,
+            //             maxRotation: 45,
+            //             minRotation: 45
+            //         }
+            //     },
+            //     y: {
+            //         stacked: true,
+            //         beginAtZero: true,
+            //         title: {
+            //             display: true,
+            //             text: t.y_title
+            //         }
+            //     },
+            //     y1: {
+            //         beginAtZero: true,
+            //         position: 'right',
+            //         max: 100,
+            //         title: {
+            //             display: true,
+            //             text: t.y1_title
+            //         },
+            //         grid: {
+            //             drawOnChartArea: false
+            //         }
+            //     }
+            // }
             scales: {
                 x: {
-                    stacked: true,
-                    ticks: {
-                        autoSkip: false,
-                        maxRotation: 45,
-                        minRotation: 45
-                    }
-                },
-                y: {
                     stacked: true,
                     beginAtZero: true,
                     title: {
@@ -417,19 +440,34 @@
                         text: t.y_title
                     }
                 },
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                    title: {
+                        display: false // ❌ hilangkan label kanan
+                    },
+                    ticks: {
+                        mirror: false, // ✅ label hanya kiri
+                        padding: 10
+                    }
+                },
                 y1: {
                     beginAtZero: true,
-                    position: 'right',
+                    position: 'left', // ✅ biar % juga mengikuti kiri
                     max: 100,
+                    grid: {
+                        drawOnChartArea: false
+                    },
                     title: {
                         display: true,
                         text: t.y1_title
                     },
-                    grid: {
-                        drawOnChartArea: false
+                    ticks: {
+                        display: false // sembunyikan tick % karena kita pakai datalabel
                     }
                 }
             }
+
         },
         plugins: [ChartDataLabels]
     });
