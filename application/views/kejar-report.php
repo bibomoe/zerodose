@@ -245,24 +245,24 @@
 
     const t = {
         en: {
-            kejar_asik: "ASIK Chased",
-            kejar_manual: "Manual Chased",
-            kejar_kombinasi: "Combined Chased",
+            kejar_asik: "Catch up (ASIK)",
+            kejar_manual: "Catch up (Manual)",
+            kejar_kombinasi: "Catch up (Combined)",
             zd_total: "Zero Dose Children in 2024",
-            percent_asik: "% Chased (ASIK)",
-            percent_manual: "% Chased (Manual)",
-            percent_kombinasi: "% Chased (Combined)",
+            percent_asik: "% Catch up (ASIK)",
+            percent_manual: "% Catch up (Manual)",
+            percent_kombinasi: "% Catch up (Combined)",
             y1_title: "% of ZD",
             y_title: "Number of Children"
         },
         id: {
-            kejar_asik: "Kejar ASIK",
-            kejar_manual: "Kejar Manual",
-            kejar_kombinasi: "Kejar Kombinasi",
+            kejar_asik: "Imunisasi Kejar (ASIK)",
+            kejar_manual: "Imunisasi Kejar (Manual)",
+            kejar_kombinasi: "Imunisasi Kejar (Kombinasi)",
             zd_total: "Jumlah Anak Zero Dose Tahun 2024",
-            percent_asik: "% Kejar (ASIK)",
-            percent_manual: "% Kejar (Manual)",
-            percent_kombinasi: "% Kejar (Kombinasi)",
+            percent_asik: "% Imunisasi Kejar (ASIK)",
+            percent_manual: "% Imunisasi Kejar (Manual)",
+            percent_kombinasi: "% Imunisasi Kejar (Kombinasi)",
             y1_title: "% dari ZD",
             y_title: "Jumlah Anak"
         }
