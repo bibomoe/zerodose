@@ -278,28 +278,32 @@
                     data: kejarAsik,
                     backgroundColor: '#007bff', // Biru
                     stack: 'total',
-                    yAxisID: 'y'
+                    yAxisID: 'y',
+                    order: 1 // ✅ tampil duluan
                 },
                 {
                     label: t.kejar_manual,
                     data: kejarManual,
                     backgroundColor: '#28a745', // Hijau
                     stack: 'total',
-                    yAxisID: 'y'
+                    yAxisID: 'y',
+                    order: 2 // ✅ tampil duluan
                 },
                 {
                     label: t.kejar_kombinasi,
                     data: kejarKombinasi,
                     backgroundColor: '#ffc107', // Kuning
                     stack: 'total',
-                    yAxisID: 'y'
+                    yAxisID: 'y',
+                    order: 3 // ✅ tampil duluan
                 },
                 {
                     label: t.zd_total,
                     data: zdTotal,
                     backgroundColor: '#dee2e6', // Abu
                     stack: 'total',
-                    yAxisID: 'y'
+                    yAxisID: 'y',
+                    order: 4 // ✅ tampil duluan
                 },
                 {
                     type: 'scatter',
@@ -311,6 +315,7 @@
                     pointRadius: 2,
                     xAxisID: 'x1', 
                     clip: false, // ✅ tambahkan ini
+                    order: 10, // ✅ scatter muncul terakhir
                     datalabels: {
                         display: true,
                         anchor: 'end',    
@@ -330,6 +335,7 @@
                     pointRadius: 2,
                     xAxisID: 'x1',
                     clip: false, // ✅ tambahkan ini 
+                    order: 12, // ✅ scatter muncul terakhir
                     datalabels: {
                         display: true,
                         anchor: 'end',    
@@ -349,6 +355,7 @@
                     pointRadius: 2,
                     xAxisID: 'x1', 
                     clip: false, // ✅ tambahkan ini
+                    order: 13, // ✅ scatter muncul terakhir
                     datalabels: {
                         display: true,
                         anchor: 'end',    
