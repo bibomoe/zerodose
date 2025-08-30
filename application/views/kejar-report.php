@@ -345,6 +345,7 @@
             ]
         },
         options: {
+            indexAxis: 'y', // ✅ Ubah bar menjadi horizontal
             responsive: true,
             maintainAspectRatio: false,
             layout: {
