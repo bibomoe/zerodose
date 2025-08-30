@@ -134,7 +134,8 @@
                                             <h4 class="card-title"><?= $translations['text1'] ?></h4>
                                         </div>
                                         <div class="card-body">
-                                            <canvas id="kejarChart" style="height: 500px; width: 100%;"></canvas>
+                                            <!-- <canvas id="kejarChart" style="height: 500px; width: 100%;"></canvas> -->
+                                             <canvas id="kejarChart" style="width: 100%; height: <?= count($chart_data) * 30 ?>px;"></canvas>
                                         </div>
                                     </div>
                                 </div>
