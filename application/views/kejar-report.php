@@ -318,8 +318,8 @@
                     order: 10, // ✅ scatter muncul terakhir
                     datalabels: {
                         display: true,
-                        anchor: 'end',    
-                        align: 'right',   
+                        // anchor: 'end',    
+                        // align: 'right',   
                         // formatter: value => value.y > 0 ? value.y + '%' : '',
                         formatter: value => value.x > 0 ? value.x.toFixed(1) + '%' : '',
                         color: 'red'
@@ -338,8 +338,8 @@
                     order: 12, // ✅ scatter muncul terakhir
                     datalabels: {
                         display: true,
-                        anchor: 'end',    
-                        align: 'right',    
+                        // anchor: 'end',    
+                        // align: 'right',    
                         // formatter: value => value.y > 0 ? value.y + '%' : '',
                         formatter: value => value.x > 0 ? value.x.toFixed(1) + '%' : '',
                         color: 'orange'
@@ -358,8 +358,8 @@
                     order: 13, // ✅ scatter muncul terakhir
                     datalabels: {
                         display: true,
-                        anchor: 'end',    
-                        align: 'right',   
+                        // anchor: 'end',    
+                        // align: 'right',   
                         // formatter: value => value.y > 0 ? value.y + '%' : '',
                         formatter: value => value.x > 0 ? value.x.toFixed(1) + '%' : '',
                         color: 'purple'
