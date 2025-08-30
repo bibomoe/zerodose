@@ -304,42 +304,54 @@
                 {
                     type: 'scatter',
                     label: t.percent_asik,
-                    data: percentageAsik.map((val, i) => ({ x: i, y: val })),
+                    // data: percentageAsik.map((val, i) => ({ x: i, y: val })),
+                    data: percentageAsik.map((val, i) => ({ x: val, y: i })),
                     backgroundColor: 'red',
                     borderColor: 'red',
                     pointRadius: 2,
                     yAxisID: 'y1',
                     datalabels: {
                         display: true,
-                        formatter: value => value.y > 0 ? value.y + '%' : '',
+                        anchor: 'end',
+                        align: 'right',
+                        // formatter: value => value.y > 0 ? value.y + '%' : '',
+                        formatter: value => value.x > 0 ? value.x + '%' : '',
                         color: 'red'
                     }
                 },
                 {
                     type: 'scatter',
                     label: t.percent_manual,
-                    data: percentageManual.map((val, i) => ({ x: i, y: val })),
+                    // data: percentageManual.map((val, i) => ({ x: i, y: val })),
+                    data: percentageManual.map((val, i) => ({ x: val, y: i })),
                     backgroundColor: 'orange',
                     borderColor: 'orange',
                     pointRadius: 2,
                     yAxisID: 'y1',
                     datalabels: {
                         display: true,
-                        formatter: value => value.y > 0 ? value.y + '%' : '',
+                        anchor: 'end',
+                        align: 'right',
+                        // formatter: value => value.y > 0 ? value.y + '%' : '',
+                        formatter: value => value.x > 0 ? value.x + '%' : '',
                         color: 'orange'
                     }
                 },
                 {
                     type: 'scatter',
                     label: t.percent_kombinasi,
-                    data: percentageKombinasi.map((val, i) => ({ x: i, y: val })),
+                    // data: percentageKombinasi.map((val, i) => ({ x: i, y: val })),
+                    data: percentageKombinasi.map((val, i) => ({ x: val, y: i })),
                     backgroundColor: 'purple',
                     borderColor: 'purple',
                     pointRadius: 2,
                     yAxisID: 'y1',
                     datalabels: {
                         display: true,
-                        formatter: value => value.y > 0 ? value.y + '%' : '',
+                        anchor: 'end',
+                        align: 'right',
+                        // formatter: value => value.y > 0 ? value.y + '%' : '',
+                        formatter: value => value.x > 0 ? value.x + '%' : '',
                         color: 'purple'
                     }
                 }
