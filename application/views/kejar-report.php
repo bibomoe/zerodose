@@ -309,11 +309,11 @@
                     backgroundColor: 'red',
                     borderColor: 'red',
                     pointRadius: 2,
-                    yAxisID: 'y1',
+                    xAxisID: 'x1', 
                     datalabels: {
                         display: true,
-                        anchor: 'start',    // mulai dari kiri
-                        align: 'bottom',    // TAMPIL DI BAWAH bar
+                        anchor: 'end',    
+                        align: 'right',   
                         // formatter: value => value.y > 0 ? value.y + '%' : '',
                         formatter: value => value.x > 0 ? value.x + '%' : '',
                         color: 'red'
@@ -327,11 +327,11 @@
                     backgroundColor: 'orange',
                     borderColor: 'orange',
                     pointRadius: 2,
-                    yAxisID: 'y1',
+                    xAxisID: 'x1', 
                     datalabels: {
                         display: true,
-                        anchor: 'start',    // mulai dari kiri
-                        align: 'bottom',    // TAMPIL DI BAWAH bar
+                        anchor: 'end',    
+                        align: 'right',    
                         // formatter: value => value.y > 0 ? value.y + '%' : '',
                         formatter: value => value.x > 0 ? value.x + '%' : '',
                         color: 'orange'
@@ -345,11 +345,11 @@
                     backgroundColor: 'purple',
                     borderColor: 'purple',
                     pointRadius: 2,
-                    yAxisID: 'y1',
+                    xAxisID: 'x1', 
                     datalabels: {
                         display: true,
-                        anchor: 'start',    // mulai dari kiri
-                        align: 'bottom',    // TAMPIL DI BAWAH bar
+                        anchor: 'end',    
+                        align: 'right',   
                         // formatter: value => value.y > 0 ? value.y + '%' : '',
                         formatter: value => value.x > 0 ? value.x + '%' : '',
                         color: 'purple'
@@ -432,41 +432,43 @@
             //     }
             // }
             scales: {
-                x: {
-                    stacked: true,
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: t.y_title
-                    }
+            x: {
+                position: 'bottom',           // Ini untuk bar
+                stacked: true,
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: t.y_title           // Jumlah Anak
                 },
-                y: {
-                    stacked: true,
-                    beginAtZero: true,
-                    title: {
-                        display: false // ❌ hilangkan label kanan
-                    },
-                    ticks: {
-                        mirror: false, // ✅ label hanya kiri
-                        padding: 10
-                    }
+                ticks: {
+                    callback: val => val.toLocaleString('id-ID')
+                }
+            },
+            x1: {
+                position: 'top',              // ✅ Ini untuk persen (scatter)
+                beginAtZero: true,
+                max: 100,
+                grid: {
+                    drawOnChartArea: false    // Biar tidak mengganggu bar chart
                 },
-                y1: {
-                    beginAtZero: true,
-                    position: 'left', // ✅ biar % juga mengikuti kiri
-                    max: 100,
-                    grid: {
-                        drawOnChartArea: false
-                    },
-                    title: {
-                        display: true,
-                        text: t.y1_title
-                    },
-                    ticks: {
-                        display: false // sembunyikan tick % karena kita pakai datalabel
-                    }
+                title: {
+                    display: true,
+                    text: t.y1_title          // % dari ZD
+                },
+                ticks: {
+                    callback: val => val + '%'
+                }
+            },
+            y: {
+                stacked: true,
+                beginAtZero: true,
+                ticks: {
+                    mirror: false,
+                    padding: 10
                 }
             }
+}
+
 
         },
         plugins: [ChartDataLabels]
