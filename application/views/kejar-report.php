@@ -310,12 +310,13 @@
                     borderColor: 'red',
                     pointRadius: 2,
                     xAxisID: 'x1', 
+                    clip: false, // ✅ tambahkan ini
                     datalabels: {
                         display: true,
                         anchor: 'end',    
                         align: 'right',   
                         // formatter: value => value.y > 0 ? value.y + '%' : '',
-                        formatter: value => value.x > 0 ? value.x + '%' : '',
+                        formatter: value => value.x > 0 ? value.x.toFixed(1) + '%' : '',
                         color: 'red'
                     }
                 },
@@ -327,13 +328,14 @@
                     backgroundColor: 'orange',
                     borderColor: 'orange',
                     pointRadius: 2,
-                    xAxisID: 'x1', 
+                    xAxisID: 'x1',
+                    clip: false, // ✅ tambahkan ini 
                     datalabels: {
                         display: true,
                         anchor: 'end',    
                         align: 'right',    
                         // formatter: value => value.y > 0 ? value.y + '%' : '',
-                        formatter: value => value.x > 0 ? value.x + '%' : '',
+                        formatter: value => value.x > 0 ? value.x.toFixed(1) + '%' : '',
                         color: 'orange'
                     }
                 },
@@ -346,12 +348,13 @@
                     borderColor: 'purple',
                     pointRadius: 2,
                     xAxisID: 'x1', 
+                    clip: false, // ✅ tambahkan ini
                     datalabels: {
                         display: true,
                         anchor: 'end',    
                         align: 'right',   
                         // formatter: value => value.y > 0 ? value.y + '%' : '',
-                        formatter: value => value.x > 0 ? value.x + '%' : '',
+                        formatter: value => value.x > 0 ? value.x.toFixed(1) + '%' : '',
                         color: 'purple'
                     }
                 }
@@ -432,44 +435,43 @@
             //     }
             // }
             scales: {
-            x: {
-                position: 'bottom',           // Ini untuk bar
-                stacked: true,
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: t.y_title           // Jumlah Anak
-                },
-                ticks: {
-                    callback: val => val.toLocaleString('id-ID')
-                }
-            },
-            x1: {
-                position: 'top',              // ✅ Ini untuk persen (scatter)
-                beginAtZero: true,
-                max: 100,
-                grid: {
-                    drawOnChartArea: false    // Biar tidak mengganggu bar chart
-                },
-                title: {
-                    display: true,
-                    text: t.y1_title          // % dari ZD
-                },
-                ticks: {
-                    callback: val => val + '%'
-                }
-            },
-            y: {
-                stacked: true,
-                beginAtZero: true,
-                ticks: {
-                    mirror: false,
-                    padding: 10
-                }
+                        x: {
+                            position: 'bottom',           // Ini untuk bar
+                            stacked: true,
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: t.y_title           // Jumlah Anak
+                            },
+                            ticks: {
+                                callback: val => val.toLocaleString('id-ID')
+                            }
+                        },
+                        x1: {
+                            position: 'top',              // ✅ Ini untuk persen (scatter)
+                            beginAtZero: true,
+                            // max: 100,
+                            suggestedMax: 100,
+                            grid: {
+                                drawOnChartArea: false    // Biar tidak mengganggu bar chart
+                            },
+                            title: {
+                                display: true,
+                                text: t.y1_title          // % dari ZD
+                            },
+                            ticks: {
+                                callback: val => val + '%'
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            ticks: {
+                                mirror: false,
+                                padding: 10
+                            }
+                        }
             }
-}
-
-
         },
         plugins: [ChartDataLabels]
     });
