@@ -757,9 +757,6 @@ class Home extends CI_Controller {
         $this->data['max_month_manual'] = $this->Immunization_model->get_max_kejar_manual_month($selected_year);
         $this->data['max_month_kombinasi'] = $this->Immunization_model->get_max_kejar_kombinasi_month($selected_year);
 
-        // Ambil nama bulan berdasarkan ID
-        $months = $this->data['translations']['months'] ?? [];
-
         // Dropdowns
         // $this->data['provinces'] = $this->Immunization_model->get_province_names();
         // $this->data['districts'] = ($selected_province !== 'all') ? $this->Immunization_model->get_cities_name_by_province($selected_province) : [];
@@ -772,6 +769,9 @@ class Home extends CI_Controller {
 
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
+
+        // Ambil nama bulan berdasarkan ID
+        $months = $this->data['translations']['months'] ?? [];
 
         $this->data['max_month_name_asik'] = $months[$this->data['max_month_asik']] ?? 'Invalid Month';
         $this->data['max_month_name_manual'] = $months[$this->data['max_month_manual']] ?? 'Invalid Month';
