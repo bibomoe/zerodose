@@ -125,6 +125,9 @@
                                 }
                             </style>
 
+                            <div class="alert alert-secondary mb-3" role="alert">
+                                <strong><?= $translations['text2'] ?></strong> 
+                            </div>
                             <!-- Grafik -->
                             <div class="row">
                                 <!-- ZD Region Type -->
