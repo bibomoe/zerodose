@@ -760,9 +760,9 @@ class Home extends CI_Controller {
         // Ambil nama bulan berdasarkan ID
         $months = $this->data['translations']['months'] ?? [];
 
-        $this->data['max_month_name_asik'] = $months[$this->data['max_month_asik']] ?? 'Invalid Month';
-        $this->data['max_month_name_manual'] = $months[$this->data['max_month_manual']] ?? 'Invalid Month';
-        $this->data['max_month_name_kombinasi'] = $months[$this->data['max_month_kombinasi']] ?? 'Invalid Month';
+        $this->data['max_month_name_asik'] = $months[$this->data['max_month_asik']] ;
+        $this->data['max_month_name_manual'] = $months[$this->data['max_month_manual']] ;
+        $this->data['max_month_name_kombinasi'] = $months[$this->data['max_month_kombinasi']] ;
 
 
         // Dropdowns
