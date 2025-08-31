@@ -1294,6 +1294,37 @@ class Immunization_model extends CI_Model {
     // {
     //     return $this->db->select('id, name_id')->from('cities')->where('province_id', $province_id)->where('active', 1)->get()->result_array();
     // }
+
+    // Ambil bulan maksimum dari tabel kejar ASIK
+    public function get_max_kejar_asik_month($year) {
+        $query = $this->db->select('MAX(month) as max_month')
+                        ->where('year', $year)
+                        // ->where('dpt1_coverage >', 0)
+                        ->get('immunization_data_kejar');
+
+        return $query->row()->max_month ?? 1;
+    }
+
+    // Ambil bulan maksimum dari tabel kejar Manual
+    public function get_max_kejar_manual_month($year) {
+        $query = $this->db->select('MAX(month) as max_month')
+                        ->where('year', $year)
+                        // ->where('dpt1_coverage >', 0)
+                        ->get('immunization_data_kejar_manual');
+
+        return $query->row()->max_month ?? 1;
+    }
+
+    // Ambil bulan maksimum dari tabel kejar Kombinasi
+    public function get_max_kejar_kombinasi_month($year) {
+        $query = $this->db->select('MAX(month) as max_month')
+                        ->where('year', $year)
+                        // ->where('dpt1_coverage >', 0)
+                        ->get('immunization_data_kejar_kombinasi');
+
+        return $query->row()->max_month ?? 1;
+    }
+
     
 }
 ?>

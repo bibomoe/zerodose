@@ -753,6 +753,18 @@ class Home extends CI_Controller {
         $this->data['selected_district'] = $selected_district;
         $this->data['selected_year'] = $selected_year;
 
+        $this->data['max_month_asik'] = $this->Immunization_model->get_max_kejar_asik_month($selected_year);
+        $this->data['max_month_manual'] = $this->Immunization_model->get_max_kejar_manual_month($selected_year);
+        $this->data['max_month_kombinasi'] = $this->Immunization_model->get_max_kejar_kombinasi_month($selected_year);
+
+        // Ambil nama bulan berdasarkan ID
+        $months = $this->data['translations']['months'] ?? [];
+
+        $this->data['max_month_name_asik'] = $months[$this->data['max_month_asik']] ?? 'Invalid Month';
+        $this->data['max_month_name_manual'] = $months[$this->data['max_month_manual']] ?? 'Invalid Month';
+        $this->data['max_month_name_kombinasi'] = $months[$this->data['max_month_kombinasi']] ?? 'Invalid Month';
+
+
         // Dropdowns
         // $this->data['provinces'] = $this->Immunization_model->get_province_names();
         // $this->data['districts'] = ($selected_province !== 'all') ? $this->Immunization_model->get_cities_name_by_province($selected_province) : [];
@@ -776,6 +788,7 @@ class Home extends CI_Controller {
                 'page_subtitle' => '',
                 'filter_label' => 'Select Filter',
                 'text1' => 'Zero Dose Children in 2024 who Get Vaccinated',
+                'text1_cumulative' => ' Cumulative up to ',
                 'tabelcoloumn1' => 'Province',
                 'tabelcoloumn1_b' => 'District',
                 'tabelcoloumn1_c' => 'Puskesmas',
@@ -810,16 +823,17 @@ class Home extends CI_Controller {
                 'page_subtitle' => '',
                 'filter_label' => 'Pilih Filter',
                 'text1' => 'Anak Zero Dose yang berhasil dikejar',
+                'text1_cumulative' => ' Kumulatif sampai bulan ',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn1_b' => 'Kab/Kota',
                 'tabelcoloumn1_c' => 'Puskesmas',
-                'tabelcoloumn2' => 'Jumlah Anak yang sudah dikejar (ASIK)',
-                'tabelcoloumn3' => 'Jumlah Anak yang sudah dikejar (Manual)',
-                'tabelcoloumn4' => 'Jumlah Anak yang sudah dikejar (Kombinasi)',
+                'tabelcoloumn2' => 'Imunisasi Kejar DPT-1 (ASIK)',
+                'tabelcoloumn3' => 'Imunisasi Kejar DPT-1 (Manual)',
+                'tabelcoloumn4' => 'Imunisasi Kejar DPT-1 (Kombinasi)',
                 'tabelcoloumn5' => 'Jumlah Anak Zero Dose Tahun 2024',
-                'tabelcoloumn6' => '% Kejar (ASIK)',
-                'tabelcoloumn7' => '% Kejar (Manual)',
-                'tabelcoloumn8' => '% Kejar (Kombinasi)',
+                'tabelcoloumn6' => '% Imunisasi Kejar (ASIK)',
+                'tabelcoloumn7' => '% Imunisasi Kejar (Manual)',
+                'tabelcoloumn8' => '% Imunisasi Kejar (Kombinasi)',
                 'sort_kejar_asik' => 'Urutkan Kejar ASIK Tertinggi',
                 'sort_kejar_manual' => 'Urutkan Kejar Manual Tertinggi',
                 'sort_kejar_kombinasi' => 'Urutkan Kejar Kombinasi Tertinggi',

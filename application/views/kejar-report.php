@@ -170,10 +170,10 @@
                                                                     }
                                                                 ?>
                                                             </th>
-                                                            <th><?= $translations['tabelcoloumn2'] ?> </th>
-                                                            <th><?= $translations['tabelcoloumn3'] ?> </th>
-                                                            <th><?= $translations['tabelcoloumn4'] ?> </th>
                                                             <th><?= $translations['tabelcoloumn5'] ?> </th>
+                                                            <th><?= $translations['tabelcoloumn2'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name_asik; ?> </th>
+                                                            <th><?= $translations['tabelcoloumn3'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name_manual; ?> </th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name_kombinasi; ?> </th>
                                                             <th><?= $translations['tabelcoloumn6'] ?> </th>
                                                             <th><?= $translations['tabelcoloumn7'] ?> </th>
                                                             <th><?= $translations['tabelcoloumn8'] ?> </th>
@@ -183,10 +183,10 @@
                                                         <?php foreach ($chart_data as $data): ?>
                                                             <tr>
                                                                 <td><?= $data['name'] ?></td>
+                                                                <td style="text-align: center;"><?= number_format($data['zd_total']) ?></td>
                                                                 <td style="text-align: center;"><?= number_format($data['kejar_asik']) ?></td>
                                                                 <td style="text-align: center;"><?= number_format($data['kejar_manual']) ?></td>
                                                                 <td style="text-align: center;"><?= number_format($data['kejar_kombinasi']) ?></td>
-                                                                <td style="text-align: center;"><?= number_format($data['zd_total']) ?></td>
                                                                 <td style="text-align: center;"><?= number_format($data['percentage_asik'], 2) ?>%</td>
                                                                 <td style="text-align: center;"><?= number_format($data['percentage_manual'], 2) ?>%</td>
                                                                 <td style="text-align: center;"><?= number_format($data['percentage_kombinasi'], 2) ?>%</td>
