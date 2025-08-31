@@ -167,10 +167,8 @@
                                                     <strong style="color: <?= ($selected_year == 2024) ? '#0056b3' : (($selected_year == 2025) ? '#00b359' : '#ff9900'); ?>;">
                                                         <?= $selected_year; ?>:
                                                     </strong>
-                                                    Rp <?= number_format($total_absorbed ?? 0, 0, ',', '.'); ?>
-                                                </p>
-                                                <p style="font-size: 1rem; color: #888;">
-                                                    (<?= $absorption_percentage ?? 0; ?>%)
+                                                    Rp <?= number_format($total_absorbed ?? 0, 0, ',', '.'); ?> 
+                                                    <span style="color: #888; font-size: 0.95rem;">(<?= $absorption_percentage ?? 0; ?>%)</span>
                                                 </p>
 
                                             </div>
@@ -294,9 +292,7 @@
                                                     <?= $selected_year; ?>:
                                                 </strong>
                                                 Rp <?= number_format($total_cso_absorbed ?? 0, 0, ',', '.'); ?>
-                                            </p>
-                                            <p style="font-size: 1rem; color: #888;">
-                                                (<?= $cso_absorption_percentage ?? 0; ?>%)
+                                                <span style="color: #888; font-size: 0.95rem;">(<?= $cso_absorption_percentage ?? 0; ?>%)</span>
                                             </p>
 
                                         </div>
