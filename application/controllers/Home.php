@@ -760,11 +760,6 @@ class Home extends CI_Controller {
         // Ambil nama bulan berdasarkan ID
         $months = $this->data['translations']['months'] ?? [];
 
-        $this->data['max_month_name_asik'] = $months[$this->data['max_month_asik']] ;
-        $this->data['max_month_name_manual'] = $months[$this->data['max_month_manual']] ;
-        $this->data['max_month_name_kombinasi'] = $months[$this->data['max_month_kombinasi']] ;
-
-
         // Dropdowns
         // $this->data['provinces'] = $this->Immunization_model->get_province_names();
         // $this->data['districts'] = ($selected_province !== 'all') ? $this->Immunization_model->get_cities_name_by_province($selected_province) : [];
@@ -777,6 +772,10 @@ class Home extends CI_Controller {
 
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
+
+        $this->data['max_month_name_asik'] = $months[$this->data['max_month_asik']] ?? 'Invalid Month';
+        $this->data['max_month_name_manual'] = $months[$this->data['max_month_manual']] ?? 'Invalid Month';
+        $this->data['max_month_name_kombinasi'] = $months[$this->data['max_month_kombinasi']] ?? 'Invalid Month';
 
         load_template('kejar-report', $this->data);
     }
