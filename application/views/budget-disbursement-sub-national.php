@@ -169,6 +169,10 @@
                                                     </strong>
                                                     Rp <?= number_format($total_absorbed ?? 0, 0, ',', '.'); ?>
                                                 </p>
+                                                <p style="font-size: 1rem; color: #888;">
+                                                    (<?= $absorption_percentage ?? 0; ?>%)
+                                                </p>
+
                                             </div>
                                         </div>
                                     </div>
@@ -291,6 +295,10 @@
                                                 </strong>
                                                 Rp <?= number_format($total_cso_absorbed ?? 0, 0, ',', '.'); ?>
                                             </p>
+                                            <p style="font-size: 1rem; color: #888;">
+                                                (<?= $cso_absorption_percentage ?? 0; ?>%)
+                                            </p>
+
                                         </div>
                                     </div>
                                 </div>

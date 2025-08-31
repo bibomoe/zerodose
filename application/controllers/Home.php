@@ -1926,6 +1926,14 @@ class Home extends CI_Controller {
         }
         $this->data['total_allocation'] = $total_allocation;
 
+        // Hitung persentase serapan
+        if ($total_allocation > 0) {
+            $this->data['absorption_percentage'] = round(($total_absorbed / $total_allocation) * 100, 1);
+        } else {
+            $this->data['absorption_percentage'] = 0;
+        }
+
+
         // (opsional) dropdown menu objective
         // $this->data['menus'] = $this->db->get_where('menu_objective', ['active' => 1])->result_array();
         // dropdown menu objective (aktif) – akan dipakai di view
@@ -1952,6 +1960,13 @@ class Home extends CI_Controller {
         }
         $this->data['total_cso_allocation'] = $total_cso_allocation;
         $this->data['total_cso_absorbed'] = $total_cso_absorbed;
+
+        if ($total_cso_allocation > 0) {
+            $this->data['cso_absorption_percentage'] = round(($total_cso_absorbed / $total_cso_allocation) * 100, 1);
+        } else {
+            $this->data['cso_absorption_percentage'] = 0;
+        }
+
 
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
