@@ -137,7 +137,26 @@
                         
                             <!-- Card Total Budget Absorption -->
                             <div class="row">
-                                <div class="col-md-12">
+
+                                <!-- Total Allocation -->
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">
+                                                <?= $translations['total_allocation_label'] ?? 'Total Budget Allocation'; ?>
+                                            </h5>
+                                            <p style="font-size: 1.2rem;">
+                                                <strong style="color: #0056b3;">
+                                                    <?= $selected_year; ?>:
+                                                </strong>
+                                                Rp <?= number_format($total_allocation ?? 0, 0, ',', '.'); ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Total Absorption -->
+                                <div class="col-md-6">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="col-md-12 text-center">
@@ -155,6 +174,8 @@
                                     </div>
                                 </div>
                             </div>
+
+
                         
                         <!-- Graphic for Budget Disbursement -->
                         <div class="row">
@@ -237,6 +258,44 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Row 2: CSO Allocation & Absorption -->
+                            <div class="row mt-3">
+                                <!-- CSO Allocation -->
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">
+                                                <?= $translations['cso_allocation_label'] ?? 'Total CSO Allocation'; ?>
+                                            </h5>
+                                            <p style="font-size: 1.2rem;">
+                                                <strong style="color: #0056b3;">
+                                                    <?= $selected_year; ?>:
+                                                </strong>
+                                                Rp <?= number_format($total_cso_allocation ?? 0, 0, ',', '.'); ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CSO Absorption -->
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">
+                                                <?= $translations['cso_absorption_label'] ?? 'Total CSO Absorption'; ?>
+                                            </h5>
+                                            <p style="font-size: 1.2rem;">
+                                                <strong style="color: #00b359;">
+                                                    <?= $selected_year; ?>:
+                                                </strong>
+                                                Rp <?= number_format($total_cso_absorbed ?? 0, 0, ',', '.'); ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
 
                         <!-- table Budget Disbursement National-->
                         <!-- <div class="row">

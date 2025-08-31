@@ -1919,6 +1919,13 @@ class Home extends CI_Controller {
         }
         $this->data['total_absorbed'] = $total_absorbed;
 
+        // Tambahkan total alokasi nasional
+        $total_allocation = 0;
+        foreach ($this->data['chart_data2'] as $r) {
+            $total_allocation += $r['allocation'];
+        }
+        $this->data['total_allocation'] = $total_allocation;
+
         // (opsional) dropdown menu objective
         // $this->data['menus'] = $this->db->get_where('menu_objective', ['active' => 1])->result_array();
         // dropdown menu objective (aktif) – akan dipakai di view
@@ -1935,6 +1942,16 @@ class Home extends CI_Controller {
         $sort_by       = $this->input->post('sort') ?? $this->input->get('sort') ?? 'cso'; // 'cso'|'wilayah'
         // tabel (CSO x provinsi)
         $this->data['table_data']  = $this->Cso_budget_model->get_table_cso_province($selected_year, $sort_by);
+
+        // Tambahkan total alokasi dan realisasi CSO
+        $total_cso_allocation = 0;
+        $total_cso_absorbed = 0;
+        foreach ($this->data['chart_data_cso'] as $row) {
+            $total_cso_allocation += $row['allocation'];
+            $total_cso_absorbed += $row['realization'];
+        }
+        $this->data['total_cso_allocation'] = $total_cso_allocation;
+        $this->data['total_cso_absorbed'] = $total_cso_absorbed;
 
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
@@ -1956,6 +1973,10 @@ class Home extends CI_Controller {
                 'filter_label' => 'Select Menu',
                 'text1' => 'Budget Sub-National Disbursement',
                 'text2' => 'Budget Sub-National CSO Disbursement',
+                'total_allocation_label' => 'Total Budget Allocation',
+                'total_absorption_label' => 'Total Budget Realization',
+                'cso_allocation_label' => 'Total CSO Allocation',
+                'cso_absorption_label' => 'Total CSO Realization',
                 'tabelcoloumn1' => 'Province',
                 'tabelcoloumn2' => 'Allocation',
                 'tabelcoloumn3' => 'Realization',
@@ -1990,6 +2011,10 @@ class Home extends CI_Controller {
                 'filter_label' => 'Pilih Menu',
                 'text1' => 'Serapan Anggaran Sub-National',
                 'text2' => 'Serapan Anggaran Sub-National CSO',
+                'total_allocation_label' => 'Alokasi Anggaran',
+                'total_absorption_label' => 'Serapan Anggaran',
+                'cso_allocation_label' => 'Alokasi Anggaran CSO',
+                'cso_absorption_label' => 'Serapan Anggaran CSO',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Alokasi',
                 'tabelcoloumn3' => 'Serapan',
