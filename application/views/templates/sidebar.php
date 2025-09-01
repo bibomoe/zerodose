@@ -254,7 +254,7 @@
 
                         <!-- Long-term Health Outcomes -->
                         <li
-                            class="sidebar-item  ">
+                            class="sidebar-item has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-shield-fill-check"></i>
                                 <span id="longterm-menu-label">Long-term Health Outcomes</span>
