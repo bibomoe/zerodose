@@ -1099,7 +1099,7 @@ $(document).ready(function () {
         en: {
             dpt3_label: 'DPT-3 Coverage',
             mr1_label: 'MR-1 Coverage',
-            zd_label_remaining: 'Remaining Zero Dose',
+            zd_label_total: 'Zero Dose Children',
             zd_label_chased: 'Chased (Immunized)',
             zd_label_percent: '% Reduction',
             y_axis_absolute: 'Number of Children',
@@ -1110,7 +1110,7 @@ $(document).ready(function () {
         id: {
             dpt3_label: 'Cakupan DPT-3',
             mr1_label: 'Cakupan MR-1',
-            zd_label_remaining: 'Sisa Anak Zero Dose',
+            zd_label_total: 'Jumlah Anak Zero Dose',
             zd_label_chased: 'Sudah Diimunisasi Kejar',
             zd_label_percent: '% Penurunan',
             y_axis_absolute: 'Jumlah Anak',
@@ -1122,12 +1122,26 @@ $(document).ready(function () {
 
     const labels = ['Baseline', '2025', '2026'];
 
-    // PHP Data
     const dpt3 = <?= json_encode($long_term_outcomes['dpt3']) ?>;
     const mr1 = <?= json_encode($long_term_outcomes['mr1']) ?>;
     const zd = <?= json_encode($long_term_outcomes['reduction_zd']) ?>;
 
-    // Colors
+    const zd_baseline = zd.baseline;
+    const zd_y1_kejar = zd.absolute_y1;
+    const zd_y2_kejar = zd.absolute_y2;
+
+    const zd_y1_total = zd_baseline;
+    const zd_y2_total = zd_baseline;
+
+    const zd_y1_sisa = zd_baseline - zd_y1_kejar;
+    const zd_y2_sisa = zd_baseline - zd_y2_kejar;
+
+    const zd_percent = [
+        0,
+        ((zd_y1_kejar / zd_baseline) * 100),
+        ((zd_y2_kejar / zd_baseline) * 100)
+    ];
+
     const colorBlue = '#007bff';
     const colorGreen = '#28a745';
     const colorCyan = '#17a2b8';
@@ -1135,7 +1149,6 @@ $(document).ready(function () {
     const colorRed = '#ff0000';
     const colorOrange = '#ffa500';
 
-    // Functions
     function createMultiAxisChart(ctx, labels, datasets, isStacked = false) {
         new Chart(ctx, {
             type: 'bar',
@@ -1177,11 +1190,11 @@ $(document).ready(function () {
         });
     }
 
-    // === DPT-3 ===
+    // === Chart DPT-3 ===
     createMultiAxisChart(document.getElementById('chartDpt3').getContext('2d'), labels, [
         {
             label: t.dpt3_label,
-            data: [null, dpt3.absolute_y1, dpt3.absolute_y2],
+            data: [dpt3.baseline_y1, dpt3.absolute_y1, dpt3.absolute_y2],
             backgroundColor: colorBlue,
             yAxisID: 'y'
         },
@@ -1199,11 +1212,11 @@ $(document).ready(function () {
         }
     ]);
 
-    // === MR-1 ===
+    // === Chart MR-1 ===
     createMultiAxisChart(document.getElementById('chartMr1').getContext('2d'), labels, [
         {
             label: t.mr1_label,
-            data: [null, mr1.absolute_y1, mr1.absolute_y2],
+            data: [mr1.baseline_y1, mr1.absolute_y1, mr1.absolute_y2],
             backgroundColor: colorGreen,
             yAxisID: 'y'
         },
@@ -1221,23 +1234,10 @@ $(document).ready(function () {
         }
     ]);
 
-    // === Zero Dose (stacked) ===
-    const zd_baseline = zd.baseline;
-    const zd_y1_kejar = zd.absolute_y1;
-    const zd_y2_kejar = zd.absolute_y2;
-
-    const zd_y1_sisa = zd_baseline - zd_y1_kejar;
-    const zd_y2_sisa = zd_baseline - zd_y2_kejar;
-
-    const zdPercent = [
-        0,
-        ((zd_y1_kejar / zd_baseline) * 100),
-        ((zd_y2_kejar / zd_baseline) * 100)
-    ];
-
+    // === Chart Zero Dose (Stacked) ===
     createMultiAxisChart(document.getElementById('chartZd').getContext('2d'), labels, [
         {
-            label: t.zd_label_remaining,
+            label: t.zd_label_total,
             data: [zd_baseline, zd_y1_sisa, zd_y2_sisa],
             backgroundColor: colorGray,
             yAxisID: 'y',
@@ -1255,15 +1255,14 @@ $(document).ready(function () {
             label: t.zd_label_percent,
             data: [
                 { x: 0, y: 0 },
-                { x: 1, y: zdPercent[1] },
-                { x: 2, y: zdPercent[2] }
+                { x: 1, y: zd_percent[1] },
+                { x: 2, y: zd_percent[2] }
             ],
             backgroundColor: colorRed,
             yAxisID: 'y1',
             pointRadius: 4
         }
-    ], true); // true = stacked chart
-
+    ], true);
 </script>
 
 
