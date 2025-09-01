@@ -266,6 +266,36 @@
                                 </div>
                             </div>
 
+                            <!-- Graph Long Term -->
+                            <!-- Long Term Outcome Graphs -->
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card">
+                                    <div class="card-header"><strong>Cakupan DPT-3</strong></div>
+                                    <div class="card-body">
+                                        <canvas id="chartDpt3" height="300"></canvas>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                    <div class="card-header"><strong>Cakupan MR-1</strong></div>
+                                    <div class="card-body">
+                                        <canvas id="chartMr1" height="300"></canvas>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                    <div class="card-header"><strong>Penurunan Zero Dose</strong></div>
+                                    <div class="card-body">
+                                        <canvas id="chartZd" height="300"></canvas>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
                             <!-- Table 2: Intermediate Outcomes -->
                             <div class="row">
                                 <div class="col-12">
@@ -929,6 +959,8 @@
 <!-- Buttons HTML5 untuk export CSV & Excel -->
 <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+
 <script>
 $(document).ready(function () {
     $('#table_export').DataTable({
@@ -1058,4 +1090,117 @@ $(document).ready(function () {
     });
 
 });
+</script>
+
+<script>
+const dpt3Labels = ['Baseline', '2025', '2026'];
+const dpt3Absolute = [<?= $long_term_outcomes['dpt3']['baseline_y1'] ?>, 1000000, 900000]; // Contoh angka
+const dpt3Percent = [100, <?= $long_term_outcomes['dpt3']['actual_y1'] ?>, <?= $long_term_outcomes['dpt3']['actual_y2'] ?>];
+
+const mr1Absolute = [<?= $long_term_outcomes['mr1']['baseline_y1'] ?>, 1000000, 900000]; // Contoh angka
+const mr1Percent = [100, <?= $long_term_outcomes['mr1']['actual_y1'] ?>, <?= $long_term_outcomes['mr1']['actual_y2'] ?>];
+
+const zdAbsolute = [<?= $long_term_outcomes['reduction_zd']['baseline'] ?>, 1000000, 900000];
+const zdChased = [0, 100000, 250000]; // Yang dikejar
+const zdPercent = [0, <?= $long_term_outcomes['reduction_zd']['actual_y1'] ?>, <?= $long_term_outcomes['reduction_zd']['actual_y2'] ?>];
+
+function createMultiAxisChart(ctx, labels, datasets) {
+  new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (ctx.dataset.type === 'scatter') {
+                return `%: ${ctx.raw.y}%`;
+              } else {
+                return `${ctx.dataset.label}: ${ctx.raw.toLocaleString('id-ID')}`;
+              }
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Jumlah' },
+          ticks: { callback: v => v.toLocaleString('id-ID') }
+        },
+        y1: {
+          beginAtZero: true,
+          max: 110,
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          title: { display: true, text: 'Persentase (%)' },
+          ticks: { callback: v => v + '%' }
+        }
+      }
+    }
+  });
+}
+
+// Chart 1: DPT-3
+createMultiAxisChart(document.getElementById('chartDpt3').getContext('2d'), dpt3Labels, [
+  {
+    label: 'Cakupan DPT-3',
+    data: dpt3Absolute,
+    backgroundColor: '#007bff',
+    yAxisID: 'y'
+  },
+  {
+    type: 'scatter',
+    label: '%',
+    data: dpt3Percent.map((v, i) => ({ x: i, y: v })),
+    backgroundColor: 'red',
+    yAxisID: 'y1',
+    pointRadius: 4
+  }
+]);
+
+// Chart 2: MR-1
+createMultiAxisChart(document.getElementById('chartMr1').getContext('2d'), dpt3Labels, [
+  {
+    label: 'Cakupan MR-1',
+    data: mr1Absolute,
+    backgroundColor: '#28a745',
+    yAxisID: 'y'
+  },
+  {
+    type: 'scatter',
+    label: '%',
+    data: mr1Percent.map((v, i) => ({ x: i, y: v })),
+    backgroundColor: 'orange',
+    yAxisID: 'y1',
+    pointRadius: 4
+  }
+]);
+
+// Chart 3: Zero Dose
+createMultiAxisChart(document.getElementById('chartZd').getContext('2d'), dpt3Labels, [
+  {
+    label: 'Jumlah Anak Zero Dose',
+    data: zdAbsolute,
+    backgroundColor: '#6c757d',
+    yAxisID: 'y'
+  },
+  {
+    label: 'Mendapatkan Imunisasi Kejar',
+    data: zdChased,
+    backgroundColor: '#17a2b8',
+    yAxisID: 'y'
+  },
+  {
+    type: 'scatter',
+    label: '%',
+    data: zdPercent.map((v, i) => ({ x: i, y: v })),
+    backgroundColor: '#ff5733',
+    yAxisID: 'y1',
+    pointRadius: 4
+  }
+]);
 </script>
