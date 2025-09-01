@@ -1256,17 +1256,11 @@ $(document).ready(function () {
     // Chart: Zero Dose
     createMultiAxisChart(document.getElementById('chartZd').getContext('2d'), chartLabels, [
         {
-            label: t.zd_label_total,
-            data: [<?= $long_term_outcomes['reduction_zd']['baseline'] ?>, 0, 0], // baseline tetap
-            backgroundColor: '#6c757d',
-            yAxisID: 'y'
-        },
-        {
-            label: t.zd_label_chased,
+            label: t.zd_label_chased, // "Sudah Diimunisasi" (label bisa dua bahasa)
             data: [
-                0,
-                <?= $long_term_outcomes['reduction_zd']['absolute_y1'] ?>,
-                <?= $long_term_outcomes['reduction_zd']['absolute_y2'] ?>
+                <?= $long_term_outcomes['reduction_zd']['baseline'] ?>, // Baseline absolute
+                <?= $long_term_outcomes['reduction_zd']['absolute_y1'] ?>, // 2025 absolute
+                <?= $long_term_outcomes['reduction_zd']['absolute_y2'] ?>  // 2026 absolute
             ],
             backgroundColor: '#17a2b8',
             yAxisID: 'y'
@@ -1275,7 +1269,7 @@ $(document).ready(function () {
             type: 'scatter',
             label: '%',
             data: [
-                { x: 0, y: 0 },
+                { x: 0, y: 0 }, // Baseline = 0%
                 { x: 1, y: <?= $long_term_outcomes['reduction_zd']['actual_y1'] ?> },
                 { x: 2, y: <?= $long_term_outcomes['reduction_zd']['actual_y2'] ?> }
             ],
@@ -1284,6 +1278,7 @@ $(document).ready(function () {
             pointRadius: 4
         }
     ]);
+
 
 </script>
 
