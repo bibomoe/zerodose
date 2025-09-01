@@ -1094,7 +1094,7 @@ $(document).ready(function () {
 
 <script>
     // Ambil bahasa dari session PHP
-    const lang = '<?= $this->session->userdata('language') ?? 'id' ?>';
+    const lang = localStorage.getItem("selectedLanguage") || "id";
 
     // Terjemahan label grafik
     const t = {
