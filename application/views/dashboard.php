@@ -1093,101 +1093,60 @@ $(document).ready(function () {
 </script>
 
 <script>
-    // Ambil bahasa dari session/localStorage
     const lang = localStorage.getItem("selectedLanguage") || "id";
 
-    // Terjemahan label grafik
     const t = {
         en: {
             dpt3_label: 'DPT-3 Coverage',
             mr1_label: 'MR-1 Coverage',
-            zd_label_chased: 'Zero Dose Children / Chased',
+            zd_label_total: 'Zero Dose Children',
+            zd_label_chased: 'Chased (Immunized)',
+            baseline_label: 'Baseline',
             y_axis_absolute: 'Number of Children',
             y_axis_percent: 'Percentage (%)',
             tooltip_percent: '%: ',
-            tooltip_absolute: ': ',
+            tooltip_absolute: ': '
         },
         id: {
             dpt3_label: 'Cakupan DPT-3',
             mr1_label: 'Cakupan MR-1',
-            zd_label_chased: 'Jumlah Anak Zero Dose / Sudah Diimunisasi',
+            zd_label_total: 'Jumlah Anak Zero Dose',
+            zd_label_chased: 'Sudah Diimunisasi',
+            baseline_label: 'Baseline',
             y_axis_absolute: 'Jumlah Anak',
             y_axis_percent: 'Persentase (%)',
             tooltip_percent: '%: ',
-            tooltip_absolute: ': ',
+            tooltip_absolute: ': '
         }
     }[lang];
 
-    // Label tahun
     const chartLabels = ['Baseline', '2025', '2026'];
 
-    // Data grafik dari PHP
-    const dpt3Absolute = [
-        <?= $long_term_outcomes['dpt3']['baseline_y1'] ?>,
-        <?= $long_term_outcomes['dpt3']['absolute_y1'] ?>,
-        <?= $long_term_outcomes['dpt3']['absolute_y2'] ?>
-    ];
-    const dpt3Percent = [
-        100,
-        <?= $long_term_outcomes['dpt3']['actual_y1'] ?>,
-        <?= $long_term_outcomes['dpt3']['actual_y2'] ?>
-    ];
+    // Warna
+    const colorGray = '#6c757d';
+    const colorBlue = '#007bff';
+    const colorGreen = '#28a745';
+    const colorCyan = '#17a2b8';
+    const colorRed = '#ff0000';
+    const colorOrange = '#ffa500';
 
-    const mr1Absolute = [
-        <?= $long_term_outcomes['mr1']['baseline_y1'] ?>,
-        <?= $long_term_outcomes['mr1']['absolute_y1'] ?>,
-        <?= $long_term_outcomes['mr1']['absolute_y2'] ?>
-    ];
-    const mr1Percent = [
-        100,
-        <?= $long_term_outcomes['mr1']['actual_y1'] ?>,
-        <?= $long_term_outcomes['mr1']['actual_y2'] ?>
-    ];
+    // Data dari PHP
+    const dpt3 = <?= json_encode($long_term_outcomes['dpt3']) ?>;
+    const mr1 = <?= json_encode($long_term_outcomes['mr1']) ?>;
+    const zd = <?= json_encode($long_term_outcomes['reduction_zd']) ?>;
 
-    const zdAbsolute = [
-        <?= $long_term_outcomes['reduction_zd']['baseline'] ?>,
-        <?= $long_term_outcomes['reduction_zd']['absolute_y1'] ?>,
-        <?= $long_term_outcomes['reduction_zd']['absolute_y2'] ?>
-    ];
-    const zdPercent = [
-        0,
-        <?= $long_term_outcomes['reduction_zd']['actual_y1'] ?>,
-        <?= $long_term_outcomes['reduction_zd']['actual_y2'] ?>
-    ];
-
-    // Fungsi umum untuk buat grafik
-    function createMultiAxisChart(ctx, labels, absoluteData, percentData, label, barColors, scatterColor) {
+    function createMultiAxisChart(ctx, labels, datasets) {
         new Chart(ctx, {
             type: 'bar',
             data: {
                 labels,
-                datasets: [
-                    {
-                        label: label,
-                        data: absoluteData,
-                        backgroundColor: barColors,
-                        yAxisID: 'y'
-                    },
-                    {
-                        type: 'scatter',
-                        label: '%',
-                        data: percentData.map((v, i) => ({ x: i, y: v })),
-                        backgroundColor: scatterColor,
-                        yAxisID: 'y1',
-                        pointRadius: 4
-                    }
-                ]
+                datasets
             },
             options: {
                 responsive: true,
-                interaction: {
-                    mode: 'index',
-                    intersect: false
-                },
+                interaction: { mode: 'index', intersect: false },
                 plugins: {
-                    legend: {
-                        position: 'top'
-                    },
+                    legend: { position: 'top' },
                     tooltip: {
                         callbacks: {
                             label: function (ctx) {
@@ -1215,9 +1174,7 @@ $(document).ready(function () {
                         beginAtZero: true,
                         max: 110,
                         position: 'right',
-                        grid: {
-                            drawOnChartArea: false
-                        },
+                        grid: { drawOnChartArea: false },
                         title: {
                             display: true,
                             text: t.y_axis_percent
@@ -1231,46 +1188,89 @@ $(document).ready(function () {
         });
     }
 
-    // Warna baseline dan progres (dibedakan di setiap chart)
-    const colorGray = '#6c757d'; // Untuk baseline
-    const colorBlue = '#007bff';
-    const colorGreen = '#28a745';
-    const colorCyan = '#17a2b8';
-    const colorRed = 'red';
-    const colorOrange = 'orange';
+    // DPT-3 Chart
+    createMultiAxisChart(document.getElementById('chartDpt3').getContext('2d'), chartLabels, [
+        {
+            label: `${t.baseline_label} DPT-3`,
+            data: [dpt3.baseline_y1, null, null],
+            backgroundColor: colorGray,
+            yAxisID: 'y'
+        },
+        {
+            label: t.dpt3_label,
+            data: [null, dpt3.absolute_y1, dpt3.absolute_y2],
+            backgroundColor: colorBlue,
+            yAxisID: 'y'
+        },
+        {
+            type: 'scatter',
+            label: '%',
+            data: [
+                { x: 0, y: 100 },
+                { x: 1, y: dpt3.actual_y1 },
+                { x: 2, y: dpt3.actual_y2 }
+            ],
+            backgroundColor: colorRed,
+            yAxisID: 'y1',
+            pointRadius: 4
+        }
+    ]);
 
-    // Chart DPT-3
-    createMultiAxisChart(
-        document.getElementById('chartDpt3').getContext('2d'),
-        chartLabels,
-        dpt3Absolute,
-        dpt3Percent,
-        t.dpt3_label,
-        [colorGray, colorBlue, colorBlue],
-        colorRed
-    );
+    // MR-1 Chart
+    createMultiAxisChart(document.getElementById('chartMr1').getContext('2d'), chartLabels, [
+        {
+            label: `${t.baseline_label} MR-1`,
+            data: [mr1.baseline_y1, null, null],
+            backgroundColor: colorGray,
+            yAxisID: 'y'
+        },
+        {
+            label: t.mr1_label,
+            data: [null, mr1.absolute_y1, mr1.absolute_y2],
+            backgroundColor: colorGreen,
+            yAxisID: 'y'
+        },
+        {
+            type: 'scatter',
+            label: '%',
+            data: [
+                { x: 0, y: 100 },
+                { x: 1, y: mr1.actual_y1 },
+                { x: 2, y: mr1.actual_y2 }
+            ],
+            backgroundColor: colorOrange,
+            yAxisID: 'y1',
+            pointRadius: 4
+        }
+    ]);
 
-    // Chart MR-1
-    createMultiAxisChart(
-        document.getElementById('chartMr1').getContext('2d'),
-        chartLabels,
-        mr1Absolute,
-        mr1Percent,
-        t.mr1_label,
-        [colorGray, colorGreen, colorGreen],
-        colorOrange
-    );
-
-    // Chart Zero Dose
-    createMultiAxisChart(
-        document.getElementById('chartZd').getContext('2d'),
-        chartLabels,
-        zdAbsolute,
-        zdPercent,
-        t.zd_label_chased,
-        [colorGray, colorCyan, colorCyan],
-        colorRed
-    );
+    // Zero Dose Chart
+    createMultiAxisChart(document.getElementById('chartZd').getContext('2d'), chartLabels, [
+        {
+            label: `${t.zd_label_total} (${t.baseline_label})`,
+            data: [zd.baseline, null, null],
+            backgroundColor: colorGray,
+            yAxisID: 'y'
+        },
+        {
+            label: t.zd_label_chased,
+            data: [null, zd.absolute_y1, zd.absolute_y2],
+            backgroundColor: colorCyan,
+            yAxisID: 'y'
+        },
+        {
+            type: 'scatter',
+            label: '%',
+            data: [
+                { x: 0, y: 0 },
+                { x: 1, y: zd.actual_y1 },
+                { x: 2, y: zd.actual_y2 }
+            ],
+            backgroundColor: colorRed,
+            yAxisID: 'y1',
+            pointRadius: 4
+        }
+    ]);
 </script>
 
 
