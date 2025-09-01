@@ -255,18 +255,23 @@
                         <!-- Long-term Health Outcomes -->
                         <li
                             class="sidebar-item  ">
-                            <a href="<?= base_url('home/restored'); ?>" class='sidebar-link'>
+                            <a href="#" class='sidebar-link'>
                                 <i class="bi bi-shield-fill-check"></i>
                                 <span id="longterm-menu-label">Long-term Health Outcomes</span>
                             </a>
                             
-                            <!-- <ul class="submenu ">
+                            <ul class="submenu ">
                                 <li class="submenu-item  ">
-                                    <a href="<?= base_url('home/restored'); ?>" class='sidebar-link'>
-                                        Restored ZD Children
+                                    <a href="<?= base_url('home/restored'); ?>" class='sidebar-link' id="longterm-submenu1-label">
+                                        Immunization
                                     </a>
                                 </li>
-                            </ul> -->
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('home/kejar_report'); ?>" class='sidebar-link' id="longterm-submenu2-label">
+                                        Catch Up Immunization
+                                    </a>
+                                </li>
+                            </ul>
                             
                         </li>
 
@@ -590,6 +595,8 @@
             const translations = {
                 en: {
                     longterm: 'Long-term Health Outcomes',
+                    longtermSub1: 'Immunization',
+                    longtermSub2: 'Catch Up Immunization',
                     intermediate: 'Intermediate Health Outcomes',
                     intermediateSub1: 'DPT-1 Coverage',
                     intermediateSub2: 'DPT Stock Out in Health Facilities',
@@ -601,6 +608,8 @@
                 },
                 id: {
                     longterm: 'Indikator Jangka Panjang',
+                    longtermSub1: 'Imunisasi',
+                    longtermSub2: 'Imunisasi Kejar',
                     intermediate: 'Indikator Jangka Menengah',
                     intermediateSub1: 'Cakupan DPT-1',
                     intermediateSub2: 'Jumlah Stock Out DTP di Fasyankes',
@@ -614,6 +623,8 @@
 
             function setLanguage(lang) {
                 document.getElementById('longterm-menu-label').textContent = translations[lang].longterm;
+                document.getElementById('longterm-submenu1-label').textContent = translations[lang].longtermSub1;
+                document.getElementById('longterm-submenu2-label').textContent = translations[lang].longtermSub2;
                 document.getElementById('intermediate-menu-label').textContent = translations[lang].intermediate;
                 document.getElementById('intermediate-submenu1-label').textContent = translations[lang].intermediateSub1;
                 document.getElementById('intermediate-submenu2-label').textContent = translations[lang].intermediateSub2;

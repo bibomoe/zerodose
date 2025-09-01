@@ -1100,7 +1100,7 @@ $(document).ready(function () {
             dpt3_label: 'DPT-3 Coverage',
             mr1_label: 'MR-1 Coverage',
             zd_label_total: 'Zero Dose Children',
-            zd_label_chased: 'Chased (Immunized)',
+            zd_label_chased: 'Catch Up (Immunized)',
             zd_label_percent: '% Reduction',
             y_axis_absolute: 'Number of Children',
             y_axis_percent: 'Reduction (%)',
