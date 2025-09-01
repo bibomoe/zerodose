@@ -1153,8 +1153,8 @@ $(document).ready(function () {
     ];
     const zdChased = [
         0,
-        <?= $long_term_outcomes['reduction_zd']['chased_y1'] ?>,
-        <?= $long_term_outcomes['reduction_zd']['chased_y2'] ?>
+        <?= $long_term_outcomes['reduction_zd']['absolute_y1'] ?>,
+        <?= $long_term_outcomes['reduction_zd']['absolute_y2'] ?>
     ];
     const zdPercent = [
         0,
@@ -1253,27 +1253,37 @@ $(document).ready(function () {
     ]);
 
     // Buat Chart Zero Dose
+    // Chart: Zero Dose
     createMultiAxisChart(document.getElementById('chartZd').getContext('2d'), chartLabels, [
         {
             label: t.zd_label_total,
-            data: zdAbsolute,
+            data: [<?= $long_term_outcomes['reduction_zd']['baseline'] ?>, 0, 0], // baseline tetap
             backgroundColor: '#6c757d',
             yAxisID: 'y'
         },
         {
             label: t.zd_label_chased,
-            data: zdChased,
+            data: [
+                0,
+                <?= $long_term_outcomes['reduction_zd']['absolute_y1'] ?>,
+                <?= $long_term_outcomes['reduction_zd']['absolute_y2'] ?>
+            ],
             backgroundColor: '#17a2b8',
             yAxisID: 'y'
         },
         {
             type: 'scatter',
             label: '%',
-            data: zdPercent.map((v, i) => ({ x: i, y: v })),
+            data: [
+                { x: 0, y: 0 },
+                { x: 1, y: <?= $long_term_outcomes['reduction_zd']['actual_y1'] ?> },
+                { x: 2, y: <?= $long_term_outcomes['reduction_zd']['actual_y2'] ?> }
+            ],
             backgroundColor: '#ff5733',
             yAxisID: 'y1',
             pointRadius: 4
         }
     ]);
+
 </script>
 
