@@ -1093,114 +1093,187 @@ $(document).ready(function () {
 </script>
 
 <script>
-const dpt3Labels = ['Baseline', '2025', '2026'];
-const dpt3Absolute = [<?= $long_term_outcomes['dpt3']['baseline_y1'] ?>, 1000000, 900000]; // Contoh angka
-const dpt3Percent = [100, <?= $long_term_outcomes['dpt3']['actual_y1'] ?>, <?= $long_term_outcomes['dpt3']['actual_y2'] ?>];
+    // Ambil bahasa dari session PHP
+    const lang = '<?= $this->session->userdata('language') ?? 'id' ?>';
 
-const mr1Absolute = [<?= $long_term_outcomes['mr1']['baseline_y1'] ?>, 1000000, 900000]; // Contoh angka
-const mr1Percent = [100, <?= $long_term_outcomes['mr1']['actual_y1'] ?>, <?= $long_term_outcomes['mr1']['actual_y2'] ?>];
-
-const zdAbsolute = [<?= $long_term_outcomes['reduction_zd']['baseline'] ?>, 1000000, 900000];
-const zdChased = [0, 100000, 250000]; // Yang dikejar
-const zdPercent = [0, <?= $long_term_outcomes['reduction_zd']['actual_y1'] ?>, <?= $long_term_outcomes['reduction_zd']['actual_y2'] ?>];
-
-function createMultiAxisChart(ctx, labels, datasets) {
-  new Chart(ctx, {
-    type: 'bar',
-    data: { labels, datasets },
-    options: {
-      responsive: true,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { position: 'top' },
-        tooltip: {
-          callbacks: {
-            label: function(ctx) {
-              if (ctx.dataset.type === 'scatter') {
-                return `%: ${ctx.raw.y}%`;
-              } else {
-                return `${ctx.dataset.label}: ${ctx.raw.toLocaleString('id-ID')}`;
-              }
-            }
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          title: { display: true, text: 'Jumlah' },
-          ticks: { callback: v => v.toLocaleString('id-ID') }
+    // Terjemahan label grafik
+    const t = {
+        en: {
+            dpt3_label: 'DPT-3 Coverage',
+            mr1_label: 'MR-1 Coverage',
+            zd_label_total: 'Zero Dose Children',
+            zd_label_chased: 'Chased (Immunized)',
+            y_axis_absolute: 'Number of Children',
+            y_axis_percent: 'Percentage (%)',
+            tooltip_percent: '%: ',
+            tooltip_absolute: ': '
         },
-        y1: {
-          beginAtZero: true,
-          max: 110,
-          position: 'right',
-          grid: { drawOnChartArea: false },
-          title: { display: true, text: 'Persentase (%)' },
-          ticks: { callback: v => v + '%' }
+        id: {
+            dpt3_label: 'Cakupan DPT-3',
+            mr1_label: 'Cakupan MR-1',
+            zd_label_total: 'Jumlah Anak Zero Dose',
+            zd_label_chased: 'Sudah Diimunisasi',
+            y_axis_absolute: 'Jumlah Anak',
+            y_axis_percent: 'Persentase (%)',
+            tooltip_percent: '%: ',
+            tooltip_absolute: ': '
         }
-      }
+    }[lang];
+
+    // Label tahun
+    const chartLabels = ['Baseline', '2025', '2026'];
+
+    // Data grafik (PHP variables)
+    const dpt3Absolute = [
+        <?= $long_term_outcomes['dpt3']['baseline_y1'] ?>,
+        <?= $long_term_outcomes['dpt3']['absolute_y1'] ?>,
+        <?= $long_term_outcomes['dpt3']['absolute_y2'] ?>
+    ];
+    const dpt3Percent = [
+        100,
+        <?= $long_term_outcomes['dpt3']['actual_y1'] ?>,
+        <?= $long_term_outcomes['dpt3']['actual_y2'] ?>
+    ];
+
+    const mr1Absolute = [
+        <?= $long_term_outcomes['mr1']['baseline_y1'] ?>,
+        <?= $long_term_outcomes['mr1']['absolute_y1'] ?>,
+        <?= $long_term_outcomes['mr1']['absolute_y2'] ?>
+    ];
+    const mr1Percent = [
+        100,
+        <?= $long_term_outcomes['mr1']['actual_y1'] ?>,
+        <?= $long_term_outcomes['mr1']['actual_y2'] ?>
+    ];
+
+    const zdAbsolute = [
+        <?= $long_term_outcomes['reduction_zd']['baseline'] ?>,
+        <?= $long_term_outcomes['reduction_zd']['absolute_y1'] ?>,
+        <?= $long_term_outcomes['reduction_zd']['absolute_y2'] ?>
+    ];
+    const zdChased = [
+        0,
+        <?= $long_term_outcomes['reduction_zd']['chased_y1'] ?>,
+        <?= $long_term_outcomes['reduction_zd']['chased_y2'] ?>
+    ];
+    const zdPercent = [
+        0,
+        <?= $long_term_outcomes['reduction_zd']['actual_y1'] ?>,
+        <?= $long_term_outcomes['reduction_zd']['actual_y2'] ?>
+    ];
+
+    // Fungsi untuk membuat grafik multi axis
+    function createMultiAxisChart(ctx, labels, datasets) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets
+            },
+            options: {
+                responsive: true,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                if (ctx.dataset.type === 'scatter') {
+                                    return t.tooltip_percent + ctx.raw.y.toFixed(1) + '%';
+                                } else {
+                                    return `${ctx.dataset.label}${t.tooltip_absolute}${ctx.raw.toLocaleString('id-ID')}`;
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: t.y_axis_absolute
+                        },
+                        ticks: {
+                            callback: v => v.toLocaleString('id-ID')
+                        }
+                    },
+                    y1: {
+                        beginAtZero: true,
+                        max: 110,
+                        position: 'right',
+                        grid: { drawOnChartArea: false },
+                        title: {
+                            display: true,
+                            text: t.y_axis_percent
+                        },
+                        ticks: {
+                            callback: v => v + '%'
+                        }
+                    }
+                }
+            }
+        });
     }
-  });
-}
 
-// Chart 1: DPT-3
-createMultiAxisChart(document.getElementById('chartDpt3').getContext('2d'), dpt3Labels, [
-  {
-    label: 'Cakupan DPT-3',
-    data: dpt3Absolute,
-    backgroundColor: '#007bff',
-    yAxisID: 'y'
-  },
-  {
-    type: 'scatter',
-    label: '%',
-    data: dpt3Percent.map((v, i) => ({ x: i, y: v })),
-    backgroundColor: 'red',
-    yAxisID: 'y1',
-    pointRadius: 4
-  }
-]);
+    // Buat Chart DPT-3
+    createMultiAxisChart(document.getElementById('chartDpt3').getContext('2d'), chartLabels, [
+        {
+            label: t.dpt3_label,
+            data: dpt3Absolute,
+            backgroundColor: '#007bff',
+            yAxisID: 'y'
+        },
+        {
+            type: 'scatter',
+            label: '%',
+            data: dpt3Percent.map((v, i) => ({ x: i, y: v })),
+            backgroundColor: 'red',
+            yAxisID: 'y1',
+            pointRadius: 4
+        }
+    ]);
 
-// Chart 2: MR-1
-createMultiAxisChart(document.getElementById('chartMr1').getContext('2d'), dpt3Labels, [
-  {
-    label: 'Cakupan MR-1',
-    data: mr1Absolute,
-    backgroundColor: '#28a745',
-    yAxisID: 'y'
-  },
-  {
-    type: 'scatter',
-    label: '%',
-    data: mr1Percent.map((v, i) => ({ x: i, y: v })),
-    backgroundColor: 'orange',
-    yAxisID: 'y1',
-    pointRadius: 4
-  }
-]);
+    // Buat Chart MR-1
+    createMultiAxisChart(document.getElementById('chartMr1').getContext('2d'), chartLabels, [
+        {
+            label: t.mr1_label,
+            data: mr1Absolute,
+            backgroundColor: '#28a745',
+            yAxisID: 'y'
+        },
+        {
+            type: 'scatter',
+            label: '%',
+            data: mr1Percent.map((v, i) => ({ x: i, y: v })),
+            backgroundColor: 'orange',
+            yAxisID: 'y1',
+            pointRadius: 4
+        }
+    ]);
 
-// Chart 3: Zero Dose
-createMultiAxisChart(document.getElementById('chartZd').getContext('2d'), dpt3Labels, [
-  {
-    label: 'Jumlah Anak Zero Dose',
-    data: zdAbsolute,
-    backgroundColor: '#6c757d',
-    yAxisID: 'y'
-  },
-  {
-    label: 'Mendapatkan Imunisasi Kejar',
-    data: zdChased,
-    backgroundColor: '#17a2b8',
-    yAxisID: 'y'
-  },
-  {
-    type: 'scatter',
-    label: '%',
-    data: zdPercent.map((v, i) => ({ x: i, y: v })),
-    backgroundColor: '#ff5733',
-    yAxisID: 'y1',
-    pointRadius: 4
-  }
-]);
+    // Buat Chart Zero Dose
+    createMultiAxisChart(document.getElementById('chartZd').getContext('2d'), chartLabels, [
+        {
+            label: t.zd_label_total,
+            data: zdAbsolute,
+            backgroundColor: '#6c757d',
+            yAxisID: 'y'
+        },
+        {
+            label: t.zd_label_chased,
+            data: zdChased,
+            backgroundColor: '#17a2b8',
+            yAxisID: 'y'
+        },
+        {
+            type: 'scatter',
+            label: '%',
+            data: zdPercent.map((v, i) => ({ x: i, y: v })),
+            backgroundColor: '#ff5733',
+            yAxisID: 'y1',
+            pointRadius: 4
+        }
+    ]);
 </script>
+
