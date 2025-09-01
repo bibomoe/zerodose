@@ -1093,7 +1093,7 @@ $(document).ready(function () {
 </script>
 
 <script>
-    // Ambil bahasa dari session PHP
+    // Ambil bahasa dari session/localStorage
     const lang = localStorage.getItem("selectedLanguage") || "id";
 
     // Terjemahan label grafik
@@ -1101,8 +1101,10 @@ $(document).ready(function () {
         en: {
             dpt3_label: 'DPT-3 Coverage',
             mr1_label: 'MR-1 Coverage',
-            zd_label_total: 'Zero Dose Children',
+            zd_label_total: 'Zero Dose Children (Baseline)',
             zd_label_chased: 'Chased (Immunized)',
+            dpt3_label_baseline: 'DPT-3 Baseline',
+            mr1_label_baseline: 'MR-1 Baseline',
             y_axis_absolute: 'Number of Children',
             y_axis_percent: 'Percentage (%)',
             tooltip_percent: '%: ',
@@ -1111,8 +1113,10 @@ $(document).ready(function () {
         id: {
             dpt3_label: 'Cakupan DPT-3',
             mr1_label: 'Cakupan MR-1',
-            zd_label_total: 'Jumlah Anak Zero Dose',
+            zd_label_total: 'Jumlah Anak Zero Dose (Baseline)',
             zd_label_chased: 'Sudah Diimunisasi',
+            dpt3_label_baseline: 'Baseline DPT-3',
+            mr1_label_baseline: 'Baseline MR-1',
             y_axis_absolute: 'Jumlah Anak',
             y_axis_percent: 'Persentase (%)',
             tooltip_percent: '%: ',
@@ -1123,53 +1127,39 @@ $(document).ready(function () {
     // Label tahun
     const chartLabels = ['Baseline', '2025', '2026'];
 
-    // Data grafik (PHP variables)
+    // Data grafik dari PHP
     const dpt3Absolute = [
-        <?= $long_term_outcomes['dpt3']['baseline_y1'] ?>,
         <?= $long_term_outcomes['dpt3']['absolute_y1'] ?>,
         <?= $long_term_outcomes['dpt3']['absolute_y2'] ?>
     ];
     const dpt3Percent = [
-        100,
         <?= $long_term_outcomes['dpt3']['actual_y1'] ?>,
         <?= $long_term_outcomes['dpt3']['actual_y2'] ?>
     ];
 
     const mr1Absolute = [
-        <?= $long_term_outcomes['mr1']['baseline_y1'] ?>,
         <?= $long_term_outcomes['mr1']['absolute_y1'] ?>,
         <?= $long_term_outcomes['mr1']['absolute_y2'] ?>
     ];
     const mr1Percent = [
-        100,
         <?= $long_term_outcomes['mr1']['actual_y1'] ?>,
         <?= $long_term_outcomes['mr1']['actual_y2'] ?>
     ];
 
     const zdAbsolute = [
-        <?= $long_term_outcomes['reduction_zd']['baseline'] ?>,
-        <?= $long_term_outcomes['reduction_zd']['absolute_y1'] ?>,
-        <?= $long_term_outcomes['reduction_zd']['absolute_y2'] ?>
-    ];
-    const zdChased = [
-        0,
         <?= $long_term_outcomes['reduction_zd']['absolute_y1'] ?>,
         <?= $long_term_outcomes['reduction_zd']['absolute_y2'] ?>
     ];
     const zdPercent = [
-        0,
         <?= $long_term_outcomes['reduction_zd']['actual_y1'] ?>,
         <?= $long_term_outcomes['reduction_zd']['actual_y2'] ?>
     ];
 
-    // Fungsi untuk membuat grafik multi axis
+    // Fungsi untuk membuat grafik multi-axis
     function createMultiAxisChart(ctx, labels, datasets) {
         new Chart(ctx, {
             type: 'bar',
-            data: {
-                labels,
-                datasets
-            },
+            data: { labels, datasets },
             options: {
                 responsive: true,
                 interaction: { mode: 'index', intersect: false },
@@ -1216,52 +1206,73 @@ $(document).ready(function () {
         });
     }
 
-    // Buat Chart DPT-3
+    // ===================== GRAFIK DPT-3 =====================
     createMultiAxisChart(document.getElementById('chartDpt3').getContext('2d'), chartLabels, [
         {
+            label: t.dpt3_label_baseline,
+            data: [<?= $long_term_outcomes['dpt3']['baseline_y1'] ?>, null, null],
+            backgroundColor: '#6c757d',
+            yAxisID: 'y'
+        },
+        {
             label: t.dpt3_label,
-            data: dpt3Absolute,
+            data: [null, ...dpt3Absolute],
             backgroundColor: '#007bff',
             yAxisID: 'y'
         },
         {
             type: 'scatter',
             label: '%',
-            data: dpt3Percent.map((v, i) => ({ x: i, y: v })),
+            data: [
+                { x: 0, y: 100 },
+                { x: 1, y: dpt3Percent[0] },
+                { x: 2, y: dpt3Percent[1] }
+            ],
             backgroundColor: 'red',
             yAxisID: 'y1',
             pointRadius: 4
         }
     ]);
 
-    // Buat Chart MR-1
+    // ===================== GRAFIK MR-1 =====================
     createMultiAxisChart(document.getElementById('chartMr1').getContext('2d'), chartLabels, [
         {
+            label: t.mr1_label_baseline,
+            data: [<?= $long_term_outcomes['mr1']['baseline_y1'] ?>, null, null],
+            backgroundColor: '#6c757d',
+            yAxisID: 'y'
+        },
+        {
             label: t.mr1_label,
-            data: mr1Absolute,
+            data: [null, ...mr1Absolute],
             backgroundColor: '#28a745',
             yAxisID: 'y'
         },
         {
             type: 'scatter',
             label: '%',
-            data: mr1Percent.map((v, i) => ({ x: i, y: v })),
+            data: [
+                { x: 0, y: 100 },
+                { x: 1, y: mr1Percent[0] },
+                { x: 2, y: mr1Percent[1] }
+            ],
             backgroundColor: 'orange',
             yAxisID: 'y1',
             pointRadius: 4
         }
     ]);
 
-    // Buat Chart Zero Dose
-    // Chart: Zero Dose
+    // ===================== GRAFIK ZERO DOSE =====================
     createMultiAxisChart(document.getElementById('chartZd').getContext('2d'), chartLabels, [
         {
-            label: t.zd_label_chased, // "Sudah Diimunisasi" (label bisa dua bahasa)
-            data: [
-                <?= $long_term_outcomes['reduction_zd']['baseline'] ?>, // Baseline absolute
-                <?= $long_term_outcomes['reduction_zd']['absolute_y1'] ?>, // 2025 absolute
-                <?= $long_term_outcomes['reduction_zd']['absolute_y2'] ?>  // 2026 absolute
-            ],
+            label: t.zd_label_total,
+            data: [<?= $long_term_outcomes['reduction_zd']['baseline'] ?>, null, null],
+            backgroundColor: '#6c757d',
+            yAxisID: 'y'
+        },
+        {
+            label: t.zd_label_chased,
+            data: [null, ...zdAbsolute],
             backgroundColor: '#17a2b8',
             yAxisID: 'y'
         },
@@ -1269,16 +1280,15 @@ $(document).ready(function () {
             type: 'scatter',
             label: '%',
             data: [
-                { x: 0, y: 0 }, // Baseline = 0%
-                { x: 1, y: <?= $long_term_outcomes['reduction_zd']['actual_y1'] ?> },
-                { x: 2, y: <?= $long_term_outcomes['reduction_zd']['actual_y2'] ?> }
+                { x: 0, y: 0 },
+                { x: 1, y: zdPercent[0] },
+                { x: 2, y: zdPercent[1] }
             ],
             backgroundColor: '#ff5733',
             yAxisID: 'y1',
             pointRadius: 4
         }
     ]);
-
-
 </script>
+
 
