@@ -1101,26 +1101,20 @@ $(document).ready(function () {
         en: {
             dpt3_label: 'DPT-3 Coverage',
             mr1_label: 'MR-1 Coverage',
-            zd_label_total: 'Zero Dose Children (Baseline)',
-            zd_label_chased: 'Chased (Immunized)',
-            dpt3_label_baseline: 'DPT-3 Baseline',
-            mr1_label_baseline: 'MR-1 Baseline',
+            zd_label_chased: 'Zero Dose Children / Chased',
             y_axis_absolute: 'Number of Children',
             y_axis_percent: 'Percentage (%)',
             tooltip_percent: '%: ',
-            tooltip_absolute: ': '
+            tooltip_absolute: ': ',
         },
         id: {
             dpt3_label: 'Cakupan DPT-3',
             mr1_label: 'Cakupan MR-1',
-            zd_label_total: 'Jumlah Anak Zero Dose (Baseline)',
-            zd_label_chased: 'Sudah Diimunisasi',
-            dpt3_label_baseline: 'Baseline DPT-3',
-            mr1_label_baseline: 'Baseline MR-1',
+            zd_label_chased: 'Jumlah Anak Zero Dose / Sudah Diimunisasi',
             y_axis_absolute: 'Jumlah Anak',
             y_axis_percent: 'Persentase (%)',
             tooltip_percent: '%: ',
-            tooltip_absolute: ': '
+            tooltip_absolute: ': ',
         }
     }[lang];
 
@@ -1129,45 +1123,74 @@ $(document).ready(function () {
 
     // Data grafik dari PHP
     const dpt3Absolute = [
+        <?= $long_term_outcomes['dpt3']['baseline_y1'] ?>,
         <?= $long_term_outcomes['dpt3']['absolute_y1'] ?>,
         <?= $long_term_outcomes['dpt3']['absolute_y2'] ?>
     ];
     const dpt3Percent = [
+        100,
         <?= $long_term_outcomes['dpt3']['actual_y1'] ?>,
         <?= $long_term_outcomes['dpt3']['actual_y2'] ?>
     ];
 
     const mr1Absolute = [
+        <?= $long_term_outcomes['mr1']['baseline_y1'] ?>,
         <?= $long_term_outcomes['mr1']['absolute_y1'] ?>,
         <?= $long_term_outcomes['mr1']['absolute_y2'] ?>
     ];
     const mr1Percent = [
+        100,
         <?= $long_term_outcomes['mr1']['actual_y1'] ?>,
         <?= $long_term_outcomes['mr1']['actual_y2'] ?>
     ];
 
     const zdAbsolute = [
+        <?= $long_term_outcomes['reduction_zd']['baseline'] ?>,
         <?= $long_term_outcomes['reduction_zd']['absolute_y1'] ?>,
         <?= $long_term_outcomes['reduction_zd']['absolute_y2'] ?>
     ];
     const zdPercent = [
+        0,
         <?= $long_term_outcomes['reduction_zd']['actual_y1'] ?>,
         <?= $long_term_outcomes['reduction_zd']['actual_y2'] ?>
     ];
 
-    // Fungsi untuk membuat grafik multi-axis
-    function createMultiAxisChart(ctx, labels, datasets) {
+    // Fungsi umum untuk buat grafik
+    function createMultiAxisChart(ctx, labels, absoluteData, percentData, label, barColors, scatterColor) {
         new Chart(ctx, {
             type: 'bar',
-            data: { labels, datasets },
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: label,
+                        data: absoluteData,
+                        backgroundColor: barColors,
+                        yAxisID: 'y'
+                    },
+                    {
+                        type: 'scatter',
+                        label: '%',
+                        data: percentData.map((v, i) => ({ x: i, y: v })),
+                        backgroundColor: scatterColor,
+                        yAxisID: 'y1',
+                        pointRadius: 4
+                    }
+                ]
+            },
             options: {
                 responsive: true,
-                interaction: { mode: 'index', intersect: false },
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
                 plugins: {
-                    legend: { position: 'top' },
+                    legend: {
+                        position: 'top'
+                    },
                     tooltip: {
                         callbacks: {
-                            label: function(ctx) {
+                            label: function (ctx) {
                                 if (ctx.dataset.type === 'scatter') {
                                     return t.tooltip_percent + ctx.raw.y.toFixed(1) + '%';
                                 } else {
@@ -1192,7 +1215,9 @@ $(document).ready(function () {
                         beginAtZero: true,
                         max: 110,
                         position: 'right',
-                        grid: { drawOnChartArea: false },
+                        grid: {
+                            drawOnChartArea: false
+                        },
                         title: {
                             display: true,
                             text: t.y_axis_percent
@@ -1206,89 +1231,47 @@ $(document).ready(function () {
         });
     }
 
-    // ===================== GRAFIK DPT-3 =====================
-    createMultiAxisChart(document.getElementById('chartDpt3').getContext('2d'), chartLabels, [
-        {
-            label: t.dpt3_label_baseline,
-            data: [<?= $long_term_outcomes['dpt3']['baseline_y1'] ?>, null, null],
-            backgroundColor: '#6c757d',
-            yAxisID: 'y'
-        },
-        {
-            label: t.dpt3_label,
-            data: [null, ...dpt3Absolute],
-            backgroundColor: '#007bff',
-            yAxisID: 'y'
-        },
-        {
-            type: 'scatter',
-            label: '%',
-            data: [
-                { x: 0, y: 100 },
-                { x: 1, y: dpt3Percent[0] },
-                { x: 2, y: dpt3Percent[1] }
-            ],
-            backgroundColor: 'red',
-            yAxisID: 'y1',
-            pointRadius: 4
-        }
-    ]);
+    // Warna baseline dan progres (dibedakan di setiap chart)
+    const colorGray = '#6c757d'; // Untuk baseline
+    const colorBlue = '#007bff';
+    const colorGreen = '#28a745';
+    const colorCyan = '#17a2b8';
+    const colorRed = 'red';
+    const colorOrange = 'orange';
 
-    // ===================== GRAFIK MR-1 =====================
-    createMultiAxisChart(document.getElementById('chartMr1').getContext('2d'), chartLabels, [
-        {
-            label: t.mr1_label_baseline,
-            data: [<?= $long_term_outcomes['mr1']['baseline_y1'] ?>, null, null],
-            backgroundColor: '#6c757d',
-            yAxisID: 'y'
-        },
-        {
-            label: t.mr1_label,
-            data: [null, ...mr1Absolute],
-            backgroundColor: '#28a745',
-            yAxisID: 'y'
-        },
-        {
-            type: 'scatter',
-            label: '%',
-            data: [
-                { x: 0, y: 100 },
-                { x: 1, y: mr1Percent[0] },
-                { x: 2, y: mr1Percent[1] }
-            ],
-            backgroundColor: 'orange',
-            yAxisID: 'y1',
-            pointRadius: 4
-        }
-    ]);
+    // Chart DPT-3
+    createMultiAxisChart(
+        document.getElementById('chartDpt3').getContext('2d'),
+        chartLabels,
+        dpt3Absolute,
+        dpt3Percent,
+        t.dpt3_label,
+        [colorGray, colorBlue, colorBlue],
+        colorRed
+    );
 
-    // ===================== GRAFIK ZERO DOSE =====================
-    createMultiAxisChart(document.getElementById('chartZd').getContext('2d'), chartLabels, [
-        {
-            label: t.zd_label_total,
-            data: [<?= $long_term_outcomes['reduction_zd']['baseline'] ?>, null, null],
-            backgroundColor: '#6c757d',
-            yAxisID: 'y'
-        },
-        {
-            label: t.zd_label_chased,
-            data: [null, ...zdAbsolute],
-            backgroundColor: '#17a2b8',
-            yAxisID: 'y'
-        },
-        {
-            type: 'scatter',
-            label: '%',
-            data: [
-                { x: 0, y: 0 },
-                { x: 1, y: zdPercent[0] },
-                { x: 2, y: zdPercent[1] }
-            ],
-            backgroundColor: '#ff5733',
-            yAxisID: 'y1',
-            pointRadius: 4
-        }
-    ]);
+    // Chart MR-1
+    createMultiAxisChart(
+        document.getElementById('chartMr1').getContext('2d'),
+        chartLabels,
+        mr1Absolute,
+        mr1Percent,
+        t.mr1_label,
+        [colorGray, colorGreen, colorGreen],
+        colorOrange
+    );
+
+    // Chart Zero Dose
+    createMultiAxisChart(
+        document.getElementById('chartZd').getContext('2d'),
+        chartLabels,
+        zdAbsolute,
+        zdPercent,
+        t.zd_label_chased,
+        [colorGray, colorCyan, colorCyan],
+        colorRed
+    );
 </script>
+
 
 
