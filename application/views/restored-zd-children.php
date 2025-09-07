@@ -74,6 +74,16 @@
                                                             set_value('year', $selected_year ?? 2025), 
                                                             'class="form-select" style="width: 100%; max-width: 150px; height: 48px; font-size: 1rem;" required'
                                                         ); ?>
+                                                    <?= form_dropdown(
+                                                            'sort_by',
+                                                            [
+                                                                'kejar_asik' => $translations['sort_kejar_asik'] ?? 'Urutkan Kejar ASIK Tertinggi',
+                                                                'kejar_manual' => $translations['sort_kejar_manual'] ?? 'Urutkan Kejar Manual Tertinggi',
+                                                                'kejar_kombinasi' => $translations['sort_kejar_kombinasi'] ?? 'Urutkan Kejar Kombinasi Tertinggi',
+                                                            ],
+                                                            $sort_by ?? '',
+                                                            'class="form-select" style="width: 100%; max-width: 250px; height: 48px; font-size: 1rem;"'
+                                                        ); ?>
                                                     <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
                                                         <i class="bi bi-filter"></i> Submit
                                                     </button>
@@ -667,6 +677,85 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="alert alert-secondary mb-3" role="alert">
+                                <strong><?= $translations['text26'] ?></strong> 
+                            </div>
+                            <!-- Grafik Kejar -->
+                            <div class="row">
+                                <!-- ZD Region Type -->
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title"><?= $translations['text25'] ?></h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <!-- <canvas id="kejarChart" style="height: 500px; width: 100%;"></canvas> -->
+                                             <canvas id="kejarChart" style="width: 100%; height: <?= count($chart_data) * 30 ?>px;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- table kejar -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4></h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped" id="table3">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:30%"> 
+                                                                <?php
+                                                                    if( $selected_province === 'all' || $selected_province === 'targeted' ) {
+                                                                ?>
+                                                                    <?= $translations['tabel2coloumn1'] ?>
+                                                                <?php
+                                                                    } else if ($selected_district == 'all'){
+                                                                ?>
+                                                                    <?= $translations['tabel2coloumn1_b'] ?>
+                                                                <?php
+                                                                    } else {
+                                                                ?>
+                                                                    <?= $translations['tabel2coloumn1_c'] ?>
+                                                                <?php
+                                                                    }
+                                                                ?>
+                                                            </th>
+                                                            <th><?= $translations['tabel2coloumn5'] ?> </th>
+                                                            <th><?= $translations['tabel2coloumn2'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name_asik; ?> </th>
+                                                            <th><?= $translations['tabel2coloumn3'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name_manual; ?> </th>
+                                                            <th><?= $translations['tabel2coloumn4'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name_kombinasi; ?> </th>
+                                                            <th><?= $translations['tabel2coloumn6'] ?> </th>
+                                                            <th><?= $translations['tabel2coloumn7'] ?> </th>
+                                                            <th><?= $translations['tabel2coloumn8'] ?> </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($chart_data as $data): ?>
+                                                            <tr>
+                                                                <td><?= $data['name'] ?></td>
+                                                                <td style="text-align: center;"><?= number_format($data['zd_total']) ?></td>
+                                                                <td style="text-align: center;"><?= number_format($data['kejar_asik']) ?></td>
+                                                                <td style="text-align: center;"><?= number_format($data['kejar_manual']) ?></td>
+                                                                <td style="text-align: center;"><?= number_format($data['kejar_kombinasi']) ?></td>
+                                                                <td style="text-align: center;"><?= number_format($data['percentage_asik'], 2) ?>%</td>
+                                                                <td style="text-align: center;"><?= number_format($data['percentage_manual'], 2) ?>%</td>
+                                                                <td style="text-align: center;"><?= number_format($data['percentage_kombinasi'], 2) ?>%</td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </section>
                 </div>
@@ -685,6 +774,8 @@
             </footer>
         </div>
     </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 
 <!-- Grafik Line ZD Trend-->
 <script>
@@ -1078,9 +1169,6 @@
     addCoverageDownloadButtons();
 </script>
 
-
-
-
 <!-- Grafik Bar -->
 <script>
 
@@ -1216,110 +1304,6 @@
             // Add buttons to the DOM for locationChart
             addLocationDownloadButtons();
 </script>
-
-<!-- <script>
-    document.addEventListener("DOMContentLoaded", function () {
-    const map = L.map('map').setView([-7.250445, 112.768845], 7);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    let immunizationData = <?= json_encode($immunization_data, JSON_NUMERIC_CHECK); ?>;
-    // console.log("Immunization Data:", immunizationData);
-
-    function cleanCityCode(code) { 
-        if (!code) return ""; 
-        return String(code).replace(/\./g, ''); 
-    }
-
-    function getColor(value) {
-        return value === 0 ? '#D73027' :  
-               value > 0  ? '#1A9850' :  
-                            '#f0f0f0';  
-    }
-
-    let isProvinceLevel = ["all", "targeted"].includes("<?= $selected_province ?>");
-
-    fetch("<?= $geojson_file; ?>")
-    .then(response => response.json())
-    .then(data => {
-        // console.log("GeoJSON Data:", data);
-
-        let geojsonLayer = L.geoJSON(data, {
-            style: function (feature) {
-                let rawCode = isProvinceLevel 
-                    ? feature.properties.KDPPUM  
-                    : feature.properties.KDPKAB; 
-
-                let regionId = cleanCityCode(rawCode);
-                // console.log(`Raw : ${rawCode}, Cleaned: ${regionId}`);
-
-                let dpt1 = immunizationData[regionId]?.dpt1 ? parseInt(immunizationData[regionId].dpt1) : 0;
-
-                return {
-                    fillColor: getColor(dpt1),
-                    weight: 1.5,
-                    opacity: 1,
-                    color: '#ffffff',
-                    fillOpacity: 0.8
-                };
-            },
-            onEachFeature: function (feature, layer) {
-                let regionId = isProvinceLevel 
-                    ? cleanCityCode(feature.properties.KDPPUM)  
-                    : cleanCityCode(feature.properties.KDPKAB);  
-
-                let dpt1 = immunizationData[regionId]?.dpt1 || 0;
-                let dpt2 = immunizationData[regionId]?.dpt2 || 0;
-                let dpt3 = immunizationData[regionId]?.dpt3 || 0;
-                let mr1  = immunizationData[regionId]?.mr1 || 0;
-
-                let name = isProvinceLevel 
-                    ? feature.properties.WADMPR  
-                    : feature.properties.NAMOBJ;  
-
-                let popupContent = `<b>${name}</b><br>`;
-                popupContent += `DPT1 Immunized: ${dpt1}<br>`;
-                popupContent += `DPT2 Immunized: ${dpt2}<br>`;
-                popupContent += `DPT3 Immunized: ${dpt3}<br>`;
-                popupContent += `MR1 Immunized: ${mr1}`;
-                layer.bindPopup(popupContent);
-
-                if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
-                    let labelPoint = turf.pointOnFeature(feature);
-                    let latlng = [labelPoint.geometry.coordinates[1], labelPoint.geometry.coordinates[0]];
-
-                    if (feature.properties.NAMOBJ) {
-                        let label = L.divIcon({
-                            className: 'label-class',
-                            html: `<strong style="font-size: 9px;">${feature.properties.NAMOBJ}</strong>`,
-                            iconSize: [100, 20]
-                        });
-
-                        L.marker(latlng, { icon: label }).addTo(map);
-                    } else if (feature.properties.WADMPR) { 
-                        let label = L.divIcon({
-                            className: 'label-class',
-                            html: `<strong style="font-size: 8px;">${feature.properties.WADMPR}</strong>`,
-                            iconSize: [50, 15] // Ukuran lebih kecil
-                        });
-
-                        L.marker(latlng, { icon: label }).addTo(map);
-                    }
-                }
-            }
-        }).addTo(map);
-
-        // ✅ Set view ke center dari bounding box GeoJSON
-        map.fitBounds(geojsonLayer.getBounds());
-
-            })
-            .catch(error => console.error("Error loading GeoJSON:", error));
-        });
-
-</script> -->
 
 <!-- Peta -->
 <script>
@@ -1501,6 +1485,265 @@
 
 </script>
 
+<!-- Grafik Bar -->
+<script>
+    Chart.register(ChartDataLabels);
+
+    const data = <?= json_encode($chart_data) ?>;
+
+    const labels = data.map(item => item.name);
+    const zdTotal = data.map(item => parseInt(item.zd_total));
+    const kejarAsik = data.map(item => parseInt(item.kejar_asik));
+    const kejarManual = data.map(item => parseInt(item.kejar_manual));
+    const kejarKombinasi = data.map(item => parseInt(item.kejar_kombinasi));
+
+    const percentageAsik = data.map(item => parseFloat(item.percentage_asik));
+    const percentageManual = data.map(item => parseFloat(item.percentage_manual));
+    const percentageKombinasi = data.map(item => parseFloat(item.percentage_kombinasi));
+
+    const lang = localStorage.getItem("selectedLanguage") || "id";
+
+    const t = {
+        en: {
+            kejar_asik: "Catch up (ASIK)",
+            kejar_manual: "Catch up (Manual)",
+            kejar_kombinasi: "Catch up (Combined)",
+            zd_total: "Zero Dose Children in 2024",
+            percent_asik: "% Catch up (ASIK)",
+            percent_manual: "% Catch up (Manual)",
+            percent_kombinasi: "% Catch up (Combined)",
+            y1_title: "% of ZD",
+            y_title: "Number of Children"
+        },
+        id: {
+            kejar_asik: "Imunisasi Kejar (ASIK)",
+            kejar_manual: "Imunisasi Kejar (Manual)",
+            kejar_kombinasi: "Imunisasi Kejar (Kombinasi)",
+            zd_total: "Jumlah Anak Zero Dose Tahun 2024",
+            percent_asik: "% Imunisasi Kejar (ASIK)",
+            percent_manual: "% Imunisasi Kejar (Manual)",
+            percent_kombinasi: "% Imunisasi Kejar (Kombinasi)",
+            y1_title: "% dari ZD",
+            y_title: "Jumlah Anak"
+        }
+    }[lang];
+
+    new Chart(document.getElementById('kejarChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: t.kejar_asik,
+                    data: kejarAsik,
+                    backgroundColor: '#007bff', // Biru
+                    stack: 'total',
+                    yAxisID: 'y',
+                    order: 1 // ✅ tampil duluan
+                },
+                {
+                    label: t.kejar_manual,
+                    data: kejarManual,
+                    backgroundColor: '#28a745', // Hijau
+                    stack: 'total',
+                    yAxisID: 'y',
+                    order: 2 // ✅ tampil duluan
+                },
+                {
+                    label: t.kejar_kombinasi,
+                    data: kejarKombinasi,
+                    backgroundColor: '#ffc107', // Kuning
+                    stack: 'total',
+                    yAxisID: 'y',
+                    order: 3 // ✅ tampil duluan
+                },
+                {
+                    label: t.zd_total,
+                    data: zdTotal,
+                    backgroundColor: '#dee2e6', // Abu
+                    stack: 'total',
+                    yAxisID: 'y',
+                    order: 4 // ✅ tampil duluan
+                },
+                {
+                    type: 'scatter',
+                    label: t.percent_asik,
+                    // data: percentageAsik.map((val, i) => ({ x: i, y: val })),
+                    data: percentageAsik.map((val, i) => ({ x: val, y: i })),
+                    backgroundColor: 'red',
+                    borderColor: 'red',
+                    pointRadius: 2,
+                    xAxisID: 'x1', 
+                    clip: false, // ✅ tambahkan ini
+                    order: 10, // ✅ scatter muncul terakhir
+                    datalabels: {
+                        display: true,
+                        anchor: 'end',    
+                        align: 'right',   
+                        // formatter: value => value.y > 0 ? value.y + '%' : '',
+                        formatter: value => value.x > 0 ? value.x.toFixed(1) + '%' : '',
+                        color: 'red'
+                    }
+                },
+                {
+                    type: 'scatter',
+                    label: t.percent_manual,
+                    // data: percentageManual.map((val, i) => ({ x: i, y: val })),
+                    data: percentageManual.map((val, i) => ({ x: val, y: i })),
+                    backgroundColor: 'orange',
+                    borderColor: 'orange',
+                    pointRadius: 2,
+                    xAxisID: 'x1',
+                    clip: false, // ✅ tambahkan ini 
+                    order: 12, // ✅ scatter muncul terakhir
+                    datalabels: {
+                        display: true,
+                        anchor: 'end',    
+                        align: 'right',    
+                        // formatter: value => value.y > 0 ? value.y + '%' : '',
+                        formatter: value => value.x > 0 ? value.x.toFixed(1) + '%' : '',
+                        color: 'orange'
+                    }
+                },
+                {
+                    type: 'scatter',
+                    label: t.percent_kombinasi,
+                    // data: percentageKombinasi.map((val, i) => ({ x: i, y: val })),
+                    data: percentageKombinasi.map((val, i) => ({ x: val, y: i })),
+                    backgroundColor: 'purple',
+                    borderColor: 'purple',
+                    pointRadius: 2,
+                    xAxisID: 'x1', 
+                    clip: false, // ✅ tambahkan ini
+                    order: 13, // ✅ scatter muncul terakhir
+                    datalabels: {
+                        display: true,
+                        anchor: 'end',    
+                        align: 'right',   
+                        // formatter: value => value.y > 0 ? value.y + '%' : '',
+                        formatter: value => value.x > 0 ? value.x.toFixed(1) + '%' : '',
+                        color: 'purple'
+                    }
+                }
+            ]
+        },
+        options: {
+            indexAxis: 'y', // ✅ Ubah bar menjadi horizontal
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: { top: 30, bottom: 30 }
+            },
+            plugins: {
+                datalabels: {
+                    display: false
+                },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        boxWidth: 12,
+                        padding: 15,
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const label = context.dataset.label || '';
+                            let value = context.raw;
+
+                            // Jika titik (dot persen)
+                            if (context.dataset.type === 'scatter') {
+                                // return `${label}: ${value.y}%`;
+                                return `${label}: ${value.x.toFixed(1)}%`;
+                            }
+
+                            // Format angka biasa (ribuan)
+                            if (typeof value === 'number') {
+                                value = value.toLocaleString('id-ID'); // atau en-US jika pakai English
+                            }
+
+                            return `${label}: ${value}`;
+                        }
+                    }
+                }
+            },
+            // scales: {
+            //     x: {
+            //         stacked: true,
+            //         ticks: {
+            //             autoSkip: false,
+            //             maxRotation: 45,
+            //             minRotation: 45
+            //         }
+            //     },
+            //     y: {
+            //         stacked: true,
+            //         beginAtZero: true,
+            //         title: {
+            //             display: true,
+            //             text: t.y_title
+            //         }
+            //     },
+            //     y1: {
+            //         beginAtZero: true,
+            //         position: 'right',
+            //         max: 100,
+            //         title: {
+            //             display: true,
+            //             text: t.y1_title
+            //         },
+            //         grid: {
+            //             drawOnChartArea: false
+            //         }
+            //     }
+            // }
+            scales: {
+                        x: {
+                            position: 'bottom',           // Ini untuk bar
+                            stacked: true,
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: t.y_title           // Jumlah Anak
+                            },
+                            ticks: {
+                                callback: val => val.toLocaleString('id-ID')
+                            }
+                        },
+                        x1: {
+                            position: 'top',              // ✅ Ini untuk persen (scatter)
+                            beginAtZero: true,
+                            // max: 100,
+                            suggestedMax: 100,
+                            grid: {
+                                drawOnChartArea: false    // Biar tidak mengganggu bar chart
+                            },
+                            title: {
+                                display: true,
+                                text: t.y1_title          // % dari ZD
+                            },
+                            ticks: {
+                                callback: val => val + '%'
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            ticks: {
+                                mirror: false,
+                                padding: 10
+                            }
+                        }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+</script>
+
 <!-- Buttons HTML5 untuk export CSV & Excel -->
 <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
 
@@ -1555,6 +1798,22 @@ $(document).ready(function () {
     // Update tiap kali tabel di draw ulang (filter, paging, dll)
     table.on('draw', function() {
         updateRowCount();
+    });
+
+    var table2 = $('#table3').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ]
     });
 
 });

@@ -530,6 +530,32 @@ class Home extends CI_Controller {
         $this->data['show_chart_filter'] = ($selected_province !== 'all' && $selected_province !== 'targeted');
         $this->data['districts_array'] =  $this->Immunization_model->get_cities_by_province_array($selected_province);
 
+        // Load data tergantung kondisi
+        if ($selected_province === 'all') {
+            $chart_data = $this->Immunization_model->get_kejar_group_by_province($selected_year);
+        } elseif ($selected_province === 'targeted') {
+            $chart_data = $this->Immunization_model->get_kejar_group_by_targeted_provinces($selected_year);
+        } elseif ($selected_district === 'all') {
+            $chart_data = $this->Immunization_model->get_kejar_group_by_city($selected_province, $selected_year);
+        } else {
+            $chart_data = $this->Immunization_model->get_kejar_group_by_puskesmas($selected_province, $selected_district, $selected_year);
+        }
+
+        $sort_by = $this->input->post('sort_by') ?? $this->input->get('sort_by') ?? 'kejar_asik';
+        if (in_array($sort_by, ['kejar_asik', 'kejar_manual', 'kejar_kombinasi'])) {
+            usort($chart_data, function ($a, $b) use ($sort_by) {
+                return $b[$sort_by] <=> $a[$sort_by]; // Sort descending
+            });
+        }
+        $this->data['sort_by'] = $sort_by;
+
+        $this->data['chart_data'] = $chart_data;
+
+        $this->data['max_month_asik'] = $this->Immunization_model->get_max_kejar_asik_month($selected_year);
+        $this->data['max_month_manual'] = $this->Immunization_model->get_max_kejar_manual_month($selected_year);
+        $this->data['max_month_kombinasi'] = $this->Immunization_model->get_max_kejar_kombinasi_month($selected_year);
+
+
         $this->data['title'] = 'Long-term Health Outcomes';
 
         
@@ -549,6 +575,12 @@ class Home extends CI_Controller {
             $this->data['max_month_name'] = 'Invalid Month'; 
         }
 
+        // Ambil nama bulan berdasarkan ID
+        $months = $this->data['translations']['months'] ?? [];
+
+        $this->data['max_month_name_asik'] = $months[$this->data['max_month_asik']] ?? 'Invalid Month';
+        $this->data['max_month_name_manual'] = $months[$this->data['max_month_manual']] ?? 'Invalid Month';
+        $this->data['max_month_name_kombinasi'] = $months[$this->data['max_month_kombinasi']] ?? 'Invalid Month';
 
         load_template('restored-zd-children', $this->data);
     }
@@ -586,12 +618,28 @@ class Home extends CI_Controller {
                 // 'text16' => 'MR-1 Coverage Year 2025',
                 'text17' => 'District with the highest number of not immunized DPT-1 children Year ',
                 'text17_2' => 'Puskesmas with the highest number of not immunized DPT-1 children Year ',
+                'sort_kejar_asik' => 'Sort by Highest ASIK Chased',
+                'sort_kejar_manual' => 'Sort by Highest Manual Chased',
+                'sort_kejar_kombinasi' => 'Sort by Highest Combined Chased',
                 'tabelcoloumn1' => 'District',
                 'tabelcoloumn1_2' => 'Puskesmas',
                 'tabelcoloumn6' => 'District Target',
                 'tabelcoloumn6_2' => 'Puskesmas Targets ',
                 'tabelcoloumn2' => 'Total Coverage DPT1',
                 'tabelcoloumn3' => '% of Total Target',
+
+                //Kejar Table
+                'tabel2coloumn1' => 'Province',
+                'tabel2coloumn1_b' => 'District',
+                'tabel2coloumn1_c' => 'Puskesmas',
+                'tabel2coloumn2' => 'Number of Zero Dose Children Chased (ASIK Data)',
+                'tabel2coloumn3' => 'Number of Zero Dose Children Chased (Manual Data)',
+                'tabel2coloumn4' => 'Number of Zero Dose Children Chased (Combined Data)',
+                'tabel2coloumn5' => 'Zero Dose Children in 2024',
+                'tabel2coloumn6' => '% Chased (ASIK)',
+                'tabel2coloumn7' => '% Chased (Manual)',
+                'tabel2coloumn8' => '% Chased (Combined)',
+
                 // 'tabelcoloumn4' => 'Number of Children Not Immunized with DPT-1',
                 'tabelcoloumn4' => 'Zero Dose Children Candidates',
                 'tabelcoloumn5' => '% of Children Not Immunized with DPT-1',
@@ -602,6 +650,8 @@ class Home extends CI_Controller {
                 'text22' => 'Data source:  Routine Administrative Report, Directorate of Immunization, MOH',
                 'text23' => 'Data source:  Routine Administrative Report, Directorate of Immunization, MOH, last updated on ',
                 'text24' => 'DPT-1 Target and Coverage Trend per Quarter',
+                'text25' => 'Zero Dose Children in 2024 who Get Vaccinated',
+                'text26' => 'Focus on specific data by clicking the legend items to hide or show them',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Inggris ---
                 'months' => [
                     1 => 'January',
@@ -658,6 +708,18 @@ class Home extends CI_Controller {
                 // 'tabelcoloumn4' => 'Jumlah Anak Belum di Imunisasi DPT-1',
                 'tabelcoloumn4' => 'Calon Anak Zero Dose',
                 'tabelcoloumn5' => '% Anak Belum diimunisasi DPT-1',
+
+                'tabel2coloumn1' => 'Provinsi',
+                'tabel2coloumn1_b' => 'Kab/Kota',
+                'tabel2coloumn1_c' => 'Puskesmas',
+                'tabel2coloumn2' => 'Imunisasi Kejar DPT-1 (ASIK)',
+                'tabel2coloumn3' => 'Imunisasi Kejar DPT-1 (Manual)',
+                'tabel2coloumn4' => 'Imunisasi Kejar DPT-1 (Kombinasi)',
+                'tabel2coloumn5' => 'Jumlah Anak Zero Dose Tahun 2024',
+                'tabel2coloumn6' => '% Imunisasi Kejar (ASIK)',
+                'tabel2coloumn7' => '% Imunisasi Kejar (Manual)',
+                'tabel2coloumn8' => '% Imunisasi Kejar (Kombinasi)',
+
                 'text18' => 'Pemetaan Anak Zero Dose',
                 'text19' => 'Tren Penjangkauan Anak Zero-Dose',
                 'text20' => 'Penjangkauan Anak Zero Dose Berdasarkan Jenis Wilayah',
@@ -666,6 +728,11 @@ class Home extends CI_Controller {
                 'text23' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes terakhir diperbaharui pada ',
                 
                 'text24' => 'Tren Sasaran dan Cakupan DPT-1 per Triwulan',
+                'text25' => 'Anak Zero Dose yang berhasil dikejar',
+                'text26' => 'Ingin fokus pada data tertentu? Klik legenda di bawah untuk menyembunyikan data yang lain',
+                'sort_kejar_asik' => 'Urutkan Kejar ASIK Tertinggi',
+                'sort_kejar_manual' => 'Urutkan Kejar Manual Tertinggi',
+                'sort_kejar_kombinasi' => 'Urutkan Kejar Kombinasi Tertinggi',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Indonesia ---
                 'months' => [
                     1 => 'Januari',
