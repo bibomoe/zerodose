@@ -1139,8 +1139,7 @@
             options: {
                 responsive: true,
                 plugins: {
-                    // legend: { display: true, position: 'top' }
-                    legend: { display: false }
+                    legend: { display: true, position: 'top' }
                 },
                 scales: {
                     x: { title: { display: true, text: scaleXlabel } },
@@ -1343,8 +1342,7 @@
         options: {
             responsive: true,
             plugins: {
-                // legend: { display: true, position: 'top' }
-                legend: { display: false }
+                legend: { display: true, position: 'top' }
             },
             scales: {
                 x: { title: { display: true, text: scaleXlabel3 } },
