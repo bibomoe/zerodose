@@ -1471,14 +1471,7 @@ $(document).ready(function () {
     const coverageDataToShow = coverageData.slice(0, nowMonth);
 
     const ctx = document.getElementById('dptChart').getContext('2d');
-
-    // ✅ Destroy chart jika sudah ada (hindari error Canvas is already in use)
-    if (window.dptChart) {
-        window.dptChart.destroy();
-    }
-
-    // ✅ Buat chart baru
-    window.dptChart = new Chart(ctx, {
+    new Chart(ctx, {
         type: 'line',
         data: {
             labels: labelsToShow,
