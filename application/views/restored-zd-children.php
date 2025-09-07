@@ -1273,7 +1273,7 @@ $(document).ready(function () {
 </script>
 
 <!-- Grafik Line DPT Coverage per quarter -->
-<script>
+<!-- <script>
 $(document).ready(function () {
     const quarters = <?= json_encode($quarters); ?>;
     const targetData = <?= json_encode($target_data); ?>;
@@ -1431,7 +1431,171 @@ $(document).ready(function () {
     // **Tambahkan tombol download ke DOM**
     addCoverageDownloadButtons();
 });
+</script> -->
+
+<!-- Grafik Line DPT Coverage per month -->
+<script>
+$(document).ready(function () {
+    const months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    const targetData = <?= json_encode($target_data); ?>;   // Akumulatif target per bulan
+    const coverageData = <?= json_encode($coverage_data); ?>; // Cakupan real per bulan
+
+    // Tentukan bulan terakhir (opsional, jika hanya ingin tampil sampai bulan tertentu)
+    let nowMonth = <?= $max_month ?? 12; ?>;
+
+    // Object for chart translations
+    const translationsCoverageLineChart = {
+        en: {
+            title: 'DPT-1 Target and Coverage per Month',
+            scaleX: 'Months',
+            scaleY: 'Target / Coverage'
+        },
+        id: {
+            title: 'Sasaran dan Cakupan DPT-1 per Bulan',
+            scaleX: 'Bulan',
+            scaleY: 'Sasaran / Cakupan'
+        }
+    };
+
+    let titleCoverageLineChart = translationsCoverageLineChart['en'].title;
+    let scaleXlabel3 = translationsCoverageLineChart['en'].scaleX;
+    let scaleYlabel3 = translationsCoverageLineChart['en'].scaleY;
+
+    // Slice data sampai bulan terakhir (misalnya: Sep = bulan ke-9 → index 8)
+    const labelsToShow = months.slice(0, nowMonth);
+    const targetDataToShow = targetData.slice(0, nowMonth);
+    const coverageDataToShow = coverageData.slice(0, nowMonth);
+
+    const ctx = document.getElementById('dptChart').getContext('2d');
+
+    // ✅ Destroy chart jika sudah ada (hindari error Canvas is already in use)
+    if (window.dptChart) {
+        window.dptChart.destroy();
+    }
+
+    // ✅ Buat chart baru
+    window.dptChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labelsToShow,
+            datasets: [{
+                label: 'Target DPT-1',
+                data: targetDataToShow,
+                backgroundColor: 'rgba(0, 86, 179, 0.2)',
+                borderColor: 'rgba(0, 86, 179, 1)',
+                borderWidth: 2,
+                tension: 0.4
+            }, {
+                label: 'DPT-1 Coverage',
+                data: coverageDataToShow,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                datalabels: {
+                    display: false
+                },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        boxWidth: 12,
+                        padding: 15,
+                        font: {
+                            size: 10
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: scaleXlabel3
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: scaleYlabel3
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Fungsi untuk download tombol CSV & Excel tetap sama
+    function addCoverageDownloadButtons() {
+        const container = ctx.canvas.parentNode;
+
+        const buttonWrapper = document.createElement('div');
+        buttonWrapper.className = 'd-flex mb-3 gap-2';
+
+        const csvButton = document.createElement('button');
+        csvButton.textContent = 'Download CSV';
+        csvButton.className = 'btn btn-primary btn-sm';
+        csvButton.addEventListener('click', () => downloadCoverageCSV());
+
+        const excelButton = document.createElement('button');
+        excelButton.textContent = 'Download Excel';
+        excelButton.className = 'btn btn-success btn-sm';
+        excelButton.addEventListener('click', () => downloadCoverageExcel());
+
+        buttonWrapper.appendChild(csvButton);
+        buttonWrapper.appendChild(excelButton);
+        container.insertBefore(buttonWrapper, ctx.canvas);
+    }
+
+    function downloadCoverageCSV() {
+        const labels = months.slice(0, nowMonth);
+
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += `Month,Target DPT-1,DPT-1 Coverage\n`;
+
+        labels.forEach((label, index) => {
+            let target = targetData[index] ?? "";
+            let coverage = coverageData[index] ?? "";
+            csvContent += `${label},${target},${coverage}\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `dpt_coverage_data.csv`);
+        document.body.appendChild(link);
+        link.click();
+    }
+
+    function downloadCoverageExcel() {
+        const labels = months.slice(0, nowMonth);
+
+        const workbook = XLSX.utils.book_new();
+        const worksheetData = [["Month", "Target DPT-1", "DPT-1 Coverage"],
+            ...labels.map((label, index) => [
+                label,
+                targetData[index] ?? "",
+                coverageData[index] ?? ""
+            ])
+        ];
+        const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+        XLSX.utils.book_append_sheet(workbook, worksheet, "DPT-1 Coverage");
+        XLSX.writeFile(workbook, `dpt_coverage_data.xlsx`);
+    }
+
+    addCoverageDownloadButtons();
+});
 </script>
+
 
 <!-- Grafik Bar -->
 <script>
