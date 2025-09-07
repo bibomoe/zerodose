@@ -1272,70 +1272,79 @@ $(document).ready(function () {
     });
 </script> -->
 <script>
-$(document).ready(function () {
-    const monthLabels = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
+    let dptChart; // ⬅️ Variabel chart global
 
-    const targetData = <?= json_encode($target_data); ?>;
-    const coverageData = <?= json_encode($coverage_data); ?>;
+    $(document).ready(function () {
+        const monthLabels = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
 
-    const ctx = document.getElementById('dptChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: monthLabels,
-            datasets: [
-                {
-                    label: 'Target DPT-1 (Kumulatif)',
-                    data: targetData,
-                    backgroundColor: 'rgba(0, 86, 179, 0.2)',
-                    borderColor: 'rgba(0, 86, 179, 1)',
-                    borderWidth: 2,
-                    tension: 0.4
-                },
-                {
-                    label: 'Cakupan DPT-1',
-                    data: coverageData,
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 2,
-                    tension: 0.4
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                },
-                datalabels: {
-                    display: false
-                }
+        const targetData = <?= json_encode($target_data); ?>;
+        const coverageData = <?= json_encode($coverage_data); ?>;
+
+        const ctx = document.getElementById('dptChart').getContext('2d');
+
+        // ✅ Destroy chart jika sudah ada
+        if (dptChart) {
+            dptChart.destroy();
+        }
+
+        // ✅ Buat chart baru
+        dptChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: monthLabels,
+                datasets: [
+                    {
+                        label: 'Target DPT-1 (Kumulatif)',
+                        data: targetData,
+                        backgroundColor: 'rgba(0, 86, 179, 0.2)',
+                        borderColor: 'rgba(0, 86, 179, 1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Cakupan DPT-1',
+                        data: coverageData,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    }
+                ]
             },
-            scales: {
-                x: {
-                    title: {
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
                         display: true,
-                        text: 'Bulan'
+                        position: 'top'
+                    },
+                    datalabels: {
+                        display: false
                     }
                 },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Jumlah Anak'
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Bulan'
+                        }
                     },
-                    beginAtZero: true
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Jumlah Anak'
+                        },
+                        beginAtZero: true
+                    }
                 }
             }
-        }
+        });
     });
-});
-
 </script>
+
 
 
 <!-- Grafik Line DPT Coverage per quarter -->
