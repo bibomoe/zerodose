@@ -1112,7 +1112,7 @@
                 plugins: {
                     // legend: { display: true, position: 'top' }
                     datalabels: {
-                        display: false
+                        display: true
                     },
                     legend: {
                         position: 'top',
