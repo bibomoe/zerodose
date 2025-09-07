@@ -1010,7 +1010,7 @@ $(document).ready(function () {
 
 
 <!-- Grafik Line ZD Trend-->
-<!-- <script>
+<script>
     $(document).ready(function () {
             // console.log("Zero Dose Data:", <?= json_encode($zero_dose_cases); ?>);
 
@@ -1270,82 +1270,7 @@ $(document).ready(function () {
                 // **Tambahkan tombol download ke DOM**
                 addZdDownloadButtons();
     });
-</script> -->
-<script>
-    let dptChart; // ⬅️ Variabel chart global
-
-    $(document).ready(function () {
-        const monthLabels = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
-
-        const targetData = <?= json_encode($target_data); ?>;
-        const coverageData = <?= json_encode($coverage_data); ?>;
-
-        const ctx = document.getElementById('dptChart').getContext('2d');
-
-        // ✅ Destroy chart jika sudah ada
-        if (dptChart) {
-            dptChart.destroy();
-        }
-
-        // ✅ Buat chart baru
-        dptChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: monthLabels,
-                datasets: [
-                    {
-                        label: 'Target DPT-1 (Kumulatif)',
-                        data: targetData,
-                        backgroundColor: 'rgba(0, 86, 179, 0.2)',
-                        borderColor: 'rgba(0, 86, 179, 1)',
-                        borderWidth: 2,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'Cakupan DPT-1',
-                        data: coverageData,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 2,
-                        tension: 0.4
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    },
-                    datalabels: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Bulan'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Jumlah Anak'
-                        },
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    });
 </script>
-
-
 
 <!-- Grafik Line DPT Coverage per quarter -->
 <script>
