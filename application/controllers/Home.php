@@ -680,7 +680,7 @@ class Home extends CI_Controller {
                 'text21' => 'Data source:  Routine Administrative Report, Directorate of Immunization, MOH',
                 'text22' => 'Data source:  Routine Administrative Report, Directorate of Immunization, MOH',
                 'text23' => 'Data source:  Routine Administrative Report, Directorate of Immunization, MOH, last updated on ',
-                'text24' => 'DPT-1 Target and Coverage Trend per Quarter',
+                'text24' => 'DPT-1 Target and Coverage Trend per Month',
                 'text25' => 'Zero Dose Children in 2024 who Get Vaccinated',
                 'text26' => 'Focus on specific data by clicking the legend items to hide or show them',
                 // --- Tambahkan terjemahan bulan di sini untuk bahasa Inggris ---
@@ -758,7 +758,7 @@ class Home extends CI_Controller {
                 'text22' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes',
                 'text23' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes terakhir diperbaharui pada ',
                 
-                'text24' => 'Tren Sasaran dan Cakupan DPT-1 per Triwulan',
+                'text24' => 'Tren Sasaran dan Cakupan DPT-1 per Bulan',
                 'text25' => 'Anak Zero Dose yang berhasil dikejar',
                 'text26' => 'Ingin fokus pada data tertentu? Klik legenda di bawah untuk menyembunyikan data yang lain',
                 'sort_kejar_asik' => 'Urutkan Kejar ASIK Tertinggi',
