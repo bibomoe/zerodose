@@ -1491,9 +1491,23 @@ $(document).ready(function () {
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: {
+                        // legend: {
+                        //     display: false
+                        // }
+                        datalabels: {
                             display: false
-                        }
+                        },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                boxWidth: 12,
+                                padding: 15,
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
                     },
                     scales: {
                         x: {
