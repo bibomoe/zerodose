@@ -481,7 +481,7 @@ class Home extends CI_Controller {
         // $this->data['zero_dose_data'] = array_column($zero_dose_cases, 'zd_cases');
 
         // Initialize arrays to store data for the target and DPT-1 coverage per quarter
-        // $quarters = [1, 2, 3, 4];
+        $quarters = [1, 2, 3, 4];
         
         $months = range(1, 12); // Januari - Desember
         $target_data = [];
