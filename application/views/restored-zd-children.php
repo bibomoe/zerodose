@@ -1466,9 +1466,21 @@ $(document).ready(function () {
     let scaleYlabel3 = translationsCoverageLineChart['en'].scaleY;
 
     // Slice data sampai bulan terakhir (misalnya: Sep = bulan ke-9 → index 8)
-    const labelsToShow = months.slice(0, nowMonth);
-    const targetDataToShow = targetData.slice(0, nowMonth);
-    const coverageDataToShow = coverageData.slice(0, nowMonth);
+    // const labelsToShow = months.slice(0, nowMonth);
+    // const targetDataToShow = targetData.slice(0, nowMonth);
+    // const coverageDataToShow = coverageData.slice(0, nowMonth);
+
+    // Tetap gunakan array bulan penuh (12 bulan)
+    const labelsToShow = months; // Selalu tampil dari Jan - Dec
+
+    // Target ditampilkan penuh (akumulatif 1–12 bulan)
+    const targetDataToShow = targetData;
+
+    // Coverage hanya sampai bulan ke-$max_month (akumulatif juga)
+    const coverageDataToShow = coverageData.map((val, idx) => {
+        return (idx < nowMonth) ? val : null;
+    });
+
 
     const ctx = document.getElementById('dptChart').getContext('2d');
     new Chart(ctx, {
