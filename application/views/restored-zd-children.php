@@ -1092,7 +1092,8 @@ $(document).ready(function () {
         }
 
         // Inisialisasi bahasa berdasarkan localStorage
-        let savedLang = localStorage.getItem("selectedLanguage");
+        // let savedLang = localStorage.getItem("selectedLanguage");
+        const savedLang = localStorage.getItem("selectedLanguage") || 'id'; // Default fallback
         setLanguageLineChart(savedLang);
 
         let zdChart; // Mendeklarasikan variable untuk chart
@@ -1458,6 +1459,7 @@ $(document).ready(function () {
 
             // Inisialisasi bahasa berdasarkan localStorage
             // let savedLang = localStorage.getItem("selectedLanguage");
+            const savedLang = localStorage.getItem("selectedLanguage") || 'id'; // Default fallback
             setLanguageBarChart(savedLang);
 
             // Chart.js setup for locationChart
