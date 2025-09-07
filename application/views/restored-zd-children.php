@@ -775,7 +775,6 @@
         </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 
 <!-- Grafik Line ZD Trend-->
 <script>
@@ -1484,6 +1483,8 @@
     });
 
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 
 <!-- Grafik Bar -->
 <script>
