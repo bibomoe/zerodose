@@ -1010,267 +1010,333 @@ $(document).ready(function () {
 
 
 <!-- Grafik Line ZD Trend-->
+<!-- <script>
+    $(document).ready(function () {
+            // console.log("Zero Dose Data:", <?= json_encode($zero_dose_cases); ?>);
+
+            const zeroDoseData = <?= json_encode($zero_dose_cases); ?>;
+
+            
+            let isProvinceLevelCheck = ["all", "targeted"].includes("<?= $selected_province ?>");
+            let isDistrictLevelCheck = ["all", "targeted"].includes("<?= $selected_district ?>");
+
+            // Mapping data untuk Chart.js
+            const months = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            let zdCases2025 = Array(12).fill(null);
+            let zdCases2026 = Array(12).fill(null);
+
+            zeroDoseData.forEach(item => {
+                if (item.year === 2025) {
+                    zdCases2025[item.month - 1] = item.zd_cases;
+                } else if (item.year === 2026) {
+                    zdCases2026[item.month - 1] = item.zd_cases;
+                }
+            });
+
+            year = <?= $selected_year ?>;
+            let scaleXlabel ='';
+            let scaleYlabel ='';
+            let titleLineChart ='';
+
+            // Object untuk menyimpan terjemahan
+            const translationsLineChart = {
+                    en: {
+                        title: `Number of ZD Children from 2024 Targeted for Outreach in Year ${year}`,
+                        scaleX: 'Months',
+                        scaleY: 'ZD Children'
+                        
+                    },
+                    id: {
+                        title: `Jumlah Anak ZD 2024 yang dikejar di Tahun ${year}`,
+                        scaleX: 'Bulan',
+                        scaleY: 'Jumlah Anak ZD'
+                    }
+            };
+
+            function setLanguageLineChart(lang) {
+                titleLineChart = translationsLineChart[lang].title;
+                scaleXlabel = translationsLineChart[lang].scaleX;
+                scaleYlabel = translationsLineChart[lang].scaleY;
+            }
+
+            // Function to find first non-null value in an array, or 0 if none found
+            function firstNonNullValue(arr) {
+                for (let val of arr) {
+                    if (val !== null && val !== undefined) return val;
+                }
+                return 0;
+            }
+
+            // Get first non-null zd case value for the selected year
+            let firstValue = 0;
+            if (year === 2025) {
+                firstValue = firstNonNullValue(zdCases2025);
+            } else if (year === 2026) {
+                firstValue = firstNonNullValue(zdCases2026);
+            }
+
+            // Tentukan batas atas dan bawah Y axis berdasarkan checkProvince, checkDistrict, dan firstValue
+            let yMin = 0;
+            let yMax = 1000000; // default Per Indonesia
+
+            if (firstValue === 0) {
+                // If no data, set a default max to avoid zero scale
+                yMax = 1000;
+            } else {
+                // Set yMax as 10% above the first value
+                yMax = firstValue * 1.1;
+            }
+
+            // Inisialisasi bahasa berdasarkan localStorage
+            // let savedLang = localStorage.getItem("selectedLanguage");
+            const savedLang = localStorage.getItem("selectedLanguage") || 'en'; // Default fallback
+            setLanguageLineChart(savedLang);
+
+            let zdChart; // Mendeklarasikan variable untuk chart
+            const zdCtx = document.getElementById('zdChart').getContext('2d');
+            zdChart = new Chart(zdCtx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: titleLineChart,
+                        data: year === 2025 ? zdCases2025 : zdCases2026,
+                        backgroundColor: 'rgba(0, 86, 179, 0.2)',
+                        borderColor: 'rgba(0, 86, 179, 1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        // legend: { display: true, position: 'top' }
+                        datalabels: {
+                            display: false
+                        },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                boxWidth: 12,
+                                padding: 15,
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
+                    },
+                    scales: {
+                        x: { title: { display: true, text: scaleXlabel } },
+                        y: {
+                                title: { display: true, text: scaleYlabel },
+                                min: yMin,
+                                max: yMax
+                            }
+                    }
+                }
+            });
+
+
+            // Fungsi untuk menangani perubahan filter tahun dan distrik
+            $(document).ready(function () {
+                $("#applyFilter").click(function () {
+                    let selectedYear = $("#yearFilter").val(); // Ambil tahun yang dipilih
+                    let selectedDistrict = $("#districtFilter").val(); // Ambil district yang dipilih
+                    let selectedProvince = $("input[name='province']").val(); // Ambil province (hidden input)
+
+                    // Lakukan ajax untuk mengambil data berdasarkan filter yang dipilih
+                    $.ajax({
+                        url: "<?= base_url('home/get_zero_dose_trend_ajax'); ?>", 
+                        type: "GET",
+                        data: {
+                            province: selectedProvince,
+                            district: selectedDistrict
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                                        // console.log("Filtered Data:", response);
+
+                                        // Filter data berdasarkan tahun yang dipilih
+                                        let filteredData = response.filter(item => item.year == selectedYear);
+
+                                        // Pastikan dataset lama dihapus sebelum menambahkan yang baru
+                                        zdChart.data.labels = filteredData.map(item => months[item.month - 1]);
+                                        zdChart.data.datasets = [{
+                                            label: `ZD Cases ${selectedYear}`,
+                                            data: filteredData.map(item => item.zd_cases),
+                                            backgroundColor: selectedYear == 2025 ? 'rgba(0, 86, 179, 0.2)' : 'rgba(255, 99, 132, 0.2)',
+                                            borderColor: selectedYear == 2025 ? 'rgba(0, 86, 179, 1)' : 'rgba(255, 99, 132, 1)',
+                                            borderWidth: 2,
+                                            tension: 0.4
+                                        }];
+
+                                        zdChart.update(); // Update grafik
+                                    },
+                        error: function (xhr, status, error) {
+                            console.error("Error fetching data:", error);
+                        }
+                    });
+
+                    $("#chartFilter").modal("hide"); // Tutup modal filter
+                });
+            });
+
+
+                // **Fungsi untuk menambahkan tombol download secara dinamis**
+                function addZdDownloadButtons() {
+                    const container = zdCtx.canvas.parentNode;
+
+                    // Buat wrapper untuk tombol
+                    const buttonWrapper = document.createElement('div');
+                    buttonWrapper.className = 'd-flex mb-3 gap-2'; // Bootstrap classes
+
+                    // Tombol Download CSV
+                    const csvButton = document.createElement('button');
+                    csvButton.textContent = 'Download CSV';
+                    csvButton.className = 'btn btn-primary btn-sm'; // Ukuran kecil
+                    csvButton.addEventListener('click', () => downloadZdCSV());
+
+                    // Tombol Download Excel
+                    const excelButton = document.createElement('button');
+                    excelButton.textContent = 'Download Excel';
+                    excelButton.className = 'btn btn-success btn-sm'; // Ukuran kecil
+                    excelButton.addEventListener('click', () => downloadZdExcel());
+
+                    // Tambahkan tombol ke dalam wrapper
+                    buttonWrapper.appendChild(csvButton);
+                    buttonWrapper.appendChild(excelButton);
+
+                    // Sisipkan wrapper di atas grafik
+                    container.insertBefore(buttonWrapper, zdCtx.canvas);
+                }
+
+                // **Fungsi untuk download CSV**
+                function downloadZdCSV() {
+                    const labels = [
+                        "January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December"
+                    ];
+                    
+                    // Ambil dataset yang sedang digunakan di chart
+                    let dataset = zdChart.data.datasets[0]; // Ambil dataset aktif
+                    let year = dataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label dataset
+
+                    let csvContent = "data:text/csv;charset=utf-8,";
+                    csvContent += `Month,ZD Cases ${year}\n`; // Header CSV
+
+                    labels.forEach((label, index) => {
+                        let value = dataset.data[index] ?? ""; // Ambil data bulan tertentu, jika tidak ada kosongkan
+                        csvContent += `${label},${value}\n`;
+                    });
+
+                    const encodedUri = encodeURI(csvContent);
+                    const link = document.createElement("a");
+                    link.setAttribute("href", encodedUri);
+                    link.setAttribute("download", `zero_dose_cases_${year}.csv`);
+                    document.body.appendChild(link);
+                    link.click();
+                }
+
+
+                // **Fungsi untuk download Excel**
+                function downloadZdExcel() {
+                    const labels = [
+                        "January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December"
+                    ];
+
+                    // Ambil dataset yang sedang digunakan
+                    let dataset = zdChart.data.datasets[0];
+                    let year = dataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label dataset
+
+                    // Buat workbook Excel
+                    const workbook = XLSX.utils.book_new();
+                    const worksheetData = [["Month", `ZD Cases ${year}`], 
+                        ...labels.map((label, index) => [label, dataset.data[index] ?? ""])
+                    ];
+                    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+                    XLSX.utils.book_append_sheet(workbook, worksheet, "Zero Dose Cases");
+
+                    // Generate file Excel dan unduh
+                    XLSX.writeFile(workbook, `zero_dose_cases_${year}.xlsx`);
+                }
+
+
+                // **Tambahkan tombol download ke DOM**
+                addZdDownloadButtons();
+    });
+</script> -->
 <script>
 $(document).ready(function () {
-        // console.log("Zero Dose Data:", <?= json_encode($zero_dose_cases); ?>);
+    const monthLabels = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
 
-        const zeroDoseData = <?= json_encode($zero_dose_cases); ?>;
+    const targetData = <?= json_encode($target_data); ?>;
+    const coverageData = <?= json_encode($coverage_data); ?>;
 
-        
-        let isProvinceLevelCheck = ["all", "targeted"].includes("<?= $selected_province ?>");
-        let isDistrictLevelCheck = ["all", "targeted"].includes("<?= $selected_district ?>");
-
-        // Mapping data untuk Chart.js
-        const months = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
-
-        let zdCases2025 = Array(12).fill(null);
-        let zdCases2026 = Array(12).fill(null);
-
-        zeroDoseData.forEach(item => {
-            if (item.year === 2025) {
-                zdCases2025[item.month - 1] = item.zd_cases;
-            } else if (item.year === 2026) {
-                zdCases2026[item.month - 1] = item.zd_cases;
-            }
-        });
-
-        year = <?= $selected_year ?>;
-        let scaleXlabel ='';
-        let scaleYlabel ='';
-        let titleLineChart ='';
-
-        // Object untuk menyimpan terjemahan
-        const translationsLineChart = {
-                en: {
-                    title: `Number of ZD Children from 2024 Targeted for Outreach in Year ${year}`,
-                    scaleX: 'Months',
-                    scaleY: 'ZD Children'
-                    
-                },
-                id: {
-                    title: `Jumlah Anak ZD 2024 yang dikejar di Tahun ${year}`,
-                    scaleX: 'Bulan',
-                    scaleY: 'Jumlah Anak ZD'
-                }
-        };
-
-        function setLanguageLineChart(lang) {
-            titleLineChart = translationsLineChart[lang].title;
-            scaleXlabel = translationsLineChart[lang].scaleX;
-            scaleYlabel = translationsLineChart[lang].scaleY;
-        }
-
-        // Function to find first non-null value in an array, or 0 if none found
-        function firstNonNullValue(arr) {
-            for (let val of arr) {
-                if (val !== null && val !== undefined) return val;
-            }
-            return 0;
-        }
-
-        // Get first non-null zd case value for the selected year
-        let firstValue = 0;
-        if (year === 2025) {
-            firstValue = firstNonNullValue(zdCases2025);
-        } else if (year === 2026) {
-            firstValue = firstNonNullValue(zdCases2026);
-        }
-
-        // Tentukan batas atas dan bawah Y axis berdasarkan checkProvince, checkDistrict, dan firstValue
-        let yMin = 0;
-        let yMax = 1000000; // default Per Indonesia
-
-        if (firstValue === 0) {
-            // If no data, set a default max to avoid zero scale
-            yMax = 1000;
-        } else {
-            // Set yMax as 10% above the first value
-            yMax = firstValue * 1.1;
-        }
-
-        // Inisialisasi bahasa berdasarkan localStorage
-        // let savedLang = localStorage.getItem("selectedLanguage");
-        const savedLang = localStorage.getItem("selectedLanguage") || 'id'; // Default fallback
-        setLanguageLineChart(savedLang);
-
-        let zdChart; // Mendeklarasikan variable untuk chart
-        const zdCtx = document.getElementById('zdChart').getContext('2d');
-        zdChart = new Chart(zdCtx, {
-            type: 'line',
-            data: {
-                labels: months,
-                datasets: [{
-                    label: titleLineChart,
-                    data: year === 2025 ? zdCases2025 : zdCases2026,
+    const ctx = document.getElementById('dptChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: monthLabels,
+            datasets: [
+                {
+                    label: 'Target DPT-1 (Kumulatif)',
+                    data: targetData,
                     backgroundColor: 'rgba(0, 86, 179, 0.2)',
                     borderColor: 'rgba(0, 86, 179, 1)',
                     borderWidth: 2,
                     tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    // legend: { display: true, position: 'top' }
-                    datalabels: {
-                        display: false
-                    },
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            usePointStyle: true,
-                            boxWidth: 12,
-                            padding: 15,
-                            font: {
-                                size: 10
-                            }
-                        }
-                    },
                 },
-                scales: {
-                    x: { title: { display: true, text: scaleXlabel } },
-                    y: {
-                            title: { display: true, text: scaleYlabel },
-                            min: yMin,
-                            max: yMax
-                        }
+                {
+                    label: 'Cakupan DPT-1',
+                    data: coverageData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                datalabels: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Bulan'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Jumlah Anak'
+                    },
+                    beginAtZero: true
                 }
             }
-        });
-
-
-        // Fungsi untuk menangani perubahan filter tahun dan distrik
-        $(document).ready(function () {
-            $("#applyFilter").click(function () {
-                let selectedYear = $("#yearFilter").val(); // Ambil tahun yang dipilih
-                let selectedDistrict = $("#districtFilter").val(); // Ambil district yang dipilih
-                let selectedProvince = $("input[name='province']").val(); // Ambil province (hidden input)
-
-                // Lakukan ajax untuk mengambil data berdasarkan filter yang dipilih
-                $.ajax({
-                    url: "<?= base_url('home/get_zero_dose_trend_ajax'); ?>", 
-                    type: "GET",
-                    data: {
-                        province: selectedProvince,
-                        district: selectedDistrict
-                    },
-                    dataType: "json",
-                    success: function (response) {
-                                    // console.log("Filtered Data:", response);
-
-                                    // Filter data berdasarkan tahun yang dipilih
-                                    let filteredData = response.filter(item => item.year == selectedYear);
-
-                                    // Pastikan dataset lama dihapus sebelum menambahkan yang baru
-                                    zdChart.data.labels = filteredData.map(item => months[item.month - 1]);
-                                    zdChart.data.datasets = [{
-                                        label: `ZD Cases ${selectedYear}`,
-                                        data: filteredData.map(item => item.zd_cases),
-                                        backgroundColor: selectedYear == 2025 ? 'rgba(0, 86, 179, 0.2)' : 'rgba(255, 99, 132, 0.2)',
-                                        borderColor: selectedYear == 2025 ? 'rgba(0, 86, 179, 1)' : 'rgba(255, 99, 132, 1)',
-                                        borderWidth: 2,
-                                        tension: 0.4
-                                    }];
-
-                                    zdChart.update(); // Update grafik
-                                },
-                    error: function (xhr, status, error) {
-                        console.error("Error fetching data:", error);
-                    }
-                });
-
-                $("#chartFilter").modal("hide"); // Tutup modal filter
-            });
-        });
-
-
-            // **Fungsi untuk menambahkan tombol download secara dinamis**
-            function addZdDownloadButtons() {
-                const container = zdCtx.canvas.parentNode;
-
-                // Buat wrapper untuk tombol
-                const buttonWrapper = document.createElement('div');
-                buttonWrapper.className = 'd-flex mb-3 gap-2'; // Bootstrap classes
-
-                // Tombol Download CSV
-                const csvButton = document.createElement('button');
-                csvButton.textContent = 'Download CSV';
-                csvButton.className = 'btn btn-primary btn-sm'; // Ukuran kecil
-                csvButton.addEventListener('click', () => downloadZdCSV());
-
-                // Tombol Download Excel
-                const excelButton = document.createElement('button');
-                excelButton.textContent = 'Download Excel';
-                excelButton.className = 'btn btn-success btn-sm'; // Ukuran kecil
-                excelButton.addEventListener('click', () => downloadZdExcel());
-
-                // Tambahkan tombol ke dalam wrapper
-                buttonWrapper.appendChild(csvButton);
-                buttonWrapper.appendChild(excelButton);
-
-                // Sisipkan wrapper di atas grafik
-                container.insertBefore(buttonWrapper, zdCtx.canvas);
-            }
-
-            // **Fungsi untuk download CSV**
-            function downloadZdCSV() {
-                const labels = [
-                    "January", "February", "March", "April", "May", "June",
-                    "July", "August", "September", "October", "November", "December"
-                ];
-                
-                // Ambil dataset yang sedang digunakan di chart
-                let dataset = zdChart.data.datasets[0]; // Ambil dataset aktif
-                let year = dataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label dataset
-
-                let csvContent = "data:text/csv;charset=utf-8,";
-                csvContent += `Month,ZD Cases ${year}\n`; // Header CSV
-
-                labels.forEach((label, index) => {
-                    let value = dataset.data[index] ?? ""; // Ambil data bulan tertentu, jika tidak ada kosongkan
-                    csvContent += `${label},${value}\n`;
-                });
-
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `zero_dose_cases_${year}.csv`);
-                document.body.appendChild(link);
-                link.click();
-            }
-
-
-            // **Fungsi untuk download Excel**
-            function downloadZdExcel() {
-                const labels = [
-                    "January", "February", "March", "April", "May", "June",
-                    "July", "August", "September", "October", "November", "December"
-                ];
-
-                // Ambil dataset yang sedang digunakan
-                let dataset = zdChart.data.datasets[0];
-                let year = dataset.label.match(/\d{4}/)[0]; // Ambil tahun dari label dataset
-
-                // Buat workbook Excel
-                const workbook = XLSX.utils.book_new();
-                const worksheetData = [["Month", `ZD Cases ${year}`], 
-                    ...labels.map((label, index) => [label, dataset.data[index] ?? ""])
-                ];
-                const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-                XLSX.utils.book_append_sheet(workbook, worksheet, "Zero Dose Cases");
-
-                // Generate file Excel dan unduh
-                XLSX.writeFile(workbook, `zero_dose_cases_${year}.xlsx`);
-            }
-
-
-            // **Tambahkan tombol download ke DOM**
-            addZdDownloadButtons();
+        }
+    });
 });
+
 </script>
+
 
 <!-- Grafik Line DPT Coverage per quarter -->
 <script>
@@ -1473,7 +1539,7 @@ $(document).ready(function () {
 
             // Inisialisasi bahasa berdasarkan localStorage
             // let savedLang = localStorage.getItem("selectedLanguage");
-            const savedLang = localStorage.getItem("selectedLanguage") || 'id'; // Default fallback
+            const savedLang = localStorage.getItem("selectedLanguage") || 'en'; // Default fallback
             setLanguageBarChart(savedLang);
 
             // Chart.js setup for locationChart

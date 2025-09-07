@@ -481,32 +481,60 @@ class Home extends CI_Controller {
         // $this->data['zero_dose_data'] = array_column($zero_dose_cases, 'zd_cases');
 
         // Initialize arrays to store data for the target and DPT-1 coverage per quarter
-        $quarters = [1, 2, 3, 4];
+        // $quarters = [1, 2, 3, 4];
+        
+        $months = range(1, 12); // Januari - Desember
         $target_data = [];
         $coverage_data = [];
 
         // Calculate the target and coverage for each quarter
-        foreach ($quarters as $quarter) {
-            // Fetch total target for DPT-1
-            $total_target = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province, $selected_district, $selected_year);
+        // foreach ($quarters as $quarter) {
+        //     // Fetch total target for DPT-1
+        //     $total_target = $this->Immunization_model->get_total_target('dpt_hb_hib_1', $selected_province, $selected_district, $selected_year);
             
-            // Calculate target for the quarter
-            $quarter_target = 0;
-            if ($quarter == 1) {
-                $quarter_target = $total_target / 4;
-            } elseif ($quarter == 2) {
-                $quarter_target = 2 * $total_target / 4;
-            } elseif ($quarter == 3) {
-                $quarter_target = 3 * $total_target / 4;
-            } elseif ($quarter == 4) {
-                $quarter_target = $total_target;
-            }
+        //     // Calculate target for the quarter
+        //     $quarter_target = 0;
+        //     if ($quarter == 1) {
+        //         $quarter_target = $total_target / 4;
+        //     } elseif ($quarter == 2) {
+        //         $quarter_target = 2 * $total_target / 4;
+        //     } elseif ($quarter == 3) {
+        //         $quarter_target = 3 * $total_target / 4;
+        //     } elseif ($quarter == 4) {
+        //         $quarter_target = $total_target;
+        //     }
 
-            // Fetch total DPT-1 coverage for the selected quarter
-            $dpt_coverage = $this->Immunization_model->get_total_vaccine_by_quarter('dpt_hb_hib_1', $selected_province, $selected_district, $selected_year, $quarter);
+        //     // Fetch total DPT-1 coverage for the selected quarter
+        //     $dpt_coverage = $this->Immunization_model->get_total_vaccine_by_quarter('dpt_hb_hib_1', $selected_province, $selected_district, $selected_year, $quarter);
 
-            // Store the values
-            $target_data[] = $quarter_target;
+        //     // Store the values
+        //     $target_data[] = $quarter_target;
+        //     $coverage_data[] = $dpt_coverage;
+        // }
+
+        $total_target = $this->Immunization_model->get_total_target(
+            'dpt_hb_hib_1',
+            $selected_province,
+            $selected_district,
+            $selected_year
+        );
+
+        $monthly_target = $total_target / 12;
+        $cumulative_target = 0;
+
+        foreach ($months as $month) {
+            // Target akumulatif
+            $cumulative_target += $monthly_target;
+            $target_data[] = round($cumulative_target); // pembulatan opsional
+
+            // Data real coverage per bulan
+            $dpt_coverage = $this->Immunization_model->get_total_vaccine_by_month(
+                'dpt_hb_hib_1',
+                $selected_province,
+                $selected_district,
+                $selected_year,
+                $month
+            );
             $coverage_data[] = $dpt_coverage;
         }
 
@@ -514,6 +542,7 @@ class Home extends CI_Controller {
         $this->data['target_data'] = $target_data;
         $this->data['coverage_data'] = $coverage_data;
         $this->data['quarters'] = $quarters;
+        $this->data['months'] = $months;
 
         // **Fix: Pastikan ini ada**
         $this->data['zero_dose_cases'] = $this->Immunization_model->get_zero_dose_cases($selected_province, $selected_district);
