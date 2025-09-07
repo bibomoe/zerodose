@@ -779,6 +779,7 @@
 
 <!-- Grafik Bar -->
 <script>
+$(document).ready(function () {
     Chart.register(ChartDataLabels);
 
     const data = <?= json_encode($chart_data) ?>;
@@ -1004,11 +1005,13 @@
         },
         plugins: [ChartDataLabels]
     });
+});
 </script>
 
 
 <!-- Grafik Line ZD Trend-->
 <script>
+$(document).ready(function () {
         // console.log("Zero Dose Data:", <?= json_encode($zero_dose_cases); ?>);
 
         const zeroDoseData = <?= json_encode($zero_dose_cases); ?>;
@@ -1112,7 +1115,7 @@
                 plugins: {
                     // legend: { display: true, position: 'top' }
                     datalabels: {
-                        display: true
+                        display: false
                     },
                     legend: {
                         position: 'top',
@@ -1265,11 +1268,12 @@
 
             // **Tambahkan tombol download ke DOM**
             addZdDownloadButtons();
-
+});
 </script>
 
 <!-- Grafik Line DPT Coverage per quarter -->
 <script>
+$(document).ready(function () {
     const quarters = <?= json_encode($quarters); ?>;
     const targetData = <?= json_encode($target_data); ?>;
     const coverageData = <?= json_encode($coverage_data); ?>;
@@ -1411,11 +1415,12 @@
 
     // **Tambahkan tombol download ke DOM**
     addCoverageDownloadButtons();
+});
 </script>
 
 <!-- Grafik Bar -->
 <script>
-
+$(document).ready(function () {
             // Fetch data from PHP
             const restoredData = <?= json_encode($restored_data); ?>;
 
@@ -1547,6 +1552,7 @@
 
             // Add buttons to the DOM for locationChart
             addLocationDownloadButtons();
+});
 </script>
 
 <!-- Peta -->
