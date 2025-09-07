@@ -521,21 +521,23 @@ class Home extends CI_Controller {
 
         $monthly_target = $total_target / 12;
         $cumulative_target = 0;
+        $cumulative_coverage = 0;
 
         foreach ($months as $month) {
-            // Target akumulatif
+            // Akumulasi target
             $cumulative_target += $monthly_target;
-            $target_data[] = round($cumulative_target); // pembulatan opsional
+            $target_data[] = round($cumulative_target);
 
-            // Data real coverage per bulan
-            $dpt_coverage = $this->Immunization_model->get_total_vaccine_by_month(
+            // Akumulasi coverage
+            $monthly_coverage = $this->Immunization_model->get_total_vaccine_by_month(
                 'dpt_hb_hib_1',
                 $selected_province,
                 $selected_district,
                 $selected_year,
                 $month
             );
-            $coverage_data[] = $dpt_coverage;
+            $cumulative_coverage += $monthly_coverage;
+            $coverage_data[] = $cumulative_coverage;
         }
 
         // Pass the data to the view
