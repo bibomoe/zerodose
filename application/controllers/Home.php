@@ -1252,6 +1252,20 @@ class Home extends CI_Controller {
                 'tabelcoloumn6' => 'DPT3 Coverage',
                 'tabelcoloumn7' => 'Number of Dropout',
                 'tabelcoloumn8' => 'Drop Out Rate',
+                'months' => [
+                    1 => 'January',
+                    2 => 'February',
+                    3 => 'March',
+                    4 => 'April',
+                    5 => 'May',
+                    6 => 'June',
+                    7 => 'July',
+                    8 => 'August',
+                    9 => 'September',
+                    10 => 'October',
+                    11 => 'November',
+                    12 => 'December'
+                ]
             ],
             'id' => [
                 'page_title' => 'Cakupan DPT-1 dan % Dropout',
@@ -1274,6 +1288,21 @@ class Home extends CI_Controller {
                 'tabelcoloumn6' => 'Cakupan DPT3',
                 'tabelcoloumn7' => 'Jumlah Dropout',
                 'tabelcoloumn8' => '% Dropout',
+                // --- Tambahkan terjemahan bulan di sini untuk bahasa Indonesia ---
+                'months' => [
+                    1 => 'Januari',
+                    2 => 'Februari',
+                    3 => 'Maret',
+                    4 => 'April',
+                    5 => 'Mei',
+                    6 => 'Juni',
+                    7 => 'Juli',
+                    8 => 'Agustus',
+                    9 => 'September',
+                    10 => 'Oktober',
+                    11 => 'November',
+                    12 => 'Desember'
+                ]
             ]
         ];
     
