@@ -550,6 +550,8 @@ class Report extends CI_Controller {
             
             $total_cities = $this->Report_model->get_total_regencies_cities($selected_province);
 
+            $total_cities_DO = $total_cities;
+
             // Menghitung Persen KabKota dengan DO Rate dibawah 5%
             $percentage_under_5_DO = ($total_cities > 0) 
                 ? round(($total_district_under_5_DO / $total_cities) * 100, 2)
@@ -563,6 +565,8 @@ class Report extends CI_Controller {
             $total_district_under_5_DO =  $dropout_rates; //Jumlah Puskesmas dengan %DO dibawah 5%
             
             $total_cities = $this->Report_model->get_total_puskesmas_in_district($selected_district);
+
+            $total_cities_DO = $total_cities;
 
             // Menghitung Persen KabKota dengan DO Rate dibawah 5%
             $percentage_under_5_DO = ($total_cities > 0) 
@@ -877,7 +881,7 @@ class Report extends CI_Controller {
                                     . '<br> Sasaran : ' . number_format($total_dpt1_target, 0, ',', '.') ,
             'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
             'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
-            'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . (($selected_district === 'all') ? '% dari total ' . number_format($total_cities, 0, ',', '.') . ' Kab/Kota' : '% dari total ' . number_format($total_cities, 0, ',', '.') . '  puskesmas') . ' </span>',
+            'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . (($selected_district === 'all') ? '% dari total ' . number_format($total_cities_DO, 0, ',', '.') . ' Kab/Kota' : '% dari total ' . number_format($total_cities_DO, 0, ',', '.') . '  puskesmas') . ' </span>',
             'puskesmas_conduct_immunization' => number_format($ss_category_good, 0, ',', '.'),
             'total_ss' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($ss_percentage_good, 1, ',', '.') . '% dari total ' . number_format($stockout_total_puskesmas, 0, ',', '.') . ' Puskesmas'
                                                         . '<br> Total SS : ' . number_format($ss_total_ss, 0, ',', '.') . '</span>',
