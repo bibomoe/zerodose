@@ -786,176 +786,176 @@ class Home extends CI_Controller {
     }
     
     //Kejar 03 Agustus 2025
-    public function kejar_report()
-    {
-        $user_category = $this->session->userdata('user_category');
-        $user_province = $this->session->userdata('province_id');
-        $user_city = $this->session->userdata('city_id');
+    // public function kejar_report()
+    // {
+    //     $user_category = $this->session->userdata('user_category');
+    //     $user_province = $this->session->userdata('province_id');
+    //     $user_city = $this->session->userdata('city_id');
 
-        // Ambil filter
-        $selected_province = $this->input->post('province') ?? $this->input->get('province') ?? 'all';
-        $selected_district = $this->input->post('district') ?? $this->input->get('district') ?? 'all';
-        $selected_year = $this->input->post('year') ?? $this->input->get('year') ?? date('Y');
+    //     // Ambil filter
+    //     $selected_province = $this->input->post('province') ?? $this->input->get('province') ?? 'all';
+    //     $selected_district = $this->input->post('district') ?? $this->input->get('district') ?? 'all';
+    //     $selected_year = $this->input->post('year') ?? $this->input->get('year') ?? date('Y');
 
-        $this->data['selected_province'] = $selected_province;
-        $this->data['selected_district'] = $selected_district;
-        $this->data['selected_year'] = $selected_year;
+    //     $this->data['selected_province'] = $selected_province;
+    //     $this->data['selected_district'] = $selected_district;
+    //     $this->data['selected_year'] = $selected_year;
 
-        // Ambil daftar provinsi untuk dropdown + targeted provinces
-        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
+    //     // Ambil daftar provinsi untuk dropdown + targeted provinces
+    //     $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
 
-        // Ambil daftar kabkota untuk dropdown + targeted provinces
-        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province);
+    //     // Ambil daftar kabkota untuk dropdown + targeted provinces
+    //     $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province);
 
-        // Ambil daftar distrik berdasarkan provinsi
-        if ($selected_province !== 'all' && $selected_province !== 'targeted') {
-            $this->data['districts'] = $this->Immunization_model->get_cities_by_province($selected_province);
-            $this->data['districts_array'] = $this->Immunization_model->get_cities_by_province_array($selected_province);
-        } else {
-            $this->data['districts'] = [];
-            $this->data['districts_array'] = [];
-        }
+    //     // Ambil daftar distrik berdasarkan provinsi
+    //     if ($selected_province !== 'all' && $selected_province !== 'targeted') {
+    //         $this->data['districts'] = $this->Immunization_model->get_cities_by_province($selected_province);
+    //         $this->data['districts_array'] = $this->Immunization_model->get_cities_by_province_array($selected_province);
+    //     } else {
+    //         $this->data['districts'] = [];
+    //         $this->data['districts_array'] = [];
+    //     }
 
-        // Jika PHO
-        if ($user_category == 7 && $selected_province == 'all') {
-            $selected_province = $user_province;
-        }
+    //     // Jika PHO
+    //     if ($user_category == 7 && $selected_province == 'all') {
+    //         $selected_province = $user_province;
+    //     }
 
-        // Jika DHO
-        if ($user_category == 8) {
-            $selected_province = $user_province;
-            $selected_district = $user_city;
-        }
+    //     // Jika DHO
+    //     if ($user_category == 8) {
+    //         $selected_province = $user_province;
+    //         $selected_district = $user_city;
+    //     }
 
-        // Load data tergantung kondisi
-        if ($selected_province === 'all') {
-            $chart_data = $this->Immunization_model->get_kejar_group_by_province($selected_year);
-        } elseif ($selected_province === 'targeted') {
-            $chart_data = $this->Immunization_model->get_kejar_group_by_targeted_provinces($selected_year);
-        } elseif ($selected_district === 'all') {
-            $chart_data = $this->Immunization_model->get_kejar_group_by_city($selected_province, $selected_year);
-        } else {
-            $chart_data = $this->Immunization_model->get_kejar_group_by_puskesmas($selected_province, $selected_district, $selected_year);
-        }
+    //     // Load data tergantung kondisi
+    //     if ($selected_province === 'all') {
+    //         $chart_data = $this->Immunization_model->get_kejar_group_by_province($selected_year);
+    //     } elseif ($selected_province === 'targeted') {
+    //         $chart_data = $this->Immunization_model->get_kejar_group_by_targeted_provinces($selected_year);
+    //     } elseif ($selected_district === 'all') {
+    //         $chart_data = $this->Immunization_model->get_kejar_group_by_city($selected_province, $selected_year);
+    //     } else {
+    //         $chart_data = $this->Immunization_model->get_kejar_group_by_puskesmas($selected_province, $selected_district, $selected_year);
+    //     }
 
-        $sort_by = $this->input->post('sort_by') ?? $this->input->get('sort_by') ?? 'kejar_asik';
-        if (in_array($sort_by, ['kejar_asik', 'kejar_manual', 'kejar_kombinasi'])) {
-            usort($chart_data, function ($a, $b) use ($sort_by) {
-                return $b[$sort_by] <=> $a[$sort_by]; // Sort descending
-            });
-        }
-        $this->data['sort_by'] = $sort_by;
+    //     $sort_by = $this->input->post('sort_by') ?? $this->input->get('sort_by') ?? 'kejar_asik';
+    //     if (in_array($sort_by, ['kejar_asik', 'kejar_manual', 'kejar_kombinasi'])) {
+    //         usort($chart_data, function ($a, $b) use ($sort_by) {
+    //             return $b[$sort_by] <=> $a[$sort_by]; // Sort descending
+    //         });
+    //     }
+    //     $this->data['sort_by'] = $sort_by;
 
-        $this->data['chart_data'] = $chart_data;
-        $this->data['selected_province'] = $selected_province;
-        $this->data['selected_district'] = $selected_district;
-        $this->data['selected_year'] = $selected_year;
+    //     $this->data['chart_data'] = $chart_data;
+    //     $this->data['selected_province'] = $selected_province;
+    //     $this->data['selected_district'] = $selected_district;
+    //     $this->data['selected_year'] = $selected_year;
 
-        $this->data['max_month_asik'] = $this->Immunization_model->get_max_kejar_asik_month($selected_year);
-        $this->data['max_month_manual'] = $this->Immunization_model->get_max_kejar_manual_month($selected_year);
-        $this->data['max_month_kombinasi'] = $this->Immunization_model->get_max_kejar_kombinasi_month($selected_year);
+    //     $this->data['max_month_asik'] = $this->Immunization_model->get_max_kejar_asik_month($selected_year);
+    //     $this->data['max_month_manual'] = $this->Immunization_model->get_max_kejar_manual_month($selected_year);
+    //     $this->data['max_month_kombinasi'] = $this->Immunization_model->get_max_kejar_kombinasi_month($selected_year);
 
-        // Dropdowns
-        // $this->data['provinces'] = $this->Immunization_model->get_province_names();
-        // $this->data['districts'] = ($selected_province !== 'all') ? $this->Immunization_model->get_cities_name_by_province($selected_province) : [];
+    //     // Dropdowns
+    //     // $this->data['provinces'] = $this->Immunization_model->get_province_names();
+    //     // $this->data['districts'] = ($selected_province !== 'all') ? $this->Immunization_model->get_cities_name_by_province($selected_province) : [];
 
-        // Menentukan bahasa yang dipilih
-        $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
+    //     // Menentukan bahasa yang dipilih
+    //     $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
 
-        // Memuat data terjemahan
-        $translations = $this->load_translation_kejar($selected_language);
+    //     // Memuat data terjemahan
+    //     $translations = $this->load_translation_kejar($selected_language);
 
-        // Mengirim data terjemahan ke view
-        $this->data['translations'] = $translations;
+    //     // Mengirim data terjemahan ke view
+    //     $this->data['translations'] = $translations;
 
-        // Ambil nama bulan berdasarkan ID
-        $months = $this->data['translations']['months'] ?? [];
+    //     // Ambil nama bulan berdasarkan ID
+    //     $months = $this->data['translations']['months'] ?? [];
 
-        $this->data['max_month_name_asik'] = $months[$this->data['max_month_asik']] ?? 'Invalid Month';
-        $this->data['max_month_name_manual'] = $months[$this->data['max_month_manual']] ?? 'Invalid Month';
-        $this->data['max_month_name_kombinasi'] = $months[$this->data['max_month_kombinasi']] ?? 'Invalid Month';
+    //     $this->data['max_month_name_asik'] = $months[$this->data['max_month_asik']] ?? 'Invalid Month';
+    //     $this->data['max_month_name_manual'] = $months[$this->data['max_month_manual']] ?? 'Invalid Month';
+    //     $this->data['max_month_name_kombinasi'] = $months[$this->data['max_month_kombinasi']] ?? 'Invalid Month';
 
-        load_template('kejar-report', $this->data);
-    }
+    //     load_template('kejar-report', $this->data);
+    // }
 
-    private function load_translation_kejar($lang) {
-        $translations = [
-            'en' => [
-                'page_title' => 'Number of Zero Dose Children in 2024 Chased',
-                'page_subtitle' => '',
-                'filter_label' => 'Select Filter',
-                'text1' => 'Zero Dose Children in 2024 who Get Vaccinated',
-                'text2' => 'Focus on specific data by clicking the legend items to hide or show them',
-                'text1_cumulative' => ' Cumulative up to ',
-                'tabelcoloumn1' => 'Province',
-                'tabelcoloumn1_b' => 'District',
-                'tabelcoloumn1_c' => 'Puskesmas',
-                'tabelcoloumn2' => 'Number of Zero Dose Children Chased (ASIK Data)',
-                'tabelcoloumn3' => 'Number of Zero Dose Children Chased (Manual Data)',
-                'tabelcoloumn4' => 'Number of Zero Dose Children Chased (Combined Data)',
-                'tabelcoloumn5' => 'Zero Dose Children in 2024',
-                'tabelcoloumn6' => '% Chased (ASIK)',
-                'tabelcoloumn7' => '% Chased (Manual)',
-                'tabelcoloumn8' => '% Chased (Combined)',
-                'sort_kejar_asik' => 'Sort by Highest ASIK Chased',
-                'sort_kejar_manual' => 'Sort by Highest Manual Chased',
-                'sort_kejar_kombinasi' => 'Sort by Highest Combined Chased',
-                // --- Tambahkan terjemahan bulan di sini untuk bahasa Inggris ---
-                'months' => [
-                    1 => 'January',
-                    2 => 'February',
-                    3 => 'March',
-                    4 => 'April',
-                    5 => 'May',
-                    6 => 'June',
-                    7 => 'July',
-                    8 => 'August',
-                    9 => 'September',
-                    10 => 'October',
-                    11 => 'November',
-                    12 => 'December'
-                ]
-            ],
-            'id' => [
-                'page_title' => 'Jumlah Anak Zero Dose Tahun 2024 yang dikejar',
-                'page_subtitle' => '',
-                'filter_label' => 'Pilih Filter',
-                'text1' => 'Anak Zero Dose yang berhasil dikejar',
-                'text1_cumulative' => ' Kumulatif sampai bulan ',
-                'text2' => 'Ingin fokus pada data tertentu? Klik legenda di bawah untuk menyembunyikan data yang lain',
-                'tabelcoloumn1' => 'Provinsi',
-                'tabelcoloumn1_b' => 'Kab/Kota',
-                'tabelcoloumn1_c' => 'Puskesmas',
-                'tabelcoloumn2' => 'Imunisasi Kejar DPT-1 (ASIK)',
-                'tabelcoloumn3' => 'Imunisasi Kejar DPT-1 (Manual)',
-                'tabelcoloumn4' => 'Imunisasi Kejar DPT-1 (Kombinasi)',
-                'tabelcoloumn5' => 'Jumlah Anak Zero Dose Tahun 2024',
-                'tabelcoloumn6' => '% Imunisasi Kejar (ASIK)',
-                'tabelcoloumn7' => '% Imunisasi Kejar (Manual)',
-                'tabelcoloumn8' => '% Imunisasi Kejar (Kombinasi)',
-                'sort_kejar_asik' => 'Urutkan Kejar ASIK Tertinggi',
-                'sort_kejar_manual' => 'Urutkan Kejar Manual Tertinggi',
-                'sort_kejar_kombinasi' => 'Urutkan Kejar Kombinasi Tertinggi',
-                // --- Tambahkan terjemahan bulan di sini untuk bahasa Indonesia ---
-                'months' => [
-                    1 => 'Januari',
-                    2 => 'Februari',
-                    3 => 'Maret',
-                    4 => 'April',
-                    5 => 'Mei',
-                    6 => 'Juni',
-                    7 => 'Juli',
-                    8 => 'Agustus',
-                    9 => 'September',
-                    10 => 'Oktober',
-                    11 => 'November',
-                    12 => 'Desember'
-                ]
-            ]
-        ];
+    // private function load_translation_kejar($lang) {
+    //     $translations = [
+    //         'en' => [
+    //             'page_title' => 'Number of Zero Dose Children in 2024 Chased',
+    //             'page_subtitle' => '',
+    //             'filter_label' => 'Select Filter',
+    //             'text1' => 'Zero Dose Children in 2024 who Get Vaccinated',
+    //             'text2' => 'Focus on specific data by clicking the legend items to hide or show them',
+    //             'text1_cumulative' => ' Cumulative up to ',
+    //             'tabelcoloumn1' => 'Province',
+    //             'tabelcoloumn1_b' => 'District',
+    //             'tabelcoloumn1_c' => 'Puskesmas',
+    //             'tabelcoloumn2' => 'Number of Zero Dose Children Chased (ASIK Data)',
+    //             'tabelcoloumn3' => 'Number of Zero Dose Children Chased (Manual Data)',
+    //             'tabelcoloumn4' => 'Number of Zero Dose Children Chased (Combined Data)',
+    //             'tabelcoloumn5' => 'Zero Dose Children in 2024',
+    //             'tabelcoloumn6' => '% Chased (ASIK)',
+    //             'tabelcoloumn7' => '% Chased (Manual)',
+    //             'tabelcoloumn8' => '% Chased (Combined)',
+    //             'sort_kejar_asik' => 'Sort by Highest ASIK Chased',
+    //             'sort_kejar_manual' => 'Sort by Highest Manual Chased',
+    //             'sort_kejar_kombinasi' => 'Sort by Highest Combined Chased',
+    //             // --- Tambahkan terjemahan bulan di sini untuk bahasa Inggris ---
+    //             'months' => [
+    //                 1 => 'January',
+    //                 2 => 'February',
+    //                 3 => 'March',
+    //                 4 => 'April',
+    //                 5 => 'May',
+    //                 6 => 'June',
+    //                 7 => 'July',
+    //                 8 => 'August',
+    //                 9 => 'September',
+    //                 10 => 'October',
+    //                 11 => 'November',
+    //                 12 => 'December'
+    //             ]
+    //         ],
+    //         'id' => [
+    //             'page_title' => 'Jumlah Anak Zero Dose Tahun 2024 yang dikejar',
+    //             'page_subtitle' => '',
+    //             'filter_label' => 'Pilih Filter',
+    //             'text1' => 'Anak Zero Dose yang berhasil dikejar',
+    //             'text1_cumulative' => ' Kumulatif sampai bulan ',
+    //             'text2' => 'Ingin fokus pada data tertentu? Klik legenda di bawah untuk menyembunyikan data yang lain',
+    //             'tabelcoloumn1' => 'Provinsi',
+    //             'tabelcoloumn1_b' => 'Kab/Kota',
+    //             'tabelcoloumn1_c' => 'Puskesmas',
+    //             'tabelcoloumn2' => 'Imunisasi Kejar DPT-1 (ASIK)',
+    //             'tabelcoloumn3' => 'Imunisasi Kejar DPT-1 (Manual)',
+    //             'tabelcoloumn4' => 'Imunisasi Kejar DPT-1 (Kombinasi)',
+    //             'tabelcoloumn5' => 'Jumlah Anak Zero Dose Tahun 2024',
+    //             'tabelcoloumn6' => '% Imunisasi Kejar (ASIK)',
+    //             'tabelcoloumn7' => '% Imunisasi Kejar (Manual)',
+    //             'tabelcoloumn8' => '% Imunisasi Kejar (Kombinasi)',
+    //             'sort_kejar_asik' => 'Urutkan Kejar ASIK Tertinggi',
+    //             'sort_kejar_manual' => 'Urutkan Kejar Manual Tertinggi',
+    //             'sort_kejar_kombinasi' => 'Urutkan Kejar Kombinasi Tertinggi',
+    //             // --- Tambahkan terjemahan bulan di sini untuk bahasa Indonesia ---
+    //             'months' => [
+    //                 1 => 'Januari',
+    //                 2 => 'Februari',
+    //                 3 => 'Maret',
+    //                 4 => 'April',
+    //                 5 => 'Mei',
+    //                 6 => 'Juni',
+    //                 7 => 'Juli',
+    //                 8 => 'Agustus',
+    //                 9 => 'September',
+    //                 10 => 'Oktober',
+    //                 11 => 'November',
+    //                 12 => 'Desember'
+    //             ]
+    //         ]
+    //     ];
     
-        return $translations[$lang] ?? $translations['id']; // Default ke bahasa Indonesia
-    }
+    //     return $translations[$lang] ?? $translations['id']; // Default ke bahasa Indonesia
+    // }
 
     // public function lost() {
     //     $this->data['title'] = 'Lost Children';
@@ -1187,15 +1187,18 @@ class Home extends CI_Controller {
             $this->data['geojson_file'] = base_url('assets/geojson/targeted.geojson');
         }
 
+        // Menentukan Maks Bulan Data Kumulatif DPT
+        $this->data['max_month'] = $this->Dpt1_model->get_max_dpt1_month($selected_year);
+
         // Menentukan quarter
-        $this->data['quarter'] = $this->Immunization_model->get_max_quarter($selected_year);
+        // $this->data['quarter'] = $this->Immunization_model->get_max_quarter($selected_year);
 
         if ($selected_district === 'all'){
             // Ambil data distrik dan cakupan DPT
-            $this->data['district_details'] = $this->Dpt1_model->get_district_details($selected_province, $selected_year, $this->data['quarter']);
+            $this->data['district_details'] = $this->Dpt1_model->get_district_details($selected_province, $selected_year, $this->data['max_month']);
         } else {
             // Ambil data distrik dan cakupan DPT
-            $this->data['district_details'] = $this->Dpt1_model->get_puskesmas_details($selected_province, $selected_district, $selected_year, $this->data['quarter']);
+            $this->data['district_details'] = $this->Dpt1_model->get_puskesmas_details($selected_province, $selected_district, $selected_year, $this->data['max_month']);
         }
         // echo "Total districts from model: " . count($this->data['district_details']);
         // print_r($this->data['district_details']);
@@ -1210,6 +1213,15 @@ class Home extends CI_Controller {
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
 
+        // Dapatkan nama bulan yang diterjemahkan dari array $this->data['translations']['months']
+
+        if (isset($this->data['translations']['months'][$month_number])) {
+            $this->data['max_month_name'] = $this->data['translations']['months'][$month_number];
+        } else {
+            // Penanganan jika bulan tidak valid, gunakan teks default atau statis
+            $this->data['max_month_name'] = 'Invalid Month'; 
+        }
+
         $this->data['title'] = 'DPT1 in targeted areas';
         load_template('dpt1', $this->data);
     }
@@ -1221,6 +1233,7 @@ class Home extends CI_Controller {
                 'page_subtitle' => 'Percentage children -under 5 years with DPT 1 coverage and number of district with DO (DPT1-DPT3) less than 5%',
                 'filter_label' => 'Select Filter',
                 'text1' => 'DPT-1 Coverage',
+                'text1_cumulative' => ' Cumulative up to ',
                 'text2' => 'Dropout Rate',
                 'text3' => 'Number of districts with DO (DPT1-DPT3) less than 5%',
                 'text3_2' => 'Number of puskesmas with DO (DPT1-DPT3) less than 5%',
@@ -1242,6 +1255,7 @@ class Home extends CI_Controller {
                 'page_subtitle' => 'Cakupan DPT-1 dan % drop out pada 10 provinsi target ',
                 'filter_label' => 'Pilih Filter',
                 'text1' => 'Cakupan DPT-1',
+                'text1_cumulative' => ' Kumulatif sampai bulan ',
                 'text2' => '% drop out wilayah',
                 'text3' => 'Jumlah Kab/Ko dengan %DO < 5%',
                 'text3_2' => 'Jumlah Puskesmas dengan %DO < 5%',

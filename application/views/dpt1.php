@@ -218,7 +218,7 @@
                                                             <?php
                                                                 }
                                                             ?>
-                                                            <th><?= $translations['tabelcoloumn3'] ?> <?= $translations['text5'] ?> <?= $quarter ?></th>
+                                                            <th><?= $translations['tabelcoloumn3'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
                                                             <th><?= $translations['tabelcoloumn4'] ?></th>
                                                             <th><?= $translations['tabelcoloumn5'] ?></th>
                                                             <th><?= $translations['tabelcoloumn6'] ?></th>

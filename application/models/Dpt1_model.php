@@ -663,7 +663,7 @@ class Dpt1_model extends CI_Model {
     }
 
 
-    public function get_district_details($province_id, $year, $quarter) {
+    public function get_district_details($province_id, $year, $max_month) {
         $provinces = $this->get_targeted_provinces();
         $province_ids = array_column($provinces, 'id');
 
@@ -707,15 +707,17 @@ class Dpt1_model extends CI_Model {
 
             } else {
                 // Calculate based on the quarter if total target is not zero
-                if ($quarter == 1) {
-                    $target = $total_target / 4; // Quarter 1: 1/4 of total target
-                } elseif ($quarter == 2) {
-                    $target = 2 * $total_target / 4; // Quarter 2: 2/4 of total target
-                } elseif ($quarter == 3) {
-                    $target = 3 * $total_target / 4; // Quarter 3: 3/4 of total target
-                } elseif ($quarter == 4) {
-                    $target = $total_target; // Quarter 4: Full total target
-                }
+                // if ($quarter == 1) {
+                //     $target = $total_target / 4; // Quarter 1: 1/4 of total target
+                // } elseif ($quarter == 2) {
+                //     $target = 2 * $total_target / 4; // Quarter 2: 2/4 of total target
+                // } elseif ($quarter == 3) {
+                //     $target = 3 * $total_target / 4; // Quarter 3: 3/4 of total target
+                // } elseif ($quarter == 4) {
+                //     $target = $total_target; // Quarter 4: Full total target
+                // }
+
+                $target = ($max_month > 0) ? ($total_target * $max_month / 12) : 0;
             }
             
             $dpt1_coverage = $district['dpt1_coverage'];
@@ -747,7 +749,7 @@ class Dpt1_model extends CI_Model {
         return $districts;
     }
     
-    public function get_puskesmas_details($province_id, $city_id, $year, $quarter) {
+    public function get_puskesmas_details($province_id, $city_id, $year, $max_month) {
         $provinces = $this->get_targeted_provinces();
         $province_ids = array_column($provinces, 'id');
 
@@ -794,15 +796,16 @@ class Dpt1_model extends CI_Model {
                 $target = 0;
             } else {
                 // Calculate based on quarter
-                if ($quarter == 1) {
-                    $target = $total_target / 4; // Quarter 1: 1/4 of total target
-                } elseif ($quarter == 2) {
-                    $target = 2 * $total_target / 4; // Quarter 2: 2/4 of total target
-                } elseif ($quarter == 3) {
-                    $target = 3 * $total_target / 4; // Quarter 3: 3/4 of total target
-                } elseif ($quarter == 4) {
-                    $target = $total_target; // Quarter 4: Full total target
-                }
+                // if ($quarter == 1) {
+                //     $target = $total_target / 4; // Quarter 1: 1/4 of total target
+                // } elseif ($quarter == 2) {
+                //     $target = 2 * $total_target / 4; // Quarter 2: 2/4 of total target
+                // } elseif ($quarter == 3) {
+                //     $target = 3 * $total_target / 4; // Quarter 3: 3/4 of total target
+                // } elseif ($quarter == 4) {
+                //     $target = $total_target; // Quarter 4: Full total target
+                // }
+                $target = ($max_month > 0) ? ($total_target * $max_month / 12) : 0;
             }
 
             $dpt1_coverage = $puskesmas_data['dpt1_coverage'];
@@ -832,6 +835,17 @@ class Dpt1_model extends CI_Model {
         });
 
         return $puskesmas;
+    }
+
+    //Ambil data maks Bulan saat ini
+    public function get_max_dpt1_month($year) {
+        // Select the maximum quarter for the given year
+        $query = $this->db->select('MAX(month) as max_month')
+                          ->where('year', $year)
+                          ->get('immunization_data');
+    
+        // Return the maximum quarter value, or 0 if no data is found
+        return $query->row()->max_month ?? 1;
     }
 
 
