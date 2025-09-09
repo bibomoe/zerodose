@@ -879,14 +879,14 @@ class Report extends CI_Controller {
             'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
             'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . (($selected_district === 'all') ? '% dari total Kab/Kota' : '% dari total puskesmas') . ' </span>',
             'puskesmas_conduct_immunization' => number_format($ss_category_good, 0, ',', '.'),
-            'total_ss' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($ss_percentage_good, 1, ',', '.') . '% dari total Puskesmas'
+            'total_ss' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($ss_percentage_good, 1, ',', '.') . '% dari total ' . number_format($stockout_percentage, 1, ',', '.') . '% dari total ' . number_format($stockout_total_puskesmas, 0, ',', '.') . ' Puskesmas'
                                                         . '<br> Total SS : ' . number_format($ss_total_ss, 0, ',', '.') . '</span>',
             'percentage_puskesmas_conduct_immunization' => number_format($percentage_puskesmas_conduct_immunization, 1, ',', '.') . '%',
             'total_puskesmas_conduct_immunization' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> ' . number_format($puskesmas_conduct_immunization, 0, ',', '.') . ' Puskesmas'
                                                         . '<br>' . (($year <= 2025 ) ? 'Tanpa Target' : 'Target 80%') . '</span>',
             'total_dpt_stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
-            'percentage_stockout' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($stockout_percentage, 1, ',', '.') . '% dari total Puskesmas'
-                                                        . '<br> Total Puskesmas : ' . number_format($stockout_total_puskesmas, 0, ',', '.') . '</span>',
+            'percentage_stockout' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($stockout_percentage, 1, ',', '.') . '% dari total ' . number_format($stockout_total_puskesmas, 0, ',', '.') . ' Puskesmas'
+                                                        . '</span>',
             'province_do' => $table_do,
             'puskesmas_do_immunization' => $table_puskesmas_immunization,
             'puskesmas_dpt_stock_out_data' => $table_puskesmas_stock_out
@@ -983,16 +983,16 @@ class Report extends CI_Controller {
         $html .= '<table border="1" cellpadding="10" style="text-align:center; border-color: #dddddd;">
                     <thead>
                         <tr>
+                        <th style="background-color: green; color: white; font-weight: bold;">Jumlah anak yang belum diimunisasi DPT-1</th>
                             <th style="background-color: green; color: white; font-weight: bold;">Cakupan DPT-3</th>
                             <th style="background-color: green; color: white; font-weight: bold;">Cakupan MR-1</th>
-                            <th style="background-color: green; color: white; font-weight: bold;">Jumlah anak yang belum diimunisasi DPT-1</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
+                            <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['children_zero_dose'] . '</td>
                             <td style="font-size:12pt; ">' . $data['cumulative_dpt3'] . '</td>
                             <td style="font-size:12pt; ">' . $data['cumulative_mr1'] . '</td>
-                            <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['children_zero_dose'] . '</td>
                         </tr>
                     </tbody>
                 </table>';
@@ -1818,16 +1818,16 @@ class Report extends CI_Controller {
         $html .= '<table border="1" cellpadding="10" style="text-align:center; border-color: #dddddd;">
                     <thead>
                         <tr>
+                        <th style="background-color: green; color: white; font-weight: bold;">Jumlah anak yang belum diimunisasi DPT-1</th>
                             <th style="background-color: green; color: white; font-weight: bold;">Cakupan DPT-3</th>
                             <th style="background-color: green; color: white; font-weight: bold;">Cakupan MR-1</th>
-                            <th style="background-color: green; color: white; font-weight: bold;">Jumlah anak yang belum diimunisasi DPT-1</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
+                            <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['children_zero_dose'] . '</td>
                             <td style="font-size:12pt; ">' . $data['cumulative_dpt3'] . '</td>
                             <td style="font-size:12pt; ">' . $data['cumulative_mr1'] . '</td>
-                            <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['children_zero_dose'] . '</td>
                         </tr>
                     </tbody>
                 </table>';
