@@ -245,14 +245,12 @@
                                                                         <td class="table-warning" style="text-align: center"><?= number_format($long_term_outcomes['reduction_zd']['actual_y1'], 2) ?>%</td>
                                                                         <td class="table-warning" style="text-align: center"><?= number_format($long_term_outcomes['reduction_zd']['actual_y2'], 2) ?>%</td>
                                                                     </tr>
-                                                                    <tr>
+                                                                    <!-- <tr>
                                                                         <td><?= $translations['table1text4'] ?></td>
                                                                         <td>10% <?= $translations['table1text5'] ?> <?= $long_term_outcomes['reduction_zd']['baseline'] ?></td>
                                                                         <td ><?= $translations['table1text8'] ?></td>
-                                                                        <td ><?= $translations['table1text9'] ?></td>
-                                                                        <!-- <td>Administrative Reports</td>
-                                                                        <td>Quarterly</td> -->
-                                                                    </tr>
+                                                                        <td ><?= $translations['table1text9'] ?></td>=
+                                                                    </tr> -->
                                                                 </tbody>
                                                             </table>
 
@@ -271,7 +269,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="card">
-                                    <div class="card-header"><strong>Cakupan DPT-3</strong></div>
+                                    <div class="card-header"><strong><?= $translations['table1text2'] ?></strong></div>
                                     <div class="card-body">
                                         <canvas id="chartDpt3" height="300"></canvas>
                                     </div>
@@ -279,7 +277,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="card">
-                                    <div class="card-header"><strong>Cakupan MR-1</strong></div>
+                                    <div class="card-header"><strong><?= $translations['table1text3'] ?></strong></div>
                                     <div class="card-body">
                                         <canvas id="chartMr1" height="300"></canvas>
                                     </div>
@@ -287,7 +285,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="card">
-                                    <div class="card-header"><strong>Penurunan Zero Dose</strong></div>
+                                    <div class="card-header"><strong><?= $translations['table1text4'] ?></strong></div>
                                     <div class="card-body">
                                         <canvas id="chartZd" height="300"></canvas>
                                     </div>
