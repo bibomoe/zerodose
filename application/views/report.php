@@ -321,11 +321,11 @@
                                                                     <!-- <?= form_dropdown('province_id', $province_options, '', 
                                                                         'class="form-select" id="province_id4" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('city_id', ['all' => '-- '. $translations['city'] .' --'], '',
-                                                                        'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
-                                                                    <?= form_dropdown('year', $year_options, '', 
-                                                                        'class="form-select" id="year" style="width: 20%; max-width: 100px; height: 48px; font-size: 1rem;"'); ?> -->
-                                                                    <?= form_dropdown('month', $month_options, '', 
-                                                                        'class="form-select" id="month" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
+                                                                        'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?> -->
+                                                                    <?= form_dropdown('year', $year_options_2, '', 
+                                                                        'class="form-select" id="year" style="width: 20%; max-width: 100px; height: 48px; font-size: 1rem;"'); ?> 
+                                                                    <!-- <?= form_dropdown('month', $month_options, '', 
+                                                                        'class="form-select" id="month" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?> -->
                                                                     <?= form_input([
                                                                         'name' => 'email',
                                                                         'id' => 'email',
