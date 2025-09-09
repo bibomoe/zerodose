@@ -55,21 +55,30 @@ class Report extends CI_Controller {
             '2026' => '2026'
         ];
 
-        $this->data['month_options'] = [
-            'all'  => '-- Bulan --',
-            '1'  => 'January',
-            '2'  => 'February',
-            '3'  => 'March',
-            '4'  => 'April',
-            '5'  => 'May',
-            '6'  => 'June',
-            '7'  => 'July',
-            '8'  => 'August',
-            '9'  => 'September',
-            '10' => 'October',
-            '11' => 'November',
-            '12' => 'December'
+        // Ambil tahun dan bulan dalam bentuk array
+        $this->data['year_options_2'] = [
+            '2024' => '2024',
+            '2025' => '2025',
+            '2026' => '2026'
         ];
+
+        // $this->data['month_options'] = [
+        //     'all'  => '-- Bulan --',
+        //     '1'  => 'January',
+        //     '2'  => 'February',
+        //     '3'  => 'March',
+        //     '4'  => 'April',
+        //     '5'  => 'May',
+        //     '6'  => 'June',
+        //     '7'  => 'July',
+        //     '8'  => 'August',
+        //     '9'  => 'September',
+        //     '10' => 'October',
+        //     '11' => 'November',
+        //     '12' => 'December'
+        // ];
+
+        
 
         // Inisialisasi data awal (belum ada filter yang diterapkan)
         $this->data['selected_partner'] = '';
@@ -83,7 +92,50 @@ class Report extends CI_Controller {
             $this->data['province_options'][$province->id] = $province->name_id;
         }
 
+        // Memuat data terjemahan
+        $translations = $this->load_translation_report($selected_language);
+
+        // Mengirim data terjemahan ke view
+        $this->data['translations'] = $translations;
+
+        $this->data['month_options'] = $translations['type_report'];
+
         load_template('report', $this->data);
+    }
+
+    private function load_translation_report($lang) {
+        $translations = [
+            'en' => [
+                'page_title' => 'Zero Dose Reduction Framework Report',
+                'page_subtitle' => '',
+                'filter_label' => 'Select Filter',
+                'text1' => 'Download Report',
+                'text2' => 'Send Report via Email',
+                'text3' => 'Download Partner Report',
+                'text4' => 'Send Partner Report via Email',
+                'text5' => 'Send',
+                'type_report' => [
+                    'all' => 'Annual Report',
+                    6 => 'Mid-Year Report',
+                ]
+            ],
+            'id' => [
+                'page_title' => 'Laporan Kerangka Kerja Penurunan Zero Dose',
+                'page_subtitle' => '',
+                'filter_label' => 'Pilih Filter',
+                'text1' => 'Unduh Laporan',
+                'text2' => 'Kirim Laporan Melalui Email',
+                'text3' => 'Unduh Laporan Mitra',
+                'text4' => 'Kirim Laporan Mitra Melalui Email',
+                'text5' => 'Kirim',
+                'type_report' => [
+                    'all' => 'Laporan Akhir Tahun',
+                    6 => 'Laporan Tengah Tahun',
+                ]
+            ]
+        ];
+    
+        return $translations[$lang] ?? $translations['id']; // Default to Bahasa Indonesia
     }
 
     public function contohdetail($partner_id = 'all') {

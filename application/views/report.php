@@ -4,7 +4,7 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>Laporan Kerangka Kerja Penurunan Zero Dose</h3>
+                                <h3><?= $translations['page_title'] ?></h3>
                                 <!-- <p class="text-subtitle text-muted">Children will lose their opportunity this year/ has lost their opportunity​</p> -->
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
@@ -37,7 +37,7 @@
                             <div class="col-md-12 col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4 class="card-title">Unduh Laporan</h4>
+                                        <h4 class="card-title"><?= $translations['text1'] ?></h4>
                                     </div>
                                     <div class="card-content">
                                         <div class="card-body">
@@ -124,7 +124,7 @@
                             <div class="col-md-12 col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4 class="card-title">Kirim Laporan Melalui Email</h4>
+                                        <h4 class="card-title"><?= $translations['text2'] ?></h4>
                                     </div>
                                     <div class="card-content">
                                         <div class="card-body">
@@ -198,7 +198,7 @@
                                                                         'style' => 'width: 20%; max-width: 300px; height: 48px; font-size: 1rem;'
                                                                     ]); ?>
                                                                     <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
-                                                                        <i class="bi bi-envelope-arrow-up-fill"></i> Kirim
+                                                                        <i class="bi bi-envelope-arrow-up-fill"></i> <?= $translations['text5'] ?>
                                                                     </button>
                                                                 </div>
                                                             <?= form_close(); ?>
@@ -221,7 +221,7 @@
                             <div class="col-md-12 col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4 class="card-title">Unduh Laporan Mitra</h4>
+                                        <h4 class="card-title"><?= $translations['text3'] ?></h4>
                                     </div>
                                     <div class="card-content">
                                         <div class="card-body">
@@ -258,11 +258,11 @@
                                                                     <!-- <?= form_dropdown('province_id', $province_options, '', 
                                                                         'class="form-select" id="province_id3" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
-                                                                        'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
-                                                                    <?= form_dropdown('year', $year_options, '', 
-                                                                        'class="form-select" id="year" style="width: 20%; max-width: 100px; height: 48px; font-size: 1rem;"'); ?> -->
-                                                                    <?= form_dropdown('month', $month_options, '', 
-                                                                        'class="form-select" id="month" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?>
+                                                                        'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>-->
+                                                                    <?= form_dropdown('year', $year_options_2, '', 
+                                                                        'class="form-select" id="year" style="width: 20%; max-width: 100px; height: 48px; font-size: 1rem;"'); ?> 
+                                                                    <!-- <?= form_dropdown('month', $month_options, '', 
+                                                                        'class="form-select" id="month" style="width: 20%; max-width: 150px; height: 48px; font-size: 1rem;"'); ?> -->
                                                                     <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
                                                                         <i class="bi bi-download"></i> Download
                                                                     </button>
@@ -285,7 +285,7 @@
                             <div class="col-md-12 col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4 class="card-title">Kirim Laporan Mitra Melalui Email</h4>
+                                        <h4 class="card-title"><?= $translations['text4'] ?></h4>
                                     </div>
                                     <div class="card-content">
                                         <div class="card-body">
@@ -337,7 +337,7 @@
                                                                         'style' => 'width: 20%; max-width: 300px; height: 48px; font-size: 1rem; '
                                                                     ]); ?>
                                                                     <button type="submit" class="btn btn-primary" style="height: 48px; font-size: 1rem; padding: 0 20px;">
-                                                                        <i class="bi bi-envelope-arrow-up-fill"></i> Kirim
+                                                                        <i class="bi bi-envelope-arrow-up-fill"></i> <?= $translations['text5'] ?>
                                                                     </button>
                                                                 </div>
                                                             <?= form_close(); ?>
