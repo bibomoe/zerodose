@@ -882,8 +882,9 @@ class Report extends CI_Controller {
             'total_ss' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($ss_percentage_good, 1, ',', '.') . '% dari total ' . number_format($stockout_total_puskesmas, 0, ',', '.') . ' Puskesmas'
                                                         . '<br> Total SS : ' . number_format($ss_total_ss, 0, ',', '.') . '</span>',
             'percentage_puskesmas_conduct_immunization' => number_format($percentage_puskesmas_conduct_immunization, 1, ',', '.') . '%',
-            'total_puskesmas_conduct_immunization' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> ' . number_format($puskesmas_conduct_immunization, 0, ',', '.') . ' Puskesmas' . ' dari total ' . number_format($stockout_total_puskesmas, 0, ',', '.') . ' Puskesmas', 
+            'total_puskesmas_conduct_immunization' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> ' . number_format($puskesmas_conduct_immunization, 0, ',', '.') . ' Puskesmas' . ' dari total ' . number_format($stockout_total_puskesmas, 0, ',', '.') . ' Puskesmas'
                                                         // . '<br>' . (($year <= 2025 ) ? 'Tanpa Target' : 'Target 80%') . '</span>',
+                                                        . '</span>',
             'total_dpt_stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
             'percentage_stockout' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($stockout_percentage, 1, ',', '.') . '% dari total ' . number_format($stockout_total_puskesmas, 0, ',', '.') . ' Puskesmas'
                                                         . '</span>',
