@@ -623,8 +623,8 @@
 
             function setLanguage(lang) {
                 document.getElementById('longterm-menu-label').textContent = translations[lang].longterm;
-                document.getElementById('longterm-submenu1-label').textContent = translations[lang].longtermSub1;
-                document.getElementById('longterm-submenu2-label').textContent = translations[lang].longtermSub2;
+                // document.getElementById('longterm-submenu1-label').textContent = translations[lang].longtermSub1;
+                // document.getElementById('longterm-submenu2-label').textContent = translations[lang].longtermSub2;
                 document.getElementById('intermediate-menu-label').textContent = translations[lang].intermediate;
                 document.getElementById('intermediate-submenu1-label').textContent = translations[lang].intermediateSub1;
                 document.getElementById('intermediate-submenu2-label').textContent = translations[lang].intermediateSub2;
