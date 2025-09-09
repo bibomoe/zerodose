@@ -47,7 +47,7 @@
                                                         <div class="col-md-12">
                                                             
                                                             <?= form_open('report/immunization_report_indonesia'); ?>
-                                                                <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;">Pilih Filter </label>
+                                                                <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;"><?= $translations['filter_label'] ?> </label>
                                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                                     <?php
                                                                         // Ambil session partner_category
@@ -134,7 +134,7 @@
                                                         <div class="col-md-12">
                                                             
                                                             <?= form_open('report/immunization_report_indonesia_sent_email'); ?>
-                                                                <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;">Pilih Filter </label>
+                                                                <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;"><?= $translations['filter_label'] ?> </label>
                                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                                     <?php
                                                                         // Ambil session partner_category
@@ -231,7 +231,7 @@
                                                         <div class="col-md-12">
                                                             
                                                             <?= form_open('report/partner_report'); ?>
-                                                                <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;">Pilih Filter </label>
+                                                                <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;"><?= $translations['filter_label'] ?> </label>
                                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                                     <?php
                                                                         // Ambil session partner_category
@@ -295,7 +295,7 @@
                                                         <div class="col-md-12">
                                                             
                                                             <?= form_open('report/partner_report_indonesia_sent_email'); ?>
-                                                                <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;">Pilih Filter </label>
+                                                                <label for="partnersInput" class="form-label" style="font-size: 1rem; font-weight: bold;"><?= $translations['filter_label'] ?> </label>
                                                                 <div class="d-flex flex-column flex-md-row align-items-center gap-2">
                                                                     <?php
                                                                         // Ambil session partner_category

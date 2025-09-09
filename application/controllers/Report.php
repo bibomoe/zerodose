@@ -85,12 +85,7 @@ class Report extends CI_Controller {
         $this->data['activities'] = [];
         $this->data['title'] = 'Laporan Kerangka Kerja Penurunan Zero Dose';
 
-        // Ambil data provinsi untuk dropdown
-        $provinces = $this->Immunization_model->get_provinces();
-        $this->data['province_options'] = ['all' => '-- Provinsi --'];
-        foreach ($provinces as $province) {
-            $this->data['province_options'][$province->id] = $province->name_id;
-        }
+        
 
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
@@ -102,6 +97,13 @@ class Report extends CI_Controller {
         $this->data['translations'] = $translations;
 
         $this->data['month_options'] = $translations['type_report'];
+
+        // Ambil data provinsi untuk dropdown
+        $provinces = $this->Immunization_model->get_provinces();
+        $this->data['province_options'] = ['all' => '-- '.$translations['province'].' --'];
+        foreach ($provinces as $province) {
+            $this->data['province_options'][$province->id] = $province->name_id;
+        }
 
         load_template('report', $this->data);
     }
@@ -117,6 +119,8 @@ class Report extends CI_Controller {
                 'text3' => 'Download Partner Report',
                 'text4' => 'Send Partner Report via Email',
                 'text5' => 'Send',
+                'province' => 'Province',
+                'city' => 'City',
                 'type_report' => [
                     'all' => 'Annual Report',
                     6 => 'Mid-Year Report',
@@ -131,6 +135,8 @@ class Report extends CI_Controller {
                 'text3' => 'Unduh Laporan Mitra',
                 'text4' => 'Kirim Laporan Mitra Melalui Email',
                 'text5' => 'Kirim',
+                'province' => 'Provinsi',
+                'city' => 'Kabkota',
                 'type_report' => [
                     'all' => 'Laporan Akhir Tahun',
                     6 => 'Laporan Tengah Tahun',
