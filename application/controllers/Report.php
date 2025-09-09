@@ -92,6 +92,9 @@ class Report extends CI_Controller {
             $this->data['province_options'][$province->id] = $province->name_id;
         }
 
+        // Menentukan bahasa yang dipilih
+        $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
+
         // Memuat data terjemahan
         $translations = $this->load_translation_report($selected_language);
 
