@@ -874,7 +874,9 @@ class Report extends CI_Controller {
             'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_mr1_coverage, 0, ',', '.') 
                                         . '</span> <br><br>' . number_format($percent_mr1_coverage, 1, ',', '.') . '% dari sasaran'
                                         . '<br> Baseline : ' . number_format($total_mr1_target, 0, ',', '.'),
-            'children_zero_dose' => number_format($zero_dose, 0, ',', '.'),
+            'children_zero_dose' => '<span style="font-size:22pt; font-weight: bold; color: #d9534f;">' . number_format($zero_dose, 0, ',', '.') 
+                                        . '</span> <br><br>' . number_format($percent_zero_dose, 1, ',', '.') . '% dari sasaran',
+            // 'children_zero_dose' => number_format($zero_dose, 0, ',', '.'),
             'baseline_zd' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> Target ' . (($year <= 2025 ) ? '15% : ' : '25% : ') . $baseline_zd . ' </span>',
             'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt1_coverage, 0, ',', '.') 
                                     . '</span> <br><br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '% dari sasaran'
@@ -995,7 +997,7 @@ class Report extends CI_Controller {
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['children_zero_dose'] . '</td>
+                            <td style="font-size:12pt; ">' . $data['children_zero_dose'] . '</td>
                             <td style="font-size:12pt; ">' . $data['cumulative_dpt3'] . '</td>
                             <td style="font-size:12pt; ">' . $data['cumulative_mr1'] . '</td>
                         </tr>
