@@ -672,7 +672,8 @@
             }
 
             // Inisialisasi bahasa berdasarkan localStorage
-            let savedLang = localStorage.getItem("selectedLanguage");
+            // let savedLang = localStorage.getItem("selectedLanguage") ;
+            let savedLang = <?= $this->session->userdata('language') ?? 'en'; ?>;
             setLanguage(savedLang);
 
             // Jika bahasa tidak ada di localStorage, set bahasa default dan kirim ke server
