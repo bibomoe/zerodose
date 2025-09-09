@@ -76,7 +76,7 @@
                                                                     ?>
                                                                         <?= form_dropdown('province_id', $province_options, '', 
                                                                         'class="form-select" id="province_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
-                                                                        <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
+                                                                        <?= form_dropdown('city_id', ['all' => '-- '. $translations['city'] .' --'], '',
                                                                         'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?php
                                                                         } else {
@@ -86,7 +86,7 @@
                                                                             'class="form-select" id="province_idx" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"
                                                                             disabled'); ?>
                                                                         <input type="hidden" id="province_id" name="province_id" value="<?=$user_province;?>">
-                                                                        <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
+                                                                        <?= form_dropdown('city_id', ['all' => '-- '. $translations['city'] .' --'], '',
                                                                         'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?php
                                                                             } else if($user_category == 8){
@@ -161,7 +161,7 @@
                                                                     ?>
                                                                         <?= form_dropdown('province_id', $province_options, '', 
                                                                         'class="form-select" id="province_id2" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
-                                                                        <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
+                                                                        <?= form_dropdown('city_id', ['all' => '-- '. $translations['city'] .' --'], '',
                                                                         'class="form-select" id="city_id2" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?php
                                                                         } else {
@@ -171,7 +171,7 @@
                                                                             'class="form-select" id="province_idx" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"
                                                                             disabled'); ?>
                                                                         <input type="hidden" id="province_id" name="province_id" value="<?=$user_province;?>">
-                                                                        <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
+                                                                        <?= form_dropdown('city_id', ['all' => '-- '. $translations['city'] .' --'], '',
                                                                         'class="form-select" id="city_id2" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?php
                                                                             } else if($user_category == 8){
@@ -257,7 +257,7 @@
                                                                     <?php endif; ?> -->
                                                                     <!-- <?= form_dropdown('province_id', $province_options, '', 
                                                                         'class="form-select" id="province_id3" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
-                                                                    <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
+                                                                    <?= form_dropdown('city_id', ['all' => '-- '. $translations['city'] .' --'], '',
                                                                         'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>-->
                                                                     <?= form_dropdown('year', $year_options_2, '', 
                                                                         'class="form-select" id="year" style="width: 20%; max-width: 100px; height: 48px; font-size: 1rem;"'); ?> 
@@ -320,7 +320,7 @@
                                                                     <?php endif; ?> -->
                                                                     <!-- <?= form_dropdown('province_id', $province_options, '', 
                                                                         'class="form-select" id="province_id4" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
-                                                                    <?= form_dropdown('city_id', ['all' => '-- Kab/Kota --'], '',
+                                                                    <?= form_dropdown('city_id', ['all' => '-- '. $translations['city'] .' --'], '',
                                                                         'class="form-select" id="city_id" style="width: 20%; max-width: 250px; height: 48px; font-size: 1rem;"'); ?>
                                                                     <?= form_dropdown('year', $year_options, '', 
                                                                         'class="form-select" id="year" style="width: 20%; max-width: 100px; height: 48px; font-size: 1rem;"'); ?> -->
