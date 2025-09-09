@@ -673,11 +673,11 @@
 
             // Inisialisasi bahasa berdasarkan localStorage
             // let savedLang = localStorage.getItem("selectedLanguage") ;
-            let savedLang = <?= strval($this->session->userdata('language')) ?? 'en'; ?>;
-            setLanguage(savedLang.toString());
+            let savedLang = <?= strval($this->session->userdata('language')) ?? 'en'; ?>.toString();
+            setLanguage(savedLang);
 
             // Jika bahasa tidak ada di localStorage, set bahasa default dan kirim ke server
-            if (!savedLang.toString()) {
+            if (!savedLang) {
                 savedLang = 'en'; // Atur bahasa default ke 'en' (english)
                 const defaultLangOption = document.querySelector(`.lang-option[data-lang="${savedLang}"] img`);
                 const defaultLangImgSrc = defaultLangOption ? defaultLangOption.src : ''; // Mendapatkan gambar bendera default
