@@ -1190,6 +1190,9 @@ class Home extends CI_Controller {
         // Menentukan Maks Bulan Data Kumulatif DPT
         $this->data['max_month'] = $this->Dpt1_model->get_max_dpt1_month($selected_year);
 
+        // Metode 1: Menggunakan Array Asosiatif (Direkomendasikan)
+        $month_number = $this->data['max_month'];
+
         // Menentukan quarter
         // $this->data['quarter'] = $this->Immunization_model->get_max_quarter($selected_year);
 
