@@ -493,6 +493,15 @@ class Report extends CI_Controller {
         // exit;
 
         $zero_dose = $this->data["zero_dose_$year"];
+        $total_target = $this->data["total_target_dpt_1_$year"];
+
+        // Hitung % Zero Dose dari total target
+        $this->data["percent_zero_dose_$year"] = ($total_target > 0) 
+            ? round(($zero_dose / $total_target) * 100, 2) 
+            : 0;
+
+        $percent_zero_dose = $this->data["percent_zero_dose_$year"];
+
         $baseline_zd = $this->data['national_baseline_zd'];
         $baseline_zd = ($year <= 2025 ) ? number_format($baseline_zd * 0.85, 0, ',', '.') : number_format($baseline_zd * 0.75, 0, ',', '.');
         $percent_dpt3_coverage = $this->data["percent_dpt_3_$year"];
