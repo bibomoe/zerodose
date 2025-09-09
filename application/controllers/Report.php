@@ -1333,6 +1333,15 @@ class Report extends CI_Controller {
         // exit;
 
         $zero_dose = $this->data["zero_dose_$year"];
+        $total_target = $this->data["total_target_dpt_1_$year"];
+
+        // Hitung % Zero Dose dari total target
+        $this->data["percent_zero_dose_$year"] = ($total_target > 0) 
+            ? round(($zero_dose / $total_target) * 100, 2) 
+            : 0;
+
+        $percent_zero_dose = $this->data["percent_zero_dose_$year"];
+
         $baseline_zd = $this->data['national_baseline_zd'];
         $baseline_zd = ($year <= 2025 ) ? number_format($baseline_zd * 0.85, 0, ',', '.') : number_format($baseline_zd * 0.75, 0, ',', '.');
         $percent_dpt3_coverage = $this->data["percent_dpt_3_$year"];
@@ -1390,6 +1399,8 @@ class Report extends CI_Controller {
             
             $total_cities = $this->Report_model->get_total_regencies_cities($selected_province);
 
+            $total_cities_DO = $total_cities;
+
             // Menghitung Persen KabKota dengan DO Rate dibawah 5%
             $percentage_under_5_DO = ($total_cities > 0) 
                 ? round(($total_district_under_5_DO / $total_cities) * 100, 2)
@@ -1403,6 +1414,8 @@ class Report extends CI_Controller {
             $total_district_under_5_DO =  $dropout_rates; //Jumlah Puskesmas dengan %DO dibawah 5%
             
             $total_cities = $this->Report_model->get_total_puskesmas_in_district($selected_district);
+
+            $total_cities_DO = $total_cities;
 
             // Menghitung Persen KabKota dengan DO Rate dibawah 5%
             $percentage_under_5_DO = ($total_cities > 0) 
@@ -1710,23 +1723,26 @@ class Report extends CI_Controller {
             'cumulative_mr1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_mr1_coverage, 0, ',', '.') 
                                         . '</span> <br><br>' . number_format($percent_mr1_coverage, 1, ',', '.') . '% dari sasaran'
                                         . '<br> Baseline : ' . number_format($total_mr1_target, 0, ',', '.'),
-            'children_zero_dose' => number_format($zero_dose, 0, ',', '.'),
+            'children_zero_dose' => '<span style="font-size:22pt; font-weight: bold; color: #d9534f;">' . number_format($zero_dose, 0, ',', '.') 
+                                        . '</span> <br><br>' . number_format($percent_zero_dose, 1, ',', '.') . '% dari sasaran',
+            // 'children_zero_dose' => number_format($zero_dose, 0, ',', '.'),
             'baseline_zd' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> Target ' . (($year <= 2025 ) ? '15% : ' : '25% : ') . $baseline_zd . ' </span>',
             'cumulative_dpt1' => '<span style="font-size:22pt; font-weight: bold;">' . number_format($total_dpt1_coverage, 0, ',', '.') 
                                     . '</span> <br><br>' . number_format($percent_dpt1_coverage, 1, ',', '.') . '% dari sasaran'
                                     . '<br> Sasaran : ' . number_format($total_dpt1_target, 0, ',', '.') ,
             'drop_out_percentage' => number_format($dropout_rate_all_provinces, 1, ',', '.') . '% <br>',
             'puskesmas_percentage' => number_format($total_district_under_5_DO, 0, ',', '.'),
-            'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . (($selected_district === 'all') ? '% dari total Kab/Kota' : '% dari total puskesmas') . ' </span>',
+            'district_under_5_puskesmas' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . $percentage_under_5_DO . (($selected_district === 'all') ? '% dari total ' . number_format($total_cities_DO, 0, ',', '.') . ' Kab/Kota' : '% dari total ' . number_format($total_cities_DO, 0, ',', '.') . '  puskesmas') . ' </span>',
             'puskesmas_conduct_immunization' => number_format($ss_category_good, 0, ',', '.'),
-            'total_ss' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($ss_percentage_good, 1, ',', '.') . '% dari total Puskesmas'
+            'total_ss' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($ss_percentage_good, 1, ',', '.') . '% dari total ' . number_format($stockout_total_puskesmas, 0, ',', '.') . ' Puskesmas'
                                                         . '<br> Total SS : ' . number_format($ss_total_ss, 0, ',', '.') . '</span>',
             'percentage_puskesmas_conduct_immunization' => number_format($percentage_puskesmas_conduct_immunization, 1, ',', '.') . '%',
-            'total_puskesmas_conduct_immunization' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> ' . number_format($puskesmas_conduct_immunization, 0, ',', '.') . ' Puskesmas'
-                                                        . '<br>' . (($year <= 2025 ) ? 'Tanpa Target' : 'Target 80%') . '</span>',
+            'total_puskesmas_conduct_immunization' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;"> ' . number_format($puskesmas_conduct_immunization, 0, ',', '.') . ' Puskesmas' . ' dari total ' . number_format($stockout_total_puskesmas, 0, ',', '.') . ' Puskesmas'
+                                                        // . '<br>' . (($year <= 2025 ) ? 'Tanpa Target' : 'Target 80%') . '</span>',
+                                                        . '</span>',
             'total_dpt_stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
-            'percentage_stockout' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($stockout_percentage, 1, ',', '.') . '% dari total Puskesmas'
-                                                        . '<br> Total Puskesmas : ' . number_format($stockout_total_puskesmas, 0, ',', '.') . '</span>',
+            'percentage_stockout' => '<br> <span style="font-size:12pt; font-weight: normal; color: black;">' . number_format($stockout_percentage, 1, ',', '.') . '% dari total ' . number_format($stockout_total_puskesmas, 0, ',', '.') . ' Puskesmas'
+                                                        . '</span>',
             'province_do' => $table_do,
             'puskesmas_do_immunization' => $table_puskesmas_immunization,
             'puskesmas_dpt_stock_out_data' => $table_puskesmas_stock_out
@@ -1830,7 +1846,7 @@ class Report extends CI_Controller {
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="font-size:22pt; font-weight: bold; color: #d9534f; ">' . $data['children_zero_dose'] . '</td>
+                            <td style="font-size:12pt; ">' . $data['children_zero_dose'] . '</td>
                             <td style="font-size:12pt; ">' . $data['cumulative_dpt3'] . '</td>
                             <td style="font-size:12pt; ">' . $data['cumulative_mr1'] . '</td>
                         </tr>
