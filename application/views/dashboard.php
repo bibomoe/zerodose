@@ -1104,7 +1104,7 @@ $(document).ready(function () {
 </script>
 
 <script>
-    const lang = <?= $selected_language; ?>;
+    const lang = <?= json_encode($this->session->userdata('language') ?? 'en'); ?>;
 
     const t = {
         en: {
