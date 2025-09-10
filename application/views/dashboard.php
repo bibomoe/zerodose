@@ -1104,7 +1104,7 @@ $(document).ready(function () {
 </script>
 
 <script>
-    const lang = <?= $translations['selected_language'] ?>;
+    const lang = <?= $selected_language; ?>;
 
     const t = {
         en: {
