@@ -403,6 +403,21 @@ class Dashboard_model extends CI_Model {
         return $query->row()->percentage ?? 0;
     }
 
+    public function get_puskesmas_immunized_absolute($year) {
+        $this->db->distinct();
+        $this->db->select('puskesmas_id');
+        $this->db->from('immunization_data');
+        $this->db->where('year', $year);
+
+        return $this->db->get()->num_rows();
+    }
+
+    public function get_total_puskesmas() {
+        $this->db->where('is_active', 1); // Pastikan hanya yang aktif
+        return $this->db->count_all_results('puskesmas');
+    }
+
+
     // public function get_total_dpt_stock_out($year) {
     //     $this->db->select('
     //         SUM(stock_out_1_month) + 

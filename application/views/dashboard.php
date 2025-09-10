@@ -604,6 +604,19 @@
                             </div>
 
                             <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header"><strong>Puskesmas yang Melakukan Pelayanan Imunisasi</strong></div>
+                                        <div class="card-body">
+                                            <canvas id="chartPuskesmasImunisasi" height="300"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sisanya bisa untuk grafik intermediate #2 dan #3 -->
+                            </div>
+
+                            <div class="row">
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header"></div>
@@ -1262,6 +1275,46 @@ $(document).ready(function () {
         }
     ], true);
 </script>
+
+<script>
+    const puskesmasData = {
+        baseline: <?= (int) $total_puskesmas ?>,
+        2025: <?= (int) $absolute_puskesmas_immunized_2025 ?>,
+        2026: <?= (int) $absolute_puskesmas_immunized_2026 ?>,
+        percent_2025: <?= (float) $percent_puskesmas_immunized_2025 ?>,
+        percent_2026: <?= (float) $percent_puskesmas_immunized_2026 ?>
+    };
+
+    createMultiAxisChart(
+        document.getElementById('chartPuskesmasImunisasi').getContext('2d'),
+        ['Baseline', '2025', '2026'],
+        [
+            {
+                label: 'Jumlah Puskesmas yang Melayani Imunisasi',
+                data: [
+                    puskesmasData.baseline,
+                    puskesmasData[2025],
+                    puskesmasData[2026]
+                ],
+                backgroundColor: colorBlue,
+                yAxisID: 'y'
+            },
+            {
+                type: 'scatter',
+                label: '%',
+                data: [
+                    { x: 0, y: 100 },
+                    { x: 1, y: puskesmasData.percent_2025 },
+                    { x: 2, y: puskesmasData.percent_2026 }
+                ],
+                backgroundColor: colorRed,
+                yAxisID: 'y1',
+                pointRadius: 4
+            }
+        ]
+    );
+</script>
+
 
 
 
