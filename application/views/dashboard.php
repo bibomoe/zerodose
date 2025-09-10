@@ -613,6 +613,15 @@
                                     </div>
                                 </div>
 
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header"><strong><?= $translations['table2text13'] ?></strong></div>
+                                        <div class="card-body">
+                                            <canvas id="chartDptStockout" height="300"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- Sisanya bisa untuk grafik intermediate #2 dan #3 -->
                             </div>
 
@@ -1114,6 +1123,7 @@ $(document).ready(function () {
             zd_label_chased: 'Catch Up (Immunized)',
             zd_label_percent: '% Reduction',
             puskesmas_label: 'Number of Puskesmas conduct immunization',
+            dpt_stockout_label: '<?= $translations['table2text13'] ?>',
             y_axis_absolute: 'Number of Children',
             y_axis_percent: 'Reduction (%)',
             tooltip_percent: '%: ',
@@ -1126,6 +1136,7 @@ $(document).ready(function () {
             zd_label_chased: 'Sudah Diimunisasi Kejar',
             zd_label_percent: '% Penurunan',
             puskesmas_label: 'Jumlah Puskesmas Yang Melakukan Pelayanan Imunisasi',
+            dpt_stockout_label: '<?= $translations['table2text13'] ?>',
             y_axis_absolute: 'Jumlah Anak',
             y_axis_percent: 'Penurunan (%)',
             tooltip_percent: '%: ',
@@ -1341,6 +1352,45 @@ $(document).ready(function () {
         false,
         { y_label: 'Number of Facilities', y1_label: 'Percentage (%)' }
     );
+
+    const stockout = {
+        baseline: 0,
+        y1: <?= (int) $total_dpt_stockout_2025 ?>,
+        y2: <?= (int) $total_dpt_stockout_2026 ?>,
+        percent_y1: <?= (float) $percent_dpt_stockout_2025 ?>,
+        percent_y2: <?= (float) $percent_dpt_stockout_2026 ?>
+    };
+
+    createMultiAxisChart(
+        document.getElementById('chartDptStockout').getContext('2d'),
+        ['Baseline', '2025', '2026'],
+        [
+            {
+                label: t.dpt_stockout_label,
+                data: [stockout.baseline, stockout.y1, stockout.y2],
+                backgroundColor: colorBlue,
+                yAxisID: 'y'
+            },
+            {
+                type: 'scatter',
+                label: '%',
+                data: [
+                    { x: 0, y: 0 },
+                    { x: 1, y: stockout.percent_y1 },
+                    { x: 2, y: stockout.percent_y2 }
+                ],
+                backgroundColor: colorRed,
+                yAxisID: 'y1',
+                pointRadius: 4
+            }
+        ],
+        false,
+        {
+            y_label: 'Number of Facilities',
+            y1_label: 'Percentage (%)'
+        }
+    );
+
 
 </script>
 
