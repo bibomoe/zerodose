@@ -393,6 +393,18 @@ class Dashboard_model extends CI_Model {
         return ($total_regencies > 0) ? round(($total_dropout_rate / $total_regencies) * 100, 2) : 0;
     }
 
+    public function get_districts_under_5_absolute($year) {
+        $this->load->model('Dpt1_model');
+        return array_sum($this->Dpt1_model->get_districts_under_5_percent($year, 'all'));
+    }
+
+    public function get_total_regencies() {
+        $this->load->model('Dpt1_model');
+        return $this->Dpt1_model->get_total_regencies_cities('all');
+    }
+
+
+
     public function get_puskesmas_immunization_percentage($year) {
         $this->db->select("
             (COUNT(DISTINCT i.puskesmas_id) / COUNT(DISTINCT p.id)) * 100 AS percentage", false);
