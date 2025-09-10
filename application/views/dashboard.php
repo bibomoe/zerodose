@@ -1418,6 +1418,13 @@ $(document).ready(function () {
         ['2025', '2026'],
         [
             {
+                label: 'Target',
+                data: [facilityGuided.target_y1, facilityGuided.target_y2],
+                backgroundColor: colorGray,
+                yAxisID: 'y',
+                type: 'bar'
+            },
+            {
                 label: t.facility_guided_label,
                 data: [facilityGuided.y1, facilityGuided.y2],
                 backgroundColor: colorBlue,
