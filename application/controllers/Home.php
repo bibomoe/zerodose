@@ -79,6 +79,11 @@ class Home extends CI_Controller {
         $this->data['percent_districts_under_5_2025'] = $this->Dashboard_model->get_districts_under_5_percentage(2025);
         $this->data['percent_districts_under_5_2026'] = $this->Dashboard_model->get_districts_under_5_percentage(2026);
 
+        $this->data['absolute_districts_under_5_2025'] = $this->Dashboard_model->get_districts_under_5_absolute(2025);
+        $this->data['absolute_districts_under_5_2026'] = $this->Dashboard_model->get_districts_under_5_absolute(2026);
+        $this->data['total_districts'] = $this->Dashboard_model->get_total_regencies(); // baseline (jumlah kabupaten)
+
+
         // ✅ Ambil persentase Puskesmas yang telah melakukan imunisasi
         $this->data['percent_puskesmas_immunized_2025'] = $this->Dashboard_model->get_puskesmas_immunization_percentage(2025);
         $this->data['percent_puskesmas_immunized_2026'] = $this->Dashboard_model->get_puskesmas_immunization_percentage(2026);
