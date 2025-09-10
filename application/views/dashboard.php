@@ -603,12 +603,27 @@
                                 </div>
                             </div>
 
+                            <!-- Graph Intermediate Outcomes -->
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="card">
                                         <div class="card-header"><strong><?= $translations['table2text2'] ?></strong></div>
                                         <div class="card-body">
                                             <canvas id="chartPuskesmasImunisasi" height="300"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sisanya bisa untuk grafik intermediate #2 dan #3 -->
+                            </div>
+
+                            <!-- Graph Intermediate Outcomes -->
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header"><strong><?= $translations['table2text11'] ?></strong></div>
+                                        <div class="card-body">
+                                            <canvas id="chartFacilityCompliant" height="300"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -1135,6 +1150,7 @@ $(document).ready(function () {
             puskesmas_label: 'Number of Puskesmas conduct immunization',
             dpt_stockout_label: '<?= $translations['table2text13'] ?>',
             facility_guided_label: 'Number of Private Facilities',
+            facility_compliant_label: 'Number of Puskesmas',
             y_axis_absolute: 'Number of Children',
             y_axis_percent: 'Reduction (%)',
             tooltip_percent: '%: ',
@@ -1149,6 +1165,7 @@ $(document).ready(function () {
             puskesmas_label: 'Jumlah Puskesmas Yang Melakukan Pelayanan Imunisasi',
             dpt_stockout_label: '<?= $translations['table2text13'] ?>',
             facility_guided_label: 'Jumlah Layanan Swasta',
+            facility_compliant_label: 'Jumlah Puskesmas',
             y_axis_absolute: 'Jumlah Anak',
             y_axis_percent: 'Penurunan (%)',
             tooltip_percent: '%: ',
@@ -1448,6 +1465,48 @@ $(document).ready(function () {
             y1_label: 'Percentage (%)'
         }
     );
+
+    const healthFacility = {
+        baseline: <?= (int) $total_puskesmas ?>, // dari model langsung
+        y1: <?= (int) $total_health_facilities_2025 ?>,
+        y2: <?= (int) $total_health_facilities_2026 ?>,
+        percent_y1: <?= (float) $percent_health_facilities_2025 ?>,
+        percent_y2: <?= (float) $percent_health_facilities_2026 ?>
+    };
+
+    createMultiAxisChart(
+        document.getElementById('chartFacilityCompliant').getContext('2d'),
+        ['Baseline', '2025', '2026'],
+        [
+            {
+                label: t.facility_compliant_label,
+                data: [healthFacility.baseline, healthFacility.y1, healthFacility.y2],
+                backgroundColor: colorBlue,
+                yAxisID: 'y'
+            },
+            {
+                type: 'scatter',
+                label: '%',
+                data: [
+                    { x: 0, y: 100 },
+                    { x: 1, y: healthFacility.percent_y1 },
+                    { x: 2, y: healthFacility.percent_y2 }
+                ],
+                backgroundColor: colorRed,
+                yAxisID: 'y1',
+                pointRadius: 4
+            }
+        ],
+        false,
+        {
+            y_label: 'Number of Facilities',
+            y1_label: 'Percentage (%)'
+        }
+    );
+
+
+
+
 
 </script>
 

@@ -667,6 +667,20 @@ class Dashboard_model extends CI_Model {
     
         return $percentage;
     }
+
+    public function get_total_health_facilities_good_category($year) {
+        $province_ids = $this->get_targeted_province_ids();
+
+        $this->db->select('SUM(good_category_puskesmas) AS total_good_puskesmas', false);
+        $this->db->from('supportive_supervision');
+        $this->db->where('year', $year);
+        if (!empty($province_ids)) {
+            $this->db->where_in('province_id', $province_ids);
+        }
+
+        return (int) ($this->db->get()->row()->total_good_puskesmas ?? 0);
+    }
+
     
     public function get_private_facility_trained_specific($year) {
         $province_ids = [31, 33, 35]; // DKI Jakarta (31), Jawa Tengah (33), Jawa Timur (35)

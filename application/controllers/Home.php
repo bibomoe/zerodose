@@ -107,6 +107,11 @@ class Home extends CI_Controller {
         $this->data['percent_health_facilities_2025'] = $this->Dashboard_model->get_health_facilities_percentage(2025);
         $this->data['percent_health_facilities_2026'] = $this->Dashboard_model->get_health_facilities_percentage(2026);
 
+        $this->data['total_health_facilities_2025'] = $this->Dashboard_model->get_total_health_facilities_good_category(2025);
+        $this->data['total_health_facilities_2026'] = $this->Dashboard_model->get_total_health_facilities_good_category(2026);
+
+        $this->data['baseline_health_facilities'] = $this->data['total_puskesmas'];
+
         // ✅ Ambil total fasilitas kesehatan swasta yang telah dilatih (hanya untuk provinsi ID 31, 33, 35)
         $this->data['private_facility_trained_2025'] = $this->Dashboard_model->get_private_facility_trained_specific(2025);
         $this->data['private_facility_trained_2026'] = $this->Dashboard_model->get_private_facility_trained_specific(2026);
