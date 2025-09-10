@@ -622,6 +622,16 @@
                                     </div>
                                 </div>
 
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header"><strong><?= $translations['table2text16'] ?></strong></div>
+                                        <div class="card-body">
+                                            <canvas id="chartFacilityGuided" height="300"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+
                                 <!-- Sisanya bisa untuk grafik intermediate #2 dan #3 -->
                             </div>
 
@@ -1124,6 +1134,7 @@ $(document).ready(function () {
             zd_label_percent: '% Reduction',
             puskesmas_label: 'Number of Puskesmas conduct immunization',
             dpt_stockout_label: '<?= $translations['table2text13'] ?>',
+            facility_guided_label: '<?= $translations['table2text16'] ?>',
             y_axis_absolute: 'Number of Children',
             y_axis_percent: 'Reduction (%)',
             tooltip_percent: '%: ',
@@ -1137,6 +1148,7 @@ $(document).ready(function () {
             zd_label_percent: '% Penurunan',
             puskesmas_label: 'Jumlah Puskesmas Yang Melakukan Pelayanan Imunisasi',
             dpt_stockout_label: '<?= $translations['table2text13'] ?>',
+            facility_guided_label: '<?= $translations['table2text16'] ?>',
             y_axis_absolute: 'Jumlah Anak',
             y_axis_percent: 'Penurunan (%)',
             tooltip_percent: '%: ',
@@ -1391,6 +1403,44 @@ $(document).ready(function () {
         }
     );
 
+    const facilityGuided = {
+        baseline: 0, // Tidak ada baseline untuk 2024
+        y1: <?= (int) $private_facility_trained_2025 ?>,
+        y2: <?= (int) $private_facility_trained_2026 ?>,
+        percent_y1: <?= (float) $percent_facility_2025 ?>,
+        percent_y2: <?= (float) $percent_facility_2026 ?>,
+        target_y1: <?= (int) $baseline_facility_2025 ?>,
+        target_y2: <?= (int) $baseline_facility_2026 ?>
+    };
+
+    createMultiAxisChart(
+        document.getElementById('chartFacilityGuided').getContext('2d'),
+        ['2025', '2026'],
+        [
+            {
+                label: t.facility_guided_label,
+                data: [facilityGuided.y1, facilityGuided.y2],
+                backgroundColor: colorBlue,
+                yAxisID: 'y'
+            },
+            {
+                type: 'scatter',
+                label: '%',
+                data: [
+                    { x: 0, y: facilityGuided.percent_y1 },
+                    { x: 1, y: facilityGuided.percent_y2 }
+                ],
+                backgroundColor: colorRed,
+                yAxisID: 'y1',
+                pointRadius: 4
+            }
+        ],
+        false,
+        {
+            y_label: 'Number of Facilities',
+            y1_label: 'Percentage (%)'
+        }
+    );
 
 </script>
 

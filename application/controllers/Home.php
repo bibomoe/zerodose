@@ -111,6 +111,25 @@ class Home extends CI_Controller {
         $this->data['private_facility_trained_2025'] = $this->Dashboard_model->get_private_facility_trained_specific(2025);
         $this->data['private_facility_trained_2026'] = $this->Dashboard_model->get_private_facility_trained_specific(2026);
 
+        $baseline_facility_2025 = 350;
+        $baseline_facility_2026 = 235;
+
+        $this->data['baseline_facility_2025'] = $baseline_facility_2025;
+        $this->data['baseline_facility_2026'] = $baseline_facility_2026;
+
+        // Asumsikan sudah ada data dari model
+        // $private_facility_trained_2025 = ...;
+        // $private_facility_trained_2026 = ...;
+
+        $this->data['percent_facility_2025'] = $baseline_facility_2025 > 0
+            ? ($this->data['private_facility_trained_2025'] / $baseline_facility_2025) * 100
+            : 0;
+
+        $this->data['percent_facility_2026'] = $baseline_facility_2026 > 0
+            ? ($this->data['private_facility_trained_2026'] / $baseline_facility_2026) * 100
+            : 0;
+
+
         // ✅ Ambil persentase distrik yang mengalokasikan pendanaan domestik (10 targeted provinces)
         $this->data['percent_district_funding_2025'] = $this->Dashboard_model->get_district_funding_percentage(2025);
         $this->data['percent_district_funding_2026'] = $this->Dashboard_model->get_district_funding_percentage(2026);
