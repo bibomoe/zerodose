@@ -118,6 +118,7 @@ class Home extends CI_Controller {
 
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
+        $this->data['selected_language'] = $selected_language;
 
         load_template('dashboard', $this->data);
     }
