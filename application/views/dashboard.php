@@ -606,7 +606,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="card">
-                                        <div class="card-header"><strong><?= $translations['table1text11'] ?></strong></div>
+                                        <div class="card-header"><strong><?= $translations['table2text2'] ?></strong></div>
                                         <div class="card-body">
                                             <canvas id="chartPuskesmasImunisasi" height="300"></canvas>
                                         </div>
@@ -1113,7 +1113,7 @@ $(document).ready(function () {
             zd_label_total: 'Zero Dose Children',
             zd_label_chased: 'Catch Up (Immunized)',
             zd_label_percent: '% Reduction',
-            puskesmas_label: '<?= $translations['table1text10'] ?>',
+            puskesmas_label: '<?= $translations['table2text2'] ?>',
             y_axis_absolute: 'Number of Children',
             y_axis_percent: 'Reduction (%)',
             tooltip_percent: '%: ',
@@ -1125,7 +1125,7 @@ $(document).ready(function () {
             zd_label_total: 'Jumlah Anak Zero Dose',
             zd_label_chased: 'Sudah Diimunisasi Kejar',
             zd_label_percent: '% Penurunan',
-            puskesmas_label: '<?= $translations['table1text11'] ?>',
+            puskesmas_label: '<?= $translations['table2text2'] ?>',
             y_axis_absolute: 'Jumlah Anak',
             y_axis_percent: 'Penurunan (%)',
             tooltip_percent: '%: ',
