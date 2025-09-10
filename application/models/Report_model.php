@@ -824,7 +824,7 @@ class Report_model extends CI_Model {
         $this->db->where('status_stockout', '1');
         
         if ($month !== 'all') {
-            $this->db->where('month =', $month);
+            $this->db->where('month <=', $month);
         }
     
         if ($province_id === 'targeted') {
@@ -1524,7 +1524,7 @@ class Report_model extends CI_Model {
         
         // Kondisi untuk bulan
         if ($month !== 'all') {
-            $this->db->where('ss.month =', $month); // Ambil hingga bulan yang ditentukan
+            $this->db->where('ss.month <=', $month); // Ambil hingga bulan yang ditentukan
         }
     
         // Kondisi untuk province_id
@@ -1662,7 +1662,7 @@ class Report_model extends CI_Model {
         $this->db->where('ss.status_stockout', '1');
     
         if ($month !== 'all') {
-            $this->db->where('ss.month =', $month);
+            $this->db->where('ss.month <=', $month);
         }
     
         if ($province_id === 'targeted') {
@@ -1780,7 +1780,7 @@ class Report_model extends CI_Model {
 
         // Jika bulan bukan 'all', maka ambil data untuk bulan yang ditentukan
         if ($month !== 'all') {
-            $this->db->where('sod.month =', $month);
+            $this->db->where('sod.month <=', $month);
         }
 
         // Mengurutkan berdasarkan bulan
