@@ -1523,35 +1523,6 @@ $(document).ready(function () {
         percent_y2: <?= (float) $percent_districts_under_5_2026 ?>
     };
 
-    createMultiAxisChart(
-        document.getElementById('chartDistrictDoUnder5').getContext('2d'),
-        ['Baseline', '2025', '2026'],
-        [
-            {
-                label: t.district_do_label,
-                data: [districtDO.baseline, districtDO.y1, districtDO.y2],
-                backgroundColor: colorGreen,
-                yAxisID: 'y'
-            },
-            {
-                type: 'scatter',
-                label: '%',
-                data: [
-                    { x: 0, y: 100 },
-                    { x: 1, y: districtDO.percent_y1 },
-                    { x: 2, y: districtDO.percent_y2 }
-                ],
-                backgroundColor: colorRed,
-                yAxisID: 'y1',
-                pointRadius: 4
-            }
-        ],
-        false,
-        {
-            y_label: 'Number of Districts',
-            y1_label: 'Percentage (%)'
-        }
-    );
 
 
 
