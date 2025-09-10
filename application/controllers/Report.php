@@ -100,7 +100,7 @@ class Report extends CI_Controller {
 
         // Ambil data provinsi untuk dropdown
         $provinces = $this->Immunization_model->get_provinces();
-        $this->data['province_options'] = ['all' => '-- '.$translations['province'].' --'];
+        $this->data['province_options'] = ['all' => '-- '.$translations['province'].' --', 'targeted' => 'targeted'];
         foreach ($provinces as $province) {
             $this->data['province_options'][$province->id] = $province->name_id;
         }
