@@ -1160,7 +1160,7 @@ $(document).ready(function () {
             dpt_stockout_label: '<?= $translations['table2text13'] ?>',
             facility_guided_label: 'Number of Private Facilities',
             facility_compliant_label: 'Number of Puskesmas',
-            district_do_label: '<?= $translations["table2text9"] ?>',
+            district_do_label: '<?= $translations['table2text9'] ?>',
             y_axis_absolute: 'Number of Children',
             y_axis_percent: 'Reduction (%)',
             tooltip_percent: '%: ',
@@ -1176,7 +1176,7 @@ $(document).ready(function () {
             dpt_stockout_label: '<?= $translations['table2text13'] ?>',
             facility_guided_label: 'Jumlah Layanan Swasta',
             facility_compliant_label: 'Jumlah Puskesmas',
-            district_do_label: '<?= $translations["table2text9"] ?>',
+            district_do_label: '<?= $translations['table2text9'] ?>',
             y_axis_absolute: 'Jumlah Anak',
             y_axis_percent: 'Penurunan (%)',
             tooltip_percent: '%: ',
@@ -1523,6 +1523,35 @@ $(document).ready(function () {
         percent_y2: <?= (float) $percent_districts_under_5_2026 ?>
     };
 
+    createMultiAxisChart(
+        document.getElementById('chartDistrictDoUnder5').getContext('2d'),
+        ['Baseline', '2025', '2026'],
+        [
+            {
+                label: t.district_do_label,
+                data: [districtDO.baseline, districtDO.y1, districtDO.y2],
+                backgroundColor: colorGreen,
+                yAxisID: 'y'
+            },
+            {
+                type: 'scatter',
+                label: '%',
+                data: [
+                    { x: 0, y: 100 },
+                    { x: 1, y: districtDO.percent_y1 },
+                    { x: 2, y: districtDO.percent_y2 }
+                ],
+                backgroundColor: colorRed,
+                yAxisID: 'y1',
+                pointRadius: 4
+            }
+        ],
+        false,
+        {
+            y_label: 'Number of Districts',
+            y1_label: 'Percentage (%)'
+        }
+    );
 
 
 
