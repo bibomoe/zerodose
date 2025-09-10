@@ -413,7 +413,7 @@ class Dashboard_model extends CI_Model {
     }
 
     public function get_total_puskesmas() {
-        $this->db->where('is_active', 1); // Pastikan hanya yang aktif
+        $this->db->where('active', 1); // Pastikan hanya yang aktif
         return $this->db->count_all_results('puskesmas');
     }
 
