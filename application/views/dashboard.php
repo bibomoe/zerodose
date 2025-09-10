@@ -1162,7 +1162,9 @@ $(document).ready(function () {
     const colorRed = '#ff0000';
     const colorOrange = '#ffa500';
 
-    function createMultiAxisChart(ctx, labels, datasets, isStacked = false) {
+    function createMultiAxisChart(ctx, labels, datasets, isStacked = false, customYAxisLabels = {}) {
+        const { y_label = t.y_axis_absolute, y1_label = t.y_axis_percent } = customYAxisLabels;
+
         new Chart(ctx, {
             type: 'bar',
             data: { labels, datasets },
@@ -1187,7 +1189,7 @@ $(document).ready(function () {
                     y: {
                         beginAtZero: true,
                         stacked: isStacked,
-                        title: { display: true, text: t.y_axis_absolute },
+                        title: { display: true, text: y_label },
                         ticks: { callback: v => v.toLocaleString('id-ID') }
                     },
                     y1: {
@@ -1195,7 +1197,7 @@ $(document).ready(function () {
                         max: 110,
                         position: 'right',
                         grid: { drawOnChartArea: false },
-                        title: { display: true, text: t.y_axis_percent },
+                        title: { display: true, text: y1_label },
                         ticks: { callback: v => v + '%' }
                     }
                 }
@@ -1203,79 +1205,101 @@ $(document).ready(function () {
         });
     }
 
+
     // === Chart DPT-3 ===
-    createMultiAxisChart(document.getElementById('chartDpt3').getContext('2d'), labels, [
-        {
-            label: t.dpt3_label,
-            data: [dpt3.baseline_y1, dpt3.absolute_y1, dpt3.absolute_y2],
-            backgroundColor: colorBlue,
-            yAxisID: 'y'
-        },
-        {
-            type: 'scatter',
-            label: '%',
-            data: [
-                { x: 0, y: 100 },
-                { x: 1, y: dpt3.actual_y1 },
-                { x: 2, y: dpt3.actual_y2 }
-            ],
-            backgroundColor: colorRed,
-            yAxisID: 'y1',
-            pointRadius: 4
-        }
-    ]);
+    createMultiAxisChart(
+        document.getElementById('chartDpt3').getContext('2d'),
+        labels,
+        [
+            {
+                label: t.dpt3_label,
+                data: [dpt3.baseline_y1, dpt3.absolute_y1, dpt3.absolute_y2],
+                backgroundColor: colorBlue,
+                yAxisID: 'y'
+            },
+            {
+                type: 'scatter',
+                label: '%',
+                data: [
+                    { x: 0, y: 100 },
+                    { x: 1, y: dpt3.actual_y1 },
+                    { x: 2, y: dpt3.actual_y2 }
+                ],
+                backgroundColor: colorRed,
+                yAxisID: 'y1',
+                pointRadius: 4
+            }
+        ],
+        false,
+        { y_label: t.y_axis_absolute, y1_label: 'Percentage (%)' }
+    );
+
 
     // === Chart MR-1 ===
-    createMultiAxisChart(document.getElementById('chartMr1').getContext('2d'), labels, [
-        {
-            label: t.mr1_label,
-            data: [mr1.baseline_y1, mr1.absolute_y1, mr1.absolute_y2],
-            backgroundColor: colorGreen,
-            yAxisID: 'y'
-        },
-        {
-            type: 'scatter',
-            label: '%',
-            data: [
-                { x: 0, y: 100 },
-                { x: 1, y: mr1.actual_y1 },
-                { x: 2, y: mr1.actual_y2 }
-            ],
-            backgroundColor: colorOrange,
-            yAxisID: 'y1',
-            pointRadius: 4
-        }
-    ]);
+    createMultiAxisChart(
+        document.getElementById('chartMr1').getContext('2d'),
+        labels,
+        [
+            {
+                label: t.mr1_label,
+                data: [mr1.baseline_y1, mr1.absolute_y1, mr1.absolute_y2],
+                backgroundColor: colorGreen,
+                yAxisID: 'y'
+            },
+            {
+                type: 'scatter',
+                label: '%',
+                data: [
+                    { x: 0, y: 100 },
+                    { x: 1, y: mr1.actual_y1 },
+                    { x: 2, y: mr1.actual_y2 }
+                ],
+                backgroundColor: colorOrange,
+                yAxisID: 'y1',
+                pointRadius: 4
+            }
+        ],
+        false,
+        { y_label: t.y_axis_absolute, y1_label: 'Percentage (%)' }
+    );
+
 
     // === Chart Zero Dose (Stacked) ===
-    createMultiAxisChart(document.getElementById('chartZd').getContext('2d'), labels, [
-        {
-            label: t.zd_label_total,
-            data: [zd_baseline, zd_y1_sisa, zd_y2_sisa],
-            backgroundColor: colorGray,
-            yAxisID: 'y',
-            stack: 'zd'
-        },
-        {
-            label: t.zd_label_chased,
-            data: [0, zd_y1_kejar, zd_y2_kejar],
-            backgroundColor: colorCyan,
-            yAxisID: 'y',
-            stack: 'zd'
-        },
-        {
-            type: 'scatter',
-            label: t.zd_label_percent,
-            data: [
-                { x: 0, y: 0 },
-                { x: 1, y: zd_percent[1] },
-                { x: 2, y: zd_percent[2] }
-            ],
-            backgroundColor: colorRed,
-            yAxisID: 'y1',
-            pointRadius: 4
-        }
-    ], true);
+    createMultiAxisChart(
+        document.getElementById('chartZd').getContext('2d'),
+        labels,
+        [
+            {
+                label: t.zd_label_total,
+                data: [zd_baseline, zd_y1_sisa, zd_y2_sisa],
+                backgroundColor: colorGray,
+                yAxisID: 'y',
+                stack: 'zd'
+            },
+            {
+                label: t.zd_label_chased,
+                data: [0, zd_y1_kejar, zd_y2_kejar],
+                backgroundColor: colorCyan,
+                yAxisID: 'y',
+                stack: 'zd'
+            },
+            {
+                type: 'scatter',
+                label: t.zd_label_percent,
+                data: [
+                    { x: 0, y: 0 },
+                    { x: 1, y: zd_percent[1] },
+                    { x: 2, y: zd_percent[2] }
+                ],
+                backgroundColor: colorRed,
+                yAxisID: 'y1',
+                pointRadius: 4
+            }
+        ],
+        true,
+        { y_label: t.y_axis_absolute, y1_label: t.zd_label_percent } // <-- label khusus
+    );
+
 </script>
 
 <script>
@@ -1313,8 +1337,11 @@ $(document).ready(function () {
                 yAxisID: 'y1',
                 pointRadius: 4
             }
-        ]
+        ],
+        false,
+        { y_label: 'Number of Facilities', y1_label: 'Percentage (%)' }
     );
+
 </script>
 
 
