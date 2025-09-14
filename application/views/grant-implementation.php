@@ -4,9 +4,10 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3>Grants Implementation and Budget Disbursement</h3>
+                                <h3>Budget Spending</h3>
                                 <p class="text-subtitle text-muted">
-                                Number and percentage of costed work plan activities completed, along with the budget execution rate (%) and amount ($) by activity in targeted provinces/districts.​</p>
+                                <!-- Number and percentage of costed work plan activities completed, along with the budget execution rate (%) and amount ($) by activity in targeted provinces/districts.​</p> -->
+                                Grants Implementation and Budget Disbursement </p>
                             </div>
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
