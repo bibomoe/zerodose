@@ -354,7 +354,9 @@
                     {
                         type: 'scatter',
                         label: 'Total Stock Out',
-                        data: stockOutTotal.map((value, i) => ({ x: i, y: value })),
+                        data: stockOutTotal.map((value, i) => {
+                            return value > 0 ? { x: i, y: value } : null; // hilangkan bulan kosong
+                        }).filter(v => v !== null), // buang data null
                         backgroundColor: 'black',
                         borderColor: 'black',
                         pointRadius: 5,
