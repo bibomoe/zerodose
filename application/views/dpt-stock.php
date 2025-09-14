@@ -390,7 +390,7 @@
                             size: 11
                         },
                         formatter: function(value) {
-                            return value.y; // ambil nilai total
+                            return value.y > 0 ? value.y : ''; // sembunyikan kalau 0
                         }
                     }
                 },
