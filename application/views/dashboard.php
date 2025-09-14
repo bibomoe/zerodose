@@ -616,6 +616,15 @@
 
                                 <div class="col-md-4">
                                     <div class="card">
+                                        <div class="card-header"><strong><?= $translations['table2text6'] ?></strong></div>
+                                        <div class="card-body">
+                                            <canvas id="chartDpt1Coverage" height="300"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="card">
                                         <div class="card-header"><strong><?= $translations['table2text9'] ?></strong></div>
                                         <div class="card-body">
                                             <canvas id="chartDistrictDoUnder5" height="300"></canvas>
@@ -1552,6 +1561,47 @@ $(document).ready(function () {
             y1_label: 'Percentage (%)'
         }
     );
+
+    const dpt1Coverage = {
+        baseline_y1: <?= (int) $baseline_dpt1_target_2025 ?>,
+        baseline_y2: <?= (int) $baseline_dpt1_target_2026 ?>,
+        y1: <?= (int) $absolute_dpt1_coverage_2025 ?>,
+        y2: <?= (int) $absolute_dpt1_coverage_2026 ?>,
+        percent_y1: <?= (float) $percent_dpt1_coverage_2025 ?>,
+        percent_y2: <?= (float) $percent_dpt1_coverage_2026 ?>
+    };
+
+    createMultiAxisChart(
+        document.getElementById('chartDpt1Coverage').getContext('2d'),
+        ['Baseline', '2025', '2026'],
+        [
+            {
+                label: t.dpt1_coverage_label,
+                data: [dpt1Coverage.baseline_y1, dpt1Coverage.y1, dpt1Coverage.y2],
+                backgroundColor: colorBlue,
+                yAxisID: 'y'
+            },
+            {
+                type: 'scatter',
+                label: '%',
+                data: [
+                    { x: 0, y: 100 },
+                    { x: 1, y: dpt1Coverage.percent_y1 },
+                    { x: 2, y: dpt1Coverage.percent_y2 }
+                ],
+                backgroundColor: colorRed,
+                yAxisID: 'y1',
+                pointRadius: 4
+            }
+        ],
+        false,
+        {
+            y_label: 'Number of Children',
+            y1_label: 'Percentage (%)'
+        }
+    );
+
+
 
 
 
