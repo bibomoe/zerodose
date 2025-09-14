@@ -580,7 +580,8 @@
                         title: { display: true, text: 'Number of Facilities' }
                     }
                 }
-            }
+            },
+            plugins: [ChartDataLabels]
         });
 
         function addDownloadButtons() {
