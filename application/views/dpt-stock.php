@@ -320,9 +320,12 @@
         });
 
         // 🔹 Hitung total stockout per bulan
-        let stockOutTotal = months.map((_, i) => 
-            stockOut1[i] + stockOut2[i] + stockOut3[i] + stockOut4[i]
-        );
+        // 🔹 Hitung total stockout per bulan (HARUS {x, y})
+        let stockOutTotal = months.map((_, i) => ({
+            x: i,
+            y: stockOut1[i] + stockOut2[i] + stockOut3[i] + stockOut4[i]
+        }));
+
 
         const ctx = document.getElementById('stockOutByDurationChart').getContext('2d');
         const stockoutChart = new Chart(ctx, {
@@ -380,15 +383,17 @@
                                 return ctx.dataset.label + ': ' + ctx.raw;
                             }
                         }
-                    },
+                    }
+
                     datalabels: {
-                        display: (ctx) => ctx.dataset.type === 'scatter' && ctx.raw > 0,
+                        display: (ctx) => ctx.dataset.type === 'scatter' && ctx.raw.y > 0,
                         align: 'top',
                         anchor: 'end',
                         color: 'black',
                         font: { weight: 'bold', size: 11 },
                         formatter: (value) => value.y
                     }
+
                 },
                 scales: {
                     x: {
