@@ -380,7 +380,7 @@
                     datalabels: {
                         display: function(ctx) {
                             // hanya tampilkan label untuk dataset scatter
-                            return ctx.dataset.type === 'scatter';
+                            return ctx.dataset.type === 'scatter' && ctx.raw.y > 0;
                         },
                         align: 'top',
                         anchor: 'end',
