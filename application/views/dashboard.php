@@ -588,8 +588,8 @@
                                                                     <td rowspan="2">Annually</td> -->
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="table-warning"><?= $percent_district_policy_2025; ?></td>
-                                                                    <td class="table-warning"><?= $percent_district_policy_2026; ?></td>
+                                                                    <td class="table-warning"><?= $percent_district_policy_2025; ?>%</td>
+                                                                    <td class="table-warning"><?= $percent_district_policy_2026; ?>%</td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>
