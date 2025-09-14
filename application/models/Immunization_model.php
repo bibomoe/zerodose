@@ -177,8 +177,10 @@ class Immunization_model extends CI_Model {
     // Total imunisasi berdasarkan jenis vaksin dan filter provinsi
     public function get_total_vaccine($vaccine_column, $province_id, $city_id, $year) {
         $this->db->reset_query(); // Tambahkan ini di awal
-        
+
         $province_ids = $this->get_targeted_province_ids();
+        var_dump($province_ids);
+        exit;
         $this->db->select("SUM($vaccine_column) AS total");
         $this->db->from('immunization_data');
         $this->db->where('year', $year); // <-- Pastikan ini ada!
