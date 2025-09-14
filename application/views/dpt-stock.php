@@ -351,16 +351,18 @@
                         backgroundColor: 'rgba(153, 102, 255, 0.7)',
                     },
                     // 🔹 Scatter total per bulan
+                    // ⬇️ Scatter total (TETAP 12 angka, tanpa filter)
                     {
                         type: 'scatter',
                         label: 'Total Stock Out',
-                        data: stockOutTotal.map((value, i) => {
-                            return value > 0 ? { x: i, y: value } : null; // hilangkan bulan kosong
-                        }).filter(v => v !== null), // buang data null
+                        data: stockOutTotal,           // [79, 67, 0, 0, 840, 103, 721, 707, 0, 0, 0, 0]
                         backgroundColor: 'black',
                         borderColor: 'black',
-                        pointRadius: 5,
-                        yAxisID: 'y'
+                        yAxisID: 'y',
+                        order: 99,                     // render di atas bar
+                        // sembunyikan titik jika 0
+                        pointRadius: (ctx) => (ctx.raw > 0 ? 5 : 0),
+                        pointHoverRadius: (ctx) => (ctx.raw > 0 ? 6 : 0),
                     }
                 ]
             },
@@ -380,23 +382,12 @@
                         }
                     },
                     datalabels: {
-                        display: function(ctx) {
-                            // hanya tampilkan label untuk dataset scatter, dan kalau y > 0
-                            return ctx.dataset.type === 'scatter' && ctx.raw && ctx.raw.y > 0;
-                        },
+                        display: (ctx) => ctx.dataset.type === 'scatter' && ctx.raw > 0,
                         align: 'top',
                         anchor: 'end',
                         color: 'black',
-                        font: {
-                            weight: 'bold',
-                            size: 11
-                        },
-                        formatter: function(value, ctx) {
-                            if (ctx.dataset.type === 'scatter' && value && value.y > 0) {
-                                return value.y; // tampilkan angka hanya untuk scatter dengan nilai > 0
-                            }
-                            return '';
-                        }
+                        font: { weight: 'bold', size: 11 },
+                        formatter: (value) => value
                     }
                 },
                 scales: {
