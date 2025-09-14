@@ -387,7 +387,7 @@
                         anchor: 'end',
                         color: 'black',
                         font: { weight: 'bold', size: 11 },
-                        formatter: (value) => value
+                        formatter: (value) => value.y
                     }
                 },
                 scales: {
