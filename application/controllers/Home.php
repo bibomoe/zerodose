@@ -159,6 +159,12 @@ class Home extends CI_Controller {
         $this->data['percent_district_policy_2025'] = $this->Dashboard_model->get_district_policy_percentage(2025);
         $this->data['percent_district_policy_2026'] = $this->Dashboard_model->get_district_policy_percentage(2026);
 
+        $this->data['absolute_district_policy_2025'] = $this->Dashboard_model->get_district_policy_absolute(2025);
+        $this->data['absolute_district_policy_2026'] = $this->Dashboard_model->get_district_policy_absolute(2026);
+
+// total_districts sudah ada dari sebelumnya
+
+
         // Menentukan bahasa yang dipilih
         $selected_language = $this->session->userdata('language') ?? 'en'; // Default ke bahasa Indonesia
 

@@ -752,34 +752,44 @@ class Dashboard_model extends CI_Model {
 
 
     public function get_district_policy_percentage($year) {
-        $targeted_provinces = $this->get_targeted_province_ids(); // Ambil 10 targeted provinces
-    
+        $targeted_provinces = $this->get_targeted_province_ids();
+
         if (empty($targeted_provinces)) {
-            return '0%';
+            return 0;
         }
-    
-        // 🔹 Ambil total distrik yang memiliki kebijakan
+
+        // 🔹 Hitung total distrik yang memiliki kebijakan
         $this->db->select('SUM(dp.policy_districts) AS total_policy_districts', false);
         $this->db->from('district_policy dp');
         $this->db->where_in('dp.province_id', $targeted_provinces);
         $this->db->where('dp.year', $year);
-    
+
         $total_policy_districts = $this->db->get()->row()->total_policy_districts ?? 0;
-    
-        // 🔹 Ambil total distrik di targeted provinces
+
+        // 🔹 Hitung total distrik di targeted provinces
         $this->db->select('COUNT(id) AS total_districts');
         $this->db->from('cities');
         $this->db->where_in('province_id', $targeted_provinces);
-    
+
         $total_districts = $this->db->get()->row()->total_districts ?? 0;
-    
-        // 🔹 Hitung persentase distrik yang memiliki kebijakan
-        $percentage_policy = ($total_districts > 0) 
-            ? round(($total_policy_districts / $total_districts) * 100, 2) . '%' 
-            : '0%';
-    
-        return $percentage_policy;
+
+        return ($total_districts > 0) 
+            ? round(($total_policy_districts / $total_districts) * 100, 2) 
+            : 0;
     }
+
+    // ✅ Tambahkan untuk absolute (jumlah distrik yang punya kebijakan)
+    public function get_district_policy_absolute($year) {
+        $targeted_provinces = $this->get_targeted_province_ids();
+
+        $this->db->select('SUM(dp.policy_districts) AS total_policy_districts', false);
+        $this->db->from('district_policy dp');
+        $this->db->where_in('dp.province_id', $targeted_provinces);
+        $this->db->where('dp.year', $year);
+
+        return (int) ($this->db->get()->row()->total_policy_districts ?? 0);
+    }
+
     
     
     

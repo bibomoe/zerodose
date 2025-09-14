@@ -670,11 +670,20 @@
 
                             <!-- Graph Intermediate Outcomes -->
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="card">
                                         <div class="card-header"><strong><?= $translations['table2text19'] ?></strong></div>
                                         <div class="card-body">
                                             <canvas id="chartDistrictFunding" height="300"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header"><strong><?= $translations['table2text22'] ?></strong></div>
+                                        <div class="card-body">
+                                            <canvas id="chartDistrictPolicy" height="300"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -1655,6 +1664,45 @@ $(document).ready(function () {
             y1_label: 'Percentage (%)'
         }
     );
+
+    const districtPolicy = {
+        baseline: <?= (int) $total_districts ?>,
+        y1: <?= (int) $absolute_district_policy_2025 ?>,
+        y2: <?= (int) $absolute_district_policy_2026 ?>,
+        percent_y1: <?= (float) $percent_district_policy_2025 ?>,
+        percent_y2: <?= (float) $percent_district_policy_2026 ?>
+    };
+
+    createMultiAxisChart(
+        document.getElementById('chartDistrictPolicy').getContext('2d'),
+        ['Baseline', '2025', '2026'],
+        [
+            {
+                label: t.district_do_label,
+                data: [districtPolicy.baseline, districtPolicy.y1, districtPolicy.y2],
+                backgroundColor: colorBlue,
+                yAxisID: 'y'
+            },
+            {
+                type: 'scatter',
+                label: '%',
+                data: [
+                    { x: 0, y: 100 },
+                    { x: 1, y: districtPolicy.percent_y1 },
+                    { x: 2, y: districtPolicy.percent_y2 }
+                ],
+                backgroundColor: colorRed,
+                yAxisID: 'y1',
+                pointRadius: 4
+            }
+        ],
+        false,
+        {
+            y_label: 'Number of Districts',
+            y1_label: 'Percentage (%)'
+        }
+    );
+
 
 
 
