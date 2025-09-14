@@ -499,6 +499,11 @@
             overStock4[monthIndex] = item.over_stock_4;
         });
 
+        // 🔹 Hitung total overstock per bulan
+        let overStockTotal = months.map((_, i) => 
+            overStock1[i] + overStock2[i] + overStock3[i] + overStock4[i]
+        );
+
         const ctx = document.getElementById('overStockByDurationChart').getContext('2d');
         const overstockChart = new Chart(ctx, {
             type: 'bar',
@@ -524,6 +529,18 @@
                         label: '> 3 Months',
                         data: overStock4,
                         backgroundColor: 'rgba(0, 0, 0, 0.6)', // Ungu sedang
+                    },
+                    // 🔹 Scatter total
+                    {
+                        type: 'scatter',
+                        label: 'Total Over Stock',
+                        data: overStockTotal.map((value, i) => ({ x: i, y: value })),
+                        backgroundColor: 'black',
+                        borderColor: 'black',
+                        yAxisID: 'y',
+                        order: 99,
+                        pointRadius: (ctx) => (ctx.raw && ctx.raw.y > 0 ? 5 : 0),
+                        pointHoverRadius: (ctx) => (ctx.raw && ctx.raw.y > 0 ? 6 : 0)
                     }
                 ]
 
@@ -532,7 +549,25 @@
                 responsive: true,
                 plugins: {
                     legend: { position: 'top' },
-                    title: { display: true, text: 'DPT Over Stock by Month' }
+                    title: { display: true, text: 'DPT Over Stock by Month' },
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) {
+                                if (ctx.dataset.type === 'scatter') {
+                                    return 'Total: ' + ctx.raw.y;
+                                }
+                                return ctx.dataset.label + ': ' + ctx.raw;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        display: (ctx) => ctx.dataset.type === 'scatter' && ctx.raw && ctx.raw.y > 0,
+                        align: 'top',
+                        anchor: 'end',
+                        color: 'black',
+                        font: { weight: 'bold', size: 11 },
+                        formatter: (value) => value.y
+                    }
                 },
                 scales: {
                     x: {
