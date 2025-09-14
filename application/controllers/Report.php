@@ -442,11 +442,11 @@ class Report extends CI_Controller {
             $area_label = 'di 13 provinsi target';
             $area_scope = '13 provinsi target';
         } elseif ($selected_district === 'all') {
-            $province_name = $this->get_province_name_by_id($selected_province);
+            $province_name = $this->Report_model->get_province_name_by_id($selected_province);
             $area_label = 'di Provinsi ' . $province_name;
             $area_scope = 'Provinsi ' . $province_name;
         } else {
-            $district_name = $this->get_district_name_by_id($selected_district);
+            $district_name = $this->Report_model->get_district_name_by_id($selected_district);
             $area_label = 'di ' . $district_name;
             $area_scope = $district_name;
         }
