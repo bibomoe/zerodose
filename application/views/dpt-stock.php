@@ -97,6 +97,10 @@
                                 </div>
                             </div>
 
+                            <div class="alert alert-secondary mb-3" role="alert">
+                                <strong><?= $translations['text6'] ?></strong> 
+                            </div>
+
                             <div class="row">
                                 <!-- <div class="col-md-6">
                                     <div class="card">
