@@ -375,7 +375,7 @@
                             return ctx.dataset.label + ': ' + ctx.raw;
                         }
                     }
-                }
+                },
                 scales: {
                     x: {
                         stacked: true,
