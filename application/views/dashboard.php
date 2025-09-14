@@ -1184,7 +1184,7 @@ $(document).ready(function () {
         }
     }[lang];
 
-    const labels = ['Baseline', '2025', '2026'];
+    const labels = ['(2024) Baseline', '2025', '2026'];
 
     const dpt3 = <?= json_encode($long_term_outcomes['dpt3']) ?>;
     const mr1 = <?= json_encode($long_term_outcomes['mr1']) ?>;
