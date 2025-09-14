@@ -429,6 +429,74 @@ class Report extends CI_Controller {
         exit();
     }
 
+    public function generate_narrative($selected_province, $selected_district, $selected_month, $selected_year, $data) {
+        $area_label = '';
+        $area_scope = '';
+        $time_label = ($selected_month == 6) ? '30 Juni' : '31 Desember';
+        $period_label = ($selected_month == 6) ? 'tengah tahun' : 'akhir tahun';
+
+        if ($selected_province === 'all') {
+            $area_label = 'di Indonesia';
+            $area_scope = 'Indonesia';
+        } elseif ($selected_province === 'targeted') {
+            $area_label = 'di 13 provinsi target';
+            $area_scope = '13 provinsi target';
+        } elseif ($selected_district === 'all') {
+            $province_name = $this->get_province_name_by_id($selected_province);
+            $area_label = 'di Provinsi ' . $province_name;
+            $area_scope = 'Provinsi ' . $province_name;
+        } else {
+            $district_name = $this->get_district_name_by_id($selected_district);
+            $area_label = 'di ' . $district_name;
+            $area_scope = $district_name;
+        }
+
+        // Ambil data dari parameter $data
+        $baseline_zd = number_format($data['baseline_zd'], 0, ',', '.');
+        $zd_chased = number_format($data['zd_chased'], 0, ',', '.');
+        $zd_chased_percent = number_format($data['zd_chased_percent'], 1, ',', '.');
+
+        $dpt1_total = number_format($data['dpt1'], 0, ',', '.');
+        $dpt1_percent = number_format($data['dpt1_percent'], 1, ',', '.');
+
+        $dpt3_percent = number_format($data['dpt3_percent'], 1, ',', '.');
+        $mr1_percent = number_format($data['mr1_percent'], 1, ',', '.');
+
+        $target_total = number_format($data['dpt1_target'], 0, ',', '.');
+        $zd_current = number_format($data['zd_current'], 0, ',', '.');
+
+        $dropout_high = $data['dropout_high']; // ['city' => '...', 'percent' => ...]
+        $dropout_low = $data['dropout_low'];   // ['city' => '...', 'percent' => ...]
+
+        $stockout_total = number_format($data['stockout'], 0, ',', '.');
+        $stockout_percent = number_format($data['stockout_percent'], 1, ',', '.');
+        $stockout_month = $data['stockout_month']; // e.g. 'April'
+        $total_puskesmas = number_format($data['total_puskesmas'], 0, ',', '.');
+
+        // Bangun narasi
+        $narrative = "Anak-anak Zero Dose (ZD) didefinisikan sebagai anak-anak yang belum menerima imunisasi DPT dosis pertama hingga usia 11 bulan 29 hari. ";
+        $narrative .= "Pada tahun 2024, jumlah anak ZD $area_label mencapai $baseline_zd. ";
+        $narrative .= "Angka ini menunjukkan jumlah anak yang lahir pada tahun 2024 namun masih belum mendapatkan imunisasi DPT-1. ";
+        $narrative .= "Berkurangnya jumlah anak ZD adalah indikator penting peningkatan akses terhadap pelayanan kesehatan, khususnya imunisasi dasar. ";
+        $narrative .= "Adapun target penurunan jumlah anak ZD di Indonesia tahun 2025 sebesar 15%.\n\n";
+
+        $narrative .= "Hingga $time_label $selected_year, data dari Laporan Rutin Direktorat Imunisasi menunjukkan bahwa sebanyak $zd_chased ($zd_chased_percent% dari total anak ZD tahun 2024) anak ZD $area_label telah mendapatkan imunisasi kejar DPT1.\n\n";
+
+        $narrative .= "Cakupan imunisasi DPT-1 tercatat sebanyak $dpt1_total anak atau mencapai $dpt1_percent% dari total sasaran. ";
+        $narrative .= "Sementara itu, cakupan DPT-3 telah mencapai $dpt3_percent% dan cakupan MR-1 sebesar $mr1_percent% dari sasaran tahun $selected_year. ";
+        $narrative .= "Jumlah sasaran DPT tahun $selected_year kumulatif hingga $time_label $selected_year sebesar $target_total anak. ";
+        $narrative .= "Hingga $time_label $selected_year, terdapat $zd_current anak $area_label yang belum mendapatkan imunisasi DPT1 (calon anak ZD).\n\n";
+
+        $narrative .= "Terdapat {$data['dropout_count']} kabupaten/kota memiliki angka drop out (selisih cakupan DPT-1 dengan DPT-3) di bawah 5%. ";
+        $narrative .= "Angka drop-out terendah ditemukan di {$dropout_low['city']} ({$dropout_low['percent']}%), sedangkan angka drop out tertinggi tercatat di {$dropout_high['city']} ({$dropout_high['percent']}%).\n\n";
+
+        $narrative .= "Berdasarkan data ketersediaan vaksin, hingga $time_label $selected_year tercatat sebanyak $stockout_total puskesmas pernah mengalami kekosongan (stock out) vaksin DPT selama setidaknya satu bulan. ";
+        $narrative .= "Kekosongan vaksin DPT tertinggi terjadi pada bulan $stockout_month $selected_year dimana kekosongan terjadi di $stockout_total puskesmas ($stockout_percent%) dari total $total_puskesmas Puskesmas $area_label.";
+
+        return $narrative;
+    }
+
+
     public function immunization_report_indonesia() {
         
         
@@ -952,6 +1020,61 @@ class Report extends CI_Controller {
         }
 
         $title_year = 'Tahun ' . $selected_year;
+
+        $narrative_text  = $this->generate_narrative(
+            $selected_province,
+            $selected_district,
+            $selected_month,
+            $selected_year,
+            // [
+            //     'baseline_zd' => $this->data['national_baseline_zd'],
+            //     'zd_chased' => $zd_chased, // ambil dari perhitungan
+            //     'zd_chased_percent' => $zd_chased_percent,
+
+            //     'dpt1' => $total_dpt1_coverage,
+            //     'dpt1_percent' => $percent_dpt1_coverage,
+            //     'dpt1_target' => $total_dpt1_target,
+
+            //     'dpt3_percent' => $percent_dpt3_coverage,
+            //     'mr1_percent' => $percent_mr1_coverage,
+
+            //     'zd_current' => $zero_dose,
+
+            //     'dropout_count' => $total_district_under_5_DO,
+            //     'dropout_high' => ['city' => $dropout_high_city, 'percent' => $dropout_high_percent],
+            //     'dropout_low' => ['city' => $dropout_low_city, 'percent' => $dropout_low_percent],
+
+            //     'stockout' => $total_dpt_stockout,
+            //     'stockout_percent' => $stockout_percentage,
+            //     'stockout_month' => $stockout_month,
+            //     'total_puskesmas' => $stockout_total_puskesmas
+            // ]
+            [
+                'baseline_zd' => 0,
+                'zd_chased' => 0,
+                'zd_chased_percent' => 0,
+
+                'dpt1' => 0,
+                'dpt1_percent' => 0,
+                'dpt1_target' => 0,
+
+                'dpt3_percent' => 0,
+                'mr1_percent' => 0,
+
+                'zd_current' => 0,
+
+                'dropout_count' => 0,
+                'dropout_high' => ['city' => '-', 'percent' => 0],
+                'dropout_low' => ['city' => '-', 'percent' => 0],
+
+                'stockout' => 0,
+                'stockout_percent' => 0,
+                'stockout_month' => '-',
+                'total_puskesmas' => 0
+            ]
+
+        );
+
     
         // Membuat objek TCPDF
         // Buat objek PDF
@@ -993,6 +1116,9 @@ class Report extends CI_Controller {
 
         // $html .= "<h4>Indonesia</h4>";
         $html .= '<p style="margin-bottom: 20px;"></p>';
+
+        // Sisipkan narasi ke HTML sebelum Tabel 1
+        $html .= '<p style="text-align: justify; font-size:11pt;">' . nl2br($narrative_text) . '</p><br>';
 
         // Tabel 1: Indikator Jangka Panjang
         $html .= '<h3 style="font-size:14pt; ">Indikator Jangka Panjang</h3>';
