@@ -179,13 +179,14 @@ class Immunization_model extends CI_Model {
 
         $province_ids = $this->get_targeted_province_ids();
         $this->db->reset_query(); // <-- Tambahkan di sini
-        
+
         $this->db->select("SUM($vaccine_column) AS total");
         $this->db->from('immunization_data');
         $this->db->where('year', $year); // <-- Pastikan ini ada!
     
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
+                $this->db->from('immunization_data');
                 $this->db->where_in('province_id', $province_ids);
             } else {
                 return 0;
