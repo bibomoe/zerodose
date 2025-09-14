@@ -361,8 +361,9 @@
                         yAxisID: 'y',
                         order: 99,                     // render di atas bar
                         // sembunyikan titik jika 0
-                        pointRadius: (ctx) => (ctx.raw > 0 ? 5 : 0),
-                        pointHoverRadius: (ctx) => (ctx.raw > 0 ? 6 : 0),
+                        // sembunyikan titik jika y = 0
+                        pointRadius: (ctx) => (ctx.raw && ctx.raw.y > 0 ? 5 : 0),
+                        pointHoverRadius: (ctx) => (ctx.raw && ctx.raw.y > 0 ? 6 : 0),
                     }
                 ]
             },
