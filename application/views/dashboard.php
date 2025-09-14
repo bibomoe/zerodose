@@ -668,6 +668,21 @@
                                 <!-- Sisanya bisa untuk grafik intermediate #2 dan #3 -->
                             </div>
 
+                            <!-- Graph Intermediate Outcomes -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header"><strong><?= $translations['table2text19'] ?></strong></div>
+                                        <div class="card-body">
+                                            <canvas id="chartDistrictFunding" height="300"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- Sisanya bisa untuk grafik intermediate #2 dan #3 -->
+                            </div>
+
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card">
@@ -1541,7 +1556,7 @@ $(document).ready(function () {
             {
                 label: t.district_do_label,
                 data: [districtDO.baseline, districtDO.y1, districtDO.y2],
-                backgroundColor: colorGreen,
+                backgroundColor: colorBlue,
                 yAxisID: 'y'
             },
             {
@@ -1602,6 +1617,46 @@ $(document).ready(function () {
             y1_label: 'Percentage (%)'
         }
     );
+
+    const districtFunding = {
+        baseline: <?= (int) $total_districts ?>, // total kabupaten (baseline)
+        y1: <?= (int) $absolute_district_funding_2025 ?>,
+        y2: <?= (int) $absolute_district_funding_2026 ?>,
+        percent_y1: <?= (float) $percent_district_funding_2025 ?>,
+        percent_y2: <?= (float) $percent_district_funding_2026 ?>
+    };
+
+    createMultiAxisChart(
+        document.getElementById('chartDistrictFunding').getContext('2d'),
+        ['Baseline', '2025', '2026'],
+        [
+            {
+                label: t.district_do_label,
+                data: [districtFunding.baseline, districtFunding.y1, districtFunding.y2],
+                backgroundColor: colorBlue,
+                yAxisID: 'y'
+            },
+            {
+                type: 'scatter',
+                label: '%',
+                data: [
+                    { x: 0, y: 100 },
+                    { x: 1, y: districtFunding.percent_y1 },
+                    { x: 2, y: districtFunding.percent_y2 }
+                ],
+                backgroundColor: colorRed,
+                yAxisID: 'y1',
+                pointRadius: 4
+            }
+        ],
+        false,
+        {
+            y_label: 'Number of Districts',
+            y1_label: 'Percentage (%)'
+        }
+    );
+
+
 
 
 

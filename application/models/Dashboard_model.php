@@ -736,6 +736,21 @@ class Dashboard_model extends CI_Model {
         return $percentage_funded;
     }
 
+    public function get_district_funding_absolute($year) {
+        $province_ids = $this->get_targeted_province_ids(); // 10 provinsi target
+        
+        $this->db->select('SUM(funded_districts) AS total_funded_districts', false);
+        $this->db->from('district_funding');
+        $this->db->where('year', $year);
+        
+        if (!empty($province_ids)) {
+            $this->db->where_in('province_id', $province_ids);
+        }
+
+        return (int) ($this->db->get()->row()->total_funded_districts ?? 0);
+    }
+
+
     public function get_district_policy_percentage($year) {
         $targeted_provinces = $this->get_targeted_province_ids(); // Ambil 10 targeted provinces
     

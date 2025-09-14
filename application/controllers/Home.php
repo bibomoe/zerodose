@@ -152,6 +152,9 @@ class Home extends CI_Controller {
         $this->data['percent_district_funding_2025'] = $this->Dashboard_model->get_district_funding_percentage(2025);
         $this->data['percent_district_funding_2026'] = $this->Dashboard_model->get_district_funding_percentage(2026);
 
+        $this->data['absolute_district_funding_2025'] = $this->Dashboard_model->get_district_funding_absolute(2025);
+        $this->data['absolute_district_funding_2026'] = $this->Dashboard_model->get_district_funding_absolute(2026);
+
         // ✅ Ambil persentase distrik yang memiliki kebijakan imunisasi
         $this->data['percent_district_policy_2025'] = $this->Dashboard_model->get_district_policy_percentage(2025);
         $this->data['percent_district_policy_2026'] = $this->Dashboard_model->get_district_policy_percentage(2026);
