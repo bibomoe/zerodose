@@ -383,7 +383,7 @@
                                 return ctx.dataset.label + ': ' + ctx.raw;
                             }
                         }
-                    }
+                    },
 
                     datalabels: {
                         display: (ctx) => ctx.dataset.type === 'scatter' && ctx.raw.y > 0,
