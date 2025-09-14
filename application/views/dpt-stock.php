@@ -566,7 +566,12 @@
                         anchor: 'end',
                         color: 'black',
                         font: { weight: 'bold', size: 11 },
-                        formatter: (value) => value.y
+                        formatter: function(value, ctx) {
+                            if (ctx.dataset.type === 'scatter' && value && value.y > 0) {
+                                return value.y; // tampilkan angka hanya untuk scatter dengan nilai > 0
+                            }
+                            return '';
+                        }
                     }
                 },
                 scales: {
