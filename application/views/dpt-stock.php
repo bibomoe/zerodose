@@ -317,6 +317,11 @@
             stockOut4[monthIndex] = item.stock_out_4; // Assign data lebih dari 3 bulan
         });
 
+        // 🔹 Hitung total stockout per bulan
+        let stockOutTotal = months.map((_, i) => 
+            stockOut1[i] + stockOut2[i] + stockOut3[i] + stockOut4[i]
+        );
+
         const ctx = document.getElementById('stockOutByDurationChart').getContext('2d');
         const stockoutChart = new Chart(ctx, {
             type: 'bar',
@@ -342,6 +347,16 @@
                         label: '> 3 Months',
                         data: stockOut4,
                         backgroundColor: 'rgba(153, 102, 255, 0.7)',
+                    },
+                    // 🔹 Scatter total per bulan
+                    {
+                        type: 'scatter',
+                        label: 'Total Stock Out',
+                        data: stockOutTotal.map((value, i) => ({ x: i, y: value })),
+                        backgroundColor: 'black',
+                        borderColor: 'black',
+                        pointRadius: 5,
+                        yAxisID: 'y'
                     }
                 ]
             },
@@ -351,6 +366,16 @@
                     legend: { position: 'top' },
                     title: { display: true, text: 'DPT Stock Out by Month' }
                 },
+                tooltip: {
+                    callbacks: {
+                        label: function (ctx) {
+                            if (ctx.dataset.type === 'scatter') {
+                                return 'Total: ' + ctx.raw.y;
+                            }
+                            return ctx.dataset.label + ': ' + ctx.raw;
+                        }
+                    }
+                }
                 scales: {
                     x: {
                         stacked: true,
