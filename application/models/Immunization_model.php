@@ -176,17 +176,17 @@ class Immunization_model extends CI_Model {
     
     // Total imunisasi berdasarkan jenis vaksin dan filter provinsi
     public function get_total_vaccine($vaccine_column, $province_id, $city_id, $year) {
-        // $province_ids = $this->get_targeted_province_ids();
+        $province_ids = $this->get_targeted_province_ids();
         $this->db->select("SUM($vaccine_column) AS total");
         $this->db->from('immunization_data');
         $this->db->where('year', $year); // <-- Pastikan ini ada!
     
         if ($province_id === 'targeted') {
-            // if (!empty($province_ids)) {
-            //     $this->db->where_in('province_id', $province_ids);
-            // } else {
-            //     return 0;
-            // }
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return 0;
+            }
         } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
         }
@@ -247,20 +247,21 @@ class Immunization_model extends CI_Model {
     }
 
     public function get_total_vaccine_by_month($vaccine_column, $province_id, $city_id, $year, $month) {
+        $province_ids = $this->get_targeted_province_ids();
+        
         $this->db->select("SUM($vaccine_column) AS total");
         $this->db->from('immunization_data');
         $this->db->where('year', $year);
         $this->db->where('month', $month);
 
-        if ($province_id !== 'all' && $province_id !== 'targeted') {
-            $this->db->where('province_id', $province_id);
-        } elseif ($province_id === 'targeted') {
-            $province_ids = $this->get_targeted_province_ids();
+        if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
                 $this->db->where_in('province_id', $province_ids);
             } else {
                 return 0;
             }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
         }
 
         if ($city_id !== 'all') {
