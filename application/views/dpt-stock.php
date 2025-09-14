@@ -351,14 +351,18 @@
                         backgroundColor: 'rgba(153, 102, 255, 0.7)',
                     },
                     // 🔹 Scatter total per bulan
+                    // ⬇️ Scatter total (TETAP 12 angka, tanpa filter)
                     {
                         type: 'scatter',
                         label: 'Total Stock Out',
                         data: stockOutTotal.map((value, i) => ({ x: i, y: value })),
                         backgroundColor: 'black',
                         borderColor: 'black',
-                        pointRadius: 5,
-                        yAxisID: 'y'
+                        yAxisID: 'y',
+                        order: 99,                     // render di atas bar
+                        // sembunyikan titik jika 0
+                        pointRadius: (ctx) => (ctx.raw > 0 ? 5 : 0),
+                        pointHoverRadius: (ctx) => (ctx.raw > 0 ? 6 : 0),
                     }
                 ]
             },
