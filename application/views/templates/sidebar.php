@@ -603,7 +603,7 @@
                     intermediateSub3: 'PHC Immunization Performance',
                     intermediateSub4: 'Trained Private Facilities',
                     intermediateSub5: 'District Policy and Financing',
-                    grant: 'Grant Implementation & Budget Disbursement Outcomes',
+                    grant: 'Grant Implementation & Budget Spending',
                     entry: 'Entry Form'
                 },
                 id: {

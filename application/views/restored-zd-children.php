@@ -311,7 +311,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                        <h6 class="text-muted font-semibold"><?= $translations['text5'] ?> <?= $year; ?> <b> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?> </b></h6>
+                                                        <h6 class="text-muted font-semibold"><?= $translations['text5'] ?> <b> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?> <?= $year; ?> </b></h6>
                                                         <div class="card-number font-extrabold mb-0"><?= number_format(${"zero_dose_$year"}); ?></div>
                                                         <!-- <div class="card-subtext"><?= ${"zd_narrative_$year"}; ?></div> -->
                                                         
