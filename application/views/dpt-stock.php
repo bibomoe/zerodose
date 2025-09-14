@@ -296,6 +296,8 @@
         </div>
     </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
 <!-- Stockout Graph -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -364,15 +366,31 @@
                 responsive: true,
                 plugins: {
                     legend: { position: 'top' },
-                    title: { display: true, text: 'DPT Stock Out by Month' }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (ctx) {
-                            if (ctx.dataset.type === 'scatter') {
-                                return 'Total: ' + ctx.raw.y;
+                    title: { display: true, text: 'DPT Stock Out by Month' },
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) {
+                                if (ctx.dataset.type === 'scatter') {
+                                    return 'Total: ' + ctx.raw.y;
+                                }
+                                return ctx.dataset.label + ': ' + ctx.raw;
                             }
-                            return ctx.dataset.label + ': ' + ctx.raw;
+                        }
+                    },
+                    datalabels: {
+                        display: function(ctx) {
+                            // hanya tampilkan label untuk dataset scatter
+                            return ctx.dataset.type === 'scatter';
+                        },
+                        align: 'top',
+                        anchor: 'end',
+                        color: 'black',
+                        font: {
+                            weight: 'bold',
+                            size: 11
+                        },
+                        formatter: function(value) {
+                            return value.y; // ambil nilai total
                         }
                     }
                 },
@@ -387,8 +405,10 @@
                         title: { display: true, text: 'Number of Facilities' }
                     }
                 }
-            }
+            },
+            plugins: [ChartDataLabels] // aktifkan plugin
         });
+
 
         // Function to create buttons dynamically
         function addDownloadButtons() {
