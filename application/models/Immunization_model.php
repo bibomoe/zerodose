@@ -178,6 +178,8 @@ class Immunization_model extends CI_Model {
     public function get_total_vaccine($vaccine_column, $province_id, $city_id, $year) {
 
         $province_ids = $this->get_targeted_province_ids();
+        $this->db->reset_query(); // <-- Tambahkan di sini
+        
         $this->db->select("SUM($vaccine_column) AS total");
         $this->db->from('immunization_data');
         $this->db->where('year', $year); // <-- Pastikan ini ada!
@@ -891,12 +893,13 @@ class Immunization_model extends CI_Model {
     }
     
     public function get_targeted_province_ids() {
-        $query = $this->db->select('id as kode')
+        $this->db->reset_query(); // <-- Tambahkan ini agar builder bersih
+        $query = $this->db->select('id')
                           ->from('provinces')
                           ->where('priority', 1)
                           ->get();
     
-        return array_column($query->result_array(), 'kode'); // Return array ID
+        return array_column($query->result_array(), 'id'); // Return array ID
     }
     
     
