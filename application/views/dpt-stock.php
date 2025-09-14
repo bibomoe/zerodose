@@ -379,8 +379,8 @@
                     },
                     datalabels: {
                         display: function(ctx) {
-                            // hanya tampilkan label untuk dataset scatter
-                            return ctx.dataset.type === 'scatter' && ctx.raw.y > 0;
+                            // hanya tampilkan label untuk dataset scatter, dan kalau y > 0
+                            return ctx.dataset.type === 'scatter' && ctx.raw && ctx.raw.y > 0;
                         },
                         align: 'top',
                         anchor: 'end',
@@ -389,8 +389,11 @@
                             weight: 'bold',
                             size: 11
                         },
-                        formatter: function(value) {
-                            return value.y > 0 ? value.y : ''; // sembunyikan kalau 0
+                        formatter: function(value, ctx) {
+                            if (ctx.dataset.type === 'scatter' && value && value.y > 0) {
+                                return value.y; // tampilkan angka hanya untuk scatter dengan nilai > 0
+                            }
+                            return '';
                         }
                     }
                 },
