@@ -182,11 +182,11 @@ class Immunization_model extends CI_Model {
         $this->db->where('year', $year); // <-- Pastikan ini ada!
     
         if ($province_id === 'targeted') {
-            if (!empty($province_ids)) {
-                $this->db->where_in('province_id', $province_ids);
-            } else {
-                return 0;
-            }
+            // if (!empty($province_ids)) {
+            //     $this->db->where_in('province_id', $province_ids);
+            // } else {
+            //     return 0;
+            // }
         } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
         }
