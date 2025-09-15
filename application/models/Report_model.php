@@ -1901,6 +1901,9 @@ class Report_model extends CI_Model {
     {
         $province_ids = $this->get_targeted_province_ids();
 
+        // ================================
+        // Ambil bulan dengan stockout terbanyak
+        // ================================
         $this->db->select('
             month,
             COUNT(DISTINCT puskesmas_id) AS total_stockout
@@ -1909,7 +1912,6 @@ class Report_model extends CI_Model {
         $this->db->where('year', $year);
         $this->db->where('status_stockout', '1');
 
-        // Filter provinsi
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
                 $this->db->where_in('province_id', $province_ids);
@@ -1920,23 +1922,33 @@ class Report_model extends CI_Model {
             $this->db->where('province_id', $province_id);
         }
 
-        // Filter kota
         if ($city_id !== 'all') {
             $this->db->where('city_id', $city_id);
         }
 
-        // Group by bulan
         $this->db->group_by('month');
         $this->db->order_by('total_stockout', 'DESC');
-        $this->db->limit(1); // Ambil bulan dengan stockout tertinggi
+        $this->db->limit(1);
 
         $max_result = $this->db->get()->row_array();
 
-        if (!$max_result) return null;
+        if (!$max_result) {
+            return [
+                'month' => '-',
+                'total_stockout' => 0,
+                'total_puskesmas' => 0,
+                'percentage' => 0
+            ];
+        }
 
-        // Ambil total puskesmas sesuai area
+        // ================================
+        // Ambil total Puskesmas aktif sesuai area
+        // ================================
         $this->db->select('COUNT(DISTINCT id) AS total_puskesmas');
         $this->db->from('puskesmas');
+        
+        // Tambahan filter hanya puskesmas aktif (ubah sesuai field di tabel kamu)
+        $this->db->where('active', 1); // atau 'status' => 'active' tergantung DB kamu
 
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
@@ -1950,20 +1962,24 @@ class Report_model extends CI_Model {
             $this->db->where('city_id', $city_id);
         }
 
-        $total_puskesmas = $this->db->get()->row('total_puskesmas') ?? 0;
+        $total_puskesmas_result = $this->db->get()->row();
+        $total_puskesmas = $total_puskesmas_result ? $total_puskesmas_result->total_puskesmas : 0;
 
+        // ================================
         // Hitung persentase
+        // ================================
         $percentage = ($total_puskesmas > 0)
             ? round(($max_result['total_stockout'] / $total_puskesmas) * 100, 2)
             : 0;
 
         return [
             'month' => $this->get_month_name($max_result['month']),
-            'total_stockout' => $max_result['total_stockout'],
-            'total_puskesmas' => $total_puskesmas,
+            'total_stockout' => (int) $max_result['total_stockout'],
+            'total_puskesmas' => (int) $total_puskesmas,
             'percentage' => $percentage
         ];
     }
+
 
     public function get_month_name($month_number)
     {
