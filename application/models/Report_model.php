@@ -112,6 +112,8 @@ class Report_model extends CI_Model {
             $this->db->where('city_id', $city_id);
         } 
 
+        var_dump($month);
+        exit;
         // Jika bulan bukan 'all', maka ambil data dari bulan 1 sampai bulan yang ditentukan
         if ($month !== 'all') {
             $this->db->where('month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
