@@ -1061,17 +1061,36 @@ class Report extends CI_Controller {
 
         $title_year = 'Tahun ' . $selected_year;
 
-        usort($table_do, function ($a, $b) {
-            // Bersihkan string menjadi float
-            $do_rate_a = (float) str_replace(',', '.', $a['do_rate']);
-            $do_rate_b = (float) str_replace(',', '.', $b['do_rate']);
-
-            // Urutkan dari yang tertinggi ke terendah
-            return $do_rate_b <=> $do_rate_a;
+        usort($table_do, function ($a, $b) use ($selected_province) {
+            $key = ($selected_province === 'all' || $selected_province === 'targeted') ? 'do_rate' : 'dropout_rate';
+            $value_a = isset($a[$key]) ? (float) str_replace(',', '.', $a[$key]) : 0;
+            $value_b = isset($b[$key]) ? (float) str_replace(',', '.', $b[$key]) : 0;
+            return $value_b <=> $value_a;
         });
 
-        $dropout_high_row = $table_do[0];
-        $dropout_low_row  = end($table_do);
+        $dropout_high_row = !empty($table_do) ? $table_do[0] : ['name' => '-', 'do_rate' => 0, 'dropout_rate' => 0];
+        $dropout_low_row  = !empty($table_do) ? end($table_do) : ['name' => '-', 'do_rate' => 0, 'dropout_rate' => 0];
+
+        $dropout_high = ($selected_province === 'all' || $selected_province === 'targeted') ? [
+            'city' => '-',
+            'province' => $dropout_high_row['name'],
+            'percent' => (float) str_replace(',', '.', $dropout_high_row['do_rate'])
+        ] : [
+            'city' => $dropout_high_row['name'],
+            'province' => $province_name ?? '-',
+            'percent' => (float) str_replace(',', '.', $dropout_high_row['dropout_rate'] ?? $dropout_high_row['do_rate'])
+        ];
+
+        $dropout_low = ($selected_province === 'all' || $selected_province === 'targeted') ? [
+            'city' => '-',
+            'province' => $dropout_low_row['name'],
+            'percent' => (float) str_replace(',', '.', $dropout_low_row['do_rate'])
+        ] : [
+            'city' => $dropout_low_row['name'],
+            'province' => $province_name ?? '-',
+            'percent' => (float) str_replace(',', '.', $dropout_low_row['dropout_rate'] ?? $dropout_low_row['do_rate'])
+        ];
+
 
         $max_stockout_info = $this->Report_model->get_max_monthly_stockout(
             $selected_province,
@@ -1123,16 +1142,8 @@ class Report extends CI_Controller {
                 'zd_current' => $zero_dose,
 
                 'dropout_count' => $total_district_under_5_DO,
-                'dropout_high' => [
-                    'city' => $dropout_high_row['name'], // tidak perlu isi
-                    'province' => $dropout_high_row['name'], // sudah ada dari foreach $list_province
-                    'percent' => $dropout_high_row['do_rate'] // pastikan format numerik
-                ],
-                'dropout_low' => [
-                    'city' => $dropout_low_row['name'], // tidak perlu isi
-                    'province' => $dropout_low_row['name'], // sudah ada dari foreach $list_province
-                    'percent' => $dropout_low_row['do_rate'] // pastikan format numerik
-                ],
+                'dropout_high' => $dropout_high,
+                'dropout_low' => $dropout_low,
 
 
                 'stockout' => $max_stockout_info['total_stockout'] ?? 0,
