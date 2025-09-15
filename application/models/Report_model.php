@@ -83,7 +83,7 @@ class Report_model extends CI_Model {
     }
 
     // Ambil jumlah anak dpt1 kejar
-    public function get_dpt1_coverage_by_province($province_id, $selected_year, $city_id) {
+    public function get_dpt1_coverage_by_province($province_id, $selected_year, $city_id, $selected_month) {
         $province_ids = $this->get_targeted_province_ids();  // Ambil provinsi yang ditargetkan
         
         $this->db->select('SUM(dpt1_coverage) AS total_dpt1_coverage');
@@ -111,6 +111,11 @@ class Report_model extends CI_Model {
         if ($city_id !== 'all') {
             $this->db->where('city_id', $city_id);
         } 
+
+        // Jika bulan bukan 'all', maka ambil data dari bulan 1 sampai bulan yang ditentukan
+        if ($month !== 'all') {
+            $this->db->where('month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
+        }
 
         // Ambil hasil dan kembalikan total cakupan DPT-1
         $query = $this->db->get()->row();
