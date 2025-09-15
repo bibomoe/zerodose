@@ -86,6 +86,8 @@ class Report_model extends CI_Model {
     public function get_dpt1_coverage_by_province($province_id, $selected_year, $city_id, $month) {
         $province_ids = $this->get_targeted_province_ids();  // Ambil provinsi yang ditargetkan
         
+        var_dump($month);
+        exit;
         $this->db->select('SUM(dpt1_coverage) AS total_dpt1_coverage');
         $this->db->from('immunization_data_kejar');
         
@@ -112,8 +114,7 @@ class Report_model extends CI_Model {
             $this->db->where('city_id', $city_id);
         } 
 
-        var_dump($month);
-        exit;
+        
         // Jika bulan bukan 'all', maka ambil data dari bulan 1 sampai bulan yang ditentukan
         if ($month !== 'all') {
             $this->db->where('month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
