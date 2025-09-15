@@ -1047,6 +1047,15 @@ class Report extends CI_Controller {
 
         $title_year = 'Tahun ' . $selected_year;
 
+        usort($table_do, function ($a, $b) {
+            // Bersihkan string menjadi float
+            $do_rate_a = (float) str_replace(',', '.', $a['do_rate']);
+            $do_rate_b = (float) str_replace(',', '.', $b['do_rate']);
+
+            // Urutkan dari yang tertinggi ke terendah
+            return $do_rate_b <=> $do_rate_a;
+        });
+
         $dropout_high_row = $table_do[0];
         $dropout_low_row  = end($table_do);
 
