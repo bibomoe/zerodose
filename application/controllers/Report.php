@@ -498,7 +498,17 @@ class Report extends CI_Controller {
         $narrative .= "Hingga $time_label $selected_year, terdapat $zd_current anak $area_label yang belum mendapatkan imunisasi DPT1 (calon anak ZD).\n\n";
 
         $narrative .= "Terdapat {$data['dropout_count']} kabupaten/kota memiliki angka drop out (selisih cakupan DPT-1 dengan DPT-3) di bawah 5%. ";
-        $narrative .= "Angka drop-out terendah ditemukan di {$dropout_low['city']} ({$dropout_low['percent']}%), sedangkan angka drop out tertinggi tercatat di {$dropout_high['city']} ({$dropout_high['percent']}%).\n\n";
+        
+        // Narasi angka drop-out berdasarkan kondisi area
+        if ($selected_province === 'all' || $selected_province === 'targeted') {
+            $narrative .= "Angka drop-out terendah ditemukan di Provinsi {$dropout_low['province']} ({$dropout_low['percent']}%), ";
+            $narrative .= "sedangkan angka drop out tertinggi tercatat di Provinsi {$dropout_high['province']} ({$dropout_high['percent']}%).\n\n";
+        } elseif ($selected_district === 'all') {
+            $narrative .= "Angka drop-out terendah ditemukan di {$dropout_low['city']} ({$dropout_low['percent']}%), ";
+            $narrative .= "sedangkan angka drop out tertinggi tercatat di {$dropout_high['city']} ({$dropout_high['percent']}%).\n\n";
+        }
+        // Jika district dipilih spesifik, tidak perlu menambahkan narasi drop-out
+
 
         $narrative .= "Berdasarkan data ketersediaan vaksin, hingga $time_label $selected_year tercatat sebanyak $stockout_total puskesmas pernah mengalami kekosongan (stock out) vaksin DPT selama setidaknya satu bulan. ";
         $narrative .= "Kekosongan vaksin DPT tertinggi terjadi pada bulan $stockout_month $selected_year dimana kekosongan terjadi di $stockout_total puskesmas ($stockout_percent%) dari total $total_puskesmas Puskesmas $area_label.";
@@ -1037,6 +1047,9 @@ class Report extends CI_Controller {
 
         $title_year = 'Tahun ' . $selected_year;
 
+        $dropout_high_row = $table_do[0];
+        $dropout_low_row  = end($table_do);
+
         $narrative_text  = $this->generate_narrative(
             $selected_province,
             $selected_district,
@@ -1081,8 +1094,17 @@ class Report extends CI_Controller {
                 'zd_current' => $zero_dose,
 
                 'dropout_count' => $total_district_under_5_DO,
-                'dropout_high' => ['city' => '-', 'percent' => 0],
-                'dropout_low' => ['city' => '-', 'percent' => 0],
+                'dropout_high' => [
+                    'city' => $dropout_high_row['name'], // tidak perlu isi
+                    'province' => $dropout_high_row['name'], // sudah ada dari foreach $list_province
+                    'percent' => $dropout_high_row['do_rate'] // pastikan format numerik
+                ],
+                'dropout_low' => [
+                    'city' => $dropout_low_row['name'], // tidak perlu isi
+                    'province' => $dropout_low_row['name'], // sudah ada dari foreach $list_province
+                    'percent' => $dropout_low_row['do_rate'] // pastikan format numerik
+                ],
+
 
                 'stockout' => $total_dpt_stockout,
                 'stockout_percent' => 0,
