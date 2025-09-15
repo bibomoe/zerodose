@@ -82,6 +82,41 @@ class Report_model extends CI_Model {
         return $query->total_zd_cases ?? 0;
     }
 
+    // Ambil jumlah anak dpt1 kejar
+    public function get_dpt1_coverage_by_province($province_id, $selected_year, $city_id) {
+        $province_ids = $this->get_targeted_province_ids();  // Ambil provinsi yang ditargetkan
+        
+        $this->db->select('SUM(dpt1_coverage) AS total_dpt1_coverage');
+        $this->db->from('immunization_data_kejar');
+        
+        // Filter berdasarkan tahun yang dipilih
+        $this->db->where('year', $selected_year);
+        
+        // Jika provinsi yang dipilih adalah 'targeted', ambil provinsi yang ditargetkan
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);  // Filter berdasarkan provinsi yang ditargetkan
+            } else {
+                return 0;  // Jika tidak ada provinsi yang ditargetkan
+            }
+        } elseif ($province_id === 'all') {
+            // Jika provinsi yang dipilih adalah 'all', ambil data untuk seluruh provinsi
+            $query = $this->db->get()->row();
+            return $query->total_dpt1_coverage ?? 0;
+        } else {
+            // Jika provinsi yang dipilih adalah provinsi tertentu
+            $this->db->where('province_id', $province_id);
+        }
+
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        } 
+
+        // Ambil hasil dan kembalikan total cakupan DPT-1
+        $query = $this->db->get()->row();
+        return $query->total_dpt1_coverage ?? 0;
+    }
+
     // Ambil baseline DPT 3 dan MR1 berdasarkan provinsi atau seluruh provinsi
     public function get_baseline_by_province($province_id) {
         $province_ids = $this->get_targeted_province_ids(); // Ambil provinsi yang ditargetkan

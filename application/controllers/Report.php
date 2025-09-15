@@ -528,6 +528,10 @@ class Report extends CI_Controller {
             $this->data['national_baseline_zd'] = $this->Report_model->get_zero_dose_by_province($selected_province, $selected_district);
         }
 
+        // Total DPT 1 Kejar
+        $this->data['total_kejar'] = $this->Report_model->get_dpt1_coverage_by_province($selected_province, $selected_district);
+        $this->data['percent_kejar'] = $this->data['total_kejar']/$this->data['national_baseline_zd'] * 100;
+
         // Menentukan baseline DPT 3 dan MR 1
         $this->data['national_baseline_dpt_mr'] = $this->Report_model->get_baseline_by_province($selected_province);
 
@@ -1050,27 +1054,27 @@ class Report extends CI_Controller {
             //     'total_puskesmas' => $stockout_total_puskesmas
             // ]
             [
-                'baseline_zd' => 0,
-                'zd_chased' => 0,
-                'zd_chased_percent' => 0,
+                'baseline_zd' => $this->data['national_baseline_zd'],
+                'zd_chased' => $this->data['total_kejar'],
+                'zd_chased_percent' => number_format($this->data['percent_kejar'], 1, ',', '.'),
 
-                'dpt1' => 0,
-                'dpt1_percent' => 0,
-                'dpt1_target' => 0,
+                'dpt1' => number_format($total_dpt1_coverage, 0, ',', '.'),
+                'dpt1_percent' => number_format($percent_dpt1_coverage, 1, ',', '.'),
+                'dpt1_target' => number_format($total_dpt1_target, 0, ',', '.'),
 
-                'dpt3_percent' => 0,
-                'mr1_percent' => 0,
+                'dpt3_percent' => number_format($percent_dpt3_coverage, 1, ',', '.'),
+                'mr1_percent' => number_format($percent_mr1_coverage, 1, ',', '.'),
 
-                'zd_current' => 0,
+                'zd_current' => number_format($zero_dose, 0, ',', '.'),
 
-                'dropout_count' => 0,
+                'dropout_count' => number_format($total_district_under_5_DO, 0, ',', '.'),
                 'dropout_high' => ['city' => '-', 'percent' => 0],
                 'dropout_low' => ['city' => '-', 'percent' => 0],
 
-                'stockout' => 0,
+                'stockout' => number_format($total_dpt_stockout, 0, ',', '.'),
                 'stockout_percent' => 0,
                 'stockout_month' => '-',
-                'total_puskesmas' => 0
+                'total_puskesmas' => number_format($stockout_total_puskesmas, 0, ',', '.')
             ]
 
         );
