@@ -511,7 +511,21 @@ class Report extends CI_Controller {
 
 
         $narrative .= "Berdasarkan data ketersediaan vaksin, hingga $time_label $selected_year tercatat sebanyak $stockout_total puskesmas pernah mengalami kekosongan (stock out) vaksin DPT selama setidaknya satu bulan. ";
-        $narrative .= "Kekosongan vaksin DPT tertinggi terjadi pada bulan $stockout_month $selected_year dimana kekosongan terjadi di $stockout_total puskesmas ($stockout_percent%) dari total $total_puskesmas Puskesmas $area_label.";
+        // $narrative .= "Kekosongan vaksin DPT tertinggi terjadi pada bulan $stockout_month $selected_year dimana kekosongan terjadi di $stockout_total puskesmas ($stockout_percent%) dari total $total_puskesmas Puskesmas $area_label.";
+
+        // Narasi dinamis berdasarkan area
+        if ($selected_province === 'all' || $selected_province === 'targeted') {
+            $narrative .= "Kekosongan vaksin DPT tertinggi terjadi pada bulan $stockout_month $selected_year ";
+            $narrative .= "dimana kekosongan terjadi di $stockout_total puskesmas ($stockout_percent%) ";
+            $narrative .= "dari total $total_puskesmas Puskesmas di $area_label.";
+        } elseif ($selected_district === 'all') {
+            $narrative .= "Kekosongan vaksin DPT tertinggi terjadi pada bulan $stockout_month $selected_year ";
+            $narrative .= "dengan jumlah $stockout_total puskesmas mengalami kekosongan vaksin ($stockout_percent%) ";
+            $narrative .= "dari total $total_puskesmas Puskesmas di provinsi tersebut.";
+        } else {
+            $narrative .= "Kekosongan vaksin DPT tertinggi terjadi pada bulan $stockout_month $selected_year, ";
+            $narrative .= "dimana $stockout_total dari $total_puskesmas Puskesmas di wilayah tersebut mengalami kekosongan vaksin ($stockout_percent%).";
+        }
 
         return $narrative;
     }
@@ -1059,6 +1073,12 @@ class Report extends CI_Controller {
         $dropout_high_row = $table_do[0];
         $dropout_low_row  = end($table_do);
 
+        $max_stockout_info = $this->Report_model->get_max_monthly_stockout(
+            $selected_province,
+            $selected_district,
+            $selected_year
+        );
+
         $narrative_text  = $this->generate_narrative(
             $selected_province,
             $selected_district,
@@ -1115,10 +1135,10 @@ class Report extends CI_Controller {
                 ],
 
 
-                'stockout' => $total_dpt_stockout,
-                'stockout_percent' => 0,
-                'stockout_month' => '-',
-                'total_puskesmas' => $stockout_total_puskesmas
+                'stockout' => $max_stockout_info['total_stockout'] ?? 0,
+                'stockout_percent' => $max_stockout_info['percentage'] ?? 0,
+                'stockout_month' => $max_stockout_info['month'] ?? '-',
+                'total_puskesmas' => $max_stockout_in
             ]
 
         );

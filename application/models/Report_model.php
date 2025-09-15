@@ -1897,6 +1897,75 @@ class Report_model extends CI_Model {
         return $query;
     }
 
+    public function get_max_monthly_stockout($province_id = 'all', $city_id = 'all', $year = 2025)
+    {
+        $province_ids = $this->get_targeted_province_ids();
+
+        $this->db->select('
+            month,
+            COUNT(DISTINCT puskesmas_id) AS total_stockout
+        ');
+        $this->db->from('puskesmas_stock_out_details');
+        $this->db->where('year', $year);
+        $this->db->where('status_stockout', '1');
+
+        // Filter provinsi
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            } else {
+                return null;
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
+        // Filter kota
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        }
+
+        // Group by bulan
+        $this->db->group_by('month');
+        $this->db->order_by('total_stockout', 'DESC');
+        $this->db->limit(1); // Ambil bulan dengan stockout tertinggi
+
+        $max_result = $this->db->get()->row_array();
+
+        if (!$max_result) return null;
+
+        // Ambil total puskesmas sesuai area
+        $this->db->select('COUNT(DISTINCT id) AS total_puskesmas');
+        $this->db->from('puskesmas');
+
+        if ($province_id === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('province_id', $province_ids);
+            }
+        } elseif ($province_id !== 'all') {
+            $this->db->where('province_id', $province_id);
+        }
+
+        if ($city_id !== 'all') {
+            $this->db->where('city_id', $city_id);
+        }
+
+        $total_puskesmas = $this->db->get()->row('total_puskesmas') ?? 0;
+
+        // Hitung persentase
+        $percentage = ($total_puskesmas > 0)
+            ? round(($max_result['total_stockout'] / $total_puskesmas) * 100, 2)
+            : 0;
+
+        return [
+            'month' => $this->get_month_name($max_result['month']),
+            'total_stockout' => $max_result['total_stockout'],
+            'total_puskesmas' => $total_puskesmas,
+            'percentage' => $percentage
+        ];
+    }
+
+
     /**
      * Mengambil total target budget berdasarkan tahun
      */
