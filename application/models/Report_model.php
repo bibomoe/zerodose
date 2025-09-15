@@ -86,8 +86,8 @@ class Report_model extends CI_Model {
     public function get_dpt1_coverage_by_province($province_id, $selected_year, $city_id, $month) {
         $province_ids = $this->get_targeted_province_ids();  // Ambil provinsi yang ditargetkan
         
-        var_dump($month);
-        exit;
+        // var_dump($month);
+        // exit;
         $this->db->select('SUM(dpt1_coverage) AS total_dpt1_coverage');
         $this->db->from('immunization_data_kejar');
         
