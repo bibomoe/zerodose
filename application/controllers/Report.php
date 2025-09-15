@@ -1056,7 +1056,7 @@ class Report extends CI_Controller {
             [
                 'baseline_zd' => $this->data['national_baseline_zd'],
                 'zd_chased' => $this->data['total_kejar'],
-                'zd_chased_percent' => number_format($this->data['percent_kejar'], 1, ',', '.'),
+                'zd_chased_percent' => $this->data['percent_kejar'],
 
                 'dpt1' => number_format($total_dpt1_coverage, 0, ',', '.'),
                 'dpt1_percent' => number_format($percent_dpt1_coverage, 1, ',', '.'),
