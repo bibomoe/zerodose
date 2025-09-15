@@ -455,6 +455,7 @@ class Report extends CI_Controller {
         $baseline_zd = number_format($data['baseline_zd'], 0, ',', '.');
         $zd_chased = number_format($data['zd_chased'], 0, ',', '.');
         $zd_chased_percent = number_format($data['zd_chased_percent'], 1, ',', '.');
+        $highest_kejar = $data['highest_kejar'];
 
         $dpt1_total = number_format($data['dpt1'], 0, ',', '.');
         $dpt1_percent = number_format($data['dpt1_percent'], 1, ',', '.');
@@ -480,7 +481,16 @@ class Report extends CI_Controller {
         $narrative .= "Berkurangnya jumlah anak ZD adalah indikator penting peningkatan akses terhadap pelayanan kesehatan, khususnya imunisasi dasar. ";
         $narrative .= "Adapun target penurunan jumlah anak ZD di Indonesia tahun 2025 sebesar 15%.\n\n";
 
-        $narrative .= "Hingga $time_label $selected_year, data dari Laporan Rutin Direktorat Imunisasi menunjukkan bahwa sebanyak $zd_chased ($zd_chased_percent% dari total anak ZD tahun 2024) anak ZD $area_label telah mendapatkan imunisasi kejar DPT1.\n\n";
+        $narrative .= "Hingga $time_label $selected_year, data dari Laporan Rutin Direktorat Imunisasi menunjukkan bahwa sebanyak $zd_chased ($zd_chased_percent% dari total anak ZD tahun 2024) anak ZD $area_label telah mendapatkan imunisasi kejar DPT1. ";
+
+        // ⬇ Tambahan sesuai kondisi
+        if ($selected_province === 'all' || $selected_province === 'targeted') {
+            $narrative .= "Provinsi dengan cakupan imunisasi kejar DPT1 tertinggi adalah Provinsi $highest_kejar.\n\n";
+        } elseif ($selected_district === 'all') {
+            $narrative .= "Kabupaten/Kota dengan cakupan imunisasi kejar DPT1 tertinggi adalah $highest_kejar.\n\n";
+        } else {
+            $narrative .= "\n\n"; // Tidak perlu tambahan
+        }
 
         $narrative .= "Cakupan imunisasi DPT-1 tercatat sebanyak $dpt1_total anak atau mencapai $dpt1_percent% dari total sasaran. ";
         $narrative .= "Sementara itu, cakupan DPT-3 telah mencapai $dpt3_percent% dan cakupan MR-1 sebesar $mr1_percent% dari sasaran tahun $selected_year. ";
@@ -531,6 +541,8 @@ class Report extends CI_Controller {
         // Total DPT 1 Kejar
         $this->data['total_kejar'] = $this->Report_model->get_dpt1_coverage_by_province($selected_province, $selected_year, $selected_district, $selected_month);
         $this->data['percent_kejar'] = $this->data['total_kejar']/$this->data['national_baseline_zd'] * 100;
+
+        $this->data['highest_kejar'] = $this->Report_model->get_highest_dpt1_coverage_area_name($selected_province, $selected_year, $selected_district, $selected_month);
 
         // Menentukan baseline DPT 3 dan MR 1
         $this->data['national_baseline_dpt_mr'] = $this->Report_model->get_baseline_by_province($selected_province);
@@ -1057,6 +1069,7 @@ class Report extends CI_Controller {
                 'baseline_zd' => $this->data['national_baseline_zd'],
                 'zd_chased' => $this->data['total_kejar'],
                 'zd_chased_percent' => $this->data['percent_kejar'],
+                'highest_kejar' => $this->data['highest_kejar'],
 
                 'dpt1' => $total_dpt1_coverage,
                 'dpt1_percent' => $percent_dpt1_coverage,
