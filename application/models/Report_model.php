@@ -83,7 +83,7 @@ class Report_model extends CI_Model {
     }
 
     // Ambil jumlah anak dpt1 kejar
-    public function get_dpt1_coverage_by_province($province_id, $selected_year, $city_id, $selected_month) {
+    public function get_dpt1_coverage_by_province($province_id, $selected_year, $city_id, $month) {
         $province_ids = $this->get_targeted_province_ids();  // Ambil provinsi yang ditargetkan
         
         $this->db->select('SUM(dpt1_coverage) AS total_dpt1_coverage');
