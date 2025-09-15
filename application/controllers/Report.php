@@ -529,7 +529,7 @@ class Report extends CI_Controller {
         }
 
         // Total DPT 1 Kejar
-        $this->data['total_kejar'] = $this->Report_model->get_dpt1_coverage_by_province($selected_province, $selected_district);
+        $this->data['total_kejar'] = $this->Report_model->get_dpt1_coverage_by_province($selected_province, $selected_year, $selected_district);
         $this->data['percent_kejar'] = $this->data['total_kejar']/$this->data['national_baseline_zd'] * 100;
 
         // Menentukan baseline DPT 3 dan MR 1
