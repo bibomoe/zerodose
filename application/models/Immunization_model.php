@@ -272,7 +272,46 @@ class Immunization_model extends CI_Model {
         return $result->total ?? 0;
     }
 
+    public function get_dpt1_by_province($year = 2025, $max_month = 1, $province_filter = 'all') {
+        $province_ids = $this->get_targeted_province_ids();
 
+        $this->db->select("
+            provinces.name_id AS district,  -- Kolom 'district' dipakai agar tetap cocok dengan view yang sudah ada
+            SUM(immunization_data.dpt_hb_hib_1) AS total_dpt1,
+            SUM(target_immunization.dpt_hb_hib_1_target) AS target_district
+        ");
+        $this->db->from('provinces');
+        $this->db->join('cities', 'cities.province_id = provinces.id', 'left');
+        $this->db->join('immunization_data', 'immunization_data.city_id = cities.id AND immunization_data.year = ' . (int)$year, 'left');
+        $this->db->join('target_immunization', 'target_immunization.city_id = cities.id AND target_immunization.year = ' . (int)$year, 'left');
+
+        if ($province_filter === 'targeted') {
+            if (!empty($province_ids)) {
+                $this->db->where_in('provinces.id', $province_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_filter !== 'all') {
+            $this->db->where('provinces.id', $province_filter);
+        }
+
+        $this->db->group_by('provinces.id');
+        $this->db->order_by('total_dpt1', 'DESC');
+
+        $result = $this->db->get()->result_array();
+
+        foreach ($result as &$row) {
+            $target = $row['target_district'];
+            $target_cumulative = ($max_month > 0) ? ($target * $max_month / 12) : 0;
+
+            $row['target_district'] = $target_cumulative;
+            $row['percentage_target'] = ($target > 0) ? ($row['total_dpt1'] / $target) * 100 : 0;
+            $row['zero_dose_children'] = $target_cumulative - $row['total_dpt1'];
+            $row['percent_zero_dose'] = ($target_cumulative > 0) ? ($row['zero_dose_children'] / $target_cumulative) * 100 : 0;
+        }
+
+        return $result;
+    }
 
     // Data total DPT-1 per distrik berdasarkan provinsi
     public function get_dpt1_by_district($province_id = 'all', $year = 2025, $max_month = 1) {

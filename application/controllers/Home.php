@@ -498,14 +498,30 @@ class Home extends CI_Controller {
                 : 0;
         }
 
-        // Data imunisasi DPT-1 per distrik
-        if ($selected_district == 'all'){
-            // $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year, $this->data['quarter']);
-            $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year, $this->data['max_month']);
+        // // Data imunisasi DPT-1 per distrik
+        // if ($selected_district == 'all'){
+        //     // $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year, $this->data['quarter']);
+        //     $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year, $this->data['max_month']);
+        // } else {
+        //     // $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_puskesmas($selected_province, $selected_district, $selected_year, $this->data['quarter']);
+        //     $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_puskesmas($selected_province, $selected_district, $selected_year, $this->data['max_month']);
+        // }
+
+        if ($selected_province === 'all' || $selected_province === 'targeted') {
+            // Tampilkan data per provinsi
+            $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_province($selected_year, $max_month, $selected_province);
         } else {
-            // $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_puskesmas($selected_province, $selected_district, $selected_year, $this->data['quarter']);
-            $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_puskesmas($selected_province, $selected_district, $selected_year, $this->data['max_month']);
+            // Tampilkan data per kota/kab
+            // Data imunisasi DPT-1 per distrik
+            if ($selected_district == 'all'){
+                // $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year, $this->data['quarter']);
+                $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_district($selected_province, $selected_year, $this->data['max_month']);
+            } else {
+                // $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_puskesmas($selected_province, $selected_district, $selected_year, $this->data['quarter']);
+                $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_puskesmas($selected_province, $selected_district, $selected_year, $this->data['max_month']);
+            }
         }
+
         
 
         // Urutkan array berdasarkan 'zero_dose_children' secara menurun
@@ -715,6 +731,7 @@ class Home extends CI_Controller {
                 'sort_kejar_kombinasi' => 'Sort by Highest Combined reached',
                 'tabelcoloumn1' => 'District',
                 'tabelcoloumn1_2' => 'Puskesmas',
+                'tabelcoloumn1_3' => 'Province',
                 'tabelcoloumn6' => 'District Target',
                 'tabelcoloumn6_2' => 'Puskesmas Targets ',
                 'tabelcoloumn2' => 'Total Coverage DPT1',
@@ -793,6 +810,7 @@ class Home extends CI_Controller {
                 'text17_2' => 'Puskesmas dengan jumlah anak belum diimunisasi DPT-1 Tahun ',
                 'tabelcoloumn1' => 'Kab/Kota',
                 'tabelcoloumn1_2' => 'Puskesmas',
+                'tabelcoloumn1_3' => 'Provinsi',
                 'tabelcoloumn6' => 'Sasaran ',
                 'tabelcoloumn6_2' => 'Sasaran ',
                 'tabelcoloumn2' => 'Cakupan DPT1',

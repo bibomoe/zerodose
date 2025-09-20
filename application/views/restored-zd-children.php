@@ -547,7 +547,17 @@
                                                         <tr>
                                                             <!-- <th><?= $translations['tabelcoloumn1'] ?></th>
                                                             <th><?= $translations['tabelcoloumn6'] ?></th> -->
-                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn1'] : $translations['tabelcoloumn1_2'] ?></th>
+                                                            <th>
+                                                                <?php
+                                                                    if ($selected_province === 'all' || $selected_province === 'targeted') {
+                                                                        echo $translations['tabelcoloumn1_3']; // Provinsi
+                                                                    } elseif ($selected_district === 'all') {
+                                                                        echo $translations['tabelcoloumn1']; // Kab/Kota
+                                                                    } else {
+                                                                        echo $translations['tabelcoloumn1_2']; // Puskesmas
+                                                                    }
+                                                                ?>
+                                                            </th>
                                                             <th><?= $selected_district == 'all' ? $translations['tabelcoloumn6'] : $translations['tabelcoloumn6_2'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
                                                             <th><?= $translations['tabelcoloumn2'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
                                                             <th><?= $translations['tabelcoloumn3'] ?> </th>
