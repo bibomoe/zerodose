@@ -1447,6 +1447,11 @@ $(document).ready(function () {
     // Tentukan bulan terakhir (opsional, jika hanya ingin tampil sampai bulan tertentu)
     let nowMonth = <?= $max_month ?? 12; ?>;
 
+    // ✅ 1. Temukan bulan pertama yang memiliki data coverage valid
+    let firstValidIndex = coverageData.findIndex(val => val !== null && val !== 0);
+
+    if (firstValidIndex === -1) firstValidIndex = 0; // fallback kalau tidak ada data sama sekali
+
     // Object for chart translations
     const translationsCoverageLineChart = {
         en: {
@@ -1477,8 +1482,12 @@ $(document).ready(function () {
     const targetDataToShow = targetData;
 
     // Coverage hanya sampai bulan ke-$max_month (akumulatif juga)
-    const coverageDataToShow = coverageData.map((val, idx) => {
-        return (idx < nowMonth) ? val : null;
+    //const coverageDataToShow = coverageData.map((val, idx) => {
+    //    return (idx < nowMonth) ? val : null;
+    //});
+
+    const coverageDataToShow = coverageData.slice(firstValidIndex).map((val, idx) => {
+        return (firstValidIndex + idx < nowMonth) ? val : null;
     });
 
 
