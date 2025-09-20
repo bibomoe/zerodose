@@ -823,6 +823,9 @@ class Immunization_model extends CI_Model {
         $cumulative_immunized_2025 = 0; // Imunisasi kumulatif untuk tahun 2025
         $cumulative_immunized_2026 = 0; // Imunisasi kumulatif untuk tahun 2026
 
+        $started_2025 = false;
+        $started_2026 = false;
+
         // foreach ($immunization_data as $data) {
         //     if ($data['year'] == 2025) {
         //         $cumulative_immunized_2025 += $data['total_immunized']; // Tambahkan imunisasi tahun 2025
@@ -840,31 +843,67 @@ class Immunization_model extends CI_Model {
         //         ];
         //     }
         // }
+        // foreach ($immunization_data as $data) {
+        //     $has_data = $data['total_immunized'] > 0; // ✅ Flag ini penting
+
+        //     if ($data['year'] == 2025) {
+        //         if ($has_data) {
+        //             $cumulative_immunized_2025 += $data['total_immunized'];
+        //         }
+
+        //         $zd_cases[] = [
+        //             'year' => $data['year'],
+        //             'month' => $data['month'],
+        //             'zd_cases' => $has_data ? max($total_target_2024 - $cumulative_immunized_2025, 0) : null, // ✅ hanya jika ada data
+        //         ];
+
+        //     } elseif ($data['year'] == 2026) {
+        //         if ($has_data) {
+        //             $cumulative_immunized_2026 += $data['total_immunized'];
+        //         }
+
+        //         $zd_cases[] = [
+        //             'year' => $data['year'],
+        //             'month' => $data['month'],
+        //             'zd_cases' => $has_data ? max($total_target_2024 - $cumulative_immunized_2026, 0) : null,
+        //         ];
+        //     }
+        // }
+
         foreach ($immunization_data as $data) {
-            $has_data = $data['total_immunized'] > 0; // ✅ Flag ini penting
+            $zd_value = null;
 
             if ($data['year'] == 2025) {
-                if ($has_data) {
-                    $cumulative_immunized_2025 += $data['total_immunized'];
+                if ($data['total_immunized'] > 0) {
+                    $started_2025 = true;
                 }
 
-                $zd_cases[] = [
-                    'year' => $data['year'],
-                    'month' => $data['month'],
-                    'zd_cases' => $has_data ? max($total_target_2024 - $cumulative_immunized_2025, 0) : null, // ✅ hanya jika ada data
-                ];
+                if ($started_2025) {
+                    $cumulative_immunized_2025 += $data['total_immunized'];
+                    $zd_value = max($total_target_2024 - $cumulative_immunized_2025, 0);
+                } else {
+                    // Belum mulai imunisasi, tetap tampil baseline
+                    $zd_value = $total_target_2024;
+                }
 
             } elseif ($data['year'] == 2026) {
-                if ($has_data) {
-                    $cumulative_immunized_2026 += $data['total_immunized'];
+                if ($data['total_immunized'] > 0) {
+                    $started_2026 = true;
                 }
 
-                $zd_cases[] = [
-                    'year' => $data['year'],
-                    'month' => $data['month'],
-                    'zd_cases' => $has_data ? max($total_target_2024 - $cumulative_immunized_2026, 0) : null,
-                ];
+                if ($started_2026) {
+                    $cumulative_immunized_2026 += $data['total_immunized'];
+                    $zd_value = max($total_target_2024 - $cumulative_immunized_2026, 0);
+                } else {
+                    $zd_value = $total_target_2024;
+                }
             }
+
+            $zd_cases[] = [
+                'year' => $data['year'],
+                'month' => $data['month'],
+                'zd_cases' => $zd_value
+            ];
         }
 
         return $zd_cases;
