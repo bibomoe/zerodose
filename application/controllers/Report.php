@@ -2497,11 +2497,12 @@ class Report extends CI_Controller {
     public function partner_report_indonesia_sent_email() {
         // Ambil data dari form filter
         $partner_id = $this->input->post('partner_id');
-        $month = $this->input->post('month');
+        $month = $this->input->post('month') ?? 'all';
+        $year = $this->input->post('year') ?? 2025;
         $email = $this->input->post('email');
     
         // Generate laporan berdasarkan filter yang diberikan
-        $report_data = $this->partner_report_attach($partner_id, $month);
+        $report_data = $this->partner_report_attach($partner_id, $month, $year);
 
         $this->send_report_via_email($report_data, $email);
         // Kirim laporan melalui email
@@ -2711,25 +2712,30 @@ class Report extends CI_Controller {
         exit();
     }
 
-    public function partner_report_attach($param_partner_id, $param_month) {
+    public function partner_report_attach($param_partner_id, $param_month, $param_year) {
         $selected_partner = $param_partner_id;
                 // $selected_month = $this->input->post('month') ?? date('m'); // Default bulan saat ini 2025
                 $selected_month = $param_month;
+        $selected_year = $param_year;
+        $this->data['selected_year'] = $selected_year;
 
         // $selected_partner = $this->input->post('partner_id') ?? 'all';
         // $selected_month = $this->input->post('month') ?? 'all'; // Default bulan saat ini 2025
         $this->data['selected_partner'] = $selected_partner;
 
         // Ambil data budget absorption
-        $this->data['budget_absorption_2024'] = $this->Report_model->get_total_budget_absorption_percentage(2024, $selected_month, $selected_partner);
-        $this->data['budget_absorption_2025'] = $this->Report_model->get_total_budget_absorption_percentage(2025, $selected_month, $selected_partner);
+        // $this->data['budget_absorption_2024'] = $this->Report_model->get_total_budget_absorption_percentage(2024, $selected_month, $selected_partner);
+        // $this->data['budget_absorption_2025'] = $this->Report_model->get_total_budget_absorption_percentage(2025, $selected_month, $selected_partner);
+        $this->data['budget_absorption'] = $this->Report_model->get_total_budget_absorption_percentage($selected_year, $selected_month, $selected_partner);
 
         // Ambil semua country objectives
-        $objectives = $this->Dashboard_model->get_all_objectives();
+        $objectives = $this->Report_model->get_all_objectives();
 
         // Ambil aktivitas yang sudah selesai
-        $this->data['completed_activities_2024'] = $this->Report_model->get_completed_activities_percentage_by_year(2024, $selected_month, $selected_partner);
-        $this->data['completed_activities_2025'] = $this->Report_model->get_completed_activities_percentage_by_year(2025, $selected_month, $selected_partner);
+        $this->data['completed_activities'] = $this->Report_model->get_completed_activities_percentage_by_year($selected_year, $selected_month, $selected_partner);
+        // $this->data['completed_activities_2024'] = $this->Report_model->get_completed_activities_percentage_by_year(2024, $selected_month, $selected_partner);
+        // $this->data['completed_activities_2025'] = $this->Report_model->get_completed_activities_percentage_by_year(2025, $selected_month, $selected_partner);
+        
 
         
         // var_dump($this->data['completed_activities_2025'][1]);
@@ -2739,10 +2745,14 @@ class Report extends CI_Controller {
 
         foreach($objectives as $row){
 
+            // $table_country_objectives[] = [
+            //     'name' => $row['id']. '. ' . $row['objective_name'],
+            //     'completed_2024' => $this->data['completed_activities_2024'][$row['id']],
+            //     'completed_2025' => $this->data['completed_activities_2025'][$row['id']]
+            // ];
             $table_country_objectives[] = [
-                'name' => $row['id']. '. ' . $row['objective_name'],
-                'completed_2024' => $this->data['completed_activities_2024'][$row['id']],
-                'completed_2025' => $this->data['completed_activities_2025'][$row['id']]
+                'name' => $row['id'] . '. ' . $row['objective_name'],
+                'completed' => $this->data['completed_activities'][$row['id']] ?? 0
             ];
         }
 
@@ -2753,8 +2763,10 @@ class Report extends CI_Controller {
         $data = [
     
             // Data untuk laporan Grant Implementation & Budget Disbursement
-            'budget_2024' => $this->data['budget_absorption_2024'],
-            'budget_2025' => $this->data['budget_absorption_2025'],
+            // 'budget_2024' => $this->data['budget_absorption_2024'],
+            // 'budget_2025' => $this->data['budget_absorption_2025'],
+            'selected_year' => $selected_year,
+            'budget' => $this->data['budget_absorption'],
             'country_objectives' => $table_country_objectives
         ];
 
@@ -2798,7 +2810,8 @@ class Report extends CI_Controller {
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Zero Dose Indonesia Team');
         $pdf->SetTitle('LAPORAN KERANGKA KERJA AKUNTABILITAS PENURUNAN ANAK ANAK ZERO DOSE GAVI ');
-        $pdf->SetHeaderData('', 0, '', 'Partner: ' . $partner_name . $title_month);
+        // $pdf->SetHeaderData('', 0, '', 'Partner: ' . $partner_name . $title_month);
+        $pdf->SetHeaderData('', 0, '', 'Partner: ' . $partner_name . ' - Tahun: ' . $selected_year . $title_month);
     
         // Mengatur margin
         $pdf->SetMargins(15, 20, 15);
@@ -2833,47 +2846,54 @@ class Report extends CI_Controller {
         $html .= '<p style="margin-bottom: 20px;"></p>';
     
         $html .= '<h3 style="font-size:14pt; ">Penggunaan (penyerapan) Budget untuk periode pelaporan tertentu, Gavi</h3>';
-    
+        // <th width="25%" style="background-color:rgb(250, 185, 44); color: white; font-weight: bold;">2024</th>
+        // <th width="25%" style="background-color:rgb(250, 185, 44); color: white; font-weight: bold;">2025</th>
+        // <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . number_format($data['budget_2024'], 2, ',', '.') . '%</td>
+        // <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . number_format($data['budget_2025'], 2, ',', '.') . '%</td>
+
         // Tabel 6: Grant Implementation & Budget Disbursement
         $html .= '<table border="1" cellpadding="10" style="text-align:center;">
                     <thead>
                         <tr>
                             <th width="50%" style="background-color:rgb(250, 185, 44); color: white; font-weight: bold;">Indikator</th>
-                            <th width="25%" style="background-color:rgb(250, 185, 44); color: white; font-weight: bold;">2024</th>
-                            <th width="25%" style="background-color:rgb(250, 185, 44); color: white; font-weight: bold;">2025</th>
+                            <th width="50%" style="background-color:rgb(250, 185, 44); color: white; font-weight: bold;">' . $selected_year . '</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td width="50%" style="font-size:12pt; ">Penggunaan (penyerapan) Budget</td>
-                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . number_format($data['budget_2024'], 2, ',', '.') . '%</td>
-                            <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . number_format($data['budget_2025'], 2, ',', '.') . '%</td>
+                            <td width="50%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); ">' . number_format($data['budget'], 2, ',', '.') . '%</td>
                         </tr>
                     </tbody>
                 </table>';
     
         // Menambahkan jarak antara tabel pengeluaran dan country objectives
         $html .= '<br><br>';
-    
+
+
+        // <th width="25%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2024</th>
+        // <th width="25%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2025</th>
+        // <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. number_format($objective['completed_2024'], 2, ',', '.') . '%</td>
+        //                 <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. number_format($objective['completed_2025'], 2, ',', '.') . '%</td>
+
         // Tabel 7: Country Objectives
         $html .= '<h3 style="font-size:14pt; ">Country Objectives</h3>';
         $html .= '<table border="1" cellpadding="10" style="text-align:center;">
                     <thead>
                         <tr>
-                            <th width="30%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Tujuan</th>
-                            <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Indikator</th>
-                            <th width="25%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2024</th>
-                            <th width="25%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">2025</th>
+                            <th width="50%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Tujuan</th>
+                            <th width="25%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Indikator</th>
+                            <th width="25%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">' . $selected_year . '</th>
                         </tr>
                     </thead>
                     <tbody>';
         foreach ($data['country_objectives'] as $objective) {
             $html .= '<tr>
-                        <td width="30%" style="font-size:12pt; ">'. $objective['name'] . '</td>
-                        <td width="20%" style="font-size:12pt; ">Persentase kegiatan rencana kerja yang terlaksana</td>
-                        <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. number_format($objective['completed_2024'], 2, ',', '.') . '%</td>
-                        <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. number_format($objective['completed_2025'], 2, ',', '.') . '%</td>
-                      </tr>';
+                        <td width="50%" style="font-size:12pt; ">'. $objective['name'] . '</td>
+                        <td width="25%" style="font-size:12pt; ">Persentase kegiatan rencana kerja yang terlaksana</td>
+                        <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. number_format($objective['completed'], 2, ',', '.') . '%</td>
+                    </tr>';
         }
         $html .= '</tbody></table>';
     
