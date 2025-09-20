@@ -490,8 +490,20 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4><?= $selected_district == 'all' ? $translations['text17'] : $translations['text17_2'] ?> <?= $year; ?></h4>
+                                            <h4>
+                                                <?php
+                                                    if ($selected_province === 'all' || $selected_province === 'targeted') {
+                                                        echo $translations['text17_3']; // Provinsi
+                                                    } elseif ($selected_district === 'all') {
+                                                        echo $translations['text17']; // Kab/Kota
+                                                    } else {
+                                                        echo $translations['text17_2']; // Puskesmas
+                                                    }
+                                                ?>
+                                                <?= $year; ?>
+                                            </h4>
                                         </div>
+
                                         <!-- <div class="card-body">
                                             <div id="chart-profile-visit"></div>
                                         </div> -->
