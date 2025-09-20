@@ -212,7 +212,7 @@
                                                             <?php elseif($selected_province !== 'all' && $selected_province !== 'targeted'): ?>
                                                                 <!-- Kabupaten/Kota -->
                                                                 <th><?= $translations['tabelcoloumn2'] ?></th>
-                                                                <th><?= $translations['tabelcoloumn1'] ?></th>
+                                                                <!-- <th><?= $translations['tabelcoloumn1'] ?></th> -->
                                                             <?php else: ?>
                                                                 <!-- Provinsi -->
                                                                 <th><?= $translations['tabelcoloumn1'] ?></th>
@@ -232,7 +232,7 @@
                                                                     <td><?= htmlspecialchars($district['puskesmas_name']) ?></td>
                                                                 <?php elseif($selected_province !== 'all' && $selected_province !== 'targeted'): ?>
                                                                     <td><?= htmlspecialchars($district['district_name']) ?></td>
-                                                                    <td><?= htmlspecialchars($district['province_name']) ?></td>
+                                                                    <!-- <td><?= htmlspecialchars($district['province_name']) ?></td> -->
                                                                 <?php else: ?>
                                                                     <td><?= htmlspecialchars($district['province_name']) ?></td>
                                                                 <?php endif; ?>
