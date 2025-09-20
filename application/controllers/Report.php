@@ -2687,16 +2687,16 @@ class Report extends CI_Controller {
         $html .= '<table border="1" cellpadding="10" style="text-align:center;">
                     <thead>
                         <tr>
-                            <th width="30%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Tujuan</th>
-                            <th width="20%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Indikator</th>
+                            <th width="50%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Tujuan</th>
+                            <th width="25%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">Indikator</th>
                             <th width="25%" style="background-color:rgb(44, 209, 250); color: white; font-weight: bold;">' . $selected_year . '</th>
                         </tr>
                     </thead>
                     <tbody>';
         foreach ($data['country_objectives'] as $objective) {
             $html .= '<tr>
-                        <td width="30%" style="font-size:12pt; ">'. $objective['name'] . '</td>
-                        <td width="20%" style="font-size:12pt; ">Persentase kegiatan rencana kerja yang terlaksana</td>
+                        <td width="50%" style="font-size:12pt; ">'. $objective['name'] . '</td>
+                        <td width="25%" style="font-size:12pt; ">Persentase kegiatan rencana kerja yang terlaksana</td>
                         <td width="25%" style="font-size:22pt; font-weight: bold; color:rgb(0, 0, 0); "> '. number_format($objective['completed'], 2, ',', '.') . '%</td>
                     </tr>';
         }
