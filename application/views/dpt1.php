@@ -206,18 +206,17 @@
                                                 <table class="table table-striped" id="table2">
                                                     <thead>
                                                         <tr>
-                                                            <?php
-                                                                if($selected_district == 'all') {
-                                                            ?>
-                                                                <th><?= $translations['tabelcoloumn1'] ?></th>
-                                                                <th><?= $translations['tabelcoloumn2'] ?></th>
-                                                            <?php
-                                                                } else {
-                                                            ?>
+                                                            <?php if($selected_district !== 'all'): ?>
+                                                                <!-- Puskesmas -->
                                                                 <th><?= $translations['tabelcoloumn9'] ?></th>
-                                                            <?php
-                                                                }
-                                                            ?>
+                                                            <?php elseif($selected_province !== 'all' && $selected_province !== 'targeted'): ?>
+                                                                <!-- Kabupaten/Kota -->
+                                                                <th><?= $translations['tabelcoloumn2'] ?></th>
+                                                                <th><?= $translations['tabelcoloumn1'] ?></th>
+                                                            <?php else: ?>
+                                                                <!-- Provinsi -->
+                                                                <th><?= $translations['tabelcoloumn1'] ?></th>
+                                                            <?php endif; ?>
                                                             <th><?= $translations['tabelcoloumn3'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
                                                             <th><?= $translations['tabelcoloumn4'] ?></th>
                                                             <th><?= $translations['tabelcoloumn5'] ?></th>
@@ -229,18 +228,14 @@
                                                     <tbody>
                                                         <?php foreach ($district_details as $district): ?>
                                                             <tr>
-                                                                <?php
-                                                                    if($selected_district == 'all') {
-                                                                ?>
-                                                                    <td><?= htmlspecialchars($district['province_name']); ?></td>
-                                                                    <td><?= htmlspecialchars($district['district_name']) ?></td>
-                                                                <?php
-                                                                    } else {
-                                                                ?>
-                                                                    <td><?= htmlspecialchars($district['puskesmas_name']) ?></td>
-                                                                <?php
-                                                                    }
-                                                                ?>
+                                                                <?php if($selected_district !== 'all'): ?>
+                                                                    <td><?= htmlspecialchars($row['puskesmas_name']) ?></td>
+                                                                <?php elseif($selected_province !== 'all' && $selected_province !== 'targeted'): ?>
+                                                                    <td><?= htmlspecialchars($row['district_name']) ?></td>
+                                                                    <td><?= htmlspecialchars($row['province_name']) ?></td>
+                                                                <?php else: ?>
+                                                                    <td><?= htmlspecialchars($row['province_name']) ?></td>
+                                                                <?php endif; ?>
                                                                 
                                                                 <td><?= number_format($district['target']) ?></td>
                                                                 <td><?= number_format($district['dpt1_coverage']) ?></td>

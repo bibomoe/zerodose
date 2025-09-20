@@ -1257,13 +1257,32 @@ class Home extends CI_Controller {
         // Menentukan quarter
         // $this->data['quarter'] = $this->Immunization_model->get_max_quarter($selected_year);
 
-        if ($selected_district === 'all'){
-            // Ambil data distrik dan cakupan DPT
-            $this->data['district_details'] = $this->Dpt1_model->get_district_details($selected_province, $selected_year, $this->data['max_month']);
+        // if ($selected_district === 'all'){
+        //     // Ambil data distrik dan cakupan DPT
+        //     $this->data['district_details'] = $this->Dpt1_model->get_district_details($selected_province, $selected_year, $this->data['max_month']);
+        // } else {
+        //     // Ambil data distrik dan cakupan DPT
+        //     $this->data['district_details'] = $this->Dpt1_model->get_puskesmas_details($selected_province, $selected_district, $selected_year, $this->data['max_month']);
+        // }
+
+        if ($selected_district !== 'all') {
+            // Ambil data per puskesmas
+            $this->data['district_details'] = $this->Dpt1_model->get_puskesmas_details(
+                $selected_province, $selected_district, $selected_year, $this->data['max_month']
+            );
+        } elseif ($selected_province !== 'all' && $selected_province !== 'targeted') {
+            // Ambil data per kabupaten/kota
+            $this->data['district_details'] = $this->Dpt1_model->get_district_details(
+                $selected_province, $selected_year, $this->data['max_month']
+            );
         } else {
-            // Ambil data distrik dan cakupan DPT
-            $this->data['district_details'] = $this->Dpt1_model->get_puskesmas_details($selected_province, $selected_district, $selected_year, $this->data['max_month']);
+            // Ambil data per provinsi
+            $this->data['district_details'] = $this->Dpt1_model->get_province_details(
+                $selected_year, $this->data['max_month'], $selected_province
+            );
         }
+
+
         // echo "Total districts from model: " . count($this->data['district_details']);
         // print_r($this->data['district_details']);
         // exit;

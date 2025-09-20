@@ -662,6 +662,53 @@ class Dpt1_model extends CI_Model {
         return $query->result_array();
     }
 
+    public function get_province_details($year, $max_month, $province_filter = 'all') {
+        $provinces = $this->get_targeted_provinces();
+        $targeted_ids = array_column($provinces, 'id');
+
+        $this->db->select("
+            provinces.id AS province_id,
+            provinces.name_id AS province_name,
+            COALESCE(SUM(target_immunization.dpt_hb_hib_1_target), 0) AS target,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
+            COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage
+        ");
+        $this->db->from('provinces');
+        $this->db->join('cities', 'cities.province_id = provinces.id', 'left');
+        $this->db->join('immunization_data', 'immunization_data.city_id = cities.id AND immunization_data.year = ' . (int) $year, 'left');
+        $this->db->join('target_immunization', 'target_immunization.city_id = cities.id AND target_immunization.year = immunization_data.year', 'left');
+
+        if ($province_filter === 'targeted') {
+            if (!empty($targeted_ids)) {
+                $this->db->where_in('provinces.id', $targeted_ids);
+            } else {
+                return [];
+            }
+        } elseif ($province_filter !== 'all') {
+            $this->db->where('provinces.id', $province_filter);
+        }
+
+        $this->db->group_by('provinces.id');
+        $result = $this->db->get()->result_array();
+
+        // Hitung persentase dan dropout
+        foreach ($result as &$row) {
+            $total_target = $row['target'];
+            $target = ($max_month > 0) ? ($total_target * $max_month / 12) : 0;
+
+            $row['target'] = $target;
+
+            $row['percent_dpt1_coverage'] = ($target > 0) ? round(($row['dpt1_coverage'] / $target) * 100, 2) : 0;
+
+            $row['dropout_number'] = max(0, $row['dpt1_coverage'] - $row['dpt3_coverage']);
+            $row['dropout_rate'] = ($row['dpt1_coverage'] > 0)
+                ? round(($row['dropout_number'] / $row['dpt1_coverage']) * 100, 2)
+                : 100;
+        }
+
+        usort($result, fn($a, $b) => $b['dropout_rate'] <=> $a['dropout_rate']);
+        return $result;
+    }
 
     public function get_district_details($province_id, $year, $max_month) {
         $provinces = $this->get_targeted_provinces();
