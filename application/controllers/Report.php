@@ -1198,10 +1198,7 @@ class Report extends CI_Controller {
 
         // Menambahkan jarak antara tabel pertama dan kedua
         $html .= '<br>';
-        $html .= '</br>';
-        $html .= '<br>';
-        $html .= '</br>';
-
+        
             // Tabel 2: Indikator Jangka Menengah
             $html .= '<h3 style="font-size:14pt;">Indikator Jangka Menengah</h3>';
             $html .= '<table border="1" cellpadding="10" style="text-align:center; border-color: #dddddd;">
@@ -1496,6 +1493,12 @@ class Report extends CI_Controller {
             // Ambil total ZD dari tabel zd_cases_2023 berdasarkan provinsi yang dipilih
             $this->data['national_baseline_zd'] = $this->Report_model->get_zero_dose_by_province($selected_province, $selected_district);
         }
+
+        // Total DPT 1 Kejar
+        $this->data['total_kejar'] = $this->Report_model->get_dpt1_coverage_by_province($selected_province, $selected_year, $selected_district, $selected_month);
+        $this->data['percent_kejar'] = $this->data['total_kejar']/$this->data['national_baseline_zd'] * 100;
+
+        $this->data['highest_kejar'] = $this->Report_model->get_highest_dpt1_coverage_area_name($selected_province, $selected_year, $selected_district, $selected_month);
 
         // Menentukan baseline DPT 3 dan MR 1
         $this->data['national_baseline_dpt_mr'] = $this->Report_model->get_baseline_by_province($selected_province);
@@ -1977,18 +1980,90 @@ class Report extends CI_Controller {
         // Mendapatkan nama kabupaten/kota
         $district_name = $this->Report_model->get_district_name_by_id($selected_district);
 
-        if ($selected_province !== 'all'){
+        if ($selected_province !== 'all' && $selected_province !== 'targeted'){
             if ($selected_district !== 'all'){
                 $title_area = $district_name . ' '; // Gunakan nama Kab Kota
             } else {
                 $title_area = 'Provinsi ' . $province_name .' '; // Gunakan nama Provinsi
             }
-
+        } else if ($selected_province === 'targeted') {
+            $title_area = '13 Provinsi Target '; // Gunakan nama Indonesia
         } else {
             $title_area = 'Indonesia '; // Gunakan nama Indonesia
         }
 
         $title_year = 'Tahun ' . $selected_year;
+
+        usort($table_do, function ($a, $b) use ($selected_province) {
+            $key = ($selected_province === 'all' || $selected_province === 'targeted') ? 'do_rate' : 'dropout_rate';
+            $value_a = isset($a[$key]) ? (float) str_replace(',', '.', $a[$key]) : 0;
+            $value_b = isset($b[$key]) ? (float) str_replace(',', '.', $b[$key]) : 0;
+            return $value_b <=> $value_a;
+        });
+
+        $dropout_high_row = !empty($table_do) ? $table_do[0] : ['name' => '-', 'do_rate' => 0, 'dropout_rate' => 0];
+        $dropout_low_row  = !empty($table_do) ? end($table_do) : ['name' => '-', 'do_rate' => 0, 'dropout_rate' => 0];
+
+        $dropout_high = ($selected_province === 'all' || $selected_province === 'targeted') ? [
+            'city' => '-',
+            'province' => $dropout_high_row['name'],
+            'percent' => (float) str_replace(',', '.', $dropout_high_row['do_rate'])
+        ] : [
+            'city' => $dropout_high_row['name'],
+            'province' => $province_name ?? '-',
+            'percent' => (float) str_replace(',', '.', $dropout_high_row['dropout_rate'] ?? $dropout_high_row['do_rate'])
+        ];
+
+        $dropout_low = ($selected_province === 'all' || $selected_province === 'targeted') ? [
+            'city' => '-',
+            'province' => $dropout_low_row['name'],
+            'percent' => (float) str_replace(',', '.', $dropout_low_row['do_rate'])
+        ] : [
+            'city' => $dropout_low_row['name'],
+            'province' => $province_name ?? '-',
+            'percent' => (float) str_replace(',', '.', $dropout_low_row['dropout_rate'] ?? $dropout_low_row['do_rate'])
+        ];
+
+
+        $max_stockout_info = $this->Report_model->get_max_monthly_stockout(
+            $selected_province,
+            $selected_district,
+            $selected_year
+        );
+
+        $narrative_text  = $this->generate_narrative(
+            $selected_province,
+            $selected_district,
+            $selected_month,
+            $selected_year,
+            [
+                'baseline_zd' => $this->data['national_baseline_zd'],
+                'zd_chased' => $this->data['total_kejar'],
+                'zd_chased_percent' => $this->data['percent_kejar'],
+                'highest_kejar' => $this->data['highest_kejar'],
+
+                'dpt1' => $total_dpt1_coverage,
+                'dpt1_percent' => $percent_dpt1_coverage,
+                'dpt1_target' => $total_dpt1_target,
+
+                'dpt3_percent' => $percent_dpt3_coverage,
+                'mr1_percent' => $percent_mr1_coverage,
+
+                'zd_current' => $zero_dose,
+
+                'dropout_count' => $total_district_under_5_DO,
+                'dropout_high' => $dropout_high,
+                'dropout_low' => $dropout_low,
+
+
+                'stockout' => $max_stockout_info['total_stockout'] ?? 0,
+                'stockout_percent' => $max_stockout_info['percentage'] ?? 0,
+                'stockout_month' => $max_stockout_info['month'] ?? '-',
+                'total_puskesmas' => $max_stockout_info['total_puskesmas']
+            ]
+
+        );
+
     
         // Membuat objek TCPDF
         // Buat objek PDF
@@ -2030,6 +2105,9 @@ class Report extends CI_Controller {
 
         // $html .= "<h4>Indonesia</h4>";
         $html .= '<p style="margin-bottom: 20px;"></p>';
+
+        // Sisipkan narasi ke HTML sebelum Tabel 1
+        $html .= '<p style="text-align: justify; font-size:11pt;">' . nl2br($narrative_text) . '</p><br>';
 
         // Tabel 1: Indikator Jangka Panjang
         $html .= '<h3 style="font-size:14pt; ">Indikator Jangka Panjang</h3>';
@@ -2131,30 +2209,30 @@ class Report extends CI_Controller {
             $html2 .= '<br><br>';
         
             // Tabel 4: Jumlah Puskesmas yang melakukan pelayanan imunisasi sesuai pedoman nasional
-            // $html2 .= '<h3 style="font-size:14pt;">Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
-            // $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
-            //             <thead>
-            //                 <tr>
-            //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Provinsi</th>
-            //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
-            //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
-            //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
-            //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
-            //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
-            //                 </tr>
-            //             </thead>
-            //             <tbody>';
-            // foreach ($data['puskesmas_do_immunization'] as $item) {
-                // $html2 .= "<tr>
-                //             <td><b>{$item['province_name']}</b></td>
-                //             <td>{$item['total_puskesmas_with_immunization']}</td>
-                //             <td>{$item['percentage_immunization']}%</td>
-                //             <td>{$item['total_ss']}</td>
-                //             <td>{$item['total_good_puskesmas']}</td>
-                //             <td>{$item['percentage_good']}%</td>
-                //         </tr>";
-            // }
-            // $html2 .= '</tbody></table>';
+            // // $html2 .= '<h3 style="font-size:14pt;">Jumlah Puskesmas yang melakukan pelayanan imunisasi</h3>';
+            // // $html2 .= '<table border="1" cellpadding="10" style="text-align: center;">
+            // //             <thead>
+            // //                 <tr>
+            // //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Nama Provinsi</th>
+            // //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas</th>
+            // //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">% Puskesmas</th>
+            // //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang di supervisi suportif</th>
+            // //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Jumlah Puskesmas yang telah disupervisi suportif dengan hasil kategori baik</th>
+            // //                     <th style="background-color: rgb(44, 216, 235); color: white; font-weight: bold;">Persentase Kategori "Baik"</th>
+            // //                 </tr>
+            // //             </thead>
+            // //             <tbody>';
+            // // foreach ($data['puskesmas_do_immunization'] as $item) {
+            // //     $html2 .= "<tr>
+            // //                 <td><b>{$item['province_name']}</b></td>
+            // //                 <td>{$item['total_puskesmas_with_immunization']}</td>
+            // //                 <td>{$item['percentage_immunization']}%</td>
+            // //                 <td>{$item['total_ss']}</td>
+            // //                 <td>{$item['total_good_puskesmas']}</td>
+            // //                 <td>{$item['percentage_good']}%</td>
+            // //             </tr>";
+            // // }
+            // // $html2 .= '</tbody></table>';
         
             // // Menambahkan jarak antara tabel ketiga dan keempat
             // $html2 .= '<br><br>';
@@ -2214,13 +2292,13 @@ class Report extends CI_Controller {
                 //             </thead>
                 //             <tbody>';
                 // $no = 0;
-                // foreach ($data['puskesmas_do_immunization'] as $item) {
-                //     $no++;
-                //     $html2 .= "
-                //             <tr>
-                //                 <td>{$item['puskesmas_name']}</td>
-                //             </tr>";
-                // }
+                // // foreach ($data['puskesmas_do_immunization'] as $item) {
+                // //     $no++;
+                // //     $html2 .= "
+                // //             <tr>
+                // //                 <td>{$item['puskesmas_name']}</td>
+                // //             </tr>";
+                // // }
                 // $html2 .= '</tbody></table>';
             
                 // // Menambahkan jarak antara tabel ketiga dan keempat
