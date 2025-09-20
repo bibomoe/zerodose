@@ -1048,7 +1048,7 @@ class Report extends CI_Controller {
         // Mendapatkan nama kabupaten/kota
         $district_name = $this->Report_model->get_district_name_by_id($selected_district);
 
-        if ($selected_province !== 'all'){
+        if ($selected_province !== 'all' && $selected_province !== 'targeted'){
             if ($selected_district !== 'all'){
                 $title_area = $district_name . ' '; // Gunakan nama Kab Kota
             } else {
@@ -1104,29 +1104,6 @@ class Report extends CI_Controller {
             $selected_district,
             $selected_month,
             $selected_year,
-            // [
-            //     'baseline_zd' => $this->data['national_baseline_zd'],
-            //     'zd_chased' => $zd_chased, // ambil dari perhitungan
-            //     'zd_chased_percent' => $zd_chased_percent,
-
-            //     'dpt1' => $total_dpt1_coverage,
-            //     'dpt1_percent' => $percent_dpt1_coverage,
-            //     'dpt1_target' => $total_dpt1_target,
-
-            //     'dpt3_percent' => $percent_dpt3_coverage,
-            //     'mr1_percent' => $percent_mr1_coverage,
-
-            //     'zd_current' => $zero_dose,
-
-            //     'dropout_count' => $total_district_under_5_DO,
-            //     'dropout_high' => ['city' => $dropout_high_city, 'percent' => $dropout_high_percent],
-            //     'dropout_low' => ['city' => $dropout_low_city, 'percent' => $dropout_low_percent],
-
-            //     'stockout' => $total_dpt_stockout,
-            //     'stockout_percent' => $stockout_percentage,
-            //     'stockout_month' => $stockout_month,
-            //     'total_puskesmas' => $stockout_total_puskesmas
-            // ]
             [
                 'baseline_zd' => $this->data['national_baseline_zd'],
                 'zd_chased' => $this->data['total_kejar'],
