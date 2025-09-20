@@ -1475,17 +1475,19 @@ $(document).ready(function () {
     // const targetDataToShow = targetData.slice(0, nowMonth);
     // const coverageDataToShow = coverageData.slice(0, nowMonth);
 
-    // Tetap gunakan array bulan penuh (12 bulan)
-    const labelsToShow = months; // Selalu tampil dari Jan - Dec
+    // // Tetap gunakan array bulan penuh (12 bulan)
+    // const labelsToShow = months; // Selalu tampil dari Jan - Dec
 
-    // Target ditampilkan penuh (akumulatif 1–12 bulan)
-    const targetDataToShow = targetData;
+    // // Target ditampilkan penuh (akumulatif 1–12 bulan)
+    // const targetDataToShow = targetData;
 
-    // Coverage hanya sampai bulan ke-$max_month (akumulatif juga)
-    //const coverageDataToShow = coverageData.map((val, idx) => {
-    //    return (idx < nowMonth) ? val : null;
-    //});
-
+    // // Coverage hanya sampai bulan ke-$max_month (akumulatif juga)
+    // const coverageDataToShow = coverageData.map((val, idx) => {
+    //     return (idx < nowMonth) ? val : null;
+    // });
+    
+    const labelsToShow = months.slice(firstValidIndex);
+    const targetDataToShow = targetData.slice(firstValidIndex);
     const coverageDataToShow = coverageData.slice(firstValidIndex).map((val, idx) => {
         return (firstValidIndex + idx < nowMonth) ? val : null;
     });
