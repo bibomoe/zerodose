@@ -1476,22 +1476,26 @@ $(document).ready(function () {
     // const coverageDataToShow = coverageData.slice(0, nowMonth);
 
     // // Tetap gunakan array bulan penuh (12 bulan)
-    // const labelsToShow = months; // Selalu tampil dari Jan - Dec
+    const labelsToShow = months; // Selalu tampil dari Jan - Dec
 
     // // Target ditampilkan penuh (akumulatif 1–12 bulan)
-    // const targetDataToShow = targetData;
+    const targetDataToShow = targetData;
 
     // // Coverage hanya sampai bulan ke-$max_month (akumulatif juga)
     // const coverageDataToShow = coverageData.map((val, idx) => {
     //     return (idx < nowMonth) ? val : null;
     // });
-    
-    const labelsToShow = months.slice(firstValidIndex);
-    const targetDataToShow = targetData.slice(firstValidIndex);
-    const coverageDataToShow = coverageData.slice(firstValidIndex).map((val, idx) => {
-        return (firstValidIndex + idx < nowMonth) ? val : null;
-    });
 
+    // const labelsToShow = months.slice(firstValidIndex);
+    // const targetDataToShow = targetData.slice(firstValidIndex);
+    // const coverageDataToShow = coverageData.slice(firstValidIndex).map((val, idx) => {
+    //     return (firstValidIndex + idx < nowMonth) ? val : null;
+    // });
+
+    const coverageDataToShow = coverageData.map((val, idx) => {
+        // Hanya tampilkan nilai jika ada, jika tidak: null (agar titik tidak muncul)
+        return (idx < nowMonth && val !== null && val !== 0) ? val : null;
+    });
 
     const ctx = document.getElementById('dptChart').getContext('2d');
     new Chart(ctx, {
@@ -1511,7 +1515,8 @@ $(document).ready(function () {
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 2,
-                tension: 0.4
+                tension: 0.4,
+                spanGaps: false, // Jangan hubungkan titik yang hilang
             }]
         },
         options: {
