@@ -1948,7 +1948,7 @@ class Report_model extends CI_Model {
         $this->db->from('puskesmas');
         
         // Tambahan filter hanya puskesmas aktif (ubah sesuai field di tabel kamu)
-        $this->db->where('active', '1'); // atau 'status' => 'active' tergantung DB kamu
+        // $this->db->where('active', '1'); // atau 'status' => 'active' tergantung DB kamu
 
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
