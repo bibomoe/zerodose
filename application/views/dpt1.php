@@ -229,12 +229,12 @@
                                                         <?php foreach ($district_details as $district): ?>
                                                             <tr>
                                                                 <?php if($selected_district !== 'all'): ?>
-                                                                    <td><?= htmlspecialchars($row['puskesmas_name']) ?></td>
+                                                                    <td><?= htmlspecialchars($district['puskesmas_name']) ?></td>
                                                                 <?php elseif($selected_province !== 'all' && $selected_province !== 'targeted'): ?>
-                                                                    <td><?= htmlspecialchars($row['district_name']) ?></td>
-                                                                    <td><?= htmlspecialchars($row['province_name']) ?></td>
+                                                                    <td><?= htmlspecialchars($district['district_name']) ?></td>
+                                                                    <td><?= htmlspecialchars($district['province_name']) ?></td>
                                                                 <?php else: ?>
-                                                                    <td><?= htmlspecialchars($row['province_name']) ?></td>
+                                                                    <td><?= htmlspecialchars($district['province_name']) ?></td>
                                                                 <?php endif; ?>
                                                                 
                                                                 <td><?= number_format($district['target']) ?></td>
