@@ -813,7 +813,7 @@ class Home extends CI_Controller {
                 'tabel2coloumn8' => '% Imunisasi Kejar (Kombinasi)',
 
                 'text18' => 'Pemetaan Anak Zero Dose',
-                'text19' => 'Tren Penjangkauan Anak Zero-Dose (Data ASIK) --ok',
+                'text19' => 'Tren Penjangkauan Anak Zero-Dose (Data ASIK) ',
                 'text20' => 'Penjangkauan Anak Zero Dose Berdasarkan Jenis Wilayah',
                 'text21' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes',
                 'text22' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes',

@@ -1026,27 +1026,23 @@ $(document).ready(function () {
                 "July", "August", "September", "October", "November", "December"
             ];
 
+            function trimAfterLastValid(dataArr) {
+                let lastIndex = dataArr.map(v => v !== null).lastIndexOf(true);
+                return dataArr.map((val, idx) => (idx <= lastIndex ? val : null));
+            }
+
             let zdCases2025 = Array(12).fill(null);
             let zdCases2026 = Array(12).fill(null);
 
-            // zeroDoseData.forEach(item => {
-            //     if (item.year === 2025) {
-            //         zdCases2025[item.month - 1] = item.zd_cases;
-            //     } else if (item.year === 2026) {
-            //         zdCases2026[item.month - 1] = item.zd_cases;
-            //     }
-            // });
-
             zeroDoseData.forEach(item => {
-                const value = (item.zd_cases === 0 || item.zd_cases === null) ? null : item.zd_cases;
-
                 if (item.year === 2025) {
-                    zdCases2025[item.month - 1] = value;
+                    zdCases2025[item.month - 1] = item.zd_cases;
+                    zdCases2025 = trimAfterLastValid(zdCases2025);
                 } else if (item.year === 2026) {
-                    zdCases2026[item.month - 1] = value;
+                    zdCases2026[item.month - 1] = item.zd_cases;
+                    zdCases2026 = trimAfterLastValid(zdCases2026);
                 }
             });
-
 
             year = <?= $selected_year ?>;
             let scaleXlabel ='';
@@ -1120,7 +1116,7 @@ $(document).ready(function () {
                         borderColor: 'rgba(0, 86, 179, 1)',
                         borderWidth: 2,
                         tension: 0.4,
-                        spanGaps: false // Jangan sambung titik jika ada yang null
+                        spanGaps: false
                     }]
                 },
                 options: {
