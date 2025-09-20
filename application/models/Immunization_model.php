@@ -823,20 +823,46 @@ class Immunization_model extends CI_Model {
         $cumulative_immunized_2025 = 0; // Imunisasi kumulatif untuk tahun 2025
         $cumulative_immunized_2026 = 0; // Imunisasi kumulatif untuk tahun 2026
 
+        // foreach ($immunization_data as $data) {
+        //     if ($data['year'] == 2025) {
+        //         $cumulative_immunized_2025 += $data['total_immunized']; // Tambahkan imunisasi tahun 2025
+        //         $zd_cases[] = [
+        //             'year' => $data['year'],
+        //             'month' => $data['month'],
+        //             'zd_cases' => max($total_target_2024 - $cumulative_immunized_2025, 0) // Pastikan tidak negatif
+        //         ];
+        //     } elseif ($data['year'] == 2026) {
+        //         $cumulative_immunized_2026 += $data['total_immunized']; // Tambahkan imunisasi tahun 2026
+        //         $zd_cases[] = [
+        //             'year' => $data['year'],
+        //             'month' => $data['month'],
+        //             'zd_cases' => max($total_target_2024 - $cumulative_immunized_2026, 0) // Pastikan tidak negatif
+        //         ];
+        //     }
+        // }
         foreach ($immunization_data as $data) {
+            $has_data = $data['total_immunized'] > 0; // ✅ Flag ini penting
+
             if ($data['year'] == 2025) {
-                $cumulative_immunized_2025 += $data['total_immunized']; // Tambahkan imunisasi tahun 2025
+                if ($has_data) {
+                    $cumulative_immunized_2025 += $data['total_immunized'];
+                }
+
                 $zd_cases[] = [
                     'year' => $data['year'],
                     'month' => $data['month'],
-                    'zd_cases' => max($total_target_2024 - $cumulative_immunized_2025, 0) // Pastikan tidak negatif
+                    'zd_cases' => $has_data ? max($total_target_2024 - $cumulative_immunized_2025, 0) : null, // ✅ hanya jika ada data
                 ];
+
             } elseif ($data['year'] == 2026) {
-                $cumulative_immunized_2026 += $data['total_immunized']; // Tambahkan imunisasi tahun 2026
+                if ($has_data) {
+                    $cumulative_immunized_2026 += $data['total_immunized'];
+                }
+
                 $zd_cases[] = [
                     'year' => $data['year'],
                     'month' => $data['month'],
-                    'zd_cases' => max($total_target_2024 - $cumulative_immunized_2026, 0) // Pastikan tidak negatif
+                    'zd_cases' => $has_data ? max($total_target_2024 - $cumulative_immunized_2026, 0) : null,
                 ];
             }
         }
