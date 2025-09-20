@@ -1030,19 +1030,21 @@ $(document).ready(function () {
                 let lastIndex = dataArr.map(v => v !== null).lastIndexOf(true);
                 return dataArr.map((val, idx) => (idx <= lastIndex ? val : null));
             }
-
+            
             let zdCases2025 = Array(12).fill(null);
             let zdCases2026 = Array(12).fill(null);
 
             zeroDoseData.forEach(item => {
                 if (item.year === 2025) {
                     zdCases2025[item.month - 1] = item.zd_cases;
-                    zdCases2025 = trimAfterLastValid(zdCases2025);
                 } else if (item.year === 2026) {
                     zdCases2026[item.month - 1] = item.zd_cases;
-                    zdCases2026 = trimAfterLastValid(zdCases2026);
                 }
             });
+
+            // ✅ Potong hanya setelah loop selesai
+            zdCases2025 = trimAfterLastValid(zdCases2025);
+            zdCases2026 = trimAfterLastValid(zdCases2026);
 
             year = <?= $selected_year ?>;
             let scaleXlabel ='';
