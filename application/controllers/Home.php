@@ -509,7 +509,7 @@ class Home extends CI_Controller {
 
         if ($selected_province === 'all' || $selected_province === 'targeted') {
             // Tampilkan data per provinsi
-            $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_province($selected_year, $max_month, $selected_province);
+            $this->data['district_data'] = $this->Immunization_model->get_dpt1_by_province($selected_year, $this->data['max_month'], $selected_province);
         } else {
             // Tampilkan data per kota/kab
             // Data imunisasi DPT-1 per distrik
