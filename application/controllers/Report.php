@@ -1054,7 +1054,8 @@ class Report extends CI_Controller {
             } else {
                 $title_area = 'Provinsi ' . $province_name .' '; // Gunakan nama Provinsi
             }
-
+        } else if ($selected_province === 'targeted') {
+            $title_area = '13 Provinsi Target '; // Gunakan nama Indonesia
         } else {
             $title_area = 'Indonesia '; // Gunakan nama Indonesia
         }
@@ -1220,7 +1221,8 @@ class Report extends CI_Controller {
 
         // Menambahkan jarak antara tabel pertama dan kedua
         $html .= '<br>';
-        
+        $html .= '<br>';
+
             // Tabel 2: Indikator Jangka Menengah
             $html .= '<h3 style="font-size:14pt;">Indikator Jangka Menengah</h3>';
             $html .= '<table border="1" cellpadding="10" style="text-align:center; border-color: #dddddd;">
