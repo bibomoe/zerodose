@@ -1198,7 +1198,9 @@ class Report extends CI_Controller {
 
         // Menambahkan jarak antara tabel pertama dan kedua
         $html .= '<br>';
-        $pdf->Ln(20);  // Menambah jarak 25 unit antara gambar dan judul
+        $html .= '</br>';
+        $html .= '<br>';
+        $html .= '</br>';
 
             // Tabel 2: Indikator Jangka Menengah
             $html .= '<h3 style="font-size:14pt;">Indikator Jangka Menengah</h3>';
