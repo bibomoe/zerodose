@@ -735,6 +735,10 @@ class Home extends CI_Controller {
                 'text17' => 'District with the highest number of not immunized DPT-1 children Year ',
                 'text17_2' => 'Puskesmas with the highest number of not immunized DPT-1 children Year ',
                 'text17_3' => 'Province with the highest number of not immunized DPT-1 children Year ',
+
+                'text27' => 'The Trend of Zero Dose Children 2024 vs Zero Dose Candidate Children ',
+                'text28' => ' ASIK',
+
                 'sort_kejar_asik' => 'Sort by Highest ASIK reached',
                 'sort_kejar_manual' => 'Sort by Highest Manual reached',
                 'sort_kejar_kombinasi' => 'Sort by Highest Combined reached',
@@ -818,6 +822,10 @@ class Home extends CI_Controller {
                 'text17' => 'Kab/Kota dengan jumlah anak belum diimunisasi DPT-1 Tahun ',
                 'text17_2' => 'Puskesmas dengan jumlah anak belum diimunisasi DPT-1 Tahun ',
                 'text17_3' => 'Provinsi dengan jumlah anak belum diimunisasi DPT-1 Tahun ',
+
+                'text27' => 'Trend Anak ZD tahun 2024 vs Calon Anak ZD tahun ',
+                'text28' => ' ASIK',
+
                 'tabelcoloumn1' => 'Kab/Kota',
                 'tabelcoloumn1_2' => 'Puskesmas',
                 'tabelcoloumn1_3' => 'Provinsi',

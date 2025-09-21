@@ -602,16 +602,9 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <h4>
-                                                <?php
-                                                    if ($selected_province === 'all' || $selected_province === 'targeted') {
-                                                        echo $translations['text17_3']; // Provinsi
-                                                    } elseif ($selected_district === 'all') {
-                                                        echo $translations['text17']; // Kab/Kota
-                                                    } else {
-                                                        echo $translations['text17_2']; // Puskesmas
-                                                    }
-                                                ?>
+                                                <?= $translations['text27']; ?>
                                                 <?= $year; ?>
+                                                <?= $translations['text28']; ?>
                                             </h4>
                                         </div>
 
@@ -634,12 +627,12 @@
                                                                     }
                                                                 ?>
                                                             </th>
-                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn6'] : $translations['tabelcoloumn6_2'] ?> 2024 <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
-                                                            <th><?= $translations['tabelcoloumn2'] ?> 2024 <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
-                                                            <th><?= $translations['tabelcoloumn4'] ?> 2024 <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
-                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn6'] : $translations['tabelcoloumn6_2'] ?> <?= $year; ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
-                                                            <th><?= $translations['tabelcoloumn2'] ?> <?= $year; ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
-                                                            <th><?= $translations['tabelcoloumn4'] ?> <?= $year; ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
+                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn6'] : $translations['tabelcoloumn6_2'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?> 2024 </th>
+                                                            <th><?= $translations['tabelcoloumn2'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?> 2024</th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?> 2024</th>
+                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn6'] : $translations['tabelcoloumn6_2'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?> <?= $year; ?></th>
+                                                            <th><?= $translations['tabelcoloumn2'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?>  <?= $year; ?></th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?> <?= $year; ?></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
