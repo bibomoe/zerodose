@@ -485,7 +485,7 @@
                                 </div>
                             </div> -->
 
-                            <!-- table -->
+                            <!-- table dpt -->
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card">
@@ -586,6 +586,73 @@
                                                                 <td><?= number_format($district['percentage_target'], 2) ?>%</td>
                                                                 <td><?= number_format($district['zero_dose_children']) ?></td>
                                                                 <td><?= number_format($district['percent_zero_dose'], 2) ?>%</td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- table comparison -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4>
+                                                <?php
+                                                    if ($selected_province === 'all' || $selected_province === 'targeted') {
+                                                        echo $translations['text17_3']; // Provinsi
+                                                    } elseif ($selected_district === 'all') {
+                                                        echo $translations['text17']; // Kab/Kota
+                                                    } else {
+                                                        echo $translations['text17_2']; // Puskesmas
+                                                    }
+                                                ?>
+                                                <?= $year; ?>
+                                            </h4>
+                                        </div>
+
+                                        <div class="card-body">
+                                            
+                                            <div class="table-responsive">
+                                                <table class="table table-striped" id="table3">
+                                                    <thead>
+                                                        <tr>
+                                                            <!-- <th><?= $translations['tabelcoloumn1'] ?></th>
+                                                            <th><?= $translations['tabelcoloumn6'] ?></th> -->
+                                                            <th>
+                                                                <?php
+                                                                    if ($selected_province === 'all' || $selected_province === 'targeted') {
+                                                                        echo $translations['tabelcoloumn1_3']; // Provinsi
+                                                                    } elseif ($selected_district === 'all') {
+                                                                        echo $translations['tabelcoloumn1']; // Kab/Kota
+                                                                    } else {
+                                                                        echo $translations['tabelcoloumn1_2']; // Puskesmas
+                                                                    }
+                                                                ?>
+                                                            </th>
+                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn6'] : $translations['tabelcoloumn6_2'] ?> 2024 <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
+                                                            <th><?= $translations['tabelcoloumn2'] ?> 2024 <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?> 2024 <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
+                                                            <th><?= $selected_district == 'all' ? $translations['tabelcoloumn6'] : $translations['tabelcoloumn6_2'] ?> <?= $year; ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
+                                                            <th><?= $translations['tabelcoloumn2'] ?> <?= $year; ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
+                                                            <th><?= $translations['tabelcoloumn4'] ?> <?= $year; ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($zd_comparison_data as $row): ?>
+                                                            <tr>
+                                                                <td><?= $row['district'] ?></td>
+                                                                <td><?= number_format($row['target_2024']) ?></td>
+                                                                <td><?= number_format($row['coverage_2024']) ?></td>
+                                                                <td><?= number_format($row['zd_2024']) ?></td>
+                                                                <td><?= number_format($row['target_selected']) ?></td>
+                                                                <td><?= number_format($row['coverage_selected']) ?></td>
+                                                                <td><?= number_format($row['zd_selected']) ?></td>
+                                                                <td><?= number_format($row['trend'], 2) ?>%</td>
                                                             </tr>
                                                         <?php endforeach; ?>
                                                     </tbody>

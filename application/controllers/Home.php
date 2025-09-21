@@ -522,6 +522,14 @@ class Home extends CI_Controller {
             }
         }
 
+        $this->data['zd_comparison_data'] = $this->Immunization_model->get_zd_comparison_data(
+            $selected_year,
+            $this->data['max_month'],
+            $selected_province,
+            $selected_district
+        );
+
+
         
 
         // Urutkan array berdasarkan 'zero_dose_children' secara menurun

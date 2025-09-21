@@ -481,6 +481,143 @@ class Immunization_model extends CI_Model {
         return $result;
     }
 
+    public function get_zd_comparison_data($year = 2025, $max_month = 1, $province_id = 'all', $district_id = 'all')
+{
+    // =====================
+    // 1. Jika PROVINSI
+    // =====================
+    if ($province_id === 'all' || $province_id === 'targeted') {
+        $province_ids = $this->get_targeted_province_ids();
+
+        // Ambil data ZD 2024 per provinsi dari zd_cases_per_month
+        $this->db->select('
+            provinces.id AS id,
+            provinces.name_id AS district,
+            SUM(zd_cases_per_month.dpt_hb_hib_1) AS coverage_2024,
+            SUM(zd_cases_per_month.target) AS target_2024
+        ');
+        $this->db->from('zd_cases_per_month');
+        $this->db->join('provinces', 'provinces.id = zd_cases_per_month.province_id');
+        $this->db->where('zd_cases_per_month.year', 2024);
+        $this->db->where('zd_cases_per_month.month <=', $max_month);
+        if ($province_id === 'targeted' && !empty($province_ids)) {
+            $this->db->where_in('zd_cases_per_month.province_id', $province_ids);
+        }
+        $this->db->group_by('zd_cases_per_month.province_id');
+        $zd2024 = $this->db->get()->result_array();
+        $zd2024_map = array_column($zd2024, null, 'id');
+
+        // Ambil data dari imunisasi tahun $year
+        $this->db->select('
+            provinces.id AS id,
+            provinces.name_id AS district,
+            SUM(target_immunization.dpt_hb_hib_1_target) AS target_selected,
+            SUM(immunization_data.dpt_hb_hib_1) AS coverage_selected
+        ');
+        $this->db->from('cities');
+        $this->db->join('provinces', 'provinces.id = cities.province_id');
+        $this->db->join('target_immunization', 'target_immunization.city_id = cities.id AND target_immunization.year = ' . (int)$year);
+        $this->db->join('immunization_data', 'immunization_data.city_id = cities.id AND immunization_data.year = ' . (int)$year);
+        $this->db->where('immunization_data.month <=', $max_month);
+        if ($province_id === 'targeted' && !empty($province_ids)) {
+            $this->db->where_in('provinces.id', $province_ids);
+        }
+        $this->db->group_by('provinces.id');
+        $zd2025 = $this->db->get()->result_array();
+
+        $result = [];
+        foreach ($zd2025 as $row) {
+            $id = $row['id'];
+            $target_2024 = $zd2024_map[$id]['target_2024'] ?? 0;
+            $coverage_2024 = $zd2024_map[$id]['coverage_2024'] ?? 0;
+            $zd_2024 = $target_2024 - $coverage_2024;
+
+            $zd_selected = $row['target_selected'] - $row['coverage_selected'];
+            $trend = $zd_2024 > 0 ? (($zd_selected - $zd_2024) / $zd_2024 * 100) : 0;
+
+            $result[] = [
+                'district' => $row['district'],
+                'target_2024' => $target_2024,
+                'coverage_2024' => $coverage_2024,
+                'zd_2024' => $zd_2024,
+                'target_selected' => $row['target_selected'],
+                'coverage_selected' => $row['coverage_selected'],
+                'zd_selected' => $zd_selected,
+                'trend' => $trend
+            ];
+        }
+
+        return $result;
+    }
+
+    // =====================
+    // 2. Jika KAB/KOTA
+    // =====================
+    elseif ($district_id === 'all') {
+        $this->db->select('
+            cities.id AS id,
+            cities.name_id AS district,
+            SUM(zd_cases_per_month.dpt_hb_hib_1) AS coverage_2024,
+            SUM(zd_cases_per_month.target) AS target_2024
+        ');
+        $this->db->from('zd_cases_per_month');
+        $this->db->join('cities', 'cities.id = zd_cases_per_month.city_id');
+        $this->db->where('zd_cases_per_month.year', 2024);
+        $this->db->where('zd_cases_per_month.month <=', $max_month);
+        $this->db->where('zd_cases_per_month.province_id', $province_id);
+        $this->db->group_by('zd_cases_per_month.city_id');
+        $zd2024 = $this->db->get()->result_array();
+        $zd2024_map = array_column($zd2024, null, 'id');
+
+        $this->db->select('
+            cities.id AS id,
+            cities.name_id AS district,
+            SUM(target_immunization.dpt_hb_hib_1_target) AS target_selected,
+            SUM(immunization_data.dpt_hb_hib_1) AS coverage_selected
+        ');
+        $this->db->from('target_immunization');
+        $this->db->join('cities', 'cities.id = target_immunization.city_id');
+        $this->db->join('immunization_data', 'immunization_data.city_id = cities.id AND immunization_data.year = ' . (int)$year);
+        $this->db->where('target_immunization.year', $year);
+        $this->db->where('immunization_data.month <=', $max_month);
+        $this->db->where('cities.province_id', $province_id);
+        $this->db->group_by('cities.id');
+        $zd2025 = $this->db->get()->result_array();
+
+        $result = [];
+        foreach ($zd2025 as $row) {
+            $id = $row['id'];
+            $target_2024 = $zd2024_map[$id]['target_2024'] ?? 0;
+            $coverage_2024 = $zd2024_map[$id]['coverage_2024'] ?? 0;
+            $zd_2024 = $target_2024 - $coverage_2024;
+
+            $zd_selected = $row['target_selected'] - $row['coverage_selected'];
+            $trend = $zd_2024 > 0 ? (($zd_selected - $zd_2024) / $zd_2024 * 100) : 0;
+
+            $result[] = [
+                'district' => $row['district'],
+                'target_2024' => $target_2024,
+                'coverage_2024' => $coverage_2024,
+                'zd_2024' => $zd_2024,
+                'target_selected' => $row['target_selected'],
+                'coverage_selected' => $row['coverage_selected'],
+                'zd_selected' => $zd_selected,
+                'trend' => $trend
+            ];
+        }
+
+        return $result;
+    }
+
+    // =====================
+    // 3. Jika PUSKESMAS
+    // =====================
+    else {
+        return []; // Diset 0 aja dulu sesuai perintah kamu
+    }
+}
+
+
 
     // Ambil cakupan imunisasi berdasarkan provinsi atau kota dan tahun
     public function get_immunization_coverage($province_id = 'all', $year = 2025) {
