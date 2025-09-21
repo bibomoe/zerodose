@@ -611,7 +611,7 @@
                                         <div class="card-body">
                                             
                                             <div class="table-responsive">
-                                                <table class="table table-striped" id="table3">
+                                                <table class="table table-striped" id="table4">
                                                     <thead>
                                                         <tr>
                                                             <!-- <th><?= $translations['tabelcoloumn1'] ?></th>
@@ -2100,6 +2100,22 @@ $(document).ready(function () {
     });
 
     var table2 = $('#table3').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Download CSV',
+                className: 'btn btn-primary btn-sm'
+            },
+            {
+                extend: 'excelHtml5',
+                text: 'Download Excel',
+                className: 'btn btn-success btn-sm'
+            }
+        ]
+    });
+
+    var table3 = $('#table4').DataTable({
         dom: 'Bfrtip',
         buttons: [
             {
