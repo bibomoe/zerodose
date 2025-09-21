@@ -645,7 +645,6 @@
                                                                 <td><?= number_format($row['target_selected']) ?></td>
                                                                 <td><?= number_format($row['coverage_selected']) ?></td>
                                                                 <td><?= number_format($row['zd_selected']) ?></td>
-                                                                <td><?= number_format($row['trend'], 2) ?>%</td>
                                                             </tr>
                                                         <?php endforeach; ?>
                                                     </tbody>
