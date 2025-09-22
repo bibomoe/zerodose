@@ -666,18 +666,35 @@ class Dpt1_model extends CI_Model {
         $provinces = $this->get_targeted_provinces();
         $targeted_ids = array_column($provinces, 'id');
 
+        // Subquery untuk target per provinsi
+        $target_subquery = $this->db->select('province_id, SUM(dpt_hb_hib_1_target) AS target')
+            ->from('target_immunization')
+            ->where('year', (int)$year)
+            ->group_by('province_id')
+            ->get_compiled_select();
+
+        // Subquery untuk coverage per provinsi
+        $coverage_subquery = $this->db->select('province_id, 
+                SUM(dpt_hb_hib_1) AS dpt1_coverage, 
+                SUM(dpt_hb_hib_3) AS dpt3_coverage')
+            ->from('immunization_data')
+            ->where('year', (int)$year)
+            ->group_by('province_id')
+            ->get_compiled_select();
+
+        // Select utama dari tabel provinces
         $this->db->select("
             provinces.id AS province_id,
             provinces.name_id AS province_name,
-            COALESCE(SUM(target_immunization.dpt_hb_hib_1_target), 0) AS target,
-            COALESCE(SUM(immunization_data.dpt_hb_hib_1), 0) AS dpt1_coverage,
-            COALESCE(SUM(immunization_data.dpt_hb_hib_3), 0) AS dpt3_coverage
+            COALESCE(targets.target, 0) AS target,
+            COALESCE(coverage.dpt1_coverage, 0) AS dpt1_coverage,
+            COALESCE(coverage.dpt3_coverage, 0) AS dpt3_coverage
         ");
         $this->db->from('provinces');
-        $this->db->join('cities', 'cities.province_id = provinces.id', 'left');
-        $this->db->join('immunization_data', 'immunization_data.city_id = cities.id AND immunization_data.year = ' . (int) $year, 'left');
-        $this->db->join('target_immunization', 'target_immunization.city_id = cities.id AND target_immunization.year = immunization_data.year', 'left');
+        $this->db->join("($target_subquery) AS targets", 'targets.province_id = provinces.id', 'left');
+        $this->db->join("($coverage_subquery) AS coverage", 'coverage.province_id = provinces.id', 'left');
 
+        // Filter
         if ($province_filter === 'targeted') {
             if (!empty($targeted_ids)) {
                 $this->db->where_in('provinces.id', $targeted_ids);
@@ -688,17 +705,17 @@ class Dpt1_model extends CI_Model {
             $this->db->where('provinces.id', $province_filter);
         }
 
-        $this->db->group_by('provinces.id');
         $result = $this->db->get()->result_array();
 
-        // Hitung persentase dan dropout
+        // Hitung persentase & dropout
         foreach ($result as &$row) {
             $total_target = $row['target'];
             $target = ($max_month > 0) ? ($total_target * $max_month / 12) : 0;
 
             $row['target'] = $target;
-
-            $row['percent_dpt1_coverage'] = ($target > 0) ? round(($row['dpt1_coverage'] / $target) * 100, 2) : 0;
+            $row['percent_dpt1_coverage'] = ($target > 0)
+                ? round(($row['dpt1_coverage'] / $target) * 100, 2)
+                : 0;
 
             $row['dropout_number'] = max(0, $row['dpt1_coverage'] - $row['dpt3_coverage']);
             $row['dropout_rate'] = ($row['dpt1_coverage'] > 0)
@@ -706,9 +723,12 @@ class Dpt1_model extends CI_Model {
                 : 100;
         }
 
+        // Urutkan berdasarkan dropout rate tertinggi
         usort($result, fn($a, $b) => $b['dropout_rate'] <=> $a['dropout_rate']);
+
         return $result;
     }
+
 
     public function get_district_details($province_id, $year, $max_month) {
         $provinces = $this->get_targeted_provinces();
