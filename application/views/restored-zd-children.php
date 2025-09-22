@@ -167,7 +167,7 @@
                                 <div class="col-12 col-lg-6 col-md-12">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5 text-center">
-                                            <h6 class="text-muted font-semibold"><?= $translations['text_baseline2'] ?></h6>
+                                            <h6 class="text-muted font-semibold"><?= $translations['text_baseline2'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_asik; ?></h6>
                                             <h6 class="font-extrabold mb-0 highlight">
                                                 <?= number_format($dpt1_coverage_kejar) ?> <?= $translations['children'] . " ("; ?>
                                                 <?php 
@@ -597,7 +597,7 @@
                             </div>
 
                             <!-- table comparison -->
-                            <div class="row">
+                            <!-- <div class="row">
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
@@ -614,8 +614,6 @@
                                                 <table class="table table-striped" id="table4">
                                                     <thead>
                                                         <tr>
-                                                            <!-- <th><?= $translations['tabelcoloumn1'] ?></th>
-                                                            <th><?= $translations['tabelcoloumn6'] ?></th> -->
                                                             <th>
                                                                 <?php
                                                                     if ($selected_province === 'all' || $selected_province === 'targeted') {
@@ -653,7 +651,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <!-- PETA -->
                             <div class="row">

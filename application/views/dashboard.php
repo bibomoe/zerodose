@@ -1391,10 +1391,14 @@ $(document).ready(function () {
 <script>
     const puskesmasData = {
         baseline: <?= (int) $total_puskesmas ?>,
-        2025: <?= (int) $absolute_puskesmas_immunized_2025 ?>,
-        2026: <?= (int) $absolute_puskesmas_immunized_2026 ?>,
-        percent_2025: <?= (float) $percent_puskesmas_immunized_2025 ?>,
-        percent_2026: <?= (float) $percent_puskesmas_immunized_2026 ?>
+        // 2025: <?= (int) $absolute_puskesmas_immunized_2025 ?>,
+        // 2026: <?= (int) $absolute_puskesmas_immunized_2026 ?>,
+        // percent_2025: <?= (float) $percent_puskesmas_immunized_2025 ?>,
+        // percent_2026: <?= (float) $percent_puskesmas_immunized_2026 ?>
+        2025: 0,
+        2026: 0,
+        percent_2025: 0,
+        percent_2026: 0
     };
 
     createMultiAxisChart(

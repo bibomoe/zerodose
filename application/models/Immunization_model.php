@@ -276,14 +276,13 @@ class Immunization_model extends CI_Model {
         $province_ids = $this->get_targeted_province_ids();
 
         $this->db->select("
-            provinces.name_id AS district,  -- Kolom 'district' dipakai agar tetap cocok dengan view yang sudah ada
+            provinces.name_id AS district,
             SUM(immunization_data.dpt_hb_hib_1) AS total_dpt1,
             SUM(target_immunization.dpt_hb_hib_1_target) AS target_district
         ");
         $this->db->from('provinces');
-        $this->db->join('cities', 'cities.province_id = provinces.id', 'left');
-        $this->db->join('immunization_data', 'immunization_data.city_id = cities.id AND immunization_data.year = ' . (int)$year, 'left');
-        $this->db->join('target_immunization', 'target_immunization.city_id = cities.id AND target_immunization.year = ' . (int)$year, 'left');
+        $this->db->join('immunization_data', 'immunization_data.province_id = provinces.id AND immunization_data.year = ' . (int)$year, 'left');
+        $this->db->join('target_immunization', 'target_immunization.province_id = provinces.id AND target_immunization.year = ' . (int)$year, 'left');
 
         if ($province_filter === 'targeted') {
             if (!empty($province_ids)) {
@@ -312,6 +311,7 @@ class Immunization_model extends CI_Model {
 
         return $result;
     }
+
 
     // Data total DPT-1 per distrik berdasarkan provinsi
     public function get_dpt1_by_district($province_id = 'all', $year = 2025, $max_month = 1) {
@@ -539,7 +539,7 @@ class Immunization_model extends CI_Model {
                 $target_selected = $full_target_selected * $max_month / 12;
                 $zd_selected = $target_selected - $coverage_selected;
 
-                $trend = $zd_2024 > 0 ? (($zd_selected - $zd_2024) / $zd_2024 * 100) : 0;
+                $trend = $zd_2024 > 0 ? (($zd_2024 - $zd_selected) / $zd_2024 * 100) : 0;
 
                 $result[] = [
                     'district' => $row['district'],
@@ -604,7 +604,7 @@ class Immunization_model extends CI_Model {
                 $target_selected = $full_target_selected * $max_month / 12;
                 $zd_selected = $target_selected - $coverage_selected;
 
-                $trend = $zd_2024 > 0 ? (($zd_selected - $zd_2024) / $zd_2024 * 100) : 0;
+                $trend = $zd_2024 > 0 ? (($zd_2024 - $zd_selected) / $zd_2024 * 100) : 0;
 
                 $result[] = [
                     'district' => $row['district'],

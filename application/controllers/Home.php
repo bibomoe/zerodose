@@ -189,7 +189,7 @@ class Home extends CI_Controller {
                 'text3' => 'The cells highlighted in <span class="text-success"><strong>green</strong></span> represent the <span class="text-success"><strong>Target</strong></span> values.',
                 'text4' => 'Long Term Outcomes',
                 'text5' => 'Intermediate Outcomes',
-                'text6' => 'Grant Implementation & Budget Disbursement',
+                'text6' => 'Grant Implementation & Budget Spending',
                 'text7' => 'Country Objectives',
                 'text8' => 'Indicator',
                 'text9' => 'Indicator Value',
@@ -2150,7 +2150,7 @@ class Home extends CI_Controller {
         $this->data['completed_activities_all_for_comparison'] = $completed_activities_data_all_for_comparison;
         $this->data['objectives_for_comparison'] = $objectives_for_comparison;
 
-        $this->data['title'] = 'Grants Implementation and Budget Disbursement';
+        $this->data['title'] = 'Grants Implementation and Budget Spending';
         load_template('grant-implementation', $this->data);
     }
 
@@ -2245,11 +2245,11 @@ class Home extends CI_Controller {
     private function load_translation_grant_implementation_sub_national($lang) {
         $translations = [
             'en' => [
-                'page_title' => 'Budget Sub-National Disbursement',
+                'page_title' => 'Budget Sub-National Spending',
                 'page_subtitle' => '',
                 'filter_label' => 'Select Menu',
-                'text1' => 'Budget Sub-National Disbursement',
-                'text2' => 'Budget Sub-National CSO Disbursement',
+                'text1' => 'Budget Sub-National Spending',
+                'text2' => 'Budget Sub-National CSO Spending',
                 'total_allocation_label' => 'Total Budget Allocation',
                 'total_absorption_label' => 'Total Budget Realization',
                 'cso_allocation_label' => 'Total CSO Allocation',
@@ -2283,7 +2283,7 @@ class Home extends CI_Controller {
                 ]
             ],
             'id' => [
-                'page_title' => 'Budget Sub-National Disbursement',
+                'page_title' => 'Budget Sub-National Spending',
                 'page_subtitle' => '',
                 'filter_label' => 'Pilih Menu',
                 'text1' => 'Serapan Anggaran Sub-National',
