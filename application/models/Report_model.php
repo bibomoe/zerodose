@@ -907,19 +907,15 @@ class Report_model extends CI_Model {
     public function get_stockout_summary($province_id, $district_id, $year, $month = 12) {
         $province_ids = $this->get_targeted_province_ids(); // Targeted provinces
     
-        // ================================
-        // Ambil total Puskesmas yang stockout (distinct)
-        // ================================
-        $this->db->distinct();
-        $this->db->select('puskesmas_id');
+        $this->db->select('COUNT(DISTINCT puskesmas_id) AS total_stockout');
         $this->db->from('puskesmas_stock_out_details');
         $this->db->where('year', $year);
         $this->db->where('status_stockout', '1');
-        
+
         if ($month !== 'all') {
             $this->db->where('month <=', $month);
         }
-    
+
         if ($province_id === 'targeted') {
             if (!empty($province_ids)) {
                 $this->db->where_in('province_id', $province_ids);
@@ -929,10 +925,13 @@ class Report_model extends CI_Model {
         } elseif ($province_id !== 'all') {
             $this->db->where('province_id', $province_id);
         }
-    
+
         if ($district_id !== 'all') {
             $this->db->where('city_id', $district_id);
         }
+
+        $total_stockout = $this->db->get()->row()->total_stockout ?? 0;
+
     
         $total_stockout = $this->db->get()->num_rows(); // Puskesmas unik dengan stockout
     
