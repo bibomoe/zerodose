@@ -562,15 +562,6 @@ class Report extends CI_Controller {
             $this->data['national_baseline_zd'] = $this->Report_model->get_zero_dose_by_province($selected_province, $selected_district);
         }
 
-        // ✅ Jika bulan ke-6 (Juni), bagi dua baseline
-        if ($selected_month == '6') {
-            var_dump($this->data['national_baseline_zd']);
-            $this->data['national_baseline_zd'] = (int) $this->data['national_baseline_zd'];
-            var_dump($this->data['national_baseline_zd']);
-            exit;
-            $this->data['national_baseline_zd'] = $this->data['national_baseline_zd'] / 2;
-        }
-
         // Total DPT 1 Kejar
         $this->data['total_kejar'] = $this->Report_model->get_dpt1_coverage_by_province($selected_province, $selected_year, $selected_district, $selected_month);
         $this->data['percent_kejar'] = $this->data['total_kejar']/$this->data['national_baseline_zd'] * 100;
@@ -584,6 +575,11 @@ class Report extends CI_Controller {
         $this->data["total_target_dpt_1_$year"] = $this->Report_model->get_total_target('dpt_hb_hib_1', $selected_province, $selected_district, $year);
         $this->data["total_target_dpt_3_$year"] = $this->Report_model->get_total_target('dpt_hb_hib_3', $selected_province, $selected_district, $year);
         $this->data["total_target_mr_1_$year"] = $this->Report_model->get_total_target('mr_1', $selected_province, $selected_district, $year);
+
+        // ✅ Jika bulan ke-6, bagi 2
+        if ($selected_month == 6 && is_numeric($this->data["total_target_dpt_1_$year"])) {
+            $this->data["total_target_dpt_1_$year"] = $this->data["total_target_dpt_1_$year"] / 2;
+        }
 
         // Ambil data cakupan imunisasi dari immunization_data
         $this->data["total_dpt_1_$year"] = $this->Report_model->get_total_vaccine('dpt_hb_hib_1', $selected_province, $selected_district, $year, $selected_month);
