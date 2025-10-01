@@ -77,11 +77,11 @@ class Home extends CI_Controller {
         $this->data['percent_dpt1_coverage_2026'] = $this->Dashboard_model->get_dpt1_coverage_percentage(2026);
 
         $this->load->model('Dpt1_model');
-        $this->data['absolute_dpt1_coverage_2025'] = $this->Dpt1_model->get_total_dpt1_coverage(2025, 'all', 'all');
-        $this->data['absolute_dpt1_coverage_2026'] = $this->Dpt1_model->get_total_dpt1_coverage(2026, 'all', 'all');
+        $this->data['absolute_dpt1_coverage_2025'] = $this->Dpt1_model->get_total_dpt1_coverage(2025, 'targeted', 'all');
+        $this->data['absolute_dpt1_coverage_2026'] = $this->Dpt1_model->get_total_dpt1_coverage(2026, 'targeted', 'all');
 
-        $this->data['baseline_dpt1_target_2025'] = $this->Dpt1_model->get_total_dpt1_target(2025, 'all', 'all');
-        $this->data['baseline_dpt1_target_2026'] = $this->Dpt1_model->get_total_dpt1_target(2026, 'all', 'all');
+        $this->data['baseline_dpt1_target_2025'] = $this->Dpt1_model->get_total_dpt1_target(2025, 'targeted', 'all');
+        $this->data['baseline_dpt1_target_2026'] = $this->Dpt1_model->get_total_dpt1_target(2026, 'targeted', 'all');
 
 
         $this->data['percent_districts_under_5_2025'] = $this->Dashboard_model->get_districts_under_5_percentage(2025);
