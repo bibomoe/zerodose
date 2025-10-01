@@ -766,7 +766,7 @@
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title"><?= $translations['text25'] ?></h4>
+                                            <h4 class="card-title"><?= $translations['text25'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name_asik; ?></h4>
                                         </div>
                                         <div class="card-body">
                                             <!-- <canvas id="kejarChart" style="height: 500px; width: 100%;"></canvas> -->
