@@ -562,6 +562,11 @@ class Report extends CI_Controller {
             $this->data['national_baseline_zd'] = $this->Report_model->get_zero_dose_by_province($selected_province, $selected_district);
         }
 
+        // ✅ Jika bulan ke-6 (Juni), bagi dua baseline
+        if ($selected_month == 6 && is_numeric($this->data['national_baseline_zd'])) {
+            $this->data['national_baseline_zd'] = $this->data['national_baseline_zd'] / 2;
+        }
+
         // Total DPT 1 Kejar
         $this->data['total_kejar'] = $this->Report_model->get_dpt1_coverage_by_province($selected_province, $selected_year, $selected_district, $selected_month);
         $this->data['percent_kejar'] = $this->data['total_kejar']/$this->data['national_baseline_zd'] * 100;
