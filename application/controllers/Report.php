@@ -2072,7 +2072,7 @@ class Report extends CI_Controller {
 
                 'stockout' => $max_stockout_info['total_stockout'] ?? 0,
                 'stockout_percent' => $max_stockout_info['percentage'] ?? 0,
-                'stockout_total' => $total_dpt_stockout ?? 0,
+                'stockout_total' => $this->data["total_dpt_stockout_$year"]['total_stockout'],
                 'stockout_month' => $max_stockout_info['month'] ?? '-',
                 'total_puskesmas' => $max_stockout_info['total_puskesmas']
             ]
