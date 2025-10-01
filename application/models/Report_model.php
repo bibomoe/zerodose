@@ -386,6 +386,7 @@ class Report_model extends CI_Model {
         $this->db->join('immunization_data_per_puskesmas', 'immunization_data_per_puskesmas.puskesmas_id = puskesmas.id', 'left');
         $this->db->where('puskesmas.city_id', $city_id);
         $this->db->where('immunization_data_per_puskesmas.year', $year);
+        $this->db->where('active', 1);
     
         if ($month !== 'all') {
             $this->db->where('immunization_data_per_puskesmas.month <=', $month);
@@ -605,6 +606,8 @@ class Report_model extends CI_Model {
         if ($month !== 'all') {
             $this->db->where('immunization_data_per_puskesmas.month <=', $month); // Kumulatif bulan 1 sampai bulan yang ditentukan
         }
+
+        $this->db->where('active', 1);
     
         // $this->db->group_by('cities.id'); // Group by city_id untuk perhitungan tiap kota/distrik
         
@@ -764,6 +767,7 @@ class Report_model extends CI_Model {
         if ($district_id !== 'all') {
             $this->db->where('city_id', $district_id);
         }
+        $this->db->where('active', 1);
     
         $total_puskesmas = $this->db->get()->row()->total_puskesmas ?? 0;
     
@@ -860,6 +864,7 @@ class Report_model extends CI_Model {
         if ($district_id !== 'all') {
             $this->db->where('city_id', $district_id);
         }
+        $this->db->where('active', 1);
 
         $total_puskesmas = $this->db->get()->row()->total_puskesmas ?? 0;
 
@@ -962,6 +967,7 @@ class Report_model extends CI_Model {
         if ($district_id !== 'all') {
             $this->db->where('city_id', $district_id);
         }
+        $this->db->where('active', 1);
     
         $total_puskesmas = $this->db->get()->row()->total_puskesmas ?? 0;
     
@@ -1961,6 +1967,7 @@ class Report_model extends CI_Model {
         if ($city_id !== 'all') {
             $this->db->where('city_id', $city_id);
         }
+        $this->db->where('active', 1);
 
         $total_puskesmas_result = $this->db->get()->row();
         $total_puskesmas = $total_puskesmas_result ? $total_puskesmas_result->total_puskesmas : 0;
