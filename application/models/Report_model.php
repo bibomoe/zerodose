@@ -930,7 +930,10 @@ class Report_model extends CI_Model {
             $this->db->where('city_id', $district_id);
         }
 
+        
         $total_stockout = $this->db->get()->row()->total_stockout ?? 0;
+        var_dump($total_stockout);
+        exit;
 
     
         // $total_stockout = $this->db->get()->num_rows(); // Puskesmas unik dengan stockout
