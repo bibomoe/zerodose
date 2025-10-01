@@ -8,7 +8,7 @@ class Dpt1_model extends CI_Model {
         $this->db->select('id, name_id');
         $this->db->from('provinces');
         $this->db->where('priority', 1);
-        $this->db->limit(10); // Ambil 10 provinsi saja
+        // $this->db->limit(15); // Ambil 10 provinsi saja
         $query = $this->db->get();
         return $query->result_array();
     }

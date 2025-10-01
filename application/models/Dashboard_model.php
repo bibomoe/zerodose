@@ -646,7 +646,7 @@ class Dashboard_model extends CI_Model {
         $query = $this->db->select('id')
                           ->from('provinces')
                           ->where('priority', 1) // ✅ Hanya provinces dengan priority = 1
-                          ->limit(10) // ✅ Batasi ke 10 provinces
+                        //   ->limit(10) // ✅ Batasi ke 10 provinces
                           ->get();
 
         return array_column($query->result_array(), 'id'); // Return array ID targeted provinces
