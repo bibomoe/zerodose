@@ -497,7 +497,13 @@ class Report extends CI_Controller {
         $narrative .= "Jumlah sasaran DPT tahun $selected_year kumulatif hingga $time_label $selected_year sebesar $target_total anak. ";
         $narrative .= "Hingga $time_label $selected_year, terdapat $zd_current anak $area_label yang belum mendapatkan imunisasi DPT1 (calon anak ZD).\n\n";
 
-        $narrative .= "Terdapat {$data['dropout_count']} kabupaten/kota memiliki angka drop out (selisih cakupan DPT-1 dengan DPT-3) di bawah 5%. ";
+        // Tentukan label wilayah berdasarkan filter district
+        $area_label = ($selected_district === 'all') ? 'kabupaten/kota' : 'puskesmas';
+
+        // Susun narasi
+        $narrative .= "Terdapat {$data['dropout_count']} {$area_label} memiliki angka drop out (selisih cakupan DPT-1 dengan DPT-3) di bawah 5%.";
+
+        // $narrative .= "Terdapat {$data['dropout_count']} kabupaten/kota memiliki angka drop out (selisih cakupan DPT-1 dengan DPT-3) di bawah 5%. ";
         
         // Narasi angka drop-out berdasarkan kondisi area
         if ($selected_province === 'all' || $selected_province === 'targeted') {
