@@ -565,6 +565,8 @@ class Report extends CI_Controller {
         // ✅ Jika bulan ke-6 (Juni), bagi dua baseline
         if ($selected_month == '6') {
             $this->data['national_baseline_zd'] = (int) $this->data['national_baseline_zd'];
+            var_dump($this->data['national_baseline_zd']);
+            exit;
             $this->data['national_baseline_zd'] = $this->data['national_baseline_zd'] / 2;
         }
 
