@@ -742,7 +742,7 @@
                                     </div>
                                 </div>
                                 <!-- ZD Region Type -->
-                                <div class="col-md-12">
+                                <!-- <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
                                             <h4 class="card-title"><?= $translations['text20'] ?></h4>
@@ -754,7 +754,7 @@
                                             <canvas id="locationChart"></canvas>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
 
                             <div class="alert alert-secondary mb-3" role="alert">
@@ -919,6 +919,7 @@ $(document).ready(function () {
                     backgroundColor: '#28a745', // Hijau
                     stack: 'total',
                     yAxisID: 'y',
+                    hidden: true, // ✅ Disembunyikan saat awal
                     order: 2 // ✅ tampil duluan
                 },
                 {
@@ -927,6 +928,7 @@ $(document).ready(function () {
                     backgroundColor: '#ffc107', // Kuning
                     stack: 'total',
                     yAxisID: 'y',
+                    hidden: true, // ✅ Disembunyikan saat awal
                     order: 3 // ✅ tampil duluan
                 },
                 {
@@ -968,6 +970,7 @@ $(document).ready(function () {
                     xAxisID: 'x1',
                     clip: false, // ✅ tambahkan ini 
                     order: 12, // ✅ scatter muncul terakhir
+                    hidden: true, // ✅ Disembunyikan saat awal
                     datalabels: {
                         display: true,
                         anchor: 'end',    
@@ -988,6 +991,7 @@ $(document).ready(function () {
                     xAxisID: 'x1', 
                     clip: false, // ✅ tambahkan ini
                     order: 13, // ✅ scatter muncul terakhir
+                    hidden: true, // ✅ Disembunyikan saat awal
                     datalabels: {
                         display: true,
                         anchor: 'end',    
@@ -1708,7 +1712,7 @@ $(document).ready(function () {
 
 
 <!-- Grafik Bar -->
-<script>
+<!-- <script>
 $(document).ready(function () {
             // Fetch data from PHP
             const restoredData = <?= json_encode($restored_data); ?>;
@@ -1857,7 +1861,7 @@ $(document).ready(function () {
             // Add buttons to the DOM for locationChart
             addLocationDownloadButtons();
 });
-</script>
+</script> -->
 
 <!-- Peta -->
 <script>
