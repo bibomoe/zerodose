@@ -907,7 +907,7 @@ class Report_model extends CI_Model {
     public function get_stockout_summary($province_id, $district_id, $year, $month = 12) {
         $province_ids = $this->get_targeted_province_ids(); // Targeted provinces
     
-        $this->db->select('COUNT(DISTINCT puskesmas_id) AS total_stockout');
+        $this->db->select('puskesmas_id');
         $this->db->from('puskesmas_stock_out_details');
         $this->db->where('year', $year);
         $this->db->where('status_stockout', '1');
@@ -930,8 +930,11 @@ class Report_model extends CI_Model {
             $this->db->where('city_id', $district_id);
         }
 
-        
-        $total_stockout = $this->db->get()->row()->total_stockout ?? 0;
+        // ✅ Ganti DISTINCT jadi GROUP BY
+        $this->db->group_by('puskesmas_id');
+
+        $total_stockout = $this->db->get()->num_rows();
+
         var_dump($total_stockout);
         exit;
 
