@@ -501,7 +501,7 @@ class Report extends CI_Controller {
         $area_label = ($selected_district === 'all') ? 'kabupaten/kota' : 'puskesmas';
 
         // Susun narasi
-        $narrative .= "Terdapat {$data['dropout_count']} {$area_label} memiliki angka drop out (selisih cakupan DPT-1 dengan DPT-3) di bawah 5%.";
+        $narrative .= "Terdapat {$data['dropout_count']} {$area_label} memiliki angka drop out (selisih cakupan DPT-1 dengan DPT-3) di bawah 5%. ";
 
         // $narrative .= "Terdapat {$data['dropout_count']} kabupaten/kota memiliki angka drop out (selisih cakupan DPT-1 dengan DPT-3) di bawah 5%. ";
         
