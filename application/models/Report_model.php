@@ -933,7 +933,7 @@ class Report_model extends CI_Model {
         $total_stockout = $this->db->get()->row()->total_stockout ?? 0;
 
     
-        $total_stockout = $this->db->get()->num_rows(); // Puskesmas unik dengan stockout
+        // $total_stockout = $this->db->get()->num_rows(); // Puskesmas unik dengan stockout
     
         // ================================
         // Ambil total puskesmas yang aktif
