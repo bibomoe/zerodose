@@ -469,7 +469,8 @@ class Report extends CI_Controller {
         $dropout_high = $data['dropout_high']; // ['city' => '...', 'percent' => ...]
         $dropout_low = $data['dropout_low'];   // ['city' => '...', 'percent' => ...]
 
-        $stockout_total = number_format($data['stockout'], 0, ',', '.');
+        $stockout_total = number_format($data['stockout_total'], 0, ',', '.');
+        $stockout_total_highest_in_a_month = number_format($data['stockout'], 0, ',', '.');
         $stockout_percent = number_format($data['stockout_percent'], 1, ',', '.');
         $stockout_month = $data['stockout_month']; // e.g. 'April'
         $total_puskesmas = number_format($data['total_puskesmas'], 0, ',', '.');
@@ -522,15 +523,15 @@ class Report extends CI_Controller {
         // Narasi dinamis berdasarkan area
         if ($selected_province === 'all' || $selected_province === 'targeted') {
             $narrative .= "Kekosongan vaksin DPT tertinggi terjadi pada bulan $stockout_month $selected_year ";
-            $narrative .= "dimana kekosongan terjadi di $stockout_total puskesmas ($stockout_percent%) ";
+            $narrative .= "dimana kekosongan terjadi di $stockout_total_highest_in_a_month puskesmas ($stockout_percent%) ";
             $narrative .= "dari total $total_puskesmas Puskesmas di $area_label.";
         } elseif ($selected_district === 'all') {
             $narrative .= "Kekosongan vaksin DPT tertinggi terjadi pada bulan $stockout_month $selected_year ";
-            $narrative .= "dengan jumlah $stockout_total puskesmas mengalami kekosongan vaksin ($stockout_percent%) ";
+            $narrative .= "dengan jumlah $stockout_total_highest_in_a_month puskesmas mengalami kekosongan vaksin ($stockout_percent%) ";
             $narrative .= "dari total $total_puskesmas Puskesmas di provinsi tersebut.";
         } else {
             $narrative .= "Kekosongan vaksin DPT tertinggi terjadi pada bulan $stockout_month $selected_year, ";
-            $narrative .= "dimana $stockout_total dari $total_puskesmas Puskesmas di wilayah tersebut mengalami kekosongan vaksin ($stockout_percent%).";
+            $narrative .= "dimana $stockout_total_highest_in_a_month dari $total_puskesmas Puskesmas di wilayah tersebut mengalami kekosongan vaksin ($stockout_percent%).";
         }
 
         return $narrative;
@@ -2071,6 +2072,7 @@ class Report extends CI_Controller {
 
                 'stockout' => $max_stockout_info['total_stockout'] ?? 0,
                 'stockout_percent' => $max_stockout_info['percentage'] ?? 0,
+                'stockout_total' => $total_dpt_stockout ?? 0,
                 'stockout_month' => $max_stockout_info['month'] ?? '-',
                 'total_puskesmas' => $max_stockout_info['total_puskesmas']
             ]
