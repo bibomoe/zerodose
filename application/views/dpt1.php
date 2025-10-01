@@ -94,7 +94,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold"><?= $translations['text1'] ?></h6>
+                                                    <h6 class="text-muted font-semibold"><?= $translations['text1'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_dpt1_coverage); ?> <small>(<?= number_format($percent_dpt1_coverage, 0) ?>%)</small></h6>
                                                 </div>
                                             </div>
@@ -128,7 +128,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold"><?= $translations['text2'] ?></h6>
+                                                    <h6 class="text-muted font-semibold"><?= $translations['text2'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></h6>
                                                     <h6 class="text-muted font-semibold">(DPT-1 - DPT-3)</h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($dropout_rate_all_provinces,2); ?>%</h6>
                                                 </div>
@@ -146,7 +146,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-8">
-                                                    <h6 class="text-muted font-semibold"><?= $selected_district == 'all' ? $translations['text3'] : $translations['text3_2'] ?></h6>
+                                                    <h6 class="text-muted font-semibold"><?= $selected_district == 'all' ? $translations['text3'] : $translations['text3_2'] ?> <?= $translations['text1_cumulative'] ?> <?= $max_month_name; ?></h6>
                                                     <h6 class="font-extrabold mb-0"><?= number_format($total_dropout_rate); ?> <small>(<?= number_format($percent_districts_under_5, 2) ?>%)</small></h6>
                                                 </div>
                                             </div>
