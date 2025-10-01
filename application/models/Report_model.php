@@ -114,60 +114,59 @@ class Report_model extends CI_Model {
 
 
     public function get_highest_dpt1_coverage_area_name($province_id, $selected_year, $city_id = 'all', $month = 'all') {
-        $province_ids = $this->get_targeted_province_ids(); // Ambil provinsi targeted
+        $province_ids = $this->get_targeted_province_ids(); // Ambil daftar provinsi targeted
 
-        // Jika ingin ambil provinsi tertinggi
-        if ($province_id === 'all' || $province_id === 'targeted') {
+        $this->db->from('immunization_data_kejar');
+        $this->db->where('year', $selected_year);
+
+        // Terapkan filter bulan (wajib disamakan dengan fungsi lain)
+        if ($month !== 'all') {
+            $this->db->where('month <=', $month); // cumulative till selected month
+        }
+
+        if ($province_id === 'all') {
+            // Ambil provinsi dengan cakupan tertinggi
             $this->db->select('province_id AS id, SUM(dpt1_coverage) AS total');
-            $this->db->from('immunization_data_kejar');
-            $this->db->where('year', $selected_year);
             $this->db->group_by('province_id');
-
-            if ($province_id === 'targeted' && !empty($province_ids)) {
-                $this->db->where_in('province_id', $province_ids);
-            }
-
-            if ($month !== 'all') {
-                $this->db->where('month <=', $month);
-            }
-
             $this->db->order_by('total', 'DESC');
             $this->db->limit(1);
 
             $result = $this->db->get()->row();
+            return $result ? $this->get_province_name_by_id($result->id) : null;
 
-            if ($result) {
-                return $this->get_province_name_by_id($result->id); // ✅ langsung return nama provinsi
+        } elseif ($province_id === 'targeted') {
+            // Pastikan ada data provinsi targeted
+            if (empty($province_ids)) {
+                return null;
             }
 
+            $this->db->select('province_id AS id, SUM(dpt1_coverage) AS total');
+            $this->db->where_in('province_id', $province_ids);
+            $this->db->group_by('province_id');
+            $this->db->order_by('total', 'DESC');
+            $this->db->limit(1);
+
+            $result = $this->db->get()->row();
+            return $result ? $this->get_province_name_by_id($result->id) : null;
+
         } else {
-            // Jika ingin ambil kabupaten/kota tertinggi dalam 1 provinsi
+            // Ambil kabupaten/kota tertinggi di dalam provinsi tertentu
             $this->db->select('city_id AS id, SUM(dpt1_coverage) AS total');
-            $this->db->from('immunization_data_kejar');
             $this->db->where('province_id', $province_id);
-            $this->db->where('year', $selected_year);
-            $this->db->group_by('city_id');
 
             if ($city_id !== 'all') {
                 $this->db->where('city_id', $city_id);
             }
 
-            if ($month !== 'all') {
-                $this->db->where('month <=', $month);
-            }
-
+            $this->db->group_by('city_id');
             $this->db->order_by('total', 'DESC');
             $this->db->limit(1);
 
             $result = $this->db->get()->row();
-
-            if ($result) {
-                return $this->get_district_name_by_id($result->id); // ✅ langsung return nama kabupaten/kota
-            }
+            return $result ? $this->get_district_name_by_id($result->id) : null;
         }
-
-        return null; // Tidak ditemukan
     }
+
 
 
     // Ambil baseline DPT 3 dan MR1 berdasarkan provinsi atau seluruh provinsi
