@@ -562,11 +562,11 @@ class Report extends CI_Controller {
             $this->data['national_baseline_zd'] = $this->Report_model->get_zero_dose_by_province($selected_province, $selected_district);
         }
 
-        var_dump($selected_month );
-        exit;
+        // var_dump($selected_month );
+        // exit;
 
         // ✅ Jika bulan ke-6 (Juni), bagi dua baseline
-        if ($selected_month != 'all') {
+        if ($selected_month == '6') {
             $this->data['national_baseline_zd'] = $this->data['national_baseline_zd'] / 2;
         }
 
