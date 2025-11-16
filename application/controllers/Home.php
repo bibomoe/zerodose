@@ -1681,7 +1681,7 @@ class Home extends CI_Controller {
                 'text5' => 'Details of Primary Health Facility experiencing overstocks Year ',
                 'text6' => '<p>
                 Stock-out is calculated based on the zero-duration reported in SMILE and validated using the stock-on-hand data. If all brands experience continuous stock-out for 31 consecutive days, or for the total number of days in that month, and there is no stock recorded in the stock-on-hand report, then the condition is classified as a stock-out.
-                
+                <br><br>
                 Only Puskesmas with codes found in ASIK are displayed</p>',
                 'tabelcoloumn1' => 'Province',
                 'tabelcoloumn2' => 'District',
@@ -1701,7 +1701,7 @@ class Home extends CI_Controller {
                 'text5' => 'Detail Puskesmas yang mengalami Over Stock Tahun ',
                 'text6' => '<p>
                 Stock out terhitung dari zero duration laporan smile yang divalidasikan dengan stock on hand. Jika seluruh merek stock out berturut turut selama 31 hari atau seluruh jumlah hari di bulan tersebut,dan tidak memiliki stock sama sekali di laporan stock on hand, maka dianggap stock out. 
-
+                <br><br>
                 Puskesmas yang ditampilkan hanya puskesmas yang kodenya ditemukan di ASIK</p>',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Kab/Kota',
