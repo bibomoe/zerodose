@@ -1685,6 +1685,7 @@ class Home extends CI_Controller {
                 'tabelcoloumn3' => 'Subdistrict',
                 'tabelcoloumn4' => 'Puskesmas',
                 'tabelcoloumn5' => 'Months',
+                'tabelcoloumn6' => 'Area Characteristics',
             ],
             'id' => [
                 'page_title' => 'Jumlah Stock Out DPT di Fasilitas Kesehatan',
@@ -1701,6 +1702,7 @@ class Home extends CI_Controller {
                 'tabelcoloumn3' => 'Kecamatan',
                 'tabelcoloumn4' => 'Puskesmas',
                 'tabelcoloumn5' => 'Bulan',
+                'tabelcoloumn6' => 'Karakteristik Wilayah',
             ]
         ];
     

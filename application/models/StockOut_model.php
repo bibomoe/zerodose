@@ -590,6 +590,7 @@ class StockOut_model extends CI_Model {
                             puskesmas.subdistrict_id, 
                             subdistricts.name AS subdistrict_name,
                             puskesmas.name AS puskesmas_name,
+                            puskesmas.wilayah_karakteristik,
                             SUM(CASE WHEN psd.month = 1 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_1,
                             SUM(CASE WHEN psd.month = 2 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_2,
                             SUM(CASE WHEN psd.month = 3 AND psd.status_stockout = "1" THEN 1 ELSE 0 END) AS month_3,

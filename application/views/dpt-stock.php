@@ -166,11 +166,12 @@
                                                         <th><?= $translations['tabelcoloumn2'] ?></th> <!-- City Name -->
                                                         <th><?= $translations['tabelcoloumn3'] ?></th> <!-- Subdistrict Name -->
                                                         <th><?= $translations['tabelcoloumn4'] ?></th> <!-- Puskesmas Name -->
+                                                        <th><?= $translations['tabelcoloumn6'] ?></th> <!-- Puskesmas Name -->
                                                         <th colspan="12" class="text-center"><?= $translations['tabelcoloumn5'] ?></th> <!-- Column for months -->
                                                     </tr>
                                                     <tr>
                                                         <!-- Columns for months -->
-                                                        <th colspan="4"></th> <!-- Empty space for Province, City, Subdistrict, Puskesmas -->
+                                                        <th colspan="5"></th> <!-- Empty space for Province, City, Subdistrict, Puskesmas -->
                                                         <th>Jan</th>
                                                         <th>Feb</th>
                                                         <th>Mar</th>
@@ -193,6 +194,7 @@
                                                             <td><?= $row['city_name']; ?></td>
                                                             <td><?= $row['subdistrict_name']; ?></td>
                                                             <td><?= $row['puskesmas_name']; ?></td>
+                                                            <td><?= $row['wilayah_karakteristik']; ?></td>
 
                                                             <!-- Monthly Stockout Data -->
                                                             <!-- <td><?= $row['month_1'] > 0 ? '✔' : ''; ?></td> -->
