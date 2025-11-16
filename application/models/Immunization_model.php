@@ -1125,17 +1125,30 @@ class Immunization_model extends CI_Model {
     }
     
     
-    public function get_provinces_with_targeted() {
+    public function get_provinces_with_targeted($selected_language) {
         $provinces = $this->db->select('id, name_id, priority')
                               ->where('active', 1)
                               ->get('provinces')
                               ->result_array();
     
         // Tambahkan opsi "All Provinces" dan "Targeted Provinces" ke dropdown
-        $province_options = [
-            ['id' => 'all', 'name_id' => 'All Provinces'],
-            ['id' => 'targeted', 'name_id' => 'Targeted Provinces']
-        ];
+        // $province_options = [
+        //     ['id' => 'all', 'name_id' => 'All Provinces'],
+        //     ['id' => 'targeted', 'name_id' => 'Targeted Provinces']
+        // ];
+
+        // Tentukan daftar opsi provinsi berdasarkan bahasa
+        if ($selected_language === 'en') {
+            $province_options = [
+                ['id' => 'all', 'name_id' => 'All Provinces'],
+                ['id' => 'targeted', 'name_id' => 'Targeted Provinces']
+            ];
+        } else {
+            $province_options = [
+                ['id' => 'all', 'name_id' => 'Semua Provinsi'],
+                ['id' => 'targeted', 'name_id' => 'Provinsi Target']
+            ];
+        }
     
         // Pisahkan provinsi yang memiliki priority = 1
         foreach ($provinces as $province) {
@@ -1147,7 +1160,7 @@ class Immunization_model extends CI_Model {
         return $province_options;
     }
 
-    public function get_districts_with_all($province_id) {
+    public function get_districts_with_all($province_id, $selected_language) {
         // Ambil data kabupaten/kota berdasarkan province_id
         $districts = $this->db->select('id, name_id, province_id, status')
                             ->where('province_id', $province_id)
@@ -1155,10 +1168,22 @@ class Immunization_model extends CI_Model {
                             ->get('cities')
                             ->result_array();
         
-        // Tambahkan opsi "All Districts" dan "Targeted Districts" ke dropdown
-        $district_options = [
-            ['id' => 'all', 'name_id' => 'All Districts']
-        ];
+        // // Tambahkan opsi "All Districts" dan "Targeted Districts" ke dropdown
+        // $district_options = [
+        //     ['id' => 'all', 'name_id' => 'All Districts']
+        // ];
+
+        // Tentukan daftar opsi kabupaten/kota berdasarkan bahasa
+        if ($selected_language === 'en') {
+            $district_options = [
+                ['id' => 'all', 'name_id' => 'All Districts']
+            ];
+        } else {
+            $district_options = [
+                ['id' => 'all', 'name_id' => 'Semua Kab/Kota']
+            ];
+        }
+
         
         // Pisahkan distrik yang memiliki status = 1 (misalnya Targeted Districts)
         foreach ($districts as $district) {

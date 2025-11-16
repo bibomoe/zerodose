@@ -368,12 +368,7 @@ class Home extends CI_Controller {
         $this->data['selected_district'] = $selected_district;
         $this->data['selected_year'] = $selected_year;
 
-        // Ambil daftar provinsi untuk dropdown + targeted provinces
-        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
-
-        // Ambil daftar kabkota untuk dropdown + targeted provinces
-        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province);
-
+        
         // Ambil daftar distrik berdasarkan provinsi
         if ($selected_province !== 'all' && $selected_province !== 'targeted') {
             $this->data['districts'] = $this->Immunization_model->get_cities_by_province($selected_province);
@@ -681,6 +676,13 @@ class Home extends CI_Controller {
 
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
+
+        // Ambil daftar provinsi untuk dropdown + targeted provinces
+        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted($selected_language);
+
+        // Ambil daftar kabkota untuk dropdown + targeted provinces
+        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province, $selected_language);
+
 
         // Dapatkan nama bulan yang diterjemahkan dari array $this->data['translations']['months']
 
@@ -1095,12 +1097,7 @@ class Home extends CI_Controller {
         $this->data['selected_district'] = $selected_district;
         $this->data['selected_year'] = $selected_year;
 
-        // Ambil daftar provinsi untuk dropdown + targeted provinces
-        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
-
-        // Ambil daftar kabkota untuk dropdown + targeted provinces
-        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province);
-
+        
         $province_ids = $this->Immunization_model->get_targeted_province_ids(); // Ambil province_id yang priority = 1
         
         // Mendapatkan dropout rates per provinsi
@@ -1332,6 +1329,13 @@ class Home extends CI_Controller {
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
 
+        // Ambil daftar provinsi untuk dropdown + targeted provinces
+        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted($selected_language);
+
+        // Ambil daftar kabkota untuk dropdown + targeted provinces
+        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province, $selected_language);
+
+
         // Dapatkan nama bulan yang diterjemahkan dari array $this->data['translations']['months']
 
         if (isset($this->data['translations']['months'][$month_number])) {
@@ -1340,7 +1344,7 @@ class Home extends CI_Controller {
             // Penanganan jika bulan tidak valid, gunakan teks default atau statis
             $this->data['max_month_name'] = 'Invalid Month'; 
         }
-        
+
         // Ambil last update
         $this->data['last_update_date'] = $this->Immunization_model->get_last_immunization_update_date($selected_year);
 
@@ -1469,12 +1473,7 @@ class Home extends CI_Controller {
         $this->data['selected_district'] = $selected_district;
         $this->data['selected_year'] = $selected_year;
 
-        // Ambil daftar provinsi untuk dropdown + targeted provinces
-        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
-
-        // Ambil daftar kabkota untuk dropdown + targeted provinces
-        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province);
-    
+        
         // Ambil data jumlah puskesmas & imunisasi dari model baru
         $puskesmas_data = $this->Puskesmas_model->get_puskesmas_data($selected_province, $selected_district, $selected_year);
 
@@ -1538,6 +1537,13 @@ class Home extends CI_Controller {
 
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
+
+        // Ambil daftar provinsi untuk dropdown + targeted provinces
+        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted($selected_language);
+
+        // Ambil daftar kabkota untuk dropdown + targeted provinces
+        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province, $selected_language);
+    
 
         $this->data['title'] = 'Percentage of Primary Health Facility to Conduct Immunization Service as Planned​';
 
@@ -1623,12 +1629,7 @@ class Home extends CI_Controller {
         $this->data['selected_district'] = $selected_district;
         $this->data['selected_year'] = $selected_year;
 
-        // Ambil daftar provinsi untuk dropdown + targeted provinces
-        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted();
-
-        // Ambil daftar kabkota untuk dropdown + targeted provinces
-        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province);
-
+        
         // Ambil data stok kosong per bulan dan puskesmas
         $stock_out_data = $this->StockOut_model->get_dpt_stock_out_by_month($selected_province, $selected_district, $selected_year);
 
@@ -1666,6 +1667,12 @@ class Home extends CI_Controller {
         
         // Memuat data terjemahan
         $translations = $this->load_translation_dpt_stock($selected_language);
+
+        // Ambil daftar provinsi untuk dropdown + targeted provinces
+        $this->data['provinces'] = $this->Immunization_model->get_provinces_with_targeted($selected_language);
+
+        // Ambil daftar kabkota untuk dropdown + targeted provinces
+        $this->data['district_dropdown'] = $this->Immunization_model->get_districts_with_all($selected_province, $selected_language);
 
         // Mengirim data terjemahan ke view
         $this->data['translations'] = $translations;
