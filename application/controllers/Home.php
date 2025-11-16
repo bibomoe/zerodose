@@ -1340,6 +1340,9 @@ class Home extends CI_Controller {
             // Penanganan jika bulan tidak valid, gunakan teks default atau statis
             $this->data['max_month_name'] = 'Invalid Month'; 
         }
+        
+        // Ambil last update
+        $this->data['last_update_date'] = $this->Immunization_model->get_last_immunization_update_date($selected_year);
 
         $this->data['title'] = 'DPT1 in targeted areas';
         load_template('dpt1', $this->data);
@@ -1359,6 +1362,7 @@ class Home extends CI_Controller {
                 'text4' => 'Total Districts',
                 'text4_2' => 'Total Puskesmas',
                 'text5' => ' Quarter ',
+                'text23' => 'Data source:  Routine Administrative Report, Directorate of Immunization, MOH, last updated on ',
                 'tabelcoloumn1' => 'Province',
                 'tabelcoloumn2' => 'District',
                 'tabelcoloumn9' => 'Puskesmas',
@@ -1395,6 +1399,8 @@ class Home extends CI_Controller {
                 'text4' => 'Jumlah Kab/Kota',
                 'text4_2' => 'Jumlah Puskesmas',
                 'text5' => ' Triwulan ',
+
+                'text23' => 'Data bersumber dari Laporan Rutin Dit Imunisasi Kemenkes terakhir diperbaharui pada ',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Kab/Kota',
                 'tabelcoloumn9' => 'Puskesmas',

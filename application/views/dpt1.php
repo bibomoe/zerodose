@@ -172,6 +172,20 @@
                                 </div>
                             </div>
 
+                            <!-- LAST UPDATE -->
+                            <div class="row">
+                                <div class="col-12" style="margin-bottom: 20px; text-align: left;">
+                                    <!-- <div class="card">
+                                        <div class="card-header"></div>
+                                        <div class="card-body"> -->
+                                            
+                                                <span  class="form-label" style="font-size: 14px;"><?= $translations['text23'] ?>​ <?= $last_update_date;?></span>
+                                                
+                                        <!-- </div>
+                                    </div> -->
+                                </div>
+                            </div>
+
                             <!-- Peta -->
                             <div class="row">
                                 <div class="col-12">
