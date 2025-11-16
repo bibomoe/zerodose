@@ -1679,7 +1679,10 @@ class Home extends CI_Controller {
                 'text3' => 'Data is sourced from the SMILE Ministry of Health Application and updated on the 10th of every month',
                 'text4' => 'Over Stock by Duration',
                 'text5' => 'Details of Primary Health Facility experiencing overstocks Year ',
-                'text6' => 'Only Puskesmas with codes found in ASIK are displayed',
+                'text6' => '<p>
+                Stock-out is calculated based on the zero-duration reported in SMILE and validated using the stock-on-hand data. If all brands experience continuous stock-out for 31 consecutive days, or for the total number of days in that month, and there is no stock recorded in the stock-on-hand report, then the condition is classified as a stock-out.
+                
+                Only Puskesmas with codes found in ASIK are displayed</p>',
                 'tabelcoloumn1' => 'Province',
                 'tabelcoloumn2' => 'District',
                 'tabelcoloumn3' => 'Subdistrict',
@@ -1696,7 +1699,10 @@ class Home extends CI_Controller {
                 'text3' => 'Data bersumber dari Aplikasi SMILE diperbaharui tanggal 10 setiap bulannya',
                 'text4' => 'Overstock Berdasarkan Durasi',
                 'text5' => 'Detail Puskesmas yang mengalami Over Stock Tahun ',
-                'text6' => 'Puskesmas yang ditampilkan hanya puskesmas yang kodenya ditemukan di ASIK',
+                'text6' => '<p>
+                Stock out terhitung dari zero duration laporan smile yang divalidasikan dengan stock on hand. Jika seluruh merek stock out berturut turut selama 31 hari atau seluruh jumlah hari di bulan tersebut,dan tidak memiliki stock sama sekali di laporan stock on hand, maka dianggap stock out. 
+
+                Puskesmas yang ditampilkan hanya puskesmas yang kodenya ditemukan di ASIK</p>',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Kab/Kota',
                 'tabelcoloumn3' => 'Kecamatan',
@@ -1837,7 +1843,7 @@ class Home extends CI_Controller {
                 'text2' => '% dari Total Kab/Kota',
                 'text3' => 'Jumlah Kab/Kota yang mengembangkan dan memberlakukan kebijakan yang relevant dengan penjangkauan anak ZD secara spesifik atau imunisasi secara umum Tahun ',
                 'text4' => 'dari Total Kab/Kota',
-                'text5' => 'yang mengalokasikan pendanaan domestik untuk kegiatan imunisasi dan kegiatan lainnya yang mendukung program imunisasi pada 10 provinsi target',
+                'text5' => 'Jumlah Kab/Kota yang mengalokasikan pendanaan domestik untuk kegiatan imunisasi dan kegiatan lainnya yang mendukung program imunisasi pada 10 provinsi target',
                 'tabelcoloumn1' => 'Provinsi',
                 'tabelcoloumn2' => 'Jumlah Total Kab/Kota',
                 'tabelcoloumn3' => 'Jumlah Kab/Kota yang mengalokasikan Pendanaan Domestik',

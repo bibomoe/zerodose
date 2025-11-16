@@ -207,7 +207,7 @@
                                 class="sidebar-item">
                                 <a href="<?= base_url('home/dpt_stock'); ?>" class='sidebar-link'>
                                     <i class="bi bi-hospital-fill"></i>
-                                    <span>Number of DTP Stock Out at Health Facilities</span>
+                                    <span>Number of DPT Stock Out at Health Facilities</span>
                                 </a>
                             </li>
 
@@ -305,7 +305,7 @@
 
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('home/dpt_stock'); ?>" class='sidebar-link' id="intermediate-submenu2-label">
-                                        <!-- Number of DTP Stock Out at Health Facilities -->
+                                        <!-- Number of DPT Stock Out at Health Facilities -->
                                         DPT Stock Out in Health Facilities
                                     </a>
                                 </li>
@@ -441,7 +441,7 @@
                                             
                                         </li>
                                         <li class="submenu-item  ">
-                                            <a href="<?= base_url('input/dpt_stock'); ?>" class="submenu-link">Number of DTP Stock Out at Health Facilities</a>
+                                            <a href="<?= base_url('input/dpt_stock'); ?>" class="submenu-link">Number of DPT Stock Out at Health Facilities</a>
                                             
                                         </li>
                                         <li class="submenu-item  ">
@@ -612,7 +612,7 @@
                     longtermSub2: 'Imunisasi Kejar',
                     intermediate: 'Indikator Jangka Menengah',
                     intermediateSub1: 'Cakupan DPT-1',
-                    intermediateSub2: 'Jumlah Stock Out DTP di Fasyankes',
+                    intermediateSub2: 'Jumlah Stock Out DPT di Fasyankes',
                     intermediateSub3: 'Pelayanan Imunisasi di Puskesmas',
                     intermediateSub4: 'Fasyankes swasta yang sudah terlatih',
                     intermediateSub5: 'Kebijakan dan Pembiayaan di daerah',
